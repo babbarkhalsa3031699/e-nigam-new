@@ -1,0 +1,790 @@
+﻿@model  CMNirdesh.Models.AgendaModel
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
+}
+<style>
+    .btn.add_btn {
+        margin-top: 21px;
+    }
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .bootstrap-timepicker-widget table td input {
+        width: 32px !important;
+        margin: 0;
+        text-align: center;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 20px;
+        justify-content: flex-end; /* Align container to the right */
+        /*margin-right: 20px; 
+        margin-top: 20px;*/
+        margin-left:200px;
+    }
+
+    .button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .button-preview {
+        background-color: #007bff;
+        color: white;
+    }
+
+        .button-preview:hover {
+            background-color: #0056b3;
+        }
+
+    .button-approve {
+        background-color: #28a745;
+        color: white;
+    }
+
+        .button-approve:hover {
+            background-color: #1e7e34;
+        }
+
+</style>
+<head>
+
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include Bootstrap CSS -->
+    @*
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+    @*
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+
+    <!-- Include Bootstrap Timepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css">
+
+
+
+
+    <!-- Include Bootstrap JavaScript -->
+    @*
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>*@
+
+    <!-- Include Bootstrap Timepicker JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+</head>
+<body>
+
+    @* @Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+    <div id="main-content">
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["AlertMessage"]
+            </div>
+        }
+        @if (TempData["AlertMessageDanger"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["AlertMessageDanger"]
+            </div>
+        }
+        <div class="main-content cm_fund fund_rcipt">
+            @using (Html.BeginForm("SaveDispatchAgenda", "Agenda", FormMethod.Post, new { @id = "formAgenda", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                {
+                    <div class="row">
+                        @{Html.RenderPartial("~/Views/Agenda/_MeetingNoticeAgendaList.cshtml", Model);}
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+
+
+
+    <div class="coman_modal dispatch_modal addnew_modal modal"
+         id="myModal"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered"
+             role="document"
+             style="margin:10px auto; max-width:95%;">
+
+            <div class="modal-content"
+                 style="border:2px solid #ccc;
+                    box-shadow:0px 4px 15px rgba(0,0,0,0.2);
+                    border-radius:10px;
+                    overflow:hidden;
+                    max-height:95vh;">
+
+                <!-- Header -->
+                <div class="modal-header"
+                     style="display:flex;
+                        justify-content:space-between;
+                        align-items:center;">
+
+                    <h4 class="modal-title" id="myModalLabel">
+                        Edit Agenda Notice
+                    </h4>
+
+                    <button type="button"
+                            class="btn-close"
+                            onclick="ClosePopUp()"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body"
+                     style="padding:15px;
+                        overflow-y:auto;
+                        max-height:calc(95vh - 140px);">
+
+                    <form id="agendaForm">
+
+                        @Html.Hidden("AgendaID")
+
+                        <div class="row">
+
+                            <!-- Meeting Name -->
+                            <div class="col-md-6 mb-3">
+                                <label for="meetingname" class="form-label">
+                                    Meeting Name
+                                </label>
+
+                                <input type="text"
+                                       class="form-control"
+                                       id="meetingname"
+                                       placeholder="Enter Meeting Name"
+                                       required />
+                            </div>
+
+                            <!-- Meeting Date -->
+                            <div class="col-md-6 mb-3">
+                                <label for="meetingdate" class="form-label">
+                                    Meeting Date
+                                </label>
+
+                                <input type="date"
+                                       class="form-control"
+                                       id="meetingdate"
+                                       required />
+                            </div>
+
+                            <!-- Start Time -->
+                            <div class="col-md-6 mb-3">
+                                <label for="starttime" class="form-label">
+                                    Start Time
+                                </label>
+
+                                <input type="text"
+                                       class="form-control timepicker"
+                                       id="starttime"
+                                       placeholder="Select Start Time"
+                                       required />
+                            </div>
+
+                            <!-- Last Time -->
+                            <div class="col-md-6 mb-3">
+                                <label for="lasttime" class="form-label">
+                                    Last Time
+                                </label>
+
+                                <input type="text"
+                                       class="form-control timepicker"
+                                       id="lasttime"
+                                       placeholder="Select Last Time"
+                                       required />
+                            </div>
+
+                            <!-- Header -->
+                            <div class="col-md-12 mb-3">
+                               
+
+                                <div class="col-md-12 mb-3">
+
+                                    <label for="Header" class="form-label">
+                                        Header
+                                    </label>
+
+                                    <textarea class="form-control"
+                                              id="Header"
+                                              rows="8"
+                                              style="resize:none; min-height:180px; overflow:hidden;"
+                                              placeholder="Enter Header"
+                                              required
+                                              oninput="autoResize(this)"></textarea>
+
+                                </div>
+
+                               
+
+                                <!-- Description -->
+                                <!--<div class="col-md-12 mb-3">
+        <label for="Description" class="form-label">
+            Description
+        </label>
+
+        <textarea class="form-control"
+                  id="Description"
+                  rows="4"
+                  placeholder="Enter Description"></textarea>
+    </div>-->
+                                <!-- Venue -->
+                                <!--<div class="col-md-6 mb-3">
+        <label for="Venue" class="form-label">
+            Venue
+        </label>
+
+        <input type="text"
+               class="form-control"
+               id="Venue"
+               placeholder="Enter Venue" />
+    </div>-->
+                                <!-- Status -->
+                                <!--<div class="col-md-6 mb-3">
+        <label for="Status" class="form-label">
+            Status
+        </label>
+
+        <select class="form-control" id="Status">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+        </select>
+    </div>-->
+
+                            </div>
+
+                    </form>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer"
+                     style="background:#fff;
+                        border-top:1px solid #dee2e6;
+                        display:flex;
+                        justify-content:flex-end;
+                        gap:10px;">
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            onclick="validateForm()">
+                        Save
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            onclick="ClosePopUp()"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+                
+
+</body>
+
+<head>
+   <meta name="viewport" content="width=device-width" />
+   <title>Agenda</title>
+   <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+   <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+   <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+   <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+   <script src="~/Scripts/datatables/jszip.min.js"></script>
+   <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+   <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+   <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+   <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+   <script src="~/Scripts/jquery.ui.widget.js"></script>
+   <script src="~/Scripts/jquery.fileupload.js"></script>
+ </head>
+
+        <script>
+         function autoResize(textarea) {
+
+             textarea.style.height = 'auto';
+
+             textarea.style.height = textarea.scrollHeight + 'px';
+         }
+
+         // Initial load
+         document.addEventListener("DOMContentLoaded", function () {
+
+             autoResize(document.getElementById('Header'));
+
+         });
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        loadVenueList();
+        clearTextBox();
+           var useralert = "@Session["userExist"]";
+            var useradded = "@Session["userAdded"]";
+            $("#starttime").timepicker();
+            $("#lasttime").timepicker();
+
+           if (useralert == "") {
+
+           } else {
+               alert(useralert);
+           }
+
+           if (useradded == "") {
+
+           } else {
+               alert(useradded);
+               $("input[type=text]").each(function () {
+                   $(this).val("");
+               });
+           }
+
+                $('.timepicker').timepicker({
+                    timeFormat: 'h:mm p',
+                    interval: 30,
+                    minTime: '0:00am',
+                    maxTime: '11:30pm',
+                    defaultTime: '12:00am',
+                    startTime: '12:00am',
+                    dynamic: false,
+                    dropdown: true,
+                    scrollbar: true,
+                    showMeridian: true
+                }).keydown(function (event) {
+                    // Allow: backspace, delete, tab, escape, enter, and punctuation keys
+                    if (
+                        event.keyCode === 46 ||
+                        event.keyCode === 8 ||
+                        event.keyCode === 9 ||
+                        event.keyCode === 27 ||
+                        event.keyCode === 13 ||
+                        (event.keyCode === 65 && event.ctrlKey === true) ||
+                        (event.keyCode >= 35 && event.keyCode <= 39)
+                    ) {
+                        return;
+                    } else {
+                        // Ensure only valid time characters are entered (0-9, :, AM, PM)
+                        var input = String.fromCharCode(event.keyCode);
+                        var isValidInput = /^[0-9:\sAaPpMm]+$/.test(input);
+                        if (!isValidInput) {
+                            event.preventDefault();
+                        }
+                        if (event.key.toLowerCase() === 'a' || event.key.toLowerCase() === 'm') {
+                            event.preventDefault();
+                        }
+                    }
+                });
+
+                    $("#PreviewNoticeButton").click(function () {
+                               var agendaIdValue = $("#AgendaID").val();
+                               var url = '@Url.Action("PreviewReportMeetingNotice", "Agenda")?agendaid=' + agendaIdValue;
+                               window.open(url, "_blank");
+                    });
+
+                    $("#ApproveNoticeButton").click(function () {
+                         var agendaIdValue = $("#AgendaID").val();
+                         var url = '@Url.Action("ApproveReportMeetingNotice", "Agenda")?agendaid=' + agendaIdValue;
+                         window.open(url, "_blank");
+                  });
+
+
+            });
+
+    function loadVenueList() {
+        $.ajax({
+            url: '@Url.Action("getVanueList", "Agenda")',  // Replace with the correct controller and action URL
+            type: 'GET',
+            success: function (data) {
+                var venueDropdown = $('#venue');
+                venueDropdown.empty();  // Clear any existing options
+                venueDropdown.append('<option value="0">-Select-</option>');  // Default option
+
+                // Check if data is returned and is an array
+                if (Array.isArray(data) && data.length > 0) {
+                    // Loop through the data and append each venue as an option
+                    $.each(data, function (index, venue) {
+                        venueDropdown.append('<option value="' + venue.VenueId + '">' + venue.VenueName + '</option>');
+                    });
+                } else {
+                    // Optionally handle if no venues are returned (e.g., add a "No venues available" option)
+                    venueDropdown.append('<option value="0">No venues available</option>');
+                }
+            },
+            error: function () {
+                alert("Error loading venue list.");
+            }
+        });
+    }
+
+
+        //$(function () {
+        //    $('[type="date"]').prop('min', function () {
+        //        return new Date().toJSON().split('T')[0];
+        //    });
+        //    $('#txtfundamount').val('');
+
+        //});
+        $("#fileupload1").click(function (event) {
+            $('#Actionfile').text('No');
+            $('#IsFile').val("N");
+
+            $('#fileupload1').fileupload({
+
+                dataType: 'json',
+                async: true,
+                url: "/eFile/UploadFundFiles",
+                autoUpload: true,
+
+                done: function (e, data) {
+                 var sim = setTimeout("hidevalueAction()", 1000);
+                  $('.file_nameEn').html(data.result.name);
+                $('#afile_nameEn').attr("href", "@path" + data.result.name);
+                    $('#removefileupload1').show();
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.progress12 .progress-bar').css('width', progress + '%');
+                $('#removefileupload1').css('display', 'none');
+            });
+
+        });
+
+
+
+        function hidevalueForwd() {
+            $('.progress1 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueForwd()", 3000);
+        }
+
+        function hidevalueAction() {
+            $('.progress12 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueAction()", 3000);
+        }
+
+        function hidevalueActionEnclosure() {
+            $('.progressEnclosure .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+        }
+
+        function RemoveActionEnclosureFiles() {
+
+            $('.file_nameEn').html('');
+            $('.file_sizeEn').html('');
+            $('.progressEnclosure .progress-bar').css('width', '0%');
+            $("#removeUploadEnclosure").hide();
+            $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
+            $.post("/eFile/RemoveActionEnclosureFiles",
+                {
+                },
+                function (data) {
+                });
+
+        }
+    var userid;
+    function GetById(UserId) {
+    clearTextBox();
+    userid = UserId;
+
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("EditAgendaMeeting", "Agenda")' + '?id=' + UserId,
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $('#myModal').show();
+            if (data && data.length > 0) {  // Check if data is an array and has elements
+                $("#meetingname").val(data[0].AgendaName);
+                $("#venue").val(data[0].Venue);
+                $("#venue").change();
+                $("#agendaStatus").val(data[0].Status);
+                $("#agendaStatus").change();
+                $("#AgendaID").val(UserId);
+                $("#Header").val(data[0].Header);
+                $("#meetingdate").val(data[0].MeetingDate);
+                $("#starttime").val(data[0].StartTime);
+                $("#lasttime").val(data[0].EndTime);
+            }
+        },
+        error: function () {
+            alert("Error fetching agenda details.");
+        }
+    });
+}
+
+ function clearTextBox() {
+
+        $('#meetingname').val("");
+
+        $('#meetingdate').val("");
+
+        $('#Proceedingfirstpageheader').val("");
+
+        $('#proceedinglastpageheader').val("");
+
+        $('#starttime').val("");
+
+        $('#header').val("");
+        $('#footer').val("");
+
+        $('#lasttime').val("");
+
+        $('#agendatype').val("");
+        $('#txtAgendaName').val("");
+        $('#agendatype').val("");
+        $('#Header').val("");
+        $('#Footer').val("");
+        $('#StartTime').val("");
+        $('#EndTime').val("");
+        $('#txtallocationdate').val(0);
+
+
+
+
+
+
+
+    }
+     function validateForm() {
+
+
+
+            // Get the form inputs
+            var meetingname = document.getElementById('meetingname');
+            var meetingdate = document.getElementById('meetingdate');
+
+
+            var starttime = document.getElementById('starttime');
+            var lasttime = document.getElementById('lasttime');
+            //var agendatype = document.getElementById('agendatype');
+
+            // Check if any of the required inputs are empty
+            //if (meetingname.value === '' || meetingdate.value === '') {
+            //    alert('Please fill in all the required fields.');
+            //    return;
+            //}
+
+            // All required fields are filled, proceed with the form submission
+            Update();
+
+        }
+
+
+
+    function Update() {
+        ///alert(userid);
+        var empObj = {
+            AgendaId: userid,
+            AgendaDate: $('#meetingdate').val(),
+            AgendaName: $('#meetingname').val(),
+            StartTime: $('#starttime').val(),
+            EndTime: $('#lasttime').val(),
+            Status: $('#agendaStatus').val(),
+            Venue: $('#venue').val(),
+            Header: $('#Header').val()
+        };
+        $.ajax({
+            url: '@Url.Action("UpdateMeetingNotice", "Agenda")',
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                alert("Updated Successfully");
+                $('#myModal').modal('hide');
+                location.reload();
+
+            },
+            error: function (errormessage) {
+                alert("Not Updated");
+                $('#myModal').modal('hide');
+                location.reload();
+            }
+        });
+    }
+
+
+    $("#filter p").each(function (i) {
+        var dt = "";
+
+        if (i == 0) {
+            dt = 'Select';
+        } else if (i == 1) {
+            dt = 'Select';
+        }
+        var select = $('<select class="form-control"><option value="">' + dt + '</option></select>')
+            .appendTo($(this).empty())
+            .on('change', function () {
+                var totalamount = 0;
+
+                table.column(1)
+                    .search($(this).val())
+                    .draw();
+
+                arowCount = table.rows({ search: 'applied' }).count();
+                for (i = 0; i < arowCount; i++) {
+                    //alert((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replace("₹ ", ""));
+                    totalamount = parseInt(totalamount) + parseInt((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replaceAll("₹ ", ""));
+
+                };
+                $('#ttlamt').html(totalamount);
+            });
+
+        table.column(1).data().unique().sort().each(function (d, j) {
+
+            select.append('<option value="' + d + '">' + d + '</option>')
+        });
+    });
+
+
+
+</script>
+    
+    
+
+   <script>
+//SMS functions
+    function SendSMS(agendaid, meetingdate) {
+    $('#ulCouncillors').html('');
+    $("#loader-wrapper").show();
+    $("#hdnMeetingDate").val(meetingdate);
+    $.ajax({
+    type: "GET",
+    // url: pathurl,
+    url: '@Url.Action("getDeptWiseCouncillorslist", "Agenda")',
+    async: true,
+    data: { agendaid: agendaid },
+    beforeSend: function () {
+        $('#loader-wrapper').show();
+    },
+    success: function (data) {
+        var options = {
+            "backdrop": "static",
+            keyboard: true
+        };
+        $("#loader-wrapper").hide();
+
+        if (data) {
+            $("#mySMSModal").css("display", "block");
+            if (data.length > 0) {
+                //console.log(data);
+                $.each(data, function (i, item) {
+
+                    html = "<li class='col-4'>";
+                    html += "<input type='checkbox' id='ddlChkCouncillors' class='parent-checkbox checkboxItem' name='SelectedCouncillors' value=" + item.MobileNo + " /> " + item.councillorname;
+                    html += "</li>";
+
+                    $('#ulCouncillors').append(html);
+                });
+            }
+            else {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "Data not available" +
+                    "</td>'</tr > ";
+                $('#ulCouncillors').append(html);
+            }
+
+        } else { alert("error"); }
+        $("#loader-wrapper").hide();
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.responseText);
+        alert(thrownError);
+        $("#loader-wrapper").hide();
+    },
+    complete: function (results) {
+        $('#loader-wrapper').hide();
+
+    }
+});
+}
+$(document).ready(function(){
+    $("#btnSendSms").click(function () {
+        var selectedMembers = [];
+        $('input[name="SelectedCouncillors"]:checked').each(function () {
+            var checkboxValue = $(this).val();
+            var checkboxText = $(this).closest('li').text().trim();
+            var meetingdate = $("#hdnMeetingDate").val();
+
+            var concatenatedString = checkboxValue + ' - ' + checkboxText + '-' + meetingdate;
+            selectedMembers.push(concatenatedString);
+
+           // selectedMembers.push($(this).closest('label').text().trim() + '-' +$(this).val());
+        });
+
+        if (selectedMembers.length < 1) {
+            alert("Select Atleast 1 Member");
+            return;
+        }
+        $.ajax({
+            url: '@Url.Action("SendMeetingSMS", "Agenda")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(selectedMembers),
+            success: function (response) {
+                alert("SMS Sent Successfully");
+                $("#mySMSModal").modal('hide');
+                //$('#result').html(response);
+            },
+            error: function (xhr, status, error) {
+                alert("Error while sending SMS");
+                console.error(xhr.responseText);
+            }
+        });
+    });
+});
+    $('#txtSearch').keyup(function () {
+        var searchText = $(this).val().toLowerCase();
+
+        $('#ulCouncillors li').each(function () {
+            var text = $(this).text().toLowerCase();
+            var match = text.indexOf(searchText) > -1;
+            $(this).toggle(match);
+        });
+    });
+    // Select all functionality
+    $('#selectAll').click(function () {
+        $('.checkboxItem').prop('checked', $(this).prop('checked'));
+    });
+
+    // Update "Select All" checkbox state when individual checkboxes are clicked
+    $(document).on('click', '.checkboxItem', function () {
+        if ($('input[name="SelectedCouncillors"]:checked').length === $('.checkboxItem').length) {
+            $('#selectAll').prop('checked', true);
+        } else {
+            $('#selectAll').prop('checked', false);
+        }
+    });
+
+    function ClosePopUp() {
+       $('#myModal').hide();
+    }
+    </script>

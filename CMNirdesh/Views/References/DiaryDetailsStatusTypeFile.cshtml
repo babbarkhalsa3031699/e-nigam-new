@@ -1,0 +1,2557 @@
+﻿
+@{
+
+    int Totaldiary = Model._LstDashboard.Sum(x => x.Count);
+    string SiteName = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceName"];
+}
+
+@using CMNirdesh.Models
+
+@model  CMNirdesh.Models.LstDashboard
+
+<input type="hidden" id="intval" name="intval" value="" />
+<input type="hidden" id="diarydispatchValue" name="diarydispatchValue" value="" />
+<input type="hidden" id="DocumentTypeIdHdn" name="DocumentTypeIdHdn" value="" />
+<input type="hidden" id="sincefilterhdndiary" name="sincefilterhdndiary" value="" />
+
+<html>
+<body>
+    <div id="main-content">
+        <div class="main-content">
+            <div class="widget-box " id="divAction">
+                <div class="widget-header widget-header-flat">
+                    <h4 class="spn_select">  <span id="selected" class=""></span></h4>
+                    <div class="widget-toolbar no-border">
+                        <button class="btn btn-xs btn-primary bigger" id="btnNew" style="display:none;" onclick="CreateNew()">
+                            <i class="ace-icon fa fa-pencil-square-o"></i>
+                            New
+                        </button>
+                    </div>
+                </div>
+                @Html.Hidden("maintype", "0")
+                <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
+            </div>
+
+
+
+
+            <div class="col-xl-12 col-lg-12 col-md-12 row p-0 no-right-margin" id="DiaryTableDiv">
+
+                <div class="col-md-12 col-lg-12 col-xl-12 row p-3 no-right-margin filter-part">
+
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                        <div>
+                            <div class="form fc d-flex align-items-center gap-1">
+                                <span class="label-text"><b>Department </b></span>
+                                <div class="btn-group dropup">
+                                    <button onclick="DepartmentCount('Department');" type="button" class=" dropdown-toggle link-option icon-department" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-building"></i>
+                                    </button>
+                                    <div class="dropdown-menu popup-box p-0">
+                                        <div class="filter-popup" id="DiaryDepartmentCount">
+                                            <div class="table-responsive">
+                                                <table class="table " id="DiaryDepartmentTableCount" style="width:100%">
+                                                    <thead>
+                                                        <tr class="table-heading ">
+                                                            <th class='td-heading'>Department</th>
+                                                            <th class='td-heading'></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <select style="min-width: 30%;" class="form-control" id="DiaryDepartment" name="DiaryDepartment"></select>
+                            <input type="hidden" id="hdndept" value="0" />
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                        <div>
+                            <div class="form fc d-flex align-items-center gap-1">
+                                <span class="label-text"><b>Office </b></span>
+                                <div class="btn-group dropup">
+                                    <button onclick="OfficeCount('Office');" type="button" class=" dropdown-toggle link-option icon-office" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-building"></i>
+                                    </button>
+                                    <div class="dropdown-menu popup-box p-0">
+                                        <div class="filter-popup" id="DiaryOfficeCount">
+                                            <div class="table-responsive">
+                                                <table class="table " id="DiaryOfficeTableCount" style="width:100%">
+                                                    <thead>
+                                                        <tr class="table-heading ">
+                                                            <th class='td-heading'>Office</th>
+                                                            <th class='td-heading'></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <select style="min-width: 30%;" class="form-control" id="DiaryoffId" name="DiaryoffId"></select>
+                            <input type="hidden" id="hdndept" value="0" />
+                        </div>
+                        @*<div>
+                                <label class="form fc"> <b>Office</b></label><br />
+                                <select style="min-width: 30%;" class="form-control" id="DiaryoffId" name="DiaryoffId"></select>
+                            </div>*@
+                    </div>
+
+                    @*<div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                            <div style="margin-top:27px;">
+                                <button class="btn btn-sm btn-primary" onclick="DataByDeptIdandOfficeId();"> Search</button>
+                                <button class="btn btn-sm btn-danger" onclick="ClearDeptFilter();"> Clear</button>
+                            </div>
+                        </div>*@
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                        <div>
+                            <div class="form fc d-flex align-items-center gap-1">
+                                <span class="label-text"><b>Reference Type </b></span>
+                                <div class="btn-group dropup">
+                                    <button onclick="TypeCount('Type');" type="button" class=" dropdown-toggle link-option icon-refrence" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-asterisk"></i>
+                                    </button>
+                                    <div class="dropdown-menu popup-box p-0">
+                                        <div class="filter-popup" id="DiaryTypeCount">
+                                            <div class="table-responsive">
+                                                <table class="table " id="DiaryTypeTableCount" style="width:100%">
+                                                    <thead>
+                                                        <tr class="table-heading ">
+                                                            <th class='td-heading'>Reference Type</th>
+                                                            <th class='td-heading'></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <select class="form-control" id="DiaryDocument" name="DiaryDocument"></select>
+                            <input type="hidden" id="hdndept" value="0" />
+                        </div>
+                        @*<div>
+                                <label class="form fc"> <b>Reference Type</b></label>
+                                <select class="form-control" id="DiaryDocument" name="DiaryDocument"></select>
+                            </div>*@
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                        <div>
+                            <div class="form fc d-flex align-items-center gap-1">
+                                <span class="label-text"><b>Status</b></span>
+                                <div class="btn-group dropup">
+                                    <button onclick="StatusCount('Status');" type="button" class=" dropdown-toggle link-option icon-status" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-chart-line"></i>
+                                    </button>
+                                    <div class="dropdown-menu popup-box p-0">
+                                        <div class="filter-popup" id="DiaryStatusCount">
+                                            <div class="table-responsive">
+                                                <table class="table " id="DiaryStatusTableCount" style="width:100%">
+                                                    <thead>
+                                                        <tr class="table-heading ">
+                                                            <th class='td-heading'>Status</th>
+                                                            <th class='td-heading'></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <select class="form-control" id="StatusListMla" name="StatusListMla"></select>
+                            <input type="hidden" id="hdndept" value="0" />
+                        </div>
+
+
+                        @*<div>
+                                <label class="form fc"> <b>Status</b></label>
+                                <select class="form-control" id="StatusListMla" name="StatusListMla"></select>
+                            </div>*@
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                        <div>
+                            <label class="form fc"> <b>Priority</b></label>
+                            <select class="form-control" name="DiaryPriority" id="DiaryPriority">
+                                <option value="" selected>-- Select --</option>
+                                <option value="1">High</option>
+                                <option value="2">Normal</option>
+                                <option value="3">Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                        <div>
+                            <label class="form fc"> <b>Term</b></label>
+                            <select class="form-control" name="DiaryTerm" id="DiaryTerm">
+                                <option value="" selected>-- Select --</option>
+                                <option value="1">Short</option>
+                                <option value="2">Medium</option>
+                                <option value="3">Long</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                        <div>
+                            <label class="form fc"> <b>Last Action Since</b></label><br />
+                            <select class="form-control" name="since" id="sincefilterdiary">
+                                <option value="" selected="selected" onclick="ResetSinceDiary();">-- select --</option>
+                                <option value="1week">1 Week</option>
+                                <option value="2week">2 Week</option>
+                                <option value="1month">1 Months</option>
+                                <option value="3month">3 Months</option>
+                                <option value="6month">6 Months</option>
+                                <option value="year">1 Year</option>
+                                <option value="morethanyear">1 Year +</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3" style="display:none">
+                        <div>
+                            <label class="form fc"> <b>Type</b></label><br />
+                            <select class="form-control" name="reffiletype" id="reffiletype">
+                                <option value="R" >Reference</option>
+                                <option value="F" selected="selected">File</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                        <div style="margin-top:27px;" class="text-start d-flex gap-3">
+                            <button class="btn btn-sm btn-primary" id="changebutton" onclick="change();"> Search</button>
+                            <button class="btn btn-sm btn-success" id="resetbutton" style="display:none;" onclick="Reset();"> Reset</button>
+                            <button class="btn btn-sm btn-danger" id="clearbutton" style="display:none;" onclick="Clear();"> Clear</button>
+                        </div>
+                    </div>
+
+                    @*<div class="col-md-2 col-lg-2 col-xl-2 col-lg-2 p-3 ">
+                            <div>
+                                <label class="form fc"> <b>Agenda</b></label>
+                                <select class="form-control" id="AgendaDate" name="AgendaDate" onchange="hideshowcheckbox();"></select>
+                            </div>
+
+                        </div>*@
+
+                </div>
+
+                <div class="col-md-12 col-xl-12 cl-lg-12 row" style="margin-top:20px;">
+
+                    <div class="col-md-12 col-xl-12 col-lg-12 mt-3">
+                        <div class="table-switch">
+                            <div>
+                                <input type="radio" id="status" name="radio_list" value="Status" checked="checked" onclick="lisfunction();">
+                                <label id="lblstatus" for="status"><b>Department-Status Summary</b></label>
+                            </div>
+                            <div>
+                                <input type="radio" id="status" name="radio_list" value="Office" onclick="lisfunction();">
+                                <label id="lbloffice" for="office"><b>Office-Status Summary</b></label>
+                            </div>
+                            <div>
+                                <input type="radio" id="type" name="radio_list" value="Type" onclick="lisfunction();">
+                                <label for="type"><b>Type-Status Summary</b></label>
+                            </div>
+                            <div>
+                                <input type="radio" id="list" name="radio_list" value="List" onclick="lisfunction();">
+                                <label for="list"><b>List</b></label>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-12 col-xl-12 col-lg-12 m-auto p-0 row" id="listdiv" style="display:none;">
+                    <h2 id="noDataFound" style="display: none;">No Data Found</h2>
+                    <div class="table-responsive p-0" style="margin-top: 40px;height:auto;">
+                        <table class="table table-bordered" id="DiaryTable" style="width:100%; display:inline-table;">
+                            <thead>
+                                <tr role="row" class="table-heading">
+                                    <th class="hideshow" style="text-align: center; max-width: max-content; "><span class="font-weight-bold"></span></th>
+                                    <th class='td-heading subject-cell-width'><span>Subject</span></th>
+                                    <th class='td-heading release-cell-width'><span>Release Date </span></th>
+                                    <th class='td-heading department-cell-width'><span>Department </span></th>
+                                    <th class='td-heading brief-cell-width'><span>Brief of Last Action Taken</span></th>
+                                    <th class='td-heading'><span>Reference Type</span></th>
+                                    <th class='td-heading' style="max-width:max-content;"><span>Status</span></th>
+                                    <th class='td-heading refid-cell-width'><span>Ref.Id/Date </span></th>
+                                    <th class='td-heading ' style="max-width:max-content;"><span>Priority </span></th>
+                                    <th class='td-heading' style="max-width:max-content;"><span>Term </span></th>
+                                    <th class='td-heading' style="max-width:max-content;"><span>...more</span></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-12 col-lg-12 col-xl-12 table-responsive p-0" id="statusdiv" style="margin-top: 15px;">
+                <table class="table table-bordered " id="Type" aria-describedby="sample-table-3_info">
+                    <thead>
+
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="col-md-12 col-lg-12 col-xl-12 table-responsive p-0" id="officediv" style="margin-top: 15px;">
+                <table class="table table-bordered " id="office" aria-describedby="sample-table-3_info">
+                    <thead>
+
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyoffice">
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="col-md-12 col-lg-12 col-xl-12 table-responsive p-0" id="typediv" style="margin-top: 15px;">
+                <table class="table table-bordered " id="Types" aria-describedby="sample-table-3_info">
+                    <thead>
+
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyTypediv">
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModalDiary"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="widget-title modal_heading">New Diary File</h4>
+                    <button type="button" class="btn-close" onclick="closediary()" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="loginModaldiarybody">
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+    <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDiaryCount"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="widget-title modal_heading">Diary File</h4>
+                    <button type="button" class="btn-close" onclick="closediaryCount()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                        <table class="table table-bordered" id="DiaryTableCount" style="width:100%">
+                            <thead>
+                                <tr class="table-heading">
+                                    <th class='td-heading' style="width:250px !important;"><span class="font-weight-bold">Subject</span></th>
+                                    <th class='td-heading' style="width: 100px !important;"><span class="font-weight-bold ">Release Date </span></th>
+                                    <th class='td-heading' style="width: 250px !important;"><span class="font-weight-bold">Department </span></th>
+                                    <th class='td-heading' style="width: 250px !important; "><span class="font-weight-bold">Brief of Last Action Taken</span></th>
+                                    <th class='td-heading' style="max-width: 150px !important; "><span class="font-weight-bold">Reference Type</span></th>
+                                    <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">Status</span></th>
+                                    <th class='td-heading' style="width: 150px !important;"><span class="font-weight-bold">Ref.Id/Date </span></th>
+                                    <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">Priority </span></th>
+                                    <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">Term </span></th>
+                                    <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">...more</span></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModaldiaryEdit"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="widget-title modal_heading">Edit Diary File</h4>
+                    <button type="button" class="btn-close" onclick="closediaryEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+                <div class="modal-body" id="loginModaldiaryEditbody">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+
+
+
+
+<head>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/responsive.bootstrap.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <script>
+
+
+    $(document).ready(function () {
+
+       // $("#listdiv").css("display", "block");
+      //  GetAgendaDate();
+        showdepartment();
+
+        DiaryDocument();
+        BindActionStatusMladiary();
+        ShowButton();
+        var Text = "Files Total Diary: " + "@Totaldiary";
+        $('#selected').text(Text);
+
+
+
+        $("#Pendency").hide();
+        $('#SinceLabel').hide();
+
+        $("#chkDiaryRef").click(function () {
+            var diaryvalue = "Ref";
+            $("#diarydispatchValue").val(diaryvalue);
+        });
+
+        $("#chkDiaryAction").click(function () {
+            var diaryvalue = "Act";
+            $("#diarydispatchValue").val(diaryvalue);
+
+        });
+
+    });
+
+        function lisfunction() {
+         
+            var reffiletype = $("#reffiletype").val();
+            if (reffiletype == "R") { reffiletype = "Letter"; }
+            else { reffiletype = "File"; }
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+        if (radiovalue == "List") {
+            var deptid = $("#DiaryDepartment").val();
+            if (deptid != '') {
+                GetDataForDiaryN();
+            } else {
+                GetDataForDiary();
+            }
+
+                $("#listdiv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+            else if (radiovalue == "Status") {
+            var deptid = $("#DiaryDepartment").val();
+            if (deptid != '') {
+                GetDataForDiaryStatusN();
+            } else {
+                GetDataForDiaryStatus(reffiletype);
+            }
+               // GetDataForDiaryStatus();
+                $("#statusdiv").css("display", "block");
+                $("#listdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+            else if (radiovalue == "Office") {
+                var deptid = $("#DiaryDepartment").val();
+                 if (deptid != '') {
+                    GetDataForDiaryOfficeN();
+                    $("#statusdiv").css("display", "none");
+                    $("#listdiv").css("display", "none");
+                    $("#typediv").css("display", "none");
+                    $("#officediv").css("display", "block");
+                } else {
+                    alert("Select Department.");
+                    $("input[name=radio_list][value='Status']").prop('checked', true);
+                }
+
+
+            }
+            else if (radiovalue == "Type") {
+            var deptid = $("#DiaryDepartment").val();
+            if (deptid != '') {
+                GetDataForDiaryTypeN();
+            } else {
+                GetDataForDiaryType();
+            }
+
+                $("#typediv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+                $("#listdiv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+        }
+
+        function showdepartment() {
+
+            var Deptid = "";
+             var sitename = '@SiteName';
+        var isapex = "@Session["isApex"]";
+            $('#DiaryDepartment').empty().append('<option selected="selected" value="">-- select --</option>');
+            if (sitename == 'MC') {
+                 if (isapex == "1") {
+
+                 } else {
+                     $('#DiaryDepartment').empty();
+                     var sessdept = '@CurrentSession.DeptID';
+                     Deptid = sessdept;
+
+                     $("#DiaryDepartment").prop("disabled", true);
+                    setTimeout(() => {
+                        getoffices();
+                        GetDataForDiaryOfficeN();
+                        $("#loader-wrapper").hide();
+                    }, 2000);
+
+                }
+            }
+
+
+                var type = 'Diary';
+                      var DiaryDepartment = $("#DiaryDepartment");
+                      //DiaryDepartment.empty().append('<option selected="selected" value="">-- select --</option>');
+
+                            $.ajax({
+                            type: "GET",
+                                url: '@Url.Action("GetDairyDispatchDepartments", "References")', //  GetDocumentType
+                            datatype: "Json",
+                                data: { type: type, deptid: Deptid },
+                                success: function (data) {
+
+                            $.each(data, function () {
+                                DiaryDepartment.append($("<option></option>").val(this['deptId']).html(this['deptname']));
+                            });
+                                }
+
+                            });
+
+
+
+
+        }
+
+        function getoffices() {
+
+        var id = $("#DiaryDepartment").val();
+        var DiaryoffId = $("#DiaryoffId");
+        DiaryoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+        $('#DiaryoffId').empty().append('<option selected="selected" value="">-- select --</option>');
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetOfficebyDepartmentId", "References")',
+                datatype: "Json",
+                data: { deptid: id },
+                success: function (data) {
+                    DiaryoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+
+                    $.each(data, function (index, value) {
+                        $('#DiaryoffId').append('<option value="' + value.id + '">' + value.name + '</option>');
+
+                    });
+                }
+            });
+        }
+
+    function DiaryDocument() {
+            var DiaryDocument = $("#DiaryDocument");
+            DiaryDocument.empty().append('<option selected="selected" value="">-- select --</option>');
+        $('#DiaryDocument').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetDiaryDocumentTypeList", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { reftype: "F" },
+                        success: function (data) {
+
+                            DiaryDocument.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        DiaryDocument.append($("<option></option>").val(this['DocmentType']).html(this['DocumentTypeName']));
+                    });
+                        }
+
+                    });
+        }
+
+    function statusvalue() {
+            var status = '10';
+        var statusn = $("#StatusListMla").val();
+            if (statusn != '') {
+                status = statusn
+            }
+            else {
+                status = '10'
+        }
+            return status;
+        }
+
+        function change() {
+            var reffiletype = $("#reffiletype").val();
+            if (reffiletype == "R") { reffiletype = "Letter"; }
+            else { reffiletype = "File"; }
+            $("#StatusListMla").prop("disabled", true);
+            $("#sincefilterdiary").prop("disabled", true);
+            $("#DiaryDepartment").prop("disabled", true);
+            $("#DiaryoffId").prop("disabled", true);
+            $("#DiaryTerm").prop("disabled", true);
+            $("#DiaryPriority").prop("disabled", true);
+            $("#DiaryDocument").prop("disabled", true);
+            $("#changebutton").css("display", "none");
+            $("#resetbutton").css("display", "block");
+            $("#clearbutton").css("display", "block");
+
+            var since = $("#sincefilterhdndiary").val();
+            var deptid = $("#DiaryDepartment").val();
+            var status = statusvalue();
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+            var type = $("#DiaryDocument").val();
+
+
+        var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+        if (radiovalue == "List") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryN();
+            }
+            else {
+                GetDataForDiary();
+            }
+
+            $("#listdiv").css("display", "block");
+            $("#statusdiv").css("display", "none");
+        }
+
+        else if (radiovalue == "Status") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryStatusN();
+            }
+            else {
+                GetDataForDiaryStatus(reffiletype);
+            }
+        }
+
+        else if (radiovalue == "Office") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryOfficeN();
+            }
+            else {
+                GetDataForDiaryOffice();
+            }
+        }
+
+        else if (radiovalue == "Type") {
+
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryTypeN();
+            }
+            else {
+                GetDataForDiaryType();
+            }
+        }
+
+    }
+
+        function Reset() {
+            var reffiletype = $("#reffiletype").val();
+            if (reffiletype == "R") { reffiletype = "Letter"; }
+            else { reffiletype = "File"; }
+
+            var sitename = '@SiteName';
+             var isapex = "@Session["isApex"]";
+
+            if (sitename == 'MC') {
+                if (isapex == "1") {
+                    $("#DiaryDepartment").prop("disabled", false);
+                } else {
+
+                }
+            } else {
+                $("#DiaryDepartment").prop("disabled", false);
+            }
+
+            $("#StatusListMla").prop("disabled", false);
+            $("#sincefilterdiary").prop("disabled", false);
+
+            $("#DiaryoffId").prop("disabled", false);
+            $("#DiaryTerm").prop("disabled", false);
+            $("#DiaryPriority").prop("disabled", false);
+            $("#DiaryDocument").prop("disabled", false);
+            $("#changebutton").css("display", "block");
+            $("#resetbutton").css("display", "none");
+            $("#clearbutton").css("display", "none");
+
+            var since = $("#sincefilterhdndiary").val();
+            var deptid = $("#DiaryDepartment").val();
+            var status = statusvalue();
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+            var type = $("#DiaryDocument").val();
+
+        var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+        if (radiovalue == "List") {
+
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryN();
+            }
+            else {
+                GetDataForDiary();
+            }
+            $("#statusdiv").css("display", "none");
+            $("#listdiv").css("display", "block");
+            $("#typediv").css("display", "none");
+            $("#officediv").css("display", "none");
+        }
+        else if (radiovalue == "Status") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryStatusN();
+            }
+            else {
+                GetDataForDiaryStatus(reffiletype);
+            }
+            $("#statusdiv").css("display", "block");
+            $("#listdiv").css("display", "none");
+            $("#typediv").css("display", "none");
+            $("#officediv").css("display", "none");
+        }
+        else if (radiovalue == "Office") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryOfficeN();
+            }
+            else {
+                GetDataForDiaryOffice();
+            }
+            $("#statusdiv").css("display", "none");
+            $("#listdiv").css("display", "none");
+            $("#typediv").css("display", "none");
+            $("#officediv").css("display", "block");
+        }
+        else if (radiovalue == "Type") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDiaryTypeN();
+            }
+            else {
+                GetDataForDiaryType();
+            }
+            $("#statusdiv").css("display", "none");
+            $("#listdiv").css("display", "none");
+            $("#typediv").css("display", "block");
+            $("#officediv").css("display", "none");
+        }
+
+
+
+        }
+
+        function Clear() {
+            var reffiletype = $("#reffiletype").val();
+            if (reffiletype == "R") { reffiletype = "Letter"; }
+            else { reffiletype = "File"; }
+
+            var sitename = '@SiteName';
+             var isapex = "@Session["isApex"]";
+
+            if (sitename == 'MC') {
+                if (isapex == "1") {
+                    $("#DiaryDepartment").prop("disabled", false);
+                } else {
+
+                }
+            } else {
+                $("#DiaryDepartment").prop("disabled", false);
+            }
+
+            $("#StatusListMla").prop("disabled", false);
+            $("#sincefilterdiary").prop("disabled", false);
+
+            $("#DiaryoffId").prop("disabled", false);
+            $("#DiaryTerm").prop("disabled", false);
+            $("#DiaryPriority").prop("disabled", false);
+            $("#DiaryDocument").prop("disabled", false);
+
+            $("#changebutton").css("display", "block");
+            $("#resetbutton").css("display", "none");
+            $("#clearbutton").css("display", "none");
+
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+            if (radiovalue == "Status") {
+                GetDataForDiaryStatus(reffiletype);
+                $("#statusdiv").css("display", "block");
+                $("#listdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            } else if (radiovalue == "Office") {
+                $("#officediv").css("display", "block");
+                $("#listdiv").css("display", "none");
+                $("#statusdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+            }
+            else if (radiovalue == "List") {
+                $("#listdiv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+            else if (radiovalue == "Type") {
+                $("#listdiv").css("display", "none");
+                $("#statusdiv").css("display", "none");
+                $("#typediv").css("display", "block");
+                $("#officediv").css("display", "none");
+            }
+        }
+
+         function GetDataForDiary() {
+
+        $('#AgendaDate').val('');
+        var since = '';
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryStatusType", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+                success: function (response) {
+                    if (response.length > 0) {
+
+                 var DocumentTypename = response[0].DocumentTypeName;
+                 if (DocumentTypename != "" || DocumentTypename != null) {
+                      $('#DocumentTypename').empty();
+                      $('#DocumentTypename').append(DocumentTypename);
+                 }
+                else {
+                     $('#DocumentTypename').empty();
+                     }
+                        $("#DiaryCount").empty();
+                        var count = response.length;
+                        $("#DiaryCount").append(count);
+                        getTableListDairy(response);
+
+                        $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').hide();
+
+                        $("#DiaryTable").css("display", "block");
+                        $("#Diarylistdiv").hide();
+                        $("#loader-wrapper").hide();
+
+                        $("#noDataFound").hide();
+                        $("#noDataFound").css("display", "none");
+                      //  showdepartment();
+                      //  DiaryDocument();
+                    }
+                    else {
+                        showdepartment();
+                        $("#noDataFound").show();
+                        $("#noDataFound").css("display", "block");
+                        $("#DiaryTable").css("display", "none");
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+              });
+    }
+
+        function GetDataForDiaryN() {
+        $('#AgendaDate').val('');
+     var since = $("#sincefilterhdndiary").val();
+     var status = '10';
+     var deptid = $("#DiaryDepartment").val();
+     var officeid = $("#DiaryoffId").val();
+     var status = statusvalue();
+     var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var type = $("#DiaryDocument").val();
+            var reffiletype = $("#reffiletype").val();
+            if (reffiletype == "R") { reffiletype = "Letter"; }
+            else { reffiletype = "File"; }
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryStatusType", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+                success: function (response) {
+                    if (response.length > 0) {
+
+                 var DocumentTypename = response[0].DocumentTypeName;
+                 if (DocumentTypename != "" || DocumentTypename != null) {
+                      $('#DocumentTypename').empty();
+                      $('#DocumentTypename').append(DocumentTypename);
+                 }
+                else {
+                     $('#DocumentTypename').empty();
+                     }
+                        $("#DiaryCount").empty();
+                        var count = response.length;
+                        $("#DiaryCount").append(count);
+                        getTableListDairy(response);
+
+                        $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').hide();
+
+                        $("#DiaryTableDiv").css("display", "block");
+                        $("#DiaryTable").css("display", "block");
+                        $("#Diarylistdiv").hide();
+                        $("#loader-wrapper").hide();
+
+                        $("#noDataFound").hide();
+                        $("#noDataFound").css("display", "none");
+                    }
+                    else {
+                        $("#noDataFound").show();
+                        $("#noDataFound").css("display", "block");
+                        $("#DiaryTable").css("display", "none");
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+              });
+        }
+
+        function GetDataForDiaryStatus(reffiletype) {
+      //  $('#DocumentTypeDIdHdn').val(type);
+
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var since = '';
+        var notchecked = '0';
+    
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardStatus", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyType").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyType").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        //showdepartment();
+        //DiaryDocument();
+        }
+
+    function GetDataForDiaryStatusN() {
+
+        var status = '10';
+        var deptid = $("#DiaryDepartment").val();
+        var officeid = $("#DiaryoffId").val();
+        var status = statusvalue();
+        var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var type = $("#DiaryDocument").val();
+        var since = $("#sincefilterhdndiary").val();
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardStatus", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyType").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyType").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        }
+
+    function GetDataForDiaryOffice() {
+      //  $('#DocumentTypeDIdHdn').val(type);
+
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var since = '';
+        var notchecked = '0';
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardOffice", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyoffice").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyoffice").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        //showdepartment();
+        //DiaryDocument();
+        }
+
+        function GetDataForDiaryOfficeN()
+        {
+
+        var status = '10';
+        var deptid = $("#DiaryDepartment").val();
+        var officeid = $("#DiaryoffId").val();
+        var status = statusvalue();
+        var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var type = $("#DiaryDocument").val();
+        var since = $("#sincefilterhdndiary").val();
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardOffice", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyoffice").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyoffice").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        }
+
+    function GetDataForDiaryType() {
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardType", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDataForDiaryTypeN() {
+
+        var status = '10';
+        var deptid = $("#DiaryDepartment").val();
+        var officeid = $("#DiaryoffId").val();
+        var status = statusvalue();
+        var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var type = $("#DiaryDocument").val();
+        var since = $("#sincefilterhdndiary").val();
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardType" , "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority,reffiletype: "File" },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+
+
+
+    $("#DiaryDepartment").change(function () {
+        getoffices();
+        GetDataForDiaryN();
+
+    });
+
+    function GoToStatusType(deptid) {
+            $("#loader-wrapper").show();
+            $('#hdndept').val(deptid.trim());
+            $("input[name=radio_list][value='Type']").prop('checked', true);
+            GetDataForDiaryTypeNCLick();
+            $("#DiaryDepartment [value='" + deptid.trim() + "']").prop('selected', true);
+            $("#typediv").css("display", "block");
+            $("#statusdiv").css("display", "none");
+            $("#listdiv").css("display", "none");
+            $("#loader-wrapper").hide();
+        }
+
+    function GetDataForDiaryTypeNCLick() {
+
+        var status = '10';
+        var deptid = $("#hdndept").val();
+        var officeid = $("#DiaryoffId").val();
+        var status = statusvalue();
+        var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var type = $("#DiaryDocument").val();
+        var since = $("#sincefilterhdndiary").val();
+
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardType" , "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid,since:since, officeid: officeid, term: term, priority: priority },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+
+        function ShowButton() {
+        
+        var type = 2034;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowButton", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {type:type},
+            success: function (response) {
+                if (response[0].isupdate == 1) {
+                    $("#btnNew").css("display", "block");
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#btnNew").css("display", "none");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+        var sitename = '@SiteName';
+        var isapex = "@Session["isApex"]";
+
+        if (sitename == 'MC') {
+            if (isapex == "1") {
+                GetDataForDiaryStatus("Letter");
+            } else {
+               // GetDataForDiaryOfficeN();
+                $("input[name=radio_list][value='Office']").prop('checked', true);
+                $("input[name=radio_list][value='Status']").hide();
+                //  $("input[name=radio_list][value='Office']").hide();
+                $("#lblstatus").hide();
+                //  $("#lbloffice").hide();
+
+            }
+
+        } else {
+            if (isapex == "1") {
+                GetDataForDiaryStatus("Letter");
+            } else {
+                GetDataForDiaryType();
+                $("input[name=radio_list][value='Type']").prop('checked', true);
+                $("input[name=radio_list][value='Status']").hide();
+                  $("input[name=radio_list][value='Office']").hide();
+                $("#lblstatus").hide();
+                  $("#lbloffice").hide();
+            }
+        }
+
+
+
+
+    }
+
+    function setvalueDiary(type) {
+        $('#maintype').val(type);
+        GetDataForDiary();
+        GetAgendaDate();
+    }
+
+    function GetAgendaDate() {
+            var type ="Diary"
+        var AgendaDate = $("#AgendaDate");
+        AgendaDate.empty().append('<option selected="selected" value="">-- select --</option>');
+            $('#AgendaDate').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetAgendaDate", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type:type },
+                success: function (data) {
+                    AgendaDate.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+
+                        AgendaDate.append($("<option></option>").val(this['id']).html(this['dropagenda']));
+                    });
+                    }
+                });
+    }
+
+    $("#favouriteMLA").change(function () {
+        getofcrData();
+    });
+
+    function Toggle() {
+        fillOffice();
+    }
+
+    function CreateNew() {
+        $('#loginModaldiarybody').html('');
+        $("#loader-wrapper").show();
+            $.ajax({
+                 url: '@Url.Action("NewMlaEntryForm", "References")',
+               // url: "/References/NewMlaEntryForm",
+                type: 'GET',
+                async: true,
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { reffiletype: "File" },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    if (data) {
+                        $("#loginModalDiary").css("display","block");
+                        $('#loginModaldiarybody').html(data);
+                    }
+                    else {
+                        alert("error");
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                }
+            });
+
+        }
+
+    function closediary() {
+            $("#loginModalDiary").css("display", "none");
+            $('#loginModaldiarybody').html('');
+            // window.location.reload();
+        }
+
+    function closediaryCount() {
+            $("#loginModalDiaryCount").css("display", "none");
+            $('#loginModaldiarybodyCount').html('');
+        }
+
+    function closediaryEdit() {
+            $("#loginModaldiaryEdit").css("display", "none");
+        $('#loginModaldiaryEditbody').html('');
+         //window.location.reload();
+           // var type = $('#DocumentTypeIdHdn').val();
+          //  GetDataForDiary();
+
+        }
+
+    function Status() {
+        $("#loader-wrapper").show();
+        var Status = $("#favouriteMLA option:selected").val();
+        var Office = $("#Office option:selected").val();
+        if (Status == 10) {
+            $("#loader-wrapper").hide();
+            return false;
+        }
+        else {
+        }
+
+        //var pathurl = '/References/Filtered_MLADiaryListForAll'
+        $.ajax({
+           url: '@Url.Action("Filtered_MLADiaryListForAll", "References")',
+            type: 'GET',
+            async: true,
+            data: { Status: Status, Office: Office },
+            // data:{ params },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Diarylistdiv").html('');
+                $("#Diarylistdiv").html(data);
+            }
+        });
+    }
+
+    function GetActionStatusValueDiary() {
+        var StatusVal = '10';
+        $.each($("input[name='group2Mla']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+    }
+
+    function ActionStatusCheckDiary() {
+        var type = $('#DocumentTypeIdHdn').val();
+        GetDataForDiary(type);
+
+    }
+
+
+
+    function getTableListDairy(tableData) {
+        $("#DiaryTable").DataTable().destroy();
+        $("#DiaryTable tbody").html('');
+        $.each(tableData, function (index, response) {
+
+            if (response.ReferencePriorityType == 1) {
+                //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                var img = 'High';
+            }
+            else if (response.ReferencePriorityType == 2) {
+                var img = 'Normal';
+            }
+            else if (response.ReferencePriorityType == 3) {
+                var img = 'Low';
+            }
+
+            if (response.ReferenceTerm == 1) {
+                var Term = 'Short';
+            }
+            else if (response.ReferenceTerm == 2) {
+                var Term = 'Medium';
+            }
+            else if (response.ReferenceTerm == 3) {
+                var Term = 'Long';
+
+            }
+
+
+
+            if (response.ActionTakenFile != "") {
+                var Actionpath1 = "http://10.44.250.80" + response.ActionTakenFile;
+                var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+            }
+            else {
+                var link = '';
+            }
+
+            if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                response.ActionTakenDate = response.ActionTakenDate;
+            }
+            else {
+                response.ActionTakenDate = "";
+            }
+            var editclass=""
+            var edit = response.Editpermission;
+            if (edit == "1") {
+                editclass = "edit";
+            }
+            else {
+                editclass = "nonedit";
+            }
+
+            $("#DiaryTable tbody").append(
+                "<tr role='row'  class='odd'>" +
+                "<td id='checkboxgrid' style='font-size: 12px; display:none; text-align:center; width: 3%;'> <input type='checkbox'  id='" + response.RefId + "' onclick = SendToAgenda(this)></td>" +
+                "<td class='' class='td-data'> <input type='checkbox'  id='" + response.RefId + "' onclick = checkInAgenda(this) style='display:none'></td>" +
+                "<td class='td-data'>" + response.Subject + "</td>" +
+                "<td class='td-data'><span >" + response.LetterDate + "</span></td>" +
+                "<td class='td-data'><span >" + response.FromDept + "-" + response.FromOffice + "</span></td>" +
+                "<td class='td-data'>" + response.ad + "</td>" +
+                "<td class='td-data'>" + response.DocumentTypeName + "</td>" +
+                "<td class='td-data'>" + response.StatusName + "<br/>" + response.ActionTakenDate + "<br/>" + link + "</td>" +
+                "<td class='td-data'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                "<td class='td-data'>" + img + "</td>" +
+                "<td class='td-data'>" + Term + "</td>" +
+                "<td  class='" + editclass + "' ><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDairy(this) ><i class='ace-icon fa fa-pencil bigger-120'></i> </a ></td>"
+                + "</tr>"
+            );
+        });
+        $('#DiaryTable').DataTable({
+            paging: true,
+            searching: true,
+            bInfo: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf'
+            ]
+
+        });
+    }
+
+    function getofcrDataAgency() {
+        $("#loader-wrapper").show();
+           //debugger;
+        var Agency = 0;
+        var DocumentType = $("#maintype").val();
+        var Office = $("#Office").val();
+        var Office = $("#Office option:selected").val();
+        var Status = $("#favouriteMLA option:selected").val();
+        if (Status != 0) {
+            $("#Pendency").hide();
+            $('#SinceLabel').hide();
+        }
+        else {
+            $("#Pendency").show();
+            $('#SinceLabel').show();
+        }
+      //  var SelectedSubTypetext = SubType.options[SubType.selectedIndex].text;
+
+        var DocumentType = $("#maintype").val();
+        var Status = $("#favouriteMLA option:selected").val();
+        //var pathurl = '/References/FilteredMLADiaryListForAgency'
+
+        $.ajax({
+            url: '@Url.Action("FilteredMLADiaryListForAgency", "References")',
+            type: 'GET',
+            async: true,
+            data: {
+
+                Office: Office,
+                DocumentType: DocumentType
+            },
+            // data:{ params },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Diarylistdiv").html('');
+                $("#Diarylistdiv").html(data);
+                // $("#loader-wrapper").hide();
+            }
+        });
+
+    }
+
+    function filterCount() {
+
+        $("#spnCount").text("");
+        var counter = 0;
+        //  alert('HELLO');
+        var Office = $("#Office option:selected").val();
+
+        if (Office != 0 && typeof Office != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Agency = $("#Agency option:selected").val();
+        if (Agency != 0 && typeof Agency != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var District = $("#District option:selected").val();
+        if (District != 0 && typeof District != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Constituency = $("#Constituency option:selected").val();
+        if (Constituency != 0 && typeof Constituency != 'undefined') {
+            counter = counter + 1;
+        }
+         //alert(counter);
+        if (counter > 0) {
+
+            $("#spnCount").text(counter);
+            $("#spnCount").show();
+        }
+        else {
+            $("#spnCount").hide();
+            counter = 0;
+        }
+        counter = 0;
+    }
+
+    function hideshowcheckbox() {
+            var id = $('#AgendaDate').val();
+            if (id != '') {
+                $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').show();
+            }
+            else {
+                $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').hide();
+            }
+        }
+
+    function SendToAgenda(refid) {
+        var agendaid = $('#AgendaDate').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+
+                    }
+                    if (response == "0") {
+                        alert("Term Updation Failed.");
+                    }
+                }
+            });
+    }
+
+    function EditMlaDairy(IDD) {
+        var ID = IDD.id;
+        $('#loginModaldiaryEditbody').html('');
+
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("EditMlaDairyForm", "References")',
+
+            async: true,
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#loginModaldiaryEdit").css("display", "block");
+                    $('#loginModaldiaryEditbody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+
+    function BindActionStatusMladiary() {
+            $("#loader-wrapper").show();
+        var since = '';
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+         var StatusListMla = $("#StatusListMla");
+        StatusListMla.empty().append('<option selected="selected" value="">-- select --</option>');
+        $("#StatusListMla").empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("BindActionStatusMla", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { since: since,reffiletype: "File" },
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+
+                            StatusListMla.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        StatusListMla.append($("<option></option>").val(this['Value']).html(this['Text']));
+                    });
+                        }
+
+                    });
+
+        }
+
+    function ResetSinceDiary() {
+        var dropDown = document.getElementById("sincefilterdiary");
+        dropDown.selectedIndex = 0;
+        $("#sincefilterdiary").val('');
+        GetDataForDiary($('#DocumentTypeIdHdn').val());
+    }
+
+    function checkInAgenda(idd) {
+        var refid = idd.id;
+
+        var agendaid = $('#AgendaDate').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckInAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Already Added in Agenda")
+                    }
+                    if (response == "0") {
+                        SendToAgenda(refid)
+                    }
+                }
+            });
+        }
+
+    function GetDiaryDasdhboardDataStatusType(obj) {
+
+        var deptId = $(obj).attr('deptid');
+        var docid = $(obj).attr('DocTypeId');
+        var officeid = $("#DiaryoffId").val();
+        var status = statusvalue();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = docid;
+        }
+        else {
+            statusnew = status;
+        }
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+        var since = $("#sincefilterhdndiary").val();
+        var documentype = $("#DiaryDocument").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+            $("#loader-wrapper").show();
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDiaryStatusTypeCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { status: statusnew, since: since, deptid: deptId, officeid: officeid, term: term, priority: priority, documentype: documentype,reffiletype: "File" },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDiaryCount(response);
+                        $("#loginModalDiaryCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDiaryCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+    function getTableListDiaryCount(tableData) {
+            $("#DiaryTableCount").DataTable().destroy();
+            $("#DiaryTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+                if (response.ReferencePriorityType == 1) {
+                    //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                    var img = 'High';
+                }
+                else if (response.ReferencePriorityType == 2) {
+                    var img = 'Normal';
+                }
+                else if (response.ReferencePriorityType == 3) {
+                    var img = 'Low';
+                }
+                if (response.ReferenceTerm == 1) {
+                    var Term = 'Short';
+                }
+                else if (response.ReferenceTerm == 2) {
+                    var Term = 'Medium';
+                }
+                else if (response.ReferenceTerm == 3) {
+                    var Term = 'Long';
+
+                }
+
+                var editclass = ""
+                var edit = response.Editpermission;
+                if (edit == "1") {
+                    editclass = "edit";
+                }
+                else {
+                    editclass = "nonedit";
+                }
+
+                if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                    response.ActionTakenDate = response.ActionTakenDate;
+                }
+                else {
+                    response.ActionTakenDate = "";
+                }
+
+                if (response.ActionTakenFile != "") {
+                    var Actionpath1 = "https://cmnirdesh.punjab.gov.in" + response.ActionTakenFile;
+                    var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+                }
+                else {
+                    var link = '';
+                }
+
+                $("#DiaryTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td class='td-data'>" + response.Subject + "</td>" +
+                    "<td class='td-data'><span >" + response.LetterDate + "</span></td>" +
+                    "<td class='td-data'><span>" + response.FromDept + "-" + response.FromOffice + "</span></td>" +
+                    "<td class='td-data'>" + response.ad + "</td>" +
+                    "<td class='td-data'>" + response.DocumentTypeName + "</td>" +
+                    "<td class='td-data'>" + response.StatusName + "<br/>" + response.ActionTakenDate + "<br/>" + link + "</td>" +
+                    "<td class='td-data'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                    "<td class='td-data'>" + img + "</td>" +
+                    "<td class='td-data'>" + Term + "</td>" +
+                    "<td class='td-data'></td>" 
+                   /* "<td class='" + editclass + "'><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDiary(this) ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>"*/
+                    + "</tr>"
+
+                );
+            });
+
+
+            $('#DiaryTableCount').DataTable({
+                paging: true,
+                searching: true,
+                bInfo: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ]
+            });
+
+
+
+        }
+
+        function EditMlaDiary(IDD) {
+
+            var ID = IDD.id;
+        $('#loginModaldiaryEditbody').html('');
+         var pathurl = '@Url.Action("EditMlaDairyForm", "References")';
+          //  var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { ID: ID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    // //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#loginModaldiaryEdit").css("display", "block");
+                        $('#loginModaldiaryEditbody').html(data);
+
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+        }
+
+    function GetDiaryDasdhboardDataType(obj) {
+
+        var documentype = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+        var officeid = $("#DiaryoffId").val();
+
+         var status = statusvalue();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = actionCode;
+        }
+        else {
+            statusnew = actionCode;
+         }
+
+         var documenttypedispatch = $("#DiaryDocument").val();
+         var documenttypenew = "";
+         if (documenttypedispatch != '') {
+             documenttypenew = documenttypedispatch
+         }
+         else {
+             documenttypenew = documentype
+         }
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+            var since = $("#sincefilterhdndiary").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDiaryTypeCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { status: statusnew, since: since, documentype: documenttypenew, officeid: officeid, term: term, priority: priority },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDiaryCount(response);
+                        $("#loginModalDiaryCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDiaryCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+    function GetDiaryDasdhboardDataTotalStatus(obj) {
+
+        var deptid = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+            var status = $("#StatusListMla").val();
+            var statusnew = '';
+            if (status != '') {
+                statusnew = status
+            }
+            else {
+                statusnew = actionCode;
+            }
+        var deptidnew = '';
+        var deptidui = $("#DiaryDepartment").val();
+
+        if (deptidui != '') {
+                deptidnew = deptidui
+            }
+        else {
+                deptidnew = deptid;
+            }
+        var officeid = $("#DiaryoffId").val();
+        var documenttypediary = $("#DiaryDocument").val();
+        var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var since = $("#sincefilterhdndiary").val();
+        var reffiletype = $("#reffiletype").val();
+        if (reffiletype == "R") { reffiletype = "Letter"; }
+        else { reffiletype = "File"; }
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDiaryStatusTotalCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { deptid: deptidnew, officeid: officeid, documentype: documenttypediary, status: statusnew, priority: priority, term: term, since: since,reffiletype: "File" },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDiaryCount(response);
+                        $("#loginModalDiaryCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDiaryCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+    function GetDiaryDasdhboardDataTotalType(obj) {
+
+    var doctype = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+            var status = $("#StatusListMla").val();
+            var statusnew = '';
+            if (status != '') {
+                statusnew = status
+            }
+            else {
+                statusnew = actionCode;
+            }
+        var doctypenew = '';
+    var doctypeui = $("#DiaryDocument").val();
+
+    if (doctypeui != '') {
+        doctypenew = doctypeui
+            }
+        else {
+        doctypenew = doctype;
+        }
+
+        var officeid = $("#DiaryoffId").val();
+        var deptid = $("#DiaryDepartment").val();
+        var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var since = $("#sincefilterhdndiary").val();
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDiaryTypeTotalCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { deptid: deptid, officeid: officeid, documentype: doctypenew, status: statusnew, priority: priority, term: term, since: since},
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDiaryCount(response);
+                        $("#loginModalDiaryCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDiaryCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+    function GetDiaryDasdhboardDataOffice(obj) {
+
+        var officeid = $(obj).attr('OfficeId');
+        var docid = $(obj).attr('DocTypeId');
+        var deptId = $(obj).attr('deptId');
+        //var officeid = $("#DiaryoffId").val();
+        var status = statusvalue();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = docid;
+        }
+        else {
+            statusnew = status;
+        }
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+        var since = $("#sincefilterhdndiary").val();
+        var documentype = $("#DiaryDocument").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+            $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDiaryOfficeCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { status: statusnew, since: since, deptid: deptId, officeid: officeid, term: term, priority: priority, documentype : documentype},
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDiaryCount(response);
+                        $("#loginModalDiaryCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDiaryCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+    function GetDiaryDasdhboardDataTotalOffice(obj) {
+            var officeid = $(obj).attr('officeid');
+        var deptid = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+            var status = $("#StatusListMla").val();
+            var statusnew = '';
+            if (status != '') {
+                statusnew = status
+            }
+            else {
+                statusnew = actionCode;
+            }
+        var deptidnew = '';
+        var deptidui = $("#DiaryDepartment").val();
+
+        if (deptidui != '') {
+                deptidnew = deptidui
+            }
+        else {
+                deptidnew = deptid;
+            }
+
+            var officeidnew = '';
+            var officeidui = $("#DiaryoffId").val();
+
+            if (deptidui != '') {
+                officeidui = officeidui
+            }
+            else {
+                officeidui = officeid;
+            }
+
+       // var officeid = $("#DiaryoffId").val();
+        var documenttypediary = $("#DiaryDocument").val();
+        var term = $("#DiaryTerm").val();
+        var priority = $("#DiaryPriority").val();
+        var since = $("#sincefilterhdndiary").val();
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDiaryStatusTotalCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { deptid: deptidnew, officeid: officeid, documentype: documenttypediary, status: statusnew, priority: priority, term: term, since: since},
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDiaryCount(response);
+                        $("#loginModalDiaryCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDiaryCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+  //-------------------------------- filter icon click popup ---------------------------------
+
+   function DepartmentCount(param) {
+            var status = '10';
+            var deptid = $("#DiaryDepartment").val();
+            var officeid = $("#DiaryoffId").val();
+            var status = statusvalue();
+            var type = $("#DiaryDocument").val();
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+            var since = $("#sincefilterhdndiary").val();
+            var notchecked = $("#notcheck").val();
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDiary", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since , param:param,reffiletype: "File"  },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                getTableListDiarydepartmentCount(response);
+                                $("#DiaryDepartmentCount").css("display", "block");
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DiaryDepartmentCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+   function getTableListDiarydepartmentCount(tableData) {
+            $("#DiaryDepartmentTableCount").DataTable().destroy();
+            $("#DiaryDepartmentTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+
+                $("#DiaryDepartmentTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.DepartmentName + "</td>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.DepartmentCount + "</td>"
+                    + "</tr>"
+                );
+            });
+
+
+        }
+
+   function OfficeCount(param) {
+            var status = '10';
+            var deptid = $("#DiaryDepartment").val();
+            var officeid = $("#DiaryoffId").val();
+            var status = statusvalue();
+            var type = $("#DiaryDocument").val();
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+            var since = $("#sincefilterhdndiary").val();
+            var notchecked = $("#notcheckD").val();
+
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDiary", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since ,param:param,reffiletype:"File"  },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                getTableListDiaryOfficeCount(response);
+                                $("#DiaryOfficeCount").css("display", "block");
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DiaryOfficeCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+   function getTableListDiaryOfficeCount(tableData) {
+            $("#DiaryOfficeTableCount").DataTable().destroy();
+            $("#DiaryOfficeTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+
+                $("#DiaryOfficeTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.OfficeName + "</td>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.OfficeCount + "</td>"
+                    + "</tr>"
+                );
+            });
+
+
+        }
+
+   function TypeCount(param) {
+            var status = '10';
+            var deptid = $("#DiaryDepartment").val();
+            var officeid = $("#DiaryoffId").val();
+            var status = statusvalue();
+            var type = $("#DiaryDocument").val();
+            var term = $("#DiaryTerm").val();
+            var priority = $("#DiaryPriority").val();
+            var since = $("#sincefilterhdndiary").val();
+            var notchecked = $("#notcheck").val();
+
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDiary", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since, param : param ,reffiletype:"File" },
+                        success: function (response) {
+                            console.log(response);
+                            if (response.length > 0) {
+                                getTableListDiaryTypeCount(response);
+                                $("#DiaryTypeCount").css("display", "block");
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DiaryTypeCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+   function getTableListDiaryTypeCount(tableData) {
+            $("#DiaryTypeTableCount").DataTable().destroy();
+            $("#DiaryTypeTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+
+                $("#DiaryTypeTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.DocumentName + "</td>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.DocumentCount + "</td>"
+                    + "</tr>"
+                );
+            });
+        }
+
+   function StatusCount(param) {
+       var status = '10';
+       var deptid = $("#DiaryDepartment").val();
+       var officeid = $("#DiaryoffId").val();
+       var status = statusvalue();
+       var type = $("#DiaryDocument").val();
+       var term = $("#DiaryTerm").val();
+       var priority = $("#DiaryPriority").val();
+       var since = $("#sincefilterhdndiary").val();
+       var notchecked = $("#notcheck").val();
+
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDiary", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since , param:param,reffiletype:"File"  },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                getTableListDiaryStatusCount(response);
+                                $("#DiaryStatusCount").css("display", "block");
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DiaryStatusCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+   function getTableListDiaryStatusCount(tableData) {
+            $("#DiaryStatusTableCount").DataTable().destroy();
+            $("#DiaryStatusTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+
+                $("#DiaryStatusTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.StatusName + "</td>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.StatusCount + "</td>"
+                    + "</tr>"
+                );
+            });
+
+
+        }
+
+    </script>
+
+
+    <style>
+        .edit {
+            display: block;
+        }
+
+        .nonedit {
+            display: none;
+        }
+
+        .accordion-toggle:hover {
+            text-decoration: none;
+        }
+
+        .hideshow {
+            /*display:none;*/
+        }
+
+        .hshow {
+            display: block;
+        }
+
+        .btn-sq-lg {
+            width: 150px !important;
+            height: 150px !important;
+        }
+
+        .btn-sq {
+            width: 100px !important;
+            height: 100px !important;
+            font-size: 8px;
+            margin-left: 20px;
+        }
+
+        .btn-sq-sm {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 10px;
+        }
+
+        .btn-sq-xs {
+            width: 25px !important;
+            height: 25px !important;
+            padding: 2px;
+        }
+
+        .active1 {
+            width: 120px !important;
+            height: 120px !important;
+            /*padding:2px;*/
+            font-size: 18px;
+            margin-left: 50px;
+        }
+
+        .dark-font .breadcrumb-item + .breadcrumb-item::before {
+            color: #000;
+            font-size: x-large;
+        }
+
+        .dark-font .breadcrumb-item.active {
+            color: #455a64;
+        }
+
+        .small-box {
+            position: relative;
+            display: block;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #f9f9f9;
+            cursor: pointer;
+            /*height: 119px;
+            width: 127px;*/
+        }
+
+        .badge-notify {
+            background: red !important;
+            background-color: red !important;
+            position: relative;
+            top: -12px;
+            left: -13px;
+            font-weight: bold;
+        }
+
+        .small-box h3 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            padding: 0;
+            white-space: nowrap;
+            font-family: "Proxima Nova Regular","Segoe UI",Roboto,"Droid Sans","Helvetica Neue",Arial,sans-serif;
+        }
+
+        .small-box p {
+            font-size: 14px;
+            font-weight: 600;
+            margin: -4px;
+        }
+
+        .small-box > .inner {
+            padding: 10px;
+            max-height: 90px;
+        }
+
+        .small-box .icon {
+            position: absolute;
+            /*top: auto;*/
+            top: 0px;
+            bottom: 5px;
+            right: 5px;
+            z-index: 0;
+            font-size: 50px;
+            color: rgba(0,0,0,.15);
+        }
+
+        .small-box:hover > .icon > .fa { /*font-size: 1.2em;*/
+            font-size: 1.2em;
+            /*transition-delay:1s;*/
+            transition-duration: 0.5s;
+            transition-timing-function: linear;
+            /*transition-delay: 1s;*/
+        }
+
+        .collapse.in {
+            display: inline-block !important;
+            width: 100%;
+        }
+
+
+        .small-box > .small-box-footer {
+            position: relative;
+            text-align: center;
+            padding: 3px 0;
+            color: #fff;
+            color: rgba(255,255,255,.8);
+            display: block;
+            z-index: 10;
+            background: rgba(0,0,0,.1);
+            text-decoration: none;
+        }
+
+        .fc {
+            color: black;
+        }
+
+        @@media (min-width: 800px) {
+            .col-md-2 {
+                width: 183px !important;
+            }
+
+            .marg129 {
+                margin-top: 203px !important;
+            }
+        }
+
+        @@media (max-width: 564px) {
+            .footer {
+                padding-top: 100px !important;
+            }
+        }
+
+        .center.td-heading.total {
+            color: white;
+            font-weight: bold;
+            background-color: #b0bccc;
+        }
+    </style>
+
+</head>
+</html>
+
+
+
+

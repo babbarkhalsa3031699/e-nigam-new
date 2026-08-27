@@ -1,0 +1,383 @@
+﻿@model CMNirdesh.Models.Alerts
+@using CMNirdesh.Models
+
+<head>
+    @*<script src="~/Scripts/sidebar.js"></script>*@
+    <script>
+        $(document).ready(function () {
+            $("#openbtn").click(function () {
+                $("#closebtn").fadeIn("slow");
+                $("#openbtn").fadeOut("slow");
+                $(".menu-item-text").addClass("shown");
+                $(".menu-item-text").removeClass("hidden");
+            });
+
+            $("#closebtn").click(function () {
+                $("#openbtn").fadeIn("slow");
+                $("#closebtn").fadeOut("slow");
+                $(".menu-item-text").removeClass("shown");
+                $(".sub-nav-list").removeClass("show");
+            });
+
+            $(".menu-list-item-link").click(function () {
+                $("#closebtn").fadeIn("slow");
+                $("#openbtn").fadeOut("slow");
+                $(".menu-item-text").addClass("shown");
+                $(".menu-item-text").removeClass("hidden");
+            });
+
+        });
+
+         function ClearAlerts(isAlert) {
+       $.ajax({
+         type: "GET",
+
+         url: '@Url.Action("ClearAlerts", "User")',
+         async: true,
+           data: { clearalert: isAlert },
+         beforeSend: function () {
+             $('#loader-wrapper').show();
+         },
+         success: function (data) {
+             $("#alertbody").html('');
+             $("#offcanvasExampleLabel").html('<i class="fas fa-bell"></i> &nbsp; Notifications  (0)');
+             $("#alertcount").html('0');
+
+             $("#loader-wrapper").hide();
+         },
+         error: function (xhr, ajaxOptions, thrownError) {
+         },
+         complete: function (results) {
+             $('#loader-wrapper').hide();
+         }
+     });
+        }
+
+
+                function ClearAlertsbyId(NotiId) {
+                      $.ajax({
+                        type: "GET",
+
+                        url: '@Url.Action("ClearAlertsbyId", "User")',
+                        async: true,
+                          data: { NotiId: NotiId },
+                        beforeSend: function () {
+                            $('#loader-wrapper').show();
+                        },
+                        success: function (data) {
+                            //$("#alertbody").html('');
+                            //$("#offcanvasExampleLabel").html('<i class="fas fa-bell"></i> &nbsp; Notifications  (0)');
+                            //$("#alertcount").html('0');
+                            $("#li_" + NotiId).hide();
+                            $("#loader-wrapper").hide();
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                        },
+                        complete: function (results) {
+                            $('#loader-wrapper').hide();
+                        }
+                    });
+                }
+
+        /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "300px";
+            document.getElementById("main-content").style.marginLeft = "300px";
+            /* document.getElementsByClassName("menu-item-text").style.display = "initial";*/
+            document.getElementById("openbtn").style.display = "none";
+            document.getElementById("closebtn").style.display = "initial";
+        }
+
+        /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+        function closeNav() {
+            document.getElementById('mySidebar').style.width = "88px";
+            document.getElementById("main-content").style.marginLeft = "88px";
+            /* document.getElementsByClassName("menu-item-text").style.display = "none";*/
+            document.getElementById("openbtn").style.display = "initial";
+            document.getElementById("closebtn").style.display = "none";
+        }
+
+
+
+
+
+        function EditMlaDairyalert(ID) {
+            $('#loginModaldiarybodyalert').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+           // var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+               // url: pathurl,
+                url: '@Url.Action("EditMlaDairyForm", "References")',
+                async: true,
+                data: { ID: ID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#loginModaldiarybodyalert").modal('show');
+                        $('#loginModaldiarybodyalert').html(data);
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
+
+
+        function EditMlaDispatchalert(IDD) {
+            var ID = IDD;
+
+            $('#loginModalDispatchbody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+            //var pathurl = '/References/EditMlaDispatchForm';
+            $.ajax({
+                type: "GET",
+                //url: pathurl,
+                url: '@Url.Action("EditMlaDispatchForm", "References")',
+                data: { ID: ID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    $('#loginModalDispatchbody').html('');
+                    //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+                    if (data) {
+                        $("#loginModalDispatch").css("display", "block");
+                        $('#loginModalDispatchbody').html(data);
+
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
+
+
+
+        function closedispatch() {
+            $("#loginModalDispatch").css("display", "none");
+            $('#loginModalDispatchbody').html('');
+
+        }
+
+        function closedispatchEdit() {
+            $("#loginModalDispatchEdit").css("display", "none");
+            $('#loginModalDispatchbodyEdit').html('');
+
+
+        }
+
+
+
+    </script>
+    <style>
+      .green{
+          color:darkgreen !important;
+      }
+
+        .yellow {
+            color: #d2a00a !important;
+        }
+        .notification-detail span {
+            color: #16a0ca !important;
+        }
+        .clearbtn {
+            position: absolute;
+            top: 11px;
+            right: 1rem;
+        }
+    </style>
+</head>
+
+<!-- notification offcanvas  start-->
+<div class="offcanvas offcanvas-end notificationer" tabindex="-1" id="offcanvasObservation" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        
+        <h6 class="offcanvas-title " id="offcanvasExampleLabel"> <i class="fas fa-bell"></i> &nbsp; Notifications <br /> Observations/Advice  (@Model.MessageCount)</h6>
+        <button type="button" class="btn text-white" aria-label="Clear" onclick="ClearAlerts(0)">Clear</button>
+        <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <input type="hidden" id="hdnMessageCount" value="@Model.MessageCount" />
+    </div>
+    <div id="alertbody" class="offcanvas-body p-2">
+        @foreach (CMNirdesh.Models.AlertModel al in Model.MessageList)
+        {
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item position-relative p-2" id="li_@al.NotificationId">
+                    <div class="notification-icon">
+                        <i class="@al.NotificationIcon"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>@al.createdDate &nbsp; &nbsp;</span>
+                        @if (al.IsLetter == "Letter")
+                        {
+                            <span class="yellow">Reference</span>
+                        }
+                        else
+                        {
+                            <span class="green">File</span>
+
+                        }
+                        <div class="">
+                            <i class="clearbtn fa fa-close" onclick="ClearAlertsbyId(@al.NotificationId)"></i>
+                            <p class="notification-text">
+                                <b>  @al.alert  </b> <br /> @al.refId
+                            </p>
+                        </div>
+
+                        <span>
+                            @al.alertType
+                            <br />
+                            @if (al.NotificationType == 3 || al.NotificationType == 4)
+                            {
+                                @:From :
+                            }
+                            else
+                            {
+                                @:By :
+                            }
+
+                            @al.UserName
+                        </span>
+                    </div>
+                </li>
+            </ul>
+
+
+
+
+
+
+        }
+
+
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-end notificationer" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h6 class="offcanvas-title " id="offcanvasExampleLabel"> <i class="fas fa-bell"></i> &nbsp; Notifications/Circulars/Approvals  <br /> &nbsp;&nbsp; eFiles (@Model.alertCount)</h6>
+        <button type="button" class="btn text-white"  aria-label="Clear" onclick="ClearAlerts(1)">Clear</button>
+        <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <input type="hidden" id="hdnalertCount" value="@Model.alertCount" />
+    </div>
+    <div id="alertbody" class="offcanvas-body p-2">
+        @foreach (CMNirdesh.Models.AlertModel al in Model.alertList)
+        {
+
+                <ul class="list-unstyled notification-list">
+                    <li class="notifcation-item position-relative p-2" id="li_@al.NotificationId" >
+                        <div class="notification-icon">
+                            <i class="@al.NotificationIcon"></i>
+                        </div>
+                        <div class="notification-detail">
+                            <span>@al.createdDate &nbsp; &nbsp;</span>
+                            @if (al.IsLetter == "Letter")
+                            {
+                                <span class="yellow">Reference</span>
+                            }
+                            else
+                            {
+                                <span class="green">File</span>
+
+                            }
+                            <div class="">
+                                <i class="clearbtn fa fa-close" onclick="ClearAlertsbyId(@al.NotificationId)"></i>
+                                <p class="notification-text">
+                                    <b>  @al.alert  </b> <br /> @al.refId
+                                </p>
+                            </div>
+                           
+                            <span>
+                                @al.alertType
+                                <br />
+                                @if (al.NotificationType == 3 || al.NotificationType == 4)
+                                {
+                                    @:From :
+                                }
+                                else
+                                {
+                                    @:By :
+                                }
+
+                                @al.UserName
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            
+           
+
+
+
+
+        }
+
+
+    </div>
+</div>
+<!-- notification offcanvas  end -->
+
+
+<div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModaldiary"
+     data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="widget-title modal_heading">Diary</h4>
+                <button type="button" class="btn-close" onclick="closediary()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body" id="loginModaldiarybodyalert">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatch"
+     data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" id="Scroll2">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="widget-title modal_heading">Dispatch</h4>
+                <button type="button" class="btn-close" onclick="closedispatch()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body" id="loginModalDispatchbody">
+
+
+            </div>
+            
+        </div>
+    </div>
+</div>

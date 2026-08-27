@@ -1,0 +1,698 @@
+﻿@model  CMNirdesh.Models.UserModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
+}
+<style>
+    .pic {
+        float: right;
+        margin-top: -209px;
+        margin-right: 210px;
+    }
+
+    .sign {
+        float: right;
+        margin-right: 160px;
+        margin-top: -57px;
+    }
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    autocomplete-off {
+        position: fixed !important;
+        opacity: 0 !important;
+        top: -1000px !important;
+        left: -1000px !important;
+        height: 0 !important;
+        width: 0 !important;
+        border: 0 !important;
+    }
+</style>
+<body>
+    <div id="main-content">
+        <div class="main-content cm_fund fund_rcipt">
+
+            @using (Html.BeginForm("SaveUser", "User", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data", @autocomplete = "off" }))
+            {
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">User Registration</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="inputEmail4" class="txt_label">Department:</label>
+                                        @Html.DropDownListFor(m => m.DeptId, Model.mDepartmentList, "Select", new { @id = "DdlDepartment", @tabindex = "1", @class = "form-control txt_design", @required = "required", @Onchange = "GetDepartment();" })
+                                    </div>
+
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="inputEmail4" class="txt_label">Office:</label>
+                                        @Html.DropDownListFor(m => m.OfficeId, Model.OfficeList, "Select", new { @id = "DdlOffice", @tabindex = "2", @class = "form-control txt_design", @required = "required" })
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="name" class="txt_label">Name:</label>
+                                        @Html.TextBoxFor(m => m.Name, new { @id = "txtName", @tabindex = "3", @class = "form-control", @required = "required" })
+                                    </div>
+
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="name" class="txt_label">Designation :</label>
+                                        @Html.TextBoxFor(m => m.Designation, new { @id = "txtdes", @tabindex = "4", @class = "form-control", @required = "required" })
+                                    </div>
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12">
+                                        <label for="name" class="txt_label">Upload Profile Photo:</label>
+                                        <input type="file" style="display:block !important" name="filephoto" id="filephoto" tabindex="9" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                        @Html.HiddenFor(model => model.PhotoLocation)
+                                        <input type="hidden" id="projectDochdn" />
+                                        @Html.HiddenFor(model => model.PhotoFileName)
+
+
+                                    </div>
+
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="name" class="txt_label">Mobile No:</label>
+                                        @Html.TextBoxFor(m => m.MobileNo, new { @id = "txtMobile", @tabindex = "5", @class = "form-control", @required = "required" })
+                                    </div>
+
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="name" class="txt_label">Email:</label>
+                                        @Html.TextBoxFor(m => m.Email, new { @id = "txtemail", @tabindex = "6", @class = "form-control", @required = "required" })
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="name" class="txt_label">Username:</label>
+                                        @*@Html.TextBoxFor(m => m.UserName, new { @id = "txtUsername", @tabindex = "7", @class = "form-control autocomplete-off", @autofill = "off", @required = "required", @autocomplete = "off" })*@
+                                        @Html.TextBoxFor(model => model.UserName, new { @id = "txtUsername", @tabindex = "7", @class = "form-control",@autocomplete = "off", @required = "required" })
+                                    </div>
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="name" class="txt_label">Password:</label>
+                                        @Html.TextBoxFor(m => m.Password, new { @type = "Password", @id = "txtPassword", @tabindex = "8", @class = "form-control", @required = "required", @autocomplete = "new-password" })
+                                    </div>
+
+                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+
+                                        <label for="name" class="txt_label">Upload Signature:</label>
+                                        <input type="file" style="display:block !important" name="filesignature" id="filesignature" tabindex="10" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                        @Html.HiddenFor(model => model.SignLocation)
+                                        <input type="hidden" id="projectDochdn" />
+                                        @Html.HiddenFor(model => model.SignFileName)
+
+
+                                    </div>
+
+
+                                </div>
+                                <div class="pic">
+                                    <img id="imgphoto" src="" width="120" height="150" style="display:none" />
+                                </div>
+                                <div class="sign">
+                                    <img id="imgsign" src="" width="180" height="60" style="display:none" />
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                        <label for="inputEmail4" class="txt_label">User Role:</label>
+                                        @Html.DropDownListFor(m => m.RoleId, Model.RoleList, "Select", new { @id = "DdlRole", @tabindex = "10", @class = "form-control txt_design", @required = "required" })
+                                    </div>
+                                    <div class="form-group col-sm-7 col-md-7 col-lg-7">
+                                        <br />  <label for="IsApexUser">
+                                            @Html.CheckBoxFor(model => model.Apex, new { @id = "IsApexUser" })
+                                            <label for="name" class="txt_label">
+                                                Is Apex
+                                            </label>
+                                        </label>
+                                        @Html.HiddenFor(model => model.Apex)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5"></div>
+                                    <div class="form-group col-sm-7 col-md-7 col-lg-7">
+                                        <input type="submit" value="Add User" class="btn add_btn" tabindex="11" />
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <!-- Button to trigger the modal -->
+            <!-- Modal -->
+            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal=lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Edit User</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="department">Department:</label>
+                                    @Html.DropDownListFor(m => m.DeptId, Model.mDepartmentList, "Select", new { @id = "department", @tabindex = "1", @class = "form-control", @required = "required", @Onchange = "GetOffice();" })
+                                    <input type="hidden" id="UserId" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="office">Office:</label>
+                                    @Html.DropDownListFor(m => m.OfficeId, Model.OfficeList, "Select", new { @id = "office", tabindex = "2", @class = "form-control", required = "required" })
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Name:</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="designation">Designation:</label>
+                                    <input type="text" class="form-control" id="designation" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mobile">Mobile No:</label>
+                                    <input type="text" class="form-control" id="mobile" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="username">Username:</label>
+
+
+                                    <input type="text" disabled class="form-control" id="username" required>
+                                </div>
+                                @*<div class="form-group">
+                                        <label for="password">Password:</label>
+                                        <input type="password" class="form-control" id="password" required>
+                                    </div>*@
+                                <div>
+                                    <label for="ProfilePhoto" class="form-group">Profile Photo:</label>
+                                    <input type="file" name="file" style="display:block!important" class="form-control" id="profilephoto" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                    <img src="https://placehold.jp/100x100.png" id="profilephotopreview" class="form-control" style="width:100px; height:100px !important; border:1px solid red;" alt="Load Image" />
+                                    <input type="hidden" id="DocumentIconName" />
+                                </div>
+                                <br />
+                                <div>
+                                    <label for="SubHeading Photo" class="form-group">Signature Photo:</label>
+                                    <input type="file" name="file2" style="display:block!important" class="form-control" id="signaturephoto" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                    <img src="https://placehold.jp/100x100.png" id="signaturephotopreview" class="form-control" style="width:100px; height:100px !important; border:1px solid red;" alt="Load Image" />
+                                    <input type="hidden" id="DocumentIconName" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="office">User Role:</label>
+                                    @Html.DropDownListFor(m => m.RoleId, Model.RoleList, "Select", new { @id = "Role", @tabindex = "10", @class = "form-control txt_design", @required = "required" })
+
+                                </div>
+                                <label for="IsApex">
+                                    <input type="checkbox" class="checkbox" id="IsApex" name="IsApex" />
+                                    Is Apex
+                                </label>
+
+
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="validateForm()">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                @{Html.RenderPartial("~/Views/User/_UserList.cshtml", Model);}
+            </div>
+
+
+            <div class="modal fade" id="DeleteConfirmation">
+                <div class="modal-dialog" style="width:320px">
+                    <div class="modal-content">
+                        <div class="modal header">
+                            <a href="#" class="close" data-dismiss="modal">&times;</a>
+                        </div>
+                        <div class="modal-body">
+                            <h4 style="font-size:14pt">Are you sure? You want to Delete this record.</h4>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="CloseDeletePopup()">Cancel</a>
+                                <a href="#" class="btn btn-danger" id="Delete" onclick="ConfirmDelete()">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Registration</title>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            
+             var useralert = "@Session["userExist"]";
+             var useradded = "@Session["userAdded"]";
+
+
+            if (useralert == "") {
+
+            } else {
+               alert(useralert);
+            }
+
+           if (useradded == "") {
+
+           } else {
+               alert(useradded);
+               $("input[type=text]").each(function () {
+                   $(this).val("");
+               });
+           }
+
+        });
+
+        $(function () {
+            $('[type="date"]').prop('max', function () {
+                return new Date().toJSON().split('T')[0];
+            });
+            $('#txtfundamount').val('');
+            $('#filephoto').show();
+
+        });
+
+
+        $("#filephoto").change(function () {
+            CheckImage("#filephoto", "filephoto", "#PhotoLocation", "#PhotoFileName", "#imgphoto");
+        });
+
+        $("#filesignature").change(function () {
+            CheckImage("#filesignature", "filesignature", "#SignLocation", "#SignFileName", "#imgsign");
+        });
+
+        function CheckImage(input, name, hdnfileloc, hdnfilename,photoid) {
+
+
+
+            var sizeInKB = $(input)[0].files[0].size / 1024;
+            var filename = $(input)[0].files[0].name;
+            var dots = $(input).val().split(".").length - 1;
+            var sizeLimit = 2048;
+
+
+            if ($(input).val().length > 0 && !(/\.(jpg|jpeg|bmp|png|gif)$/i).test($(input).val())) {
+                toastr.error('You must select file in format of jpg,jpeg,bmp,png,gif .');
+                $('#Photo').val('');
+                $('#Photo').focus();
+            }
+
+            else if (dots > 1) {
+                toastr.error('Invalid file Format.');
+                $(input).val('');
+                $(input).focus();
+                $(input + "hdn").val('');
+                $(input).val('');
+            }
+
+
+            else {
+                var inpt = "input[name=" + name + "]";
+
+                var inputElement1 = $(inpt);
+
+                readImage(inputElement1).done(function (base64Data) {
+
+                    $(input + "hdn").val(base64Data);
+                    $(hdnfileloc).val(base64Data);
+                    $(hdnfilename).val(filename);
+                    $(photoid).attr("src", base64Data);
+                    $(photoid).show();
+                });
+            }
+
+        }
+        function readImage(inputElement) {
+            var deferred = $.Deferred();
+            var files = inputElement.get(0).files;
+            if (files && files[0]) {
+                var fr = new FileReader();
+                fr.onload = function (e) {
+                    deferred.resolve(e.target.result);
+                };
+                fr.readAsDataURL(files[0]);
+            } else {
+                deferred.resolve(undefined);
+            }
+            return deferred.promise();
+        }
+
+        $("#txtPassword").focusout(function () {
+            var password = $('#txtPassword').val();
+            var randomSalt = generateRandomSalt();
+            document.getElementById("txtPassword").value = generateSHA256Hash(password) + generateSHA256Hash(randomSalt);
+        });
+
+        function generateRandomSalt() {
+            var salt = '';
+            var array = new Uint8Array(32);
+            window.crypto.getRandomValues(array);
+
+            for (var i = 0; i < array.length; i++) {
+                salt += (array[i] < 16 ? '0' : '') + array[i].toString(16);
+            }
+
+            return salt;
+        }
+
+        function generateSHA256Hash(data) {
+            return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
+        }
+
+
+        $("#fileupload1").click(function (event) {
+            $('#Actionfile').text('No');
+            $('#IsFile').val("N");
+
+            $('#fileupload1').fileupload({
+
+                dataType: 'json',
+                async: true,
+                url: "/eFile/UploadFundFiles",
+                autoUpload: true,
+
+                done: function (e, data) {
+                 var sim = setTimeout("hidevalueAction()", 1000);
+                  $('.file_nameEn').html(data.result.name);
+                $('#afile_nameEn').attr("href", "@path" + data.result.name);
+                    $('#removefileupload1').show();
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.progress12 .progress-bar').css('width', progress + '%');
+                $('#removefileupload1').css('display', 'none');
+            });
+
+        });
+
+
+
+        function hidevalueForwd() {
+            $('.progress1 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueForwd()", 3000);
+        }
+
+        function hidevalueAction() {
+            $('.progress12 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueAction()", 3000);
+        }
+
+        function hidevalueActionEnclosure() {
+            $('.progressEnclosure .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+        }
+
+        function RemoveActionEnclosureFiles() {
+
+            $('.file_nameEn').html('');
+            $('.file_sizeEn').html('');
+            $('.progressEnclosure .progress-bar').css('width', '0%');
+            $("#removeUploadEnclosure").hide();
+            $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
+            $.post("/eFile/RemoveActionEnclosureFiles",
+                {
+                },
+                function (data) {
+                });
+
+        }
+
+
+
+        function removefileupload() { //ActionFile
+            $('.file_nameEn').html('');
+            $('.file_size1').html('');
+            $('.progress12 .progress-bar').css('width', '0%');
+            $("#removefileupload1").hide();
+            $('#fileuploadcontant1').css('border', '0px solid rgb(244, 239, 239)');
+            //$.post("/eFile/RemoveMlaForwardFiles",
+            //    {
+            //    },
+            //    function (data) {
+            //    });
+
+        }
+
+          function GetDepartment() {
+              var id = $("#DdlDepartment").val();
+              $('#DdlOffice').empty().append('<option value="0">-Select-</option>');
+
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetOfficebyDepartmentId", "User")',
+            datatype: "Json",
+            data: { deptid: id },
+            success: function (data) {
+                $.each(data, function (index, value) {
+                    $('#DdlOffice').append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+
+                //$('#DdlOffice').val(0);
+            }
+        });
+        }
+        function GetOffice() {
+              var id = $("#department").val();
+              $('#office').empty().append('<option value="0">-Select-</option>');
+
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetOfficebyDepartmentId", "User")',
+            datatype: "Json",
+            data: { deptid: id },
+            success: function (data) {
+                $.each(data, function (index, value) {
+                    $('#office').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    $("#office").val(officeid);
+                });
+
+                //$('#DdlOffice').val(0);
+            }
+        });
+        }
+        var officeid;
+        window.document.addEventListener('partialValue', function (e) {
+            //console.log(e);
+                var username = e.detail.username;
+                var password = e.detail.password;
+                var email = e.detail.email;
+                var mobile = e.detail.mobile;
+                var designation = e.detail.designation;
+                var name = e.detail.name;
+            var department = e.detail.department;
+            var profilephoto = e.detail.profilephoto;
+            var signaturephoto = e.detail.signaturephoto;
+            var userid = e.detail.userid;
+            var Apex = e.detail.Apex;
+            var role = e.detail.role;
+
+
+            var office = e.detail.office;
+            $("#username").val(username);
+            //$("#password").val(password);
+            $("#email").val(email);
+            $("#mobile").val(mobile);
+            $("#designation").val(designation);
+            $("#department").val(department);
+            GetOffice();
+
+            $("#name").val(name);
+            $("#profilephotopreview").attr('src', '/mlaDiary/' + profilephoto);
+            $("#signaturephotopreview").attr('src', '/mlaDiary/' + signaturephoto);
+            $("#office").val(office);// alert(role);
+            $("#Role").val(role);
+            officeid = office;
+            //var office = $("#office");
+            //alert(office.val());
+            //var selectedValue = office;
+            //$("#office").val(selectedValue).attr("tabindex", 2);
+            $('#UserId').val(userid);
+            $('#IsApex').prop('checked', Apex);
+
+
+
+
+
+        });
+
+        function Update() {
+
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#profilephoto").get(0);
+            var fileUpload1 = $("#signaturephoto").get(0);
+            var files = fileUpload.files;
+            var files2 = fileUpload1.files;
+            // Create FormData object
+            var fileData = new FormData();
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append("file", files[i]);
+            }
+            for (var j = 0; j < files2.length; j++) {
+                fileData.append("file2", files2[j]);
+            }
+            debugger
+            const courseDto = {
+                //  MCName: $("#MCNameDropDown option:selected").text(),
+                //  MCName_local: $("#MCLocalNameDropDown option:selected").text(),
+                username: $('#username').val(),
+                //password: $('#password').val(),
+                email: $('#email').val(),
+                MobileNo: $('#mobile').val(),
+                PhotoFileName: $('#profilephoto').val().split('\\').pop().split('/').pop(),
+                designation: $('#designation').val(),
+                DeptId: $('#department').val(),
+                name: $('#name').val(),
+                SignFileName: $('#signaturephoto').val().split('\\').pop().split('/').pop(),
+                OfficeId: $('#office').val(),
+                RoleId: $('#Role').val(),
+                UserId: $('#UserId').val(),
+                Apex: $("#IsApex").prop("checked"),
+            };
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url: '@Url.Action("UpdateUser", "User")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result == 1) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else {
+
+
+                        var errorMessage = "Something Went Wrong";
+                        // Handle the error message here
+                        alert(errorMessage);
+                        $('#myModal').hide();
+                        location.reload();
+
+
+                    }
+                },
+
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+        function validateForm() {
+            // Get the form inputs
+            var department = document.getElementById('department');
+            var office = document.getElementById('office');
+            var role = document.getElementById('Role');
+            var name = document.getElementById('name');
+            var designation = document.getElementById('designation');
+            var mobile = document.getElementById('mobile');
+            var email = document.getElementById('email');
+            var username = document.getElementById('username');
+            //var password = document.getElementById('password');
+
+            // Check if any of the inputs are empty
+            if (department.value === '' || office.value === '' || role.value==='' || name.value === '' || designation.value === '' ||
+                mobile.value === '' || email.value === '' || username.value === '') {
+                alert('Please fill in all the fields.');
+                return;
+
+            }
+            else {
+                Update();
+            }
+        }
+
+        document.getElementById('profilephoto').onchange = function (e) {
+            const [file] = profilephoto.files;
+            if (file) {
+                $("#profilephotopreview").attr('src', URL.createObjectURL(file));
+            }
+        };
+        document.getElementById('signaturephoto').onchange = function (e) {
+            const [file] = signaturephoto.files;
+            if (file) {
+                $("#signaturephotopreview").attr('src', URL.createObjectURL(file));
+            }
+        };
+
+
+        var MyApp = {};
+        function DeleteUserRecord(xyz) {
+            $('#DeleteConfirmation').modal("show");
+            MyApp = xyz;
+        }
+        function ConfirmDelete() {
+            DeleteID();
+        }
+        function CloseDeletePopup() {
+            $('#DeleteConfirmation').modal("hide");
+        }
+        function DeleteID() {
+            var userid = MyApp;
+            $.ajax({
+            type: "GET",
+            url: '@Url.Action("Delete", "User")',
+            data: { UserId: userid },
+            //url: "/User/Delete?UserId=" + userid,
+            success: function (result) {
+                $("#DeleteConfirmation").modal("hide");
+                alert("Deleted Successfully");
+                location.reload();
+                }
+            });
+        }
+
+    </script>
+</head>

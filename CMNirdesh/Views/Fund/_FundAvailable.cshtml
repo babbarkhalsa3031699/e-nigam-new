@@ -1,0 +1,303 @@
+﻿@model  CMNirdesh.Models.LstFundReportModel
+<style>
+
+    input[type="file"] {
+        display: none !important;
+    }
+    .right{
+        text-align:right;
+    }
+</style>
+
+
+
+<script>
+    var ref ="";
+    $(document).ready(function () {
+        var table = $('#fundreport').DataTable({
+            "bLengthChange": false,
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+                {
+                    extend: 'pdfHtml5',
+
+                    customize: function (doc) {
+                        /* here I am aligning text in a column to the right */
+                        var rowCount = table.rows({ search: 'applied' }).count() + 1;
+                        for (i = 0; i < rowCount; i++) {
+                            doc.content[1].table.body[i][2].alignment = 'right';
+                            doc.content[1].table.body[i][3].alignment = 'right';
+                            doc.content[1].table.body[i][4].alignment = 'right';
+                        };
+                    }
+                }
+            ]
+            //bFilter: false,
+
+        });
+
+
+
+
+        $("#filter p").each(function (i) {
+            var dt = "";
+            if (i == 0) {
+                dt = '--Select--';
+            } else if (i == 1) {
+                dt = '--Select Fund--';
+            }
+            var select = $('<select class="form-control"><option value="">' + dt + '</option></select>')
+                .appendTo($(this).empty())
+                .on('change', function () {
+
+                    table.column(0)
+                        .search($(this).val())
+                        .draw();
+
+
+
+                });
+
+            table.column(0).data().unique().sort().each(function (d, j) {
+
+                select.append('<option value="' + d + '">' + d + '</option>')
+            });
+        });
+
+
+        $('#sanctionDetail').DataTable({
+            "bLengthChange": false,
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ],
+            columnDefs: [{ type: 'date', 'targets': [0] }],
+            order: [[0, 'desc']]
+
+
+        });
+    });
+
+    function calldatatable() {
+
+        $('#sanctionDetail').DataTable({
+            "bLengthChange": false,
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ],
+            columnDefs: [{ type: 'date', 'targets': [0] }],
+            order: [[0, 'desc']]
+
+        });
+
+    }
+
+    function getsanction(docid) {
+        $("#loader-wrapper").show();
+        var html = "";
+        var pathurl = '/Fund/GetSanctionDetails';
+        var year = $("#ddlyear").val();
+
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+            data: { docId: docid, FinYear: year },
+            success: function (result) {
+                //debugger;
+
+                console.log(result);
+                if (result.length > 0) {
+                    //debugger;
+
+                    for (var i = 0; i < result.length; i++) {
+                        ////debugger;
+                        var item = result[i];
+
+                        html = html + "<tr >";
+                        html = html + "<td  class='center td-data'>" + result[i].SanctionDate + "</td > ";
+                        html = html + "<td  class='right td-data'>₹" + result[i].AmountApproved + "</td > ";
+                        html = html + "<td  class='right td-data '>₹" + result[i].AmountSanctioned + "</td > ";
+                        html = html + '<td  style="cursor:pointer; " onclick="EditMlaDairy(' + result[i].RefId + ')" class="center td-data click">' + result[i].RefId + '</td > ';
+                        html = html + "<td  class='center td-data'>" + result[i].Subject + "</td > ";
+                        html = html + "<td  class='center td-data'>" + result[i].SubjectDetails + "</td > ";
+                        html = html + "<td  class='center td-data'>" + result[i].Constituency + "</td > ";
+                        html = html + "</tr>";
+
+
+                    }
+                    //debugger;
+                    var heading = "Sanction Details -" + result[0].DocumentTypeName + ' (' + result[0].Dept + ')';
+                    $('#sanctionheading').html(heading);
+                    $('#sanctioncard').show();
+
+                    $('#sanctionDetail').DataTable().destroy();
+                    //$('#sanctionDetail').find('tbody').html(html);
+                    $('#sanctiondata').html(html);
+                    $(".marked").removeClass('marked');
+                    $("#row_" + docid).addClass('marked');
+                    $("#loader-wrapper").hide();
+                    calldatatable();
+                }
+
+                else {
+                    $('#sanctioncard').hide();
+                    $('#sanctiondata').html('');
+                    $('#sanctionheading').html('')
+                    $("#loader-wrapper").hide();
+                    $(".marked").removeClass('marked');
+
+
+                }
+
+
+
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+
+    }
+
+    function EditMlaDairy(ID) {
+        $('#loginModaldiarybodyalert').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+            async: true,
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#loginModaldiary").modal('show');
+                    $('#loginModaldiarybodyalert').html(data);
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+    }
+
+    function bindgrid() {
+        var year = $('#ddlyear').val();
+        window.location.href = "/Fund/FundReport?year=" + year;
+    }
+</script>
+<div class="row">
+    <div class="col-lg-12">
+        <!-- BAR CHART -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">CM Balance Sheet</h3>
+
+            </div>
+            <div class="card-body">
+                <div class="row" id="filter">
+                    <div class="col-sm-6 col-md-3 col-lg-3 mb-3">
+                        <label class="txt_label">Financial Year:</label>
+                        @Html.DropDownListFor(m => m.FilterFinYear, Model.FinYearList, new { @id = "ddlyear", @tabindex = "2", @class = "form-control txt_design", @onchange = "bindgrid();" })
+
+
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-3 mb-3">
+                        <label class="txt_label">Fund Type:</label>
+                        <p class="pera_txt_design">
+
+                        </p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="fundreport" class="table table-bordered  dataTable">
+                        <thead>
+                            <tr>
+                                <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Fund Type</span></th>
+                                <th class="td-heading" style=" width:15%;"><span class="font-weight-bold">Department</span></thclass="td-heading">
+                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">Fund Allocated  (In Rs.)</span></th>
+                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Fund Approved by CM (In Rs.)</span></th>
+                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">Fund Sanctioned (In Rs.)</span></th>
+                                <th class="td-heading" style=" width:20%;"><span class="font-weight-bold">Fund Available (In Rs.)</span></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var mdl in Model._LstFundReport)
+                            {
+                                System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+                                <tr id="row_@mdl.FundTypeId">
+                                    <td class="td-data"> @mdl.FundType</td>
+                                    <td class="td-data">@mdl.DeptName</td>
+                                    <td class="td-data right">₹ @(String.Format(Indian, "{0:N}", @mdl.FundAllocated).Replace(".00","")) </td>
+                                    <td class="td-data right click" onclick="getsanction(@mdl.FundTypeId)" style="cursor: pointer;">₹ @(String.Format(Indian, "{0:N}", @mdl.FundApproved).Replace(".00","")) </td>
+                                    <td class="td-data right"> ₹ @(String.Format(Indian, "{0:N}", @mdl.FundSanctioned).Replace(".00",""))</td>
+                                    <td class="td-data right">₹ @(String.Format(Indian, "{0:N}", @mdl.FundAvaiable).Replace(".00","")) </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+                
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+        <br />
+        <br />
+
+        <div class="card" id="sanctioncard" style="display:none">
+            <div class="card-header">
+                <h3 class="card-title" id="sanctionheading"></h3>
+            </div>
+            <div class="card-body">
+                <table id="sanctionDetail" class="table table-bordered  sancdetail">
+                    <thead>
+                        <tr>
+                            <th class="center td-heading" style="width: 2%; ">Approved Date</th>
+                            <th class="center td-heading" style="width: 2%; ">Amount Approved(In Rs.)</th>
+                            <th class="center td-heading" style="width: 2%; ">Amount Sanctioned(In Rs.)</th>
+                            <th class="center td-heading" style="width: 2%; ">Ref. Id</th>
+                            <th class="center td-heading" style="width: 2%; ">Subject</th>
+                            <th class="center td-heading" style="width: 2%; ">Action Remarks</th>
+                            <th class="center td-heading" style="width: 2%; ">MLA/Office</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sanctiondata">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+        </div>

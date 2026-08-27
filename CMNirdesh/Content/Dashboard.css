@@ -1,0 +1,83 @@
+﻿.home_btn {
+    margin: 0 0 0 0;
+    font-family: 'Lato', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 11px;
+    color: #ffffff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0px 5px;
+    background: #52ad16;
+    display: inline-block;
+    line-height: 30px;
+}
+
+    .home_btn:hover {
+        background: #68dd1a !important;
+        color: #fff;
+        text-decoration: none;
+    }
+       .home_btn:focus {
+        color: #fff;
+        text-decoration: none;
+    }
+
+.dept {
+    margin: 0 0 0 0;
+    font-family: 'Lato', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 11px;
+    color: #ffffff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0px 5px;
+    background: #124f8b;
+    display: inline-block;
+    line-height: 30px;
+}
+#sidebar .nav > li > a > img {
+    width: 20px;
+}
+
+    .dept:hover {
+        background: #0c71c3 !important;
+        color: #fff;
+        text-decoration: none;
+    }
+    .dept:focus {
+        color: #fff;
+        text-decoration: none;
+    }
+
+.ward_btn {
+    margin: 0 0 0 0;
+    font-family: 'Lato', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 11px;
+    color: #ffffff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0px 5px;
+    background: #14b3b9;
+    display: inline-block;
+    line-height: 30px;
+}
+
+    .ward_btn:hover {
+        background: #2196f3  !important;
+        color: #fff;
+        text-decoration: none;
+    }
+         .ward_btn:focus {
+        color: #fff;
+        text-decoration: none;
+    }

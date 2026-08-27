@@ -1,0 +1,142 @@
+﻿@model CMNirdesh.Models.LGApproval
+
+@{
+    int Sr = 1;
+}
+
+<head>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+
+
+    <script>
+
+
+        $(document).ready(function () {
+            $('#MeetingTable').DataTable({
+                "bLengthChange": false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ],
+                order: [[0, 'asc']], // Sort by Meeting Date
+                columnDefs: [
+                    { targets: 1, type: 'date' }
+                ]
+            });
+        });
+
+
+        function SeeApproval(agendaId) {
+        if (!agendaId) {
+            alert("Agenda ID is missing. Please try again.");
+            return;
+        }
+        var url = '@Url.Action("FileApprovals", "LGApproval")';
+
+        $('#loader-wrapper').show();
+        $("#ShowApproval").html("<p>Loading, please wait...</p>");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { AgendaID: agendaId },
+            success: function (data) {
+                $('#loader-wrapper').hide();
+                $('#ApprovalModal').show();
+                $("#ShowApproval").html(data);
+            },
+            error: function (xhr, status, error) {
+                console.error(`Error: ${status} - ${error}`);
+                $('#loader-wrapper').hide();
+                $('#ApprovalModal').show();
+                $("#ShowApproval").html(
+                    "<p>An error occurred while processing your request. Please try again later.</p>"
+                );
+            }
+        });
+    }
+
+    </script>
+    <style>
+        .dtebuton {
+            padding: 4px;
+            margin: 1px;
+            height: 30px;
+            /* max-width:50%*/
+        }
+    </style>
+
+</head>
+
+<div id="main-content">
+    <div class="main-content">
+
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <div>
+                <h4 id="lblmenuname">Orders >> @Model.RefMenuName</h4>
+                <hr />
+            </div>
+
+
+        </div>
+
+        <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
+            <table class="table table-bordered" id="MeetingTable" aria-describedby="sample-table-3_info" style="border-collapse: collapse;">
+                <thead>
+                    <tr style="color: white; font-size:16px; font-weight:bold;margin-left:10px;">
+                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">ULB</th>
+                        <th class="center" style="width:10%" id="tdFrom" rowspan="1" colspan="1">Meeting Date</th>
+                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">Meeting Title</th>
+
+                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">Approvals</th>
+
+                    </tr>
+                </thead>
+
+                <tbody class="bordered" role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                    @foreach (var items in Model.LGApprovalList)
+                    {
+                        <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3; padding-left: 20px;">
+                            <td style="font-size: 16px; border: 1px solid #D3D3D3 ">@items.MCName</td>
+                            <td data-order="@Convert.ToDateTime(items.MeetingDate).ToString("yyyy-MM-dd")" style="font-size: 16px; border: 1px solid #D3D3D3; color: black; margin-left: 200px;">@Convert.ToDateTime(items.MeetingDate).ToString("dd/MM/yyyy")</td>
+                            <td style="font-size: 16px; border: 1px solid #D3D3D3 ">@items.MeetingTitle</td>
+
+                            <td style="font-size: 16px; border: 1px solid #D3D3D3 ">@Html.Raw(items.ApprovedDate)</td>
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+    <div class="modal fade" id="ApprovalModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" style="width:100%; display:none">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Approvals Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="ShowApproval">
+                    Show Approval Here
+                </div>
+                <div id="validationErrors" class="text-danger"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

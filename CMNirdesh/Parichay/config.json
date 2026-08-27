@@ -1,0 +1,39 @@
+//{
+//  "ClientServicePort": "8083",
+//  "ClientServiceHost": "10.43.11.44",
+//  "ParichayAPIBaseURL": "http://10.122.34.117:8081/",
+//  "ServiceId": "CMNirdesh",
+//  "AuthKey": "387WnE1yycfCTnfcC74IdgslKqV28GqT",
+//  "AESIV": "iPy1GZivtuZel81z",
+//  "LogLevel": "DEBUG",
+//  "Logging": "1",
+//  "RestAuthId": "iPjMt3Bl9T"
+//}
+
+
+
+//{
+//  "ClientServicePort": "8083",
+//  "ClientServiceHost": "0.0.0.0",
+//  "ParichayAPIBaseURL": "https://parichay.nic.in:8081/",  
+//  "ServiceId": "CMNirdesh",
+//  "AuthKey": "u49Uk8ninbP3jiSziOXYmt8g6HPzOu6o",
+//  "AESIV": "fWtic3ujZ1IGRBOD",
+//  "LogLevel": "DEBUG",
+//  "Logging": "1",
+//  "RestAuthId": "vtPfdMQcR1"
+//}
+
+
+
+{
+  "ClientServicePort": "8085", //server
+  "ClientServiceHost": "10.43.24.215", //
+  "ParichayAPIBaseURL": "http://180.149.57.100:8081/", //
+  "ServiceId": "eNigam",
+  "AuthKey": "gOg0E6EF762FE888",
+  "AESIV": "AiLpM6xxub8cUHYi8fnHFwshJEdust5M",
+  "LogLevel": "DEBUG",
+  "Logging": "1",
+  "RestAuthId": "9GhSC5NI7d"
+}

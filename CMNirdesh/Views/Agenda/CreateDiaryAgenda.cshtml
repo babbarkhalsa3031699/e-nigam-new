@@ -1,0 +1,180 @@
+﻿@model  CMNirdesh.Models.AgendaModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
+}
+
+<style>
+    .btn.add_btn {
+        margin-top: 21px;
+    }
+</style>
+<body>
+    @Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")
+
+    <div class="main-content cm_fund fund_rcipt">
+        @using (Html.BeginForm("SaveDiaryAgenda", "Agenda", FormMethod.Post, new { @id = "formAgenda", enctype = "multipart/form-data" }))
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Create Diary Agenda</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="form-group col-sm-6 col-md-3 col-lg-3">
+                                    <label for="inputEmail4" class="txt_label">Agenda Name:</label>
+                                    @Html.TextBoxFor(m => m.AgendaName, new { @id = "txtAgendaName", @tabindex = "1", @class = "form-control txt_design", @required = "required" })
+                                </div>
+
+                                <div class="form-group col-sm-6 col-md-3 col-lg-3">
+                                    <label for="inputPassword4" class="txt_label">Agenda Date:</label>
+                                    @Html.TextBoxFor(m => m.AgendaDate, new { @type = "Date", @id = "txtallocationdate", @tabindex = "3", @class = "form-control txt_design", @required = "required" })
+                                    @*<input type="date" class="form-control" id="txtdate" placeholder="AllocationDate">*@
+                                </div>
+
+                                <div class="form-group col-sm-6 col-md-3 col-lg-3">
+                                    <label for="inputPassword4" class="txt_label">Remarks:</label>
+                                    @Html.TextBoxFor(m => m.Remarks, new { @type = "text", @id = "txtremarks", @tabindex = "5", @class = "form-control txt_design", @required = "required" })
+                                </div>
+
+                                <div class="form-group col-sm-12 col-md-3 col-lg-3">
+                                    <input type="submit" value="Add Agenda" class="btn add_btn" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @{Html.RenderPartial("~/Views/Agenda/_AgendaList.cshtml", Model);}
+            </div>
+        }
+    </div>
+</body>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Agenda</title>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+</head>
+
+<script>
+
+        $(document).ready(function () {
+           var useralert = "@Session["userExist"]";
+             var useradded = "@Session["userAdded"]";
+
+           if (useralert == "") {
+
+           } else {
+               alert(useralert);
+           }
+
+           if (useradded == "") {
+
+           } else {
+               alert(useradded);
+               $("input[type=text]").each(function () {
+                   $(this).val("");
+               });
+           }
+            
+        }); 
+
+        $(function () {
+            $('[type="date"]').prop('min', function () {
+                return new Date().toJSON().split('T')[0];
+            });
+            $('#txtfundamount').val('');
+
+        });
+        $("#fileupload1").click(function (event) {
+            $('#Actionfile').text('No');
+            $('#IsFile').val("N");
+
+            $('#fileupload1').fileupload({
+
+                dataType: 'json',
+                async: true,
+                url: "/eFile/UploadFundFiles",
+                autoUpload: true,
+
+                done: function (e, data) {
+                 var sim = setTimeout("hidevalueAction()", 1000);
+                  $('.file_nameEn').html(data.result.name);
+                $('#afile_nameEn').attr("href", "@path" + data.result.name);
+                    $('#removefileupload1').show();
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.progress12 .progress-bar').css('width', progress + '%');
+                $('#removefileupload1').css('display', 'none');
+            });
+
+        });
+
+
+
+        function hidevalueForwd() {
+            $('.progress1 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueForwd()", 3000);
+        }
+
+        function hidevalueAction() {
+            $('.progress12 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueAction()", 3000);
+        }
+
+        function hidevalueActionEnclosure() {
+            $('.progressEnclosure .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+        }
+
+        function RemoveActionEnclosureFiles() {
+
+            $('.file_nameEn').html('');
+            $('.file_sizeEn').html('');
+            $('.progressEnclosure .progress-bar').css('width', '0%');
+            $("#removeUploadEnclosure").hide();
+            $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
+            $.post("/eFile/RemoveActionEnclosureFiles",
+                {
+                },
+                function (data) {
+                });
+
+        }
+
+
+
+        function removefileupload() { //ActionFile
+            $('.file_nameEn').html('');
+            $('.file_size1').html('');
+            $('.progress12 .progress-bar').css('width', '0%');
+            $("#removefileupload1").hide();
+            $('#fileuploadcontant1').css('border', '0px solid rgb(244, 239, 239)');
+            //$.post("/eFile/RemoveMlaForwardFiles",
+            //    {
+            //    },
+            //    function (data) {
+            //    });
+
+        }
+
+
+</script>
+

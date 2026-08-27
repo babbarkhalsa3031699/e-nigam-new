@@ -1,0 +1,628 @@
+﻿@model CMNirdesh.Models.MCHouse.TLatestNews
+@using CMNirdesh;
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<div id="main-content">
+
+    <div class="main-content">
+
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="inr_frm_dsgn">
+
+                    <div class="widget-box " id="divAction">
+                        <div class="widget-header widget-header-flat rounded-top rounded-0">
+                            <h4 class=""> Latest News </h4>
+                            <div class="widget-toolbar no-border">
+                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" style="font-size:14px;" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add New News</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form_lyot">
+                        @if (Model != null)
+                        {
+                            if (Model._LstTLatestNews.Count() > 0)
+                            {
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-hover table-bordered " style="font-size:20px;">
+                                        <thead>
+                                            <tr class="table-heading">
+
+                                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">ID</span></th>
+                                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">News Title</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">News Title(Punjabi)</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">News Description</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">News Description(Punjabi)</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">News Image</span></th>
+                                                <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Action</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                            @foreach (var items in Model._LstTLatestNews)
+                                            {
+
+                                                <tr class="">
+                                                    <td class="center td-data border" style="font-size:14px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.LatestNewsID)</td>
+                                                    <td class="center td-data border" style="font-size:14px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsTitle)</td>
+                                                    <td class="center td-data border" style="font-size:14px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsTitle_local)</td>
+                                                    <td class="center td-data border" style="font-size:14px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsDescription)</td>
+                                                    <td class="center td-data border" style="font-size:14px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsDescription_local)</td>
+
+
+                                                    <td class="center td-data border" style="font-size:14px; padding: 14px 4px !important"><a href="@Url.Content(@Model.fileacessingUrl + "/" + items.Images)" target="_blank"><img src="@Url.Content(@Model.fileacessingUrl +"/"+ items.Images)" height="25" width="25" /> </a></td>
+                                                    <td class="center td-data border" style="font-size:14px; padding: 14px 4px !important">
+                                                        <div class="edit-1">
+
+                                                            <div class="hidden-sm hidden-xs action-buttons">
+                                                                <input type="hidden" id="imageurl" value="@Url.Content(@Model.fileacessingUrl +"/"+ items.Images)" />
+
+                                                                <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.LatestNewsID')">
+
+                                                                    <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                                </a>
+                                                                @*<a data-rel="tooltip" class="red tooltip-error" onclick="DeleteDepartmentRecord('@items.DocumentTypeId')">
+
+                        <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                    </a>*@
+
+                                                            </div>
+                                                            <div class="hidden-sm hidden-xs action-buttons">
+                                                                <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.LatestNewsID')" value="@items.LatestNewsID" />
+                                                                <label class="toggle mb-0">
+                                                                    <input type="checkbox" onclick="DeleteDepartmentRecord('@items.LatestNewsID')" @(Convert.ToBoolean(items.IsDeleted) == false ? "checked='checked'" : string.Empty)>
+                                                                    <span class="slider"></span>
+                                                                    <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-info">
+                                            <strong>There are no record found</strong><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+
+                </div>
+
+                
+            </div>
+
+            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5" id="myModalLabel">Add Latest News</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="fileUpload" enctype="multipart/form-data">
+                                <div class="form-group" id="StateName">
+                                    <div class="profile-info-name fotm_lbl">State Name:</div>
+                                    <select id="StateDropDown">
+                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="State Name"></option>
+                                    </select>
+
+                                </div>
+
+
+                                <div class="form-group" id="DocumentTypeId1">
+
+                                    <div class="profile-info-name fotm_lbl">News Title:</div>
+                                    <input type="text" class="form-control" id="newstitle" placeholder="News Title" />
+                                    <input type="hidden" class="form-control" id="newsid" placeholder="News Title" />
+                                </div>
+                                <div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">
+                                        News Title(Punjabi):
+                                    </div>
+                                    <input type="text" class="form-control" id="newstitlelocal" placeholder="News Title Punjabi" />
+                                </div>
+                                <div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">News Description:</div>
+                                    <input type="text" class="form-control" id="newsdescription" placeholder="News Description" />
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">News Description(Punjabi):</div>
+                                    <input type="text" class="form-control" id="newsdescriptionlocal" placeholder="News Description(Punjabi)" />
+
+                                @*</div><div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">Order:</div>
+                                    <input type="number" class="form-control" id="order" placeholder="Order" />
+
+                                </div>*@
+                                <div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">
+                                        News Image:
+                                    </div>
+                                    <input type="file" name="file" class="form-control" id="newsimage" placeholder="Document Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                    <img src="https://placehold.jp/100x100.png" id="imgPreview" class="form-control" style="width:100px; height:100px !important; border:1px solid red;" alt="Load Image" />
+                                    <input type="hidden" id="DocumentIconName" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer" style="background-color:white;">
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+@*<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />*@
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+
+
+<style>
+
+
+    .inr_frm_dsgn {
+        /*margin-top: 20px;*/
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+
+    .pencil-class {
+        font-size: 15px;
+    }
+
+    .edit-1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+
+            order: [[0,'desc']]
+        });
+    });
+
+    var s = {};
+    function getbyID(EmpID) {
+        debugger
+        clearTextBox();
+
+        $("#myModalLabel").html("Update News Record");
+        $("#btnUpdate").show();
+        $("#btnSave").hide();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Edit", "TLatestNews")' + '?id=' + EmpID,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                var obj = JSON.parse(data);
+                var data = obj._LstTLatestNews[0];
+                $('#myModal').modal();
+                $("#newsid").val(data.LatestNewsID);
+                $('#StateDropDown').val(data.MCId);
+                $("#newstitle").val(data.NewsTitle);
+                $("#newstitlelocal").val(data.NewsTitle_local);
+                $("#newsdescription").val(data.NewsDescription);
+                $("#newsdescriptionlocal").val(data.NewsDescription_local);
+              /* $("#newsimage").val(data.Images);*/
+                $('#order').val(data.Ordering);
+                $("#imgPreview").attr('src', data.Images);
+                $("#btnSave").hide();
+            }
+        });
+    }
+
+    var s = $("#StateDropDown");
+    s.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("StatesDropDown", "TLatestNews")',
+        data: '{}',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            s.empty().append('<option selected="selected" value="0">Please select</option>');
+            $.each(response, function () {
+                s.append($("<option></option>").val(this['Value']).html(this['Text']));
+            });
+        },
+        failure: function (response) {
+            alert(response.responseText);
+        },
+        error: function (response) {
+            alert(response.responseText);
+        }
+    });
+
+
+
+
+    function validate() {
+        var isValid = true;
+        if ($('#StateDropDown').val() == 0) {
+            $('#StateDropDown').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#StateDropDown').css('background-color', 'white');
+        }
+        if ($('#newstitle').val() == "") {
+            $('#newstitle').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#newstitle').css('background-color', 'white');
+        }
+        if ($('#newstitlelocal').val() == "") {
+            $('#newstitlelocal').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#newstitlelocal').css('background-color', 'white');
+        }
+        if ($('#newsdescription').val() == "") {
+            $('#newsdescription').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#newsdescription').css('background-color', 'white');
+        }
+
+        if ($('#newsdescriptionlocal').val() == "") {
+            $('#newsdescriptionlocal').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#newsdescriptionlocal').css('background-color', 'white');
+        }
+
+        if ($('#newsimage').val() == "" && $("#imgPreview").attr('src') == "https://placehold.jp/100x100.png")
+        {
+
+            $('#newsimage').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#newsimage').css('background-color', 'white');
+        }
+        if ($('#order').val() == "") {
+            $('#order').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#order').css('background-color', 'white');
+        }
+
+
+        return isValid;
+    }
+    function clearTextBox() {
+        $('#myModal').data({ backdrop: 'static', keyboard: false });
+        $('#newsid').val("");
+        $('#newstitle').val("");
+        $('#newstitlelocal').val("");
+        $('#newsdescription').css('background-color', 'white');
+        $('#newsdescriptionlocal').css('background-color', 'white');
+        $('#order').css('background-color', 'white');
+        $('#newsimage').css('background-color', 'white');
+        $('#StateDropDown').css('background-color', 'white');
+        $('#newstitle').css('background-color', 'white');
+        $('#newstitlelocal').css('background-color', 'white');
+        $('#newsimage').val("");
+        $('#btnUpdate').hide();
+        $("#myModalLabel").html("Add News Record");
+        $('#btnSave').show();
+        $("#imgPreview").attr('src', 'https://placehold.jp/100x100.png');
+        $("#order").val("");
+        $("#StateDropDown").val(0);
+        $("#newsdescriptionlocal").val("");
+        $("#newsdescription").val("");
+
+    }
+    function Add() {
+
+        var res = validate();
+        if (res === false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#newsimage").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+
+            }
+            debugger
+            const courseDto = {
+
+                NewsTitle: $('#newstitle').val(),
+                NewsTitle_local: $('#newstitlelocal').val(),
+                NewsDescription: $('#newsdescription').val(),
+                NewsDescription_local: $('#newsdescriptionlocal').val(),
+                Ordering: $("#order").val(),
+                FileName: $('#newsimage').val(),
+                MCId: $('#StateDropDown').val()
+            };
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url: '@Url.Action("Create", "TLatestNews")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result === 0) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else if (result == 1) {
+                        alert("Order Id already existing");
+
+                    }
+                    else {
+                        alert("Not Updated");
+                    }
+                }
+            });
+        }
+    }
+
+
+
+
+
+    function Update() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#newsimage").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+
+            }
+
+
+            const courseDto = {
+                NewsTitle: $('#newstitle').val(),
+                NewsTitle_local: $('#newstitlelocal').val(),
+                NewsDescription: $('#newsdescription').val(),
+                NewsDescription_local: $('#newsdescriptionlocal').val(),
+                Ordering: $("#order").val(),
+                FileName: $('#newsimage').val(),
+                MCId: $('#StateDropDown').val(),
+                LatestNewsID: $("#newsid").val(),
+
+
+
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url:'@Url.Action("Update", "TLatestNews")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result === 0) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else if (result == 1) {
+                        alert("Order Id already existing");
+
+                    }
+                    else {
+                        alert("Not Updated");
+                    }
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+    var MyApp = {};
+    function DeleteDepartmentRecord(xyz) {
+        //alert(1);
+        MyApp = xyz;
+        DeleteID();
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+    function DeleteID() {
+
+        var i = MyApp;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Delete", "TLatestNews")' + '?Id=' + i,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            //url: '@Url.Action("Delete", "TLatesNews")' + '?id=' + i,
+            success: function (result) {
+            alert("Updated Successfully");
+            }
+        });
+    }
+    function showimage() {
+        var s = $("#newsimage").val();
+        $(location).attr("~/" + s);
+    }
+    document.getElementById('newsimage').onchange = function (e) {
+        const [file] = newsimage.files;
+
+        if (file) {
+            $("#imgPreview").attr('src', URL.createObjectURL(file));
+        }
+    };
+</script>

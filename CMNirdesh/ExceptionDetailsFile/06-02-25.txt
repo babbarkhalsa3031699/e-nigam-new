@@ -1,0 +1,24 @@
+-----------Exception Details on  06-02-2025 14:45:27-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 06-02-2025 14:45:27
+
+Error Line No : line 80
+
+Error Message: WebException
+
+Exception Type: System.Net.WebException
+
+Error Location : Unable to connect to the remote server
+
+ Error Page Url: https://localhost:44381/NevaQuestion/Index?type=8
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+

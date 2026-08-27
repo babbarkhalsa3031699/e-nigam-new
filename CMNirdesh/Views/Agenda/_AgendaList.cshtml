@@ -1,0 +1,313 @@
+﻿@model  CMNirdesh.Models.AgendaModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+    
+}
+<style>
+    input[type="file"] {
+        display: none !important;
+    }
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+</style>
+<head>
+
+</head>
+
+<script>
+
+    $(document).ready(function () {
+        $('#txtAgendaName').val('');
+        $('#Header').val('');
+        $('#Footer').val('');
+
+
+
+        $.extend($.fn.dataTableExt.oSort, {
+            "date-eu-pre": function (dateString) {
+                var parts = dateString.split('/');
+                if (parts.length !== 3) return 0;
+                return new Date(parts[2], parts[1] - 1, parts[0]) || 0;
+            },
+            "date-eu-asc": function (a, b) {
+                return a - b;
+            },
+            "date-eu-desc": function (a, b) {
+                return b - a;
+            }
+        });
+
+        var table = $('#fundreport').DataTable({
+            "bLengthChange": false,
+            "pageLength": 10,
+            "searching": true,
+            order: [[0, 'desc']],
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+                {
+                    extend: 'pdfHtml5',
+                    customize: function (doc) {
+                        /* here I am aligning text in a column to the right */
+                        rowCount = table.rows({ search: 'applied' }).count() + 1;
+
+                        for (i = 0; i < rowCount; i++) {
+                            doc.content[1].table.body[i][3].alignment = 'right';
+                        }
+                        doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+                    },
+                    exportOptions: {
+                        columns: [1, 2, 3, 4, 5]
+                    }
+                }
+            ],
+            columnDefs: [
+                {
+                    targets: 0, // Column index of the 'agendadate' column
+                    type: 'date-eu' // Use the custom date sorting plugin
+                }
+            ],
+        });
+
+    
+
+     
+
+
+
+        $("#filter p").each(function (i) {
+            var dt = "";
+
+            if (i == 0) {
+                dt = 'Select';
+            } else if (i == 1) {
+                dt = 'Select';
+            }
+            var select = $('<select class="form-control"><option value="">' + dt + '</option></select>')
+                .appendTo($(this).empty())
+                .on('change', function () {
+                    var totalamount = 0;
+
+                    table.column(1)
+                        .search($(this).val())
+                        .draw();
+
+                    arowCount = table.rows({ search: 'applied' }).count();
+                    for (i = 0; i < arowCount; i++) {
+                        //alert((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replace("₹ ", ""));
+                        totalamount = parseInt(totalamount) + parseInt((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replaceAll("₹ ", ""));
+
+                    };
+                    $('#ttlamt').html(totalamount);
+                });
+
+            table.column(1).data().unique().sort().each(function (d, j) {
+
+                select.append('<option value="' + d + '">' + d + '</option>')
+            });
+        });
+
+    });
+
+
+
+
+
+    function EditMlaDairy(ID) {
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("EditMlaDairyForm", "References")',
+            async: true,
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#loginModaldiary").modal('show');
+                    $('#loginModaldiarybody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+
+
+    function bindgrid() {
+        var year = $('#ddlyear').val();
+        window.location.href = "/Fund/FundReceipt?year=" + year;
+    }
+
+
+
+
+
+    function freeze(id, frz) {
+        if (id != "") {
+
+
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("LockUnlockAgenda", "Agenda")',
+                async: true,
+                data: { AgendaId: id, freeze: frz },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        if (frz) {
+                            $("#unf_" + id).show();
+                            $("#fr_" + id).hide();
+                        } else {
+                            $("#unf_" + id).hide();
+                            $("#fr_" + id).show();
+                        }
+                        // $("#tr_" + id).hide();
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
+
+    }
+
+
+
+
+
+</script>
+
+<body>
+
+    <div class="col-lg-12">
+        <!-- BAR CHART -->
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title">Meeting List</h3>
+            </div>
+            <div class="card-body">
+                <div class="row" id="filter">
+
+                    <div class="col-sm-6 col-md-3 col-lg-3 mb-3">
+                        <label class="txt_label">Date:</label>
+                        <p class="pera_txt_design">
+                        </p>
+                    </div>
+
+                </div>
+                <div class="table-responsive">
+                    <table id="fundreport" class="table table-bordered  dataTable">
+                        <thead>
+                            <tr>
+                                <th class="center td-heading" style="width:10%">Meeting Name</th>
+                                <th class="center td-heading" style="width:10%">Meeting Date</th>
+                                <th class="center td-heading" style="width:10%">Start Time</th>
+                                <th class="center td-heading" style="width:10%">End Time</th>
+                                <th class="center td-heading" style="width:10%">Agenda Type</th>
+                                <th class="center td-heading" style="width:10%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var mdl in Model._LstAgenda.OrderBy(a => a.AgendaDate))
+                            {
+
+
+
+                                <tr id="tr_@mdl.AgendaId">
+                                    <td class="td-data">@mdl.AgendaName</td>
+                                    <td class="td-data">@mdl.AgendaDateDisplay</td>
+                                    <td class="td-data">@((mdl.StartTime != null) ? mdl.StartTime.ToString() : "N/A")</td>
+                                    <td class="td-data">@((mdl.EndTime != null) ? mdl.EndTime.ToString() : "N/A")</td>
+
+                                    <td class="td-data">@mdl.Agendatype</td>
+
+                                    <td class="td-data">
+                                        <input type="hidden" id="hdnMeetingDate">
+
+
+                                        <a data-rel="tooltip" class="tooltip-primary" title="Delete" onclick="if (@(mdl.IsMatch.ToString().ToLower())) { alert('Please Delete the Inside Meetings Details First'); } else { Delete('@Html.Raw(mdl.AgendaId)'); }">
+                                            <i class="fas fa-trash-alt" style="color: red; font-size: 28px !important; margin-left: 10px; margin-right: 10px;"></i>
+                                        </a>
+
+                                        <a data-rel="tooltip" data-bs-target='@(mdl.EndTime!=null ? "" : "#myModal")' class="tooltip-primary" data-bs-toggle="modal" title="Edit"
+                                           onclick="if ('@(mdl.EndTime!=null)') { alert('Cannot Edit Meeting Is already Approved') } else {GetById('@(mdl.AgendaId)');}">
+
+                                            <i class="fas fa-pencil-alt" style="color: cadetblue; font-size: 28px !important; margin-left: 10px; margin-right: 10px;"></i>
+
+
+                                        </a>
+                                        <a data-bs-toggle="modal" data-bs-target="#mySMSModal" class="tooltip-primary" title="Send SMS" onclick="SendSMS('@mdl.AgendaId','@mdl.AgendaDateDisplay')">
+                                            <i class="fa fa-paper-plane" style="color: #458cff; font-size: 28px !important; "></i>
+                                        </a>
+                                        <!-- Removed the extra closing </a> tag that was not needed -->
+                                        <a data-bs-toggle="modal" data-bs-target="#myModal2" class="tooltip-primary" title="View" onclick="GetById('@mdl.AgendaId')">
+                                            <span class="tooltip-icon" style="color: peru; font-size: 45px !important;">&#128065;</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+
+
+
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </div>
+
+</body>
+
+
+
+
+
+
+
+

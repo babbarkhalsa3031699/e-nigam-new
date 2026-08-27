@@ -1,0 +1,552 @@
+﻿@model CMNirdesh.Models.LstofficeModel
+@using CMNirdesh;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<head>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/popper.min.js"></script>
+    <script src="~/assets/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/owl_item.carousel.min.js"></script>
+</head>
+
+
+<div id="main-content">
+    <div class="main-content">
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="inr_frm_dsgn">
+
+                    <div class="widget-box " id="divAction">
+                        <div class="widget-header widget-header-flat rounded-top rounded-0">
+                            <h4 class=""> Office List </h4>
+                            <div class="widget-toolbar no-border">
+                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add New Office</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form_lyot">
+
+                        @if (Model != null)
+                        {
+                            if (Model._ListofficeModel.Count() > 0)
+                            {
+                                <div class="tab_parent table-responsive table_rsponsv">
+                                    <table id="example" class="table table-hover table-bordered ">
+                                        <thead>
+                                            <tr class="table-heading">
+                                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">Office Id</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Department Name</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Office Name</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Office Address</span></th>
+                                                <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Is Apex</span></th>
+                                                <th class="td-heading" style="width:10%;"><span class="font-weight-bold"></span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                            @foreach (var items in Model._ListofficeModel)
+                                            {
+                                                <tr>
+                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.OfficeId)</td>
+                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.deptName)</td>
+                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.officename)</td>
+                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.officeaddr)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">
+                                                        <input type="checkbox" @(Convert.ToBoolean(items.IsApex) ? "checked" : "") readonly onclick="return false;" />
+                                                        @Html.HiddenFor(modelItem => items.IsApex)
+                                                    </td>
+                                                    <td class="center td-data edit-1" style="padding: 14px 4px !important">
+                                                        <div class="hidden-sm hidden-xs action-buttons">
+                                                            <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.OfficeId')">
+                                                                <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                            </a>
+                                                            @*<a data-rel="tooltip" id="DeleteCheck" class="red tooltip-error" onclick="DeleteOfficeRecord('@items.OfficeId')" value="@items.OfficeId">
+                                                                    <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                                    <input type="hidden" id="DeleteConfirmFinal" value='@items.OfficeId' class="DeleteConfirm" />
+                                                                </a>*@
+                                                        </div>
+                                                        <div class="hidden-sm hidden-xs action-buttons">
+                                                            <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.OfficeId')" value="@items.OfficeId" />
+                                                            <label class="toggle mb-0">
+                                                                <input type="checkbox" onclick="DeleteOfficeRecord('@items.OfficeId')" @(Convert.ToBoolean(items.IsDeleted) == false ? "checked='checked'" : string.Empty)>
+                                                                <span class="slider"></span>
+                                                                <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                            </label>
+                                                        </div>
+
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-info">
+                                            <strong>There are no record found</strong><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5" id="myModalLabel">Add Office Record</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group" id="departmentsDropdown">
+                                    <div class="profile-info-name fotm_lbl">Department Name:</div>
+                                    <select id="ch_user1">
+                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="Select Department Id"></option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group" id="OfficeIdLabel">
+
+                                    <div class="profile-info-name fotm_lbl">Office ID:</div>
+                                    <input type="text" class="form-control txt_design" id="OfficeId" placeholder="Office Id" />
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">Office Name:</div>
+                                    <input type="text" class="form-control txt_design" id="OfficeName" placeholder="Office Name" />
+                                </div>
+                                <div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">Office Name Local:</div>
+                                    <input type="text" class="form-control txt_design" id="OfficeNameLocal" placeholder="Office Local Name" />
+                                </div>
+                                <div class="form-group">
+                                    <div class="profile-info-name fotm_lbl">Office Address:</div>
+                                    <input type="text" class="form-control txt_design" id="OfficeAddress" placeholder="Office Address" />
+                                </div>
+                                <label for="IsApex">
+                                    <input type="checkbox" class="checkbox" id="IsApex" />
+                                    Is Apex
+                                </label>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+
+</div>
+
+
+
+
+
+<link rel="stylesheet" href="~/assets/css/jquery.dataTables.min.css" />
+<script src="~/assets/js/jquery-3.7.0.js"></script>
+<script src="~/assets/js/jquery.dataTables.min.js"></script>
+<!--<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>-->
+@if (ViewBag.ErrorMessage != null)
+{
+    <script>
+                    $(document).ready(function () {
+                        alert('@Html.Raw(ViewBag.ErrorMessage)')
+
+                    });
+    </script>
+}
+
+@*<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>*@
+
+
+
+
+<style>
+
+
+    .inr_frm_dsgn {
+        /*margin-top: 20px;*/
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+
+    .pencil-class {
+        font-size: 15px;
+    }
+
+    .edit-1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        var s = $("#ch_user1");
+        s.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("DepartmentDropDown", "mOffice")",
+            //url: "/mOffice/DepartmentDropDown",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                s.empty().append('<option selected="selected" value="0">Please select</option>');
+                $.each(response, function () {
+                    s.append($("<option></option>").val(this['Value']).html(this['Text']));
+                });
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    });
+    $('#example').DataTable({
+    });
+    function getbyID(EmpID) {
+        clearTextBox();
+
+       // var url = "/mOffice/Edit?id=" + EmpID;
+        var url = '@Url.Action("Edit", "mOffice")' + '?id=' + EmpID;
+        $("#myModalLabel").html("Update Office Record");
+
+        $("#btnUpdate").show();
+
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                var obj = JSON.parse(data);
+
+                var data = obj._ListofficeModel[0];
+                $("#OfficeId").attr("disabled", "disabled");
+                $('#myModal').modal();
+                $("#OfficeId").val(data.OfficeId);
+                $("#ch_user1").val(data.deptid);
+                $("#OfficeName").val(data.officename);
+                $("#OfficeNameLocal").val(data.officenamelocal);
+                $("#OfficeAddress").val(data.officeaddr);
+                $("#IsApex").prop("checked", data.IsApex);
+                $("#btnSave").hide();
+            }
+
+        });
+
+    }
+
+    //Function for clearing the textboxes
+
+    //Valdidation using jquery
+    function validate() {
+
+        var isValid = true;
+
+        //if ($('#OfficeId').val().trim() === "") {
+        //    $('#OfficeId').css('background-color', 'Red');
+
+
+        //    isValid = false;
+        //}
+        //else {
+        $('#OfficeIdLabel').hide();
+        //}
+        if ($('#ch_user1').val().trim() === "0") {
+            $('#ch_user1').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#ch_user1').css('background-color', 'white');
+        }
+        if ($('#OfficeName').val().trim() === "") {
+            $('#OfficeName').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#OfficeName').css('background-color', 'white');
+        }
+
+        if ($('#OfficeAddress').val().trim() === "") {
+            $('#OfficeAddress').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#OfficeAddress').css('background-color', 'white');
+        }
+        return isValid;
+    }
+
+
+    function clearTextBox() {
+        $('#myModal').data({ backdrop: 'static', keyboard: false });
+        $('#ch_user1').css('background-color', 'white');
+        $('#ch_user1').val(0);
+        $('#OfficeName').css('background-color', 'white');
+        $('#OfficeNameLocal').css('background-color', 'white');
+        $('#OfficeAddress').css('background-color', 'white');
+        $('#OfficeId').val("");
+        $("#OfficeIdLabel").hide();
+        $('#OfficeName').val("");
+        $('#OfficeNameLocal').val("");
+        $('#OfficeAddress').val("");
+        $('#btnUpdate').hide();
+        $("#OfficeId").removeAttr("disabled", "disabled");
+        $("#myModalLabel").html("Add Office Record");
+        $('#btnSave').show();
+        $("#IsApex").val("");
+
+    }
+    function Add() {
+
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+
+
+        var empObj = {
+            deptId: $('#ch_user1').val(),
+            officeName: $('#OfficeName').val(),
+            officeNameLocal: $('#OfficeNameLocal').val(),
+            IsApex: $("#IsApex").prop("checked"),
+            officeaddr: $('#OfficeAddress').val(),
+        };
+
+        $.ajax({
+             url: "@Url.Action("Create", "mOffice")",
+           // url: "/mOffice/Create",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                // loadData();
+                alert("Updated Successfully");
+                $('#myModal').modal('hide');
+                location.reload();
+
+            },
+            error: function (errormessage) {
+                alert("Not Updated");
+                $('#myModal').modal('hide');
+                location.reload();
+            }
+        });
+    }
+    function Update() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        var empObj = {
+            OfficeId: $('#OfficeId').val(),
+            officename: $('#OfficeName').val(),
+            officenamelocal: $('#OfficeNameLocal').val(),
+            officeaddr: $('#OfficeAddress').val(),
+            deptId: $('#ch_user1').val(),
+            IsApex: $("#IsApex").prop("checked"),
+        };
+
+        $.ajax({
+            url: "@Url.Action("Update", "mOffice")",
+            //url: "/mOffice/Update",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                // loadData();
+                alert("Updated Successfully");
+                $('#myModal').modal('hide');
+                location.reload();
+
+
+            },
+            error: function (errormessage) {
+                alert("Not Updated");
+                $('#myModal').modal('hide');
+                location.reload();
+            }
+        });
+    }
+    var MyApp = {};
+
+    function DeleteOfficeRecord(xyz) {
+
+
+        MyApp = xyz;
+        DeleteID();
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+
+    function DeleteID() {
+
+        var i = MyApp;
+          var url = '@Url.Action("Delete", "mOffice")' + '?id=' + i;
+        $.ajax({
+            type: "Post",
+            url: url,
+            success: function (result) {
+
+                alert("Updated Successfully");
+
+            }
+        });
+    }
+
+
+
+</script>
+

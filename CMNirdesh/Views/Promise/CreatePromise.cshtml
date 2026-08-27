@@ -1,0 +1,220 @@
+﻿@model  CMNirdesh.Models.Promise
+
+@{
+    ViewBag.Title = "CreatePromise";
+}
+
+@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")
+<style>
+
+    .field-validation-error {
+        color: red;
+        padding-left: 10px;
+    }
+
+    .inr_frm_dsgn h3 {
+        background-color: #4165c1;
+        padding: 10px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        font-size: 21px;
+        font-weight: 500;
+    }
+    .inr_frm_dsgn {
+        margin-top: 20px;
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+    .card_width {
+        max-width: 495px;
+    }
+
+        .card_width #PromiseName {
+            display: inline-block;
+            max-width: 493px;
+            border-radius: 5px !important;
+            margin-left: 32px;
+        }
+
+    .inr_frm_dsgn .form_lyot .card .no-padding-right {
+        text-align: left;
+    }
+
+    #isActive {
+        max-width: 493px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-left: 32px;
+    }
+
+    .card_width {
+        max-width: 776px;
+        box-shadow: 0px 0px 4px 0px #ccc;
+        padding: 15px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+        .card_width .control-label.lbl_txt {
+            min-width: 86px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+    .mrgn_tp {
+        margin-top: 15px;
+    }
+
+    .c_btn {
+        margin-right: 129px;
+    }
+</style>
+
+
+
+
+<div id="main-content">
+
+    <div class="main-content">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <script type="text/javascript">
+                try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+            </script>
+
+            <ul class="breadcrumb" style="font-size: large; color: #555; padding: 0 3px 0 3px;">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="@Url.Action("PromiseDetails","Promise")">Priority Projects</a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("PromiseDetails","Promise")">Promises</a>
+                </li>
+            </ul>
+        </div>
+
+
+
+
+        <section class="form_dsign">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="inr_frm_dsgn">
+                            @if (Model.mode == "Add")
+                            {
+                                <h3 class="widget-title lighter" style="color:#fff;">New Promise </h3>
+                            }
+                            else
+                            {
+                                <h3 class="widget-title lighter" style="color:#fff;">Edit Promise</h3>
+                            }
+
+
+                            <div class="form_lyot">
+                                @using (Html.BeginForm("SavePromise", "Promise", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "Promise" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.HiddenFor(model => model.PromiseId)
+                                    @Html.HiddenFor(model => model.mode)
+                                    @Html.HiddenFor(model => model.DeptId)
+
+                                    <div class="card_width">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <label for="inputinfo" class="control-label lbl_txt">Project Name </label>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        @Html.TextBoxFor(model => model.PromiseName, new { @placeholder = "Enter Promise Name", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "1" })
+
+                                                        @Html.ValidationMessageFor(model => model.PromiseName)
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mrgn_tp">
+                                                    <div class="col-md-2">
+                                                        <label for="inputinfo" class="control-label lbl_txt mb-3"> Status </label>
+                                                    </div>
+                                                    <div class="col-md-10 ">
+                                                        @Html.DropDownListFor(model => model.isActive, Model.StatusTypeList, new { @class = "width-100 form-control drop_txt", @tabindex = "2" })
+                                                    </div>
+                                                </div>
+                                                <div class="row mrgn_tp">
+                                                    <div class="col-md-12">
+                                                        <div class="btn-group d-flex align-items-center justify-content-end gap-3 mx-auto w-25" >
+                                                            <!-- #section:plugins/fuelux.wizard.buttons -->
+
+                                                            <button type="reset" class="btn btn-sm btn-danger" onclick="resetFields();">
+                                                                <i class="ace-icon fa fa-times bigger-125"></i>
+                                                                Reset
+                                                            </button>
+                                                            <button type="submit" id="savebtn" class="btn btn-sm btn-primary ">
+                                                                <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                                                                Save
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+    </div>
+</div>
+<script>
+    function DeleteContentInEdit(url) {
+
+        bootbox.confirm("Are you sure to Delete Content?", function (result) {
+
+            if (result) {
+                window.location.href = url;
+            }
+        })
+
+    }
+
+
+
+
+    function resetFields() {
+        $(".field-validation-error").empty();
+        $("#News_Title").focus();
+
+    }
+
+
+
+
+
+
+</script>
+
+
+

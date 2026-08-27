@@ -1,0 +1,289 @@
+﻿@model CMNirdesh.Models.AgendaModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+    int sr = Model._LstMeetingNoticeAgenda.Count();
+}
+
+<style>
+    input[type="file"] {
+        display: none !important;
+    }
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .table-bordered {
+        border-collapse: collapse;
+        font-size: 14px;
+        width: 100%;
+    }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+            height: 35px;
+        }
+
+        .table-bordered th {
+            vertical-align: middle;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+
+        .table-bordered td {
+            font-size: 15px;
+            word-wrap: break-word;
+        }
+
+    .button-container1 {
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+    }
+
+    .btn-preview1, .btn-approve1 {
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-size: 18px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-preview1 {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-approve1 {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-preview1:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    .btn-approve1:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+
+    /* Toggle switch styles */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #28a745;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var selectedValues = [];
+
+        // Handle row selection using checkboxes
+        $('.rowCheckbox').on('change', function () {
+            var value = $(this).val();
+
+            if ($(this).is(':checked')) {
+                if (!selectedValues.includes(value)) {
+                    selectedValues.push(value);
+                }
+            } else {
+                selectedValues = selectedValues.filter(item => item !== value);
+            }
+
+            // Update hidden input with comma-separated values
+            $('#MultiSendUpdate').val(selectedValues.join(','));
+            alert($('#MultiSendUpdate').val());
+        });
+
+        // Handle Merge button click
+        $('#btnMerge1').on('click', function () {
+            var MultiId = $("#MultiSendUpdate").val();
+            var MultiIdArray = MultiId.split(','); // Split the string into an array based on commas
+            var selcount = MultiIdArray.length;
+
+            if (MultiId != "" && selcount > 1) {
+                var pathurl = '@Url.Action("UpdateMerge", "References")';
+                $.ajax({
+                    type: "GET",
+                    url: pathurl,
+                    async: true,
+                    data: { MultiId: JSON.stringify(MultiIdArray) },
+                    beforeSend: function () {
+                        $('#loader-wrapper').show();
+                    },
+                    success: function (data) {
+                        $("#loader-wrapper").hide();
+                        if (data == "0") {
+                            alert("Agenda Not Approved for these files.");
+                        }
+                        if (data == "1") {
+                            alert("Merged Successfully.");
+                            window.location.reload();
+                            $("#MultiSendUpdate").val("");
+                        }
+                    },
+                    error: function () {
+                        alert("Error occurred while merging.");
+                    }
+                });
+            } else {
+                alert("Please select more than one file.");
+                $('#loader-wrapper').hide();
+            }
+        });
+
+        // Handle the checkbox toggle for linking
+        $('.isLinkToggle').on('change', function () {
+            var fileId = $(this).data('id');
+            var isChecked = $(this).is(':checked') ? 1 : 0;
+          
+            $.ajax({
+                url: '@Url.Action("UpdateLinkStatus", "Agenda")',
+                type: 'POST',
+                data: { fileId: fileId, isLinked: isChecked },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                    } else {
+                        // If the response indicates an error, uncheck the toggle
+                        $('.isLinkToggle[data-id="' + fileId + '"]').prop('checked', false);
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error updating link status.');
+                }
+            });
+        });
+    });
+</script>
+
+<body>
+    <div class="col-lg-12">
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title">Link e-Book</h3>
+            </div>
+            <div class="card-body">
+             
+                <div class="table-responsive" style="font-size: 18px">
+                    <table id="fundreport" class="table table-bordered dataTable">
+                        <thead>
+                            <tr>
+                                <th class="center td-heading" style="width:5%">#</th>
+                                <th class="center td-heading" style="width:20%">Meeting Name</th>
+                                <th class="center td-heading" style="width:10%">Meeting Date</th>
+                                <th class="center td-heading" style="width:10%">File</th>
+                                <th class="center td-heading" style="width:8%">File Type</th>
+                                <th class="center td-heading" style="width:10%">Approved Agenda</th>
+                                <th class="center td-heading" style="width:8%">Total Proposals</th>
+                                <th class="center td-heading" style="width:10%">Start Time</th>
+                                <th class="center td-heading" style="width:10%">End Time</th>
+                                <th class="center td-heading" style="width:10%">Venue</th>
+                                <th class="center td-heading" style="width:10%">Currently With</th>
+                                <th class="center td-heading" style="width:20%">Link with Ebook</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            @foreach (var mdl in Model._LstMeetingNoticeAgenda)
+                            {
+
+                                <tr id="tr_@mdl.MainFileRefID">
+                                    <td class="td-data"><span>@sr</span></td>
+                                    <td class="td-data"><span>@mdl.MeetingName</span></td>
+                                    <td class="td-data"><span>@Convert.ToDateTime(mdl.MeetingDate).ToString("dd/MM/yyyy")</span></td>
+                                    <td class="td-data"><span>@mdl.MainFileRefID</span></td>
+                                     <td class="td-data"><span>@mdl.Filetype</span></td>
+
+                                    <td class="td-data">
+                                        @if (!string.IsNullOrEmpty(mdl.Agendafile))
+                                        {
+                                            <a href="@mdl.fileaccessingurl/@mdl.Agendafile" target="_blank" title="Meeting File">
+                                                <i class="fas fa-file-pdf" style="color: red; font-size: 28px;"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            @*<label>No Pdf Exist</label>*@
+                                        }
+                                    </td>
+
+
+                                    <td class="td-data"><span>@mdl.TotalMemo</span></td>
+                                    <td class="td-data"><span>@((mdl.StartTime != null) ? mdl.StartTime.ToString() : "N/A")</span></td>
+                                    <td class="td-data"><span>@((mdl.EndTime != null) ? mdl.EndTime.ToString() : "N/A")</span></td>
+                                    <td class="td-data">@mdl.Venue</td>
+                                    <td class="td-data">@mdl.CurrentlyWith</td>
+                                    <td class="td-data text-center">
+                                        <label class="switch">
+                                            <input type="checkbox" class="isLinkToggle" data-id="@mdl.MainFileRefID"
+                                                   @(mdl.IsLinkEbook ? "checked='checked'" : "") />
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                sr = sr - 1;
+                            }
+                        </tbody>
+</table>
+@*<input type="hidden" id="MultiSendUpdate" value="" />
+<input type="button" class="btn btn-primary" id="btnMerge1" value="Merge Selected Files" />*@
+</div>
+</div>
+</div>
+</div>
+</body>

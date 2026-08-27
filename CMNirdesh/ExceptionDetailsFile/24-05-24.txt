@@ -1,0 +1,72 @@
+-----------Exception Details on  24-05-2024 09:11:52-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 24-05-2024 09:11:52
+
+Error Line No : ine 195
+
+Error Message: ArgumentException
+
+Exception Type: System.ArgumentException
+
+Error Location : Parameter count does not match Parameter Value count.
+
+ Error Page Url: https://localhost:44381/NevaQuestion/Index
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+
+-----------Exception Details on  24-05-2024 09:19:02-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 24-05-2024 09:19:02
+
+Error Line No : ine 195
+
+Error Message: ArgumentException
+
+Exception Type: System.ArgumentException
+
+Error Location : Parameter count does not match Parameter Value count.
+
+ Error Page Url: https://localhost:44381/NevaQuestion/Index
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+
+-----------Exception Details on  24-05-2024 09:19:17-----------------
+-------------------------------------------------------------------------------------
+
+
+
+Log Written Date: 24-05-2024 09:19:17
+
+Error Line No : ine 195
+
+Error Message: ArgumentException
+
+Exception Type: System.ArgumentException
+
+Error Location : Parameter count does not match Parameter Value count.
+
+ Error Page Url: https://localhost:44381/NevaQuestion/Index
+
+User Host IP: 
+
+
+--------------------------------*End*------------------------------------------
+
+
+

@@ -1,0 +1,2287 @@
+﻿@model CMNirdesh.Models.LstDashboard
+
+@{
+    int Totaldispatch = Model._LstDashboard.Sum(x => x.Count);
+}
+
+<input type="hidden" id="intval" name="intval" value="" />
+<input type="hidden" id="diarydispatchValue" name="diarydispatchValue" value="" />
+<input type="hidden" id="DocumentTypeDIdHdn" name="DocumentTypeDIdHdn" value="" />
+<input type="hidden" id="sincefilterhdndispatch" name="sincefilterhdndispatch" value="" />
+<input type="hidden" id="radiovaluehdn" name="radiovaluehdn" value="" />
+<input type="hidden" id="SelectedCoveringLetters" name="SelectedCoveringLetters" />
+<html>
+
+
+<body>
+    
+    <div id="main-content">
+        <div class="main-content">
+
+            <div class="col-md-12 col-lg-12 col-xl-12">
+                <div>
+                    <h4 id="lblmenuname">Orders >> Agenda</h4>
+                    <hr />
+                </div>
+
+
+            </div>
+            <div class="col-md-12 col-xl-12 col-lg-12 p-0 no-right-margin" id="DispatchTableDiv">
+
+                <div class="col-md-12 col-xl-12 col-lg-12 row p-3 no-right-margin filter-part position-relative ">
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                        <div>
+                            <label class="form fc"><b>Department</b></label>
+                            <select class="form-control" id="DispatchDepartment" name="DispatchDepartment"></select>
+                        </div>
+                    </div>
+
+                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Office</b></label><br />
+                        <select style="min-width: 30%;" class="form-control" id="DispatchoffId" name="DispatchoffId"></select>
+                    </div>
+                </div>*@
+
+
+
+                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Reference Type</b></label>
+                        <select class="form-control" id="DispatchDocument" name="DispatchDocument"></select>
+                    </div>
+                </div>*@
+
+                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Status</b></label>
+                        <select class="form-control" id="StatusListMlaD" name="StatusListMlaD"></select>
+                    </div>
+                </div>*@
+
+                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Priority</b></label>
+                        <select class="form-control" name="DispatchPriority" id="DispatchPriority">
+                            <option value="" selected>-- Select --</option>
+                            <option value="1">High</option>
+                            <option value="2">Normal</option>
+                            <option value="3">Low</option>
+                        </select>
+                    </div>
+                </div>*@
+
+                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Term</b></label>
+                        <select class="form-control" name="DispatchTerm" id="DispatchTerm">
+                            <option value="" selected>-- Select --</option>
+                            <option value="1">Short</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Long</option>
+                        </select>
+                    </div>
+                </div>*@
+
+                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Last Action Since</b></label><br />
+                        <select class="form-control" name="sincefilterdispatch" id="sincefilterdispatch">
+                            <option value="" selected="selected" onclick="ResetSinceDiary();">-- select --</option>
+                            <option value="1week">1 Week</option>
+                            <option value="2week">2 Week</option>
+                            <option value="1month">1 Months</option>
+                            <option value="3month">3 Months</option>
+                            <option value="6month">6 Months</option>
+                            <option value="year">1 Year</option>
+                            <option value="morethanyear">1 Year +</option>
+                        </select>
+                    </div>
+                </div>*@
+
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                        <div class="text-start d-flex gap-3" style="margin-top:27px;">
+                            <button class="btn btn-sm btn-primary" id="changebutton" onclick="changeD();"> Search</button>
+                            <button class="btn btn-sm btn-success" id="resetbutton" style="display:none;" onclick="ResetD();"> Reset</button>
+                            <button class="btn btn-sm btn-danger" id="clearbutton" style="display:none;" onclick="Clear();"> Clear</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12 col-xl-12 cl-lg-12 row" style="margin-top:27px;">
+                    <div class="col-md-1 col-xl-1 col-lg-1">
+
+                    </div>
+                    <div class="col-md-6 col-xl-6 col-lg-6 pull-right">
+                        <div class="pull-right" style="display:none">
+
+                            <input type="radio" id="status" name="radio_list" value="Status" checked="checked" onclick="lisfunction();">
+                            <label for="status"><b>Meeting Date-Status Summary</b></label>&nbsp;&nbsp;
+                            @*<input type="radio" id="list" name="radio_list" value="List" onclick="lisfunction();">
+                        <label for="list"><b>List</b></label>
+                        <input type="radio" id="type" name="radio_list" value="Type" onclick="lisfunction();">
+                        <label for="type"><b>Type-Status Summary</b></label>*@
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-2 col-xl-2 col-lg-2 pull-left">
+
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-12 col-xl-12 col-lg-12 row" id="listdiv" style="display:none;">
+                    <h2 id="noDataFoundD" style="display: none;">No Data Found</h2>
+                    <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                        <table class="table table-bordered table-striped" id="DispatchTable" style="width:100%">
+                            <thead>
+                                <tr class="table-heading">
+                                    <th class="hideshow td-heading"><span class="font-weight-bold"></span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Subject</span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold ">Release Date </span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Department </span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Brief of Last Action Taken</span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Reference Type</span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Status</span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Ref.Id /<br />Date </span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Priority </span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">Term </span></th>
+                                    <th class="center td-heading"><span class="font-weight-bold">...more</span></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                @*<div class="col-md-12 col-xl-12 cl-lg-12  row" style="margin-top:20px;">
+
+                <div class="col-md-12 col-xl-12 col-lg-12 mt-3">
+                    <div class="table-switch">
+                        <div>
+                            <input type="radio" id="status" name="radio_list" value="NoStatus" checked="checked" onclick="showstatus();">
+                            <label id="lblstatus" for="status"><b>List</b></label>&nbsp;&nbsp;
+                        </div>
+                        <div>
+                            <input type="radio" id="Office" name="radio_list" value="YesStatus" onclick="showstatus();">
+                            <label id="lbloffice" for="office"><b>List with Status</b></label>&nbsp;&nbsp;
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>*@
+
+
+                <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
+                    <table class="table table-bordered " id="MeetingTable" aria-describedby="sample-table-3_info">
+                        <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="typediv" style="margin-top: 15px;">
+                    <table class="table table-bordered" id="Types" aria-describedby="sample-table-3_info">
+                        <thead>
+
+                        </thead>
+                        <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyTypediv">
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+            </div>
+
+
+
+
+            <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatchEdit"
+                 data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" id="Scroll2">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="widget-title modal_heading">Dispatch</h4>
+
+                            <button type="button" class="btn-close" onclick="closedispatchEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="loginModalDispatchbodyEdit">
+
+
+
+
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatchCount"
+                 data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" id="Scroll2">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="widget-title modal_heading">Dispatch</h4>
+                            <button type="button" class="btn-close" onclick="closedispatchCount()" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                                <table class="table table-bordered table-striped" id="DispatchTableCount" style="width:100%">
+                                    <thead>
+                                        <tr class="table-heading">
+                                            <th class="center td-heading"><span class="font-weight-bold">Subject</span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold ">Release Date </span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">Department </span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">Brief of Last Action Taken</span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">Reference Type</span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">Status</span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">Ref.Id /<br />Date </span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">Priority </span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">Term </span></th>
+                                            <th class="center td-heading"><span class="font-weight-bold">...more</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+
+
+
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatch"
+                 data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" id="Scroll2">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="widget-title modal_heading">Diary</h4>
+
+                            <button type="button" class="btn-close" onclick="closedispatch()" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="loginModalDispatchbody">
+
+
+
+
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bootstrap Modal -->
+            <!-- Modal -->
+            <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title section-title">📇 Online Circulation (Agenda)</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="hdnAgendaIdSMS"/>
+                            <input type="hidden" id="hdAgendaPdfPathSMS"/>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5>📇 Contact List</h5>
+                                <button type="button" id="btnSMS" class="btn btn-success float-end">📤 SEND SMS</button>
+                                <button type="button" class="btn btn-success float-end" onclick="addManualRow()">
+                                    ➕ Add
+                                </button>
+                            </div>
+                            <table class="table table-bordered table-hover shadow-sm bg-white rounded" id="contactTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Designation</th>
+                                        <th>Mobile No.</th>
+                                        <th>Email</th>
+                                        <th>Select</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contactBody">
+                                    <!-- JS will populate rows here -->
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="contactModalEmail" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title section-title">📇 Online Circulation (Agenda) </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="hdnAgendaIdEmail"/>
+                            <input type="hidden" id="hdAgendaPdfPathEmail" />
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5>📇 Contact List</h5>
+                                <button type="button" id="btnEmail" class="btn btn-success float-end">📤 SEND EMAIL</button>
+                                <button type="button" class="btn btn-success float-end" onclick="addManualRowEmail()">
+                                    ➕ Add
+                                </button>
+                            </div>
+                            <table class="table table-bordered table-hover shadow-sm bg-white rounded" id="contactTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Designation</th>
+                                        <th>Mobile No.</th>
+                                        <th>Email</th>
+                                        <th>Select</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contactBodyEmail">
+                                    <!-- JS will populate rows here -->
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+<head>
+    <style>
+        .btn-attractive-add {
+            background: linear-gradient(135deg, #00c851, #007e33); /* green gradient */
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-attractive-add:hover {
+                background: linear-gradient(135deg, #28a745, #1e7e34);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .btn-attractive-add:active {
+                transform: scale(0.98);
+                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            }
+        .select-all-group {
+            float: right;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .group-header {
+            background-color: #e3f2fd;
+            font-size: 1rem;
+        }
+
+        .covering-letter-cell {
+            white-space: nowrap;
+        }
+
+        .covering-letter-entry {
+            gap: 0.5rem;
+        }
+
+        .covering-letter-btn {
+            background-color: #dc3545; /* Bootstrap danger */
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .covering-letter-btn:hover {
+                background-color: #bd2130;
+                text-decoration: none;
+                color: white;
+            }
+    </style>
+
+    @*<script src="~/Scripts/jquery-3.4.1.js"></script>*@
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <script>
+
+    $(document).ready(function () {
+        var offNamenew = '@Session["offNamenew"]';
+        var deptnameee = '@Session["deptnameee"]';
+        $("#offNamehdndispatch").append(offNamenew);
+        $("#deptNamehdndispatch").append(deptnameee);
+       // var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+
+
+       /* if (radiovalue == "List") {*/
+        GetDataForDispatchStatus()
+
+
+       // $("#listdiv").css("display", "block");
+      //
+        var Text = "References Total Dispatch: " + "@Totaldispatch";
+        $('#selectednew').text(Text);
+        $('#selected').text(Text);
+
+        $("#Pendency").hide();
+        $('#SinceLabel').hide();
+
+        showstatus();
+
+    });
+        function showstatus() {
+
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+
+            if (radiovalue == "NoStatus") {
+                $(".sts").css("display", "none");
+
+            }
+            else if (radiovalue == "YesStatus") {
+
+                $(".sts").css("display", "revert");
+            }
+        }
+
+    function lisfunction() {
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+            if (radiovalue == "List") {
+                GetDataForDispatch();
+                $("#listdiv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+            }
+            else if (radiovalue == "Status") {
+                GetDataForDispatchStatus();
+                $("#statusdiv").css("display", "block");
+                $("#listdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+        }
+            else if (radiovalue == "Type") {
+                GetDataForDispatchType();
+                $("#typediv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+                $("#listdiv").css("display", "none");
+            }
+        }
+
+    function showdepartmentD() {
+        var type = 'Diary';
+            var DispatchDepartment = $("#DispatchDepartment");
+              DispatchDepartment.empty().append('<option selected="selected" value="">-- select --</option>');
+        $('#DispatchDepartment').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetAgendaDepartment", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type:type },
+                        success: function (data) {
+
+                            DispatchDepartment.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        DispatchDepartment.append($("<option></option>").val(this['deptId']).html(this['deptname']));
+                    });
+                        }
+
+                    });
+              BindActionStatusMladiaryD();
+        }
+
+    $("#DispatchDepartment").change(function () {
+            var id = $("#DispatchDepartment").val();
+            var DispatchoffId = $("#DispatchoffId");
+            DispatchoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+            $('#DispatchoffId').empty().append('<option selected="selected" value="">-- select --</option>');
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetOfficebyDepartmentId", "References")',
+                datatype: "Json",
+                data: { deptid: id },
+                success: function (data) {
+                    DispatchoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+
+                    $.each(data, function (index, value) {
+                        $('#DispatchoffId').append('<option value="' + value.id + '">' + value.name + '</option>');
+
+                    });
+                }
+            });
+        });
+
+        function changeD() {
+            $("#MeetingTable").DataTable().clear().destroy();
+            $("#StatusListMlaD").prop("disabled", true);
+            $("#sincefilterdispatch").prop("disabled", true);
+            $("#DispatchDepartment").prop("disabled", true);
+            $("#DispatchoffId").prop("disabled", true);
+            $("#DispatchTerm").prop("disabled", true);
+            $("#DispatchPriority").prop("disabled", true);
+            $("#DispatchDocument").prop("disabled", true);
+            $("#changebutton").css("display", "none");
+            $("#resetbutton").css("display", "block");
+            $("#clearbutton").css("display", "block");
+
+            var since = $("#sincefilterhdndispatch").val();
+            var deptid = $("#DispatchDepartment").val();
+            var status = statusvalueD();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var type = $("#DispatchDocument").val();
+
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+            if (radiovalue == "List") {
+
+                GetDataForDispatchStatusN();
+
+                //if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                //    GetDataForDispatchN();
+                //}
+                //else {
+                //    GetDataForDispatch();
+                //}
+
+                $("#listdiv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+            }
+            else {
+
+                GetDataForDispatchStatusN();
+
+                //if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                //    GetDataForDispatchStatusN();
+                //}
+                //else {
+                //    GetDataForDispatchStatus();
+                //}
+                $("#statusdiv").css("display", "block");
+                $("#listdiv").css("display", "none");
+            }
+
+            $("input[name=radio_list][value='NoStatus']").prop('checked', true);
+        }
+
+    function ResetD() {
+            $("#StatusListMlaD").prop("disabled", false);
+            $("#sincefilterdispatch").prop("disabled", false);
+            $("#DispatchDepartment").prop("disabled", false);
+            $("#DispatchoffId").prop("disabled", false);
+            $("#DispatchTerm").prop("disabled", false);
+            $("#DispatchPriority").prop("disabled", false);
+            $("#DispatchDocument").prop("disabled", false);
+            $("#changebutton").css("display", "block");
+            $("#resetbutton").css("display", "none");
+            $("#clearbutton").css("display", "none");
+            var since = $("#sincefilterhdndispatch").val();
+            var deptid = $("#DispatchDepartment").val();
+            var status = statusvalueD();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var type = $("#DispatchDocument").val();
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+            if (radiovalue == "List") {
+
+                if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                    GetDataForDispatchN();
+                }
+                else {
+                    GetDataForDispatch();
+                }
+
+                $("#listdiv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+            }
+            else {
+                if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                    GetDataForDispatchStatusN();
+                }
+                else {
+                    GetDataForDispatchStatus();
+                }
+                $("#statusdiv").css("display", "block");
+                $("#listdiv").css("display", "none");
+            }
+        $("#MeetingTable").DataTable().clear().destroy();
+        $("input[name=radio_list][value='NoStatus']").prop('checked', true);
+        }
+        function Clear() {
+            $("#StatusListMlaD").prop("disabled", false);
+            $("#sincefilterdispatch").prop("disabled", false);
+            $("#DispatchDepartment").prop("disabled", false);
+            $("#DispatchoffId").prop("disabled", false);
+            $("#DispatchTerm").prop("disabled", false);
+            $("#DispatchPriority").prop("disabled", false);
+            $("#DispatchDocument").prop("disabled", false);
+            $("#changebutton").css("display", "block");
+            $("#resetbutton").css("display", "none");
+            $("#clearbutton").css("display", "none");
+
+                    GetDataForDispatchStatus();
+
+                $("#statusdiv").css("display", "block");
+            $("#MeetingTable").DataTable().clear().destroy();
+            $("input[name=radio_list][value='NoStatus']").prop('checked', true);
+        }
+    function BindActionStatusMladiaryD() {
+            $("#loader-wrapper").show();
+        var since = '';
+         var StatusListMlaD = $("#StatusListMlaD");
+        StatusListMlaD.empty().append('<option selected="selected" value="">-- select --</option>');
+        $("#StatusListMlaD").empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("BindActionStatusMlaD", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { since: since },
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+
+                            StatusListMlaD.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        StatusListMlaD.append($("<option></option>").val(this['Value']).html(this['Text']));
+                    });
+                        }
+
+                    });
+
+        }
+
+        function ShowButtonDD() {
+            debugger
+        var type = '3034';
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowButton", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {type:type},
+            success: function (response) {
+                if (response[0].isupdate == 1) {
+                    $("#btnNewD").css("display", "block");
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#btnNewD").css("display", "none");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+        GetDataForDispatchStatus();
+    }
+
+    function ResetSinceDispatch() {
+        var dropDown = document.getElementById("sincefilterdispatch");
+        dropDown.selectedIndex = 0;
+        $("#sincefilterdispatch").val('');
+        GetDataForDispatch($('#DocumentTypeIdHdn').val());
+        }
+
+
+
+    function DispatchDocument() {
+            var DispatchDocument = $("#DispatchDocument");
+            DispatchDocument.empty().append('<option selected="selected" value="">-- select --</option>');
+        $('#DispatchDocument').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetDispatchDocumentTypeList", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { },
+                        success: function (data) {
+
+                            DispatchDocument.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        DispatchDocument.append($("<option></option>").val(this['DocmentType']).html(this['DocumentTypeName']));
+                    });
+                        }
+
+                    });
+        }
+
+    function getofcrDataAgency() {
+        $("#loader-wrapper").show();
+        var DocumentType = $("#maintype").val();
+        var Office = $("#Office").val();
+        var Office = $("#Office option:selected").val();
+        var DocumentType = $("#maintype").val();
+        var pathurl = '/References/FilteredMLADiaryListForAgencyDispatch'
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            data: {
+                Office: Office,
+                DocumentType: DocumentType
+            },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Dispatchlistdiv").html('');
+                $("#Dispatchlistdiv").html(data);
+            }
+        });
+    }
+
+    function setvalueDispatch(type) {
+        $("#Dispatchlistdiv").html('');
+        $('#maintype').val(type);
+        GetDataForDispatch(type);
+        GetAgendaDateD();
+        }
+
+    function statusvalueD() {
+        var status = '10';
+        var statusn = $("#StatusListMlaD").val();
+        if (statusn != '') {
+            status = statusn
+        }
+        else {
+            status = '10'
+        }
+
+            return status;
+
+        }
+
+    function GetAgendaDateD() {
+            var type ="Dispatch"
+        var AgendaDate = $("#AgendaDateD");
+        AgendaDate.empty().append('<option selected="selected" value="">Please select</option>');
+        $('#AgendaDateD').empty().append('<option selected="selected" value="">Please select</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetAgendaDate", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type:type },
+                success: function (data) {
+                    AgendaDate.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(data, function () {
+
+                        AgendaDate.append($("<option></option>").val(this['id']).html(this['dropagenda']));
+                    });
+                    }
+                });
+    }
+
+    $("#favouriteMLA").change(function () {
+        getofcrData();
+    });
+
+    function GetActionStatusValueDispatch() {
+        var StatusVal = 10;
+        $.each($("input[name='group2MlaD']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+        }
+
+    function hideshowcheckboxD() {
+            var id = $('#AgendaDateD').val();
+            if (id != '') {
+                $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').show();
+            }
+            else {
+                $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+            }
+       }
+
+    function GetDataForDispatch() {
+      //  $('#DocumentTypeDIdHdn').val(type);
+
+        var since = '';
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchStatusType", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid, officeid: officeid, term: term, priority: priority },
+            success: function (response) {
+                    if (response.length > 0) {
+
+                 var DocumentTypename = response[0].DocumentTypeName;
+                 if (DocumentTypename != "" || DocumentTypename != null) {
+                      $('#DocumentTypename').empty();
+                      $('#DocumentTypename').append(DocumentTypename);
+                 }
+                else {
+                     $('#DocumentTypename').empty();
+                     }
+                        $("#DispatchCount").empty();
+                        var count = response.length;
+                        $("#DispatchCount").append(count);
+                        getTableListDispatch(response);
+                        $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+
+                        $("#DispatchTableDiv").css("display", "block");
+                        $("#Dispatchlistdiv").hide();
+                        $("#loader-wrapper").hide();
+
+                        showdepartmentD();
+                        DispatchDocument();
+                    }
+                    else {
+                        $("#noDataFoundD").show();
+                        $("#noDataFoundD").css("display", "block");
+                        $("#DispatchTable").hide();
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+        });
+     }
+
+    function GetDataForDispatchN() {
+
+        var since = $("#sincefilterhdndispatch").val();
+        var status = '10';
+        var deptid = $("#DispatchDepartment").val();
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDataForDispatchStatusType", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid, officeid: officeid, term: term, priority: priority },
+                success: function (response) {
+                    if (response.length > 0) {
+
+                 var DocumentTypename = response[0].DocumentTypeName;
+                 if (DocumentTypename != "" || DocumentTypename != null) {
+                      $('#DocumentTypename').empty();
+                      $('#DocumentTypename').append(DocumentTypename);
+                 }
+                else {
+                     $('#DocumentTypename').empty();
+                     }
+                        $("#DispatchCount").empty();
+                        var count = response.length;
+                        $("#DispatchCount").append(count);
+                        getTableListDispatch(response);
+                        $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+
+                        $("#DispatchTableDiv").css("display", "block");
+                        $("#DispatchTable").show();
+                        $("#Dispatchlistdiv").hide();
+                        $("#loader-wrapper").hide();
+                        $("#noDataFoundD").hide();
+                        $("#noDataFoundD").css("display", "none");
+                    }
+                    else {
+                        $("#noDataFoundD").show();
+                        $("#noDataFoundD").css("display", "block");
+                        $("#DispatchTable").hide();
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+        });
+     }
+
+    function getTableListDispatch(tableData) {
+        $("#DispatchTable").DataTable().destroy();
+        $("#DispatchTable tbody").html('');
+        $.each(tableData, function (index, response) {
+            if (response.ReferencePriorityType == 1) {
+                //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                var img = 'High';
+            }
+            else if (response.ReferencePriorityType == 2) {
+                var img = 'Normal';
+            }
+            else if (response.ReferencePriorityType == 3) {
+                var img = 'Low';
+            }
+            if (response.ReferenceTerm == 1) {
+                var Term = 'Short';
+            }
+            else if (response.ReferenceTerm == 2) {
+                var Term = 'Medium';
+            }
+            else if (response.ReferenceTerm == 3) {
+                var Term = 'Long';
+
+            }
+
+            var editclass = ""
+            var edit = response.Editpermission;
+            if (edit == "1") {
+                editclass = "edit";
+            }
+            else {
+                editclass = "nonedit";
+            }
+
+            if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                response.ActionTakenDate = response.ActionTakenDate;
+            }
+            else {
+                response.ActionTakenDate = "";
+            }
+
+            if (response.ActionTakenFile != "") {
+                var Actionpath1 = "https://e-nigam.punjab.gov.in" + response.ActionTakenFile;
+                var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+            }
+            else {
+                var link = '';
+            }
+
+                $("#DispatchTable tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td class= 'hideshow td-data' style = 'font-size: 12px; text-align:center; width: 3%;' > <input type='checkbox' id='" + response.RefId + "' onclick=checkInAgendaD(this) ></td > " +
+                    "<td class= 'td-data' style=' width: 25%;'>" + response.Subject + "</td>" +
+                    "<td class= 'td-data' style='width: 6%;'><span >" + response.LetterDate + "</span></td>" +
+                    "<td class= 'td-data' ><span>" + response.ToDept + "-" + response.ToOffice + "</span></td>" +
+                    "<td class= 'td-data' style='width: 25%;'>" + response.ad + "</td>" +
+                    "<td class= 'td-data' style='width: 10%;'>" + response.DocumentTypeName + "</td>" +
+                    "<td class= 'td-data' style='width: 10%;'>" + response.StatusName + "<br/>" + response.ActionTakenDate + "<br/>" + link + "</td>" +
+                    "<td class= 'td-data' style='width: 6%;'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                    "<td class= 'td-data' style='width: 6%;'>" + img + "</td>" +
+                    "<td class= 'td-data' style=' width: 6%;'>" + Term + "</td>" +
+                    "<td class='" + editclass +"'  style=''><a data-rel='tooltip' class='green  tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDispatch(this) ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>"
+                    + "</tr>"
+
+               );
+        });
+
+
+        $('#DispatchTable').DataTable({
+            paging: true,
+            searching: true,
+            bInfo: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf'
+            ]
+        });
+
+
+
+    }
+
+        function GetDataForDispatchStatus() {
+           // alert(1);
+      //  $('#DocumentTypeDIdHdn').val(type);
+
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '20';
+
+
+
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardStatus", "Agenda")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, officeid: officeid, term: term, priority: priority },
+            success: function (result) {
+
+
+                if (result.length > 0) {
+
+                    $("#MeetingTable").html(result);
+                    $("#loader-wrapper").hide();
+                    $("#MeetingTable").DataTable({
+                        "bLengthChange": false,
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'excelHtml5',
+                            'csvHtml5',
+                            'pdfHtml5'
+                        ],
+                        //columnDefs: [{ type: 'date', 'targets': [0] }],
+                        columnDefs: [
+                            {
+                                target: 0,
+                                visible: false,
+                                searchable: false,
+                            }
+                        ],
+                        order: [[0, 'desc']]
+                    });
+                    $("#MeetingTable").removeClass("dataTable");
+
+                }
+                else {
+                    $("#MeetingTable").DataTable();
+                    $("#MeetingTable").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        showdepartmentD();
+        DispatchDocument();
+    }
+
+    function GetDataForDispatchStatusN() {
+
+        var status = '10';
+        var deptid = $("#DispatchDepartment").val();
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+        var since = $("#sincefilterhdndispatch").val();
+
+        //alert(deptid);
+
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardStatus", "Agenda")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid,since:since, officeid: officeid, term: term, priority: priority },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#MeetingTable").html(result);
+                    $("#loader-wrapper").hide();
+                    $("#MeetingTable").dataTable();
+                    $("#MeetingTable").removeClass("dataTable");
+                }
+                else {
+                    $("#MeetingTable").html("No Data Found");
+                    $("#MeetingTable").DataTable();
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        }
+
+
+        function GetDispatchDasdhboardDataTotalStatus(obj) {
+
+            var deptid = $(obj).attr('deptid');
+            var actionCode = $(obj).attr('DocTypeId');
+            var status = $("#StatusListMlaD").val();
+            var statusnew = '';
+            if (status != '') {
+                statusnew = status
+            }
+            else {
+                statusnew = actionCode;
+            }
+            var deptidnew = '';
+            var deptidui = $("#DispatchDepartment").val();
+
+            if (deptidui != '') {
+                deptidnew = deptidui
+            }
+            else {
+                deptidnew = '';
+            }
+
+            var officeid = $("#DispatchoffId").val();
+            var documenttypedispatch = $("#DispatchDocument").val();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var since = $("#sincefilterhdndispatch").val();
+            $("#loader-wrapper").show();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDashboardDataForDiaryStatusTotalCount", "Agenda")',
+                datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: { agendaid: deptid , deptid: deptidnew, officeid: officeid, documentype: documenttypedispatch, status: statusnew, priority: priority, term: term, since: since },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        }
+
+    function GetDataForDispatchType() {
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardType", "Agenda")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, officeid: officeid, term: term, priority: priority },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDataForDispatchTypeN() {
+
+        var status = '10';
+        var deptid = $("#DispatchDepartment").val();
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+        var since = $("#sincefilterhdndispatch").val();
+
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryDashboardTypeFilter", "Agenda")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid,since:since, officeid: officeid, term: term, priority: priority },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+
+    function CreateNewDispatch() {
+        $('#loginModalDispatchbody').html('');
+        $("#loader-wrapper").show();
+        $.ajax({
+            url: "/References/NewMlaDispatchEntryForm",
+            type: 'GET',
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModalDispatch").css("display","block");
+                    $('#loginModalDispatchbody').html(data);
+                }
+                else {
+                    alert("error");
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    $('#submitButton').click(function (e) {
+
+        $("#loader-wrapper").show();
+        var District = $("#District  option:selected").val();
+        var Constituency = $("#Constituency  option:selected").val();
+        var Agency = $("#Agency option:selected").val();
+        var Office = $("#Office option:selected").val();
+        var Status = $("#favouriteMLA option:selected").val();
+
+        var SubType = document.getElementById("Pendency");
+        var Pendency = SubType.options[SubType.selectedIndex].value;
+        var DocumentType = $("#maintype").val();
+        var pathurl = '/References/FilteredMLADiaryListForAgency'
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            data: {
+                District: District,
+                Constituency: Constituency,
+                Agency: Agency,
+                Office: Office,
+                Status: Status,
+                Pendency: Pendency,
+                DocumentType: DocumentType
+            },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Dispatchlistdiv").html('');
+                $("#Dispatchlistdiv").html(data);
+
+            }
+        });
+
+        filterCount();
+        if (!$(e.target).is('.panel-body')) {
+            $('.collapse').collapse('hide');
+        }
+    });
+
+    //function Status() {
+
+    //    $("#loader-wrapper").show();
+    //    var Status = $("#favouriteMLA option:selected").val();
+    //    var Office = $("#Office option:selected").val();
+    //    if (Status == 10) {
+    //        // alert(Status);
+    //        $("#loader-wrapper").hide();
+    //        return false;
+    //    }
+    //    else {
+    //    }
+
+    //    var pathurl = '/References/Filtered_MLADiaryListForAll'
+    //    $.ajax({
+    //        url: pathurl,
+    //        type: 'GET',
+    //        async: true,
+    //        data: { Status: Status, Office: Office },
+    //        // data:{ params },
+    //        success: function (data) {
+    //            $("#loader-wrapper").hide();
+    //            $("#Dispatchlistdiv").html('');
+    //            $("#Dispatchlistdiv").html(data);
+    //        }
+    //    });
+    //}
+
+    function filterCount() {
+
+        $("#spnCount").text("");
+        var counter = 0;
+        var Office = $("#Office option:selected").val();
+
+        if (Office != 0 && typeof Office != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Agency = $("#Agency option:selected").val();
+        if (Agency != 0 && typeof Agency != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var District = $("#District option:selected").val();
+        if (District != 0 && typeof District != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Constituency = $("#Constituency option:selected").val();
+        if (Constituency != 0 && typeof Constituency != 'undefined') {
+            counter = counter + 1;
+        }
+        //alert(counter);
+        if (counter > 0) {
+
+            $("#spnCount").text(counter);
+            $("#spnCount").show();
+        }
+        else {
+            $("#spnCount").hide();
+            counter = 0;
+        }
+        counter = 0;
+    }
+
+    function ActionStatusCheckDispatch() {
+        var type = $('#DocumentTypeDIdHdn').val();
+        GetDataForDispatch(type);
+    }
+
+   function SendToAgendaD(refid) {
+
+        var agendaid = $('#AgendaDateD').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+
+                    }
+                    if (response == "0") {
+                        alert("Term Updation Failed.");
+                    }
+                }
+            });
+    }
+
+    function checkInAgendaD(idd) {
+        var refid = idd.id;
+
+        var agendaid = $('#AgendaDateD').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckInAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Already Added in Agenda")
+                    }
+                    if (response == "0") {
+                        SendToAgendaD(refid)
+                    }
+                }
+            });
+        }
+
+    function EditMlaDispatch(IDD) {
+        var ID = IDD.id;
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var pathurl = '/References/EditMlaDispatchForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                $('#loginModalDispatchbody').html('');
+                //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModalDispatch").css("display", "block");
+                    $('#loginModalDispatchbody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+        }
+
+
+        function EditMlaDiary(IDD) {
+            var ID = IDD.id;
+            $('#loginModaldiaryEditbody').html('');
+            var pathurl = '@Url.Action("EditMlaDairyForm", "References")';
+            //  var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { ID: ID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    // //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#loginModalDispatch").css("display", "block");
+                        $('#loginModalDispatchbody').html(data);
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+        }
+
+    function closedispatch() {
+            $("#loginModalDispatch").css("display", "none");
+            $('#loginModalDispatchbody').html('');
+        }
+
+    function closedispatchCount() {
+            $("#loginModalDispatchCount").css("display", "none");
+        }
+
+    function closedispatchEdit() {
+            $("#loginModalDispatchEdit").css("display", "none");
+            $('#loginModalDispatchbodyEdit').html('');
+
+        }
+
+    function GetDispatchDasdhboardDataStatusType(obj) {
+
+        var agendaId = $(obj).attr('deptid');
+        var docid = $(obj).attr('DocTypeId');
+        //alert(docid);
+            var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = docid;
+        }
+        else {
+            statusnew = status;
+        }
+        deptId = $("#DispatchDepartment").val();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var since = $("#sincefilterhdndispatch").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+            $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAgendaDataForDiaryCount", "Agenda")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { agendaid: agendaId,status: statusnew, since: since, deptid: deptId, officeid: officeid, term: term, priority: priority },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+    function getTableListDispatchCount(tableData) {
+            $("#DispatchTableCount").DataTable().destroy();
+            $("#DispatchTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+                if (response.ReferencePriorityType == 1) {
+                    //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                    var img = 'High';
+                }
+                else if (response.ReferencePriorityType == 2) {
+                    var img = 'Normal';
+                }
+                else if (response.ReferencePriorityType == 3) {
+                    var img = 'Low';
+                }
+                if (response.ReferenceTerm == 1) {
+                    var Term = 'Short';
+                }
+                else if (response.ReferenceTerm == 2) {
+                    var Term = 'Medium';
+                }
+                else if (response.ReferenceTerm == 3) {
+                    var Term = 'Long';
+
+                }
+
+                var editclass = ""
+                var edit = response.Editpermission;
+                if (edit == "1") {
+                    editclass = "edit";
+                }
+                else {
+                    editclass = "nonedit";
+                }
+
+                if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                    response.ActionTakenDate = response.ActionTakenDate;
+                }
+                else {
+                    response.ActionTakenDate = "";
+                }
+
+                if (response.ActionTakenFile != "") {
+                    var Actionpath1 = "https://cmnirdesh.punjab.gov.in" + response.ActionTakenFile;
+                    var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+                }
+                else {
+                    var link = '';
+                }
+
+                $("#DispatchTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td class='td-data' style='width: 25%;'>" + response.Subject + "</td>" +
+                    "<td class='td-data' style='width: 6%;'><span >" + response.LetterDate + "</span></td>" +
+                    "<td class='td-data' style=''><span>" + response.FromDept + "-" + response.FromOffice + "</span></td>" +
+                    "<td class='td-data' style='width: 25%;'>" + response.ad + "</td>" +
+                    "<td class='td-data' style='width: 10%;'>" + response.DocumentTypeName + "</td>" +
+                    "<td class='td-data' style='width: 10%;'>" + response.StatusName + "<br/>" + response.ActionTakenDate + "<br/>" + link + "</td>" +
+                    "<td class='td-data' style='width: 6%;'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                    "<td class='td-data' style='width: 6%;'>" + img + "</td>" +
+                    "<td class='td-data' style='width: 6%;'>" + Term + "</td>" +
+                    "<td class='" + editclass +"'  style=''><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDiary(this) ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>"
+                    + "</tr>"
+
+                );
+            });
+
+
+            $('#DispatchTableCount').DataTable({
+                paging: true,
+                searching: true,
+                bInfo: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ]
+            });
+
+
+
+        }
+
+       function GetContactList(obj) {
+         var agendaId = $(obj).attr('DeptId');
+           var agendaPath = $(obj).attr('agendaPath');
+           var Department = $(obj).attr('Department');
+           $('#contactModal').modal('show');
+           $('#hdnAgendaIdSMS').val(agendaId);
+           $('#hdAgendaPdfPathSMS').val(agendaPath);
+
+           loadContacts(Department);
+        }
+
+
+        function GetContactListEmail(obj) {
+            var agendaId = $(obj).attr('DeptId');
+            var agendaPath = $(obj).attr('agendaPath');
+            var Department = $(obj).attr('Department');
+            $('#contactModalEmail').modal('show');
+            $('#hdnAgendaIdEmail').val(agendaId);
+            $('#hdAgendaPdfPathEmail').val(agendaPath);
+            loadContactsEmail(Department);
+        }
+
+
+        function loadContacts(agendaId) {
+        $('#contactBody').html('');
+        $.ajax({
+            url: '@Url.Action("GetCirculationContacts", "Agenda")',
+            type: 'GET',
+            data: {
+                Department: agendaId
+            },
+            success: function (data) {
+                let grouped = groupBy(data, 'OfficeType');
+                let html = '';
+
+                for (let officeType in grouped) {
+                    html += `
+                        <tr class="group-header table-primary" data-group="${officeType.trim()}">
+                          <td colspan="4" class="fw-bold">
+                            <i class="fa fa-landmark me-2 text-primary"></i> ${officeType}
+                          </td>
+                          <td class="text-end">
+                            <label class="form-check-label me-2" for="selectAll-${officeType.trim()}"></label>
+                            <input type="checkbox"
+                                   class="form-check-input select-all-group"
+                                   id="selectAll-${officeType.trim()}"
+                                   data-group="${officeType.trim()}"
+                                   title="Select All in ${officeType}" />
+                          </td>
+                        </tr>
+                        `;
+                    grouped[officeType].forEach(function (item) {
+                        html += `
+                            <tr>
+                                <td>${item.Name}</td>
+                                <td>${item.Designation}</td>
+                                <td>${item.MobileNo}</td>
+                                <td>${item.EmailId}</td>
+                                <td>
+                                    <div class="form-check d-flex align-items-center gap-2">
+                                        <input class="form-check-input" type="checkbox" value="${item.MobileNo}">
+                                        <span class="delete-icon" style="cursor: pointer;" onclick="removeRow(this)">❌</span>
+                                    </div>
+                                </td>
+                            </tr>`;
+                    });
+                }
+
+                $('#contactBody').html(html);
+            }
+        });
+        }
+
+        function loadContactsEmail(agendaId) {
+        $('#contactBodyEmail').html("");
+        $.ajax({
+        url: '@Url.Action("GetCirculationContacts", "Agenda")',
+            type: 'GET',
+            data: {
+                Department: agendaId
+            },
+            success: function (data) {
+            let grouped = groupBy(data, 'OfficeType');
+            let html = '';
+
+            for (let officeType in grouped) {
+                html += `
+                    <tr class="group-header table-primary" data-group="${officeType.trim()}">
+                      <td colspan="4" class="fw-bold">
+                        <i class="fa fa-landmark me-2 text-primary"></i> ${officeType}
+                      </td>
+                      <td class="text-end">
+                        <label class="form-check-label me-2" for="selectAll-${officeType.trim()}"></label>
+                        <input type="checkbox"
+                               class="form-check-input select-all-group"
+                               id="selectAll-${officeType.trim()}"
+                               data-group="${officeType.trim()}"
+                               title="Select All in ${officeType}" />
+                      </td>
+                    </tr>
+                    `;
+                grouped[officeType].forEach(function (item) {
+                    html += `
+                        <tr>
+                            <td>${item.Name}</td>
+                            <td>${item.Designation}</td>
+                            <td>${item.MobileNo}</td>
+                            <td>${item.EmailId}</td>
+                            <td>
+                                <div class="form-check d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" value="${item.EmailId}">
+                                    <span class="delete-icon" style="cursor: pointer;" onclick="removeRow(this)">❌</span>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+            }
+
+            $('#contactBodyEmail').html(html);
+        }
+    });
+}
+
+
+       function groupBy(array, key) {
+            return array.reduce((result, currentItem) => {
+                (result[currentItem[key]] = result[currentItem[key]] || []).push(currentItem);
+                return result;
+            }, {});
+        }
+
+       function addManualRow() {
+            // Add manual header only once
+            if ($('#contactBody .manual-header').length === 0) {
+                $('#contactBody').prepend(`<tr class="group-header manual-header"><td colspan="5">🆕 Add New Contact</td></tr>`);
+            }
+
+            const html = `
+                 <tr class="manual-row">
+                    <td><input type="text" class="form-control" placeholder="Name" /></td>
+                    <td><input type="text" class="form-control" placeholder="Designation" /></td>
+                    <td><input type="text" class="form-control" placeholder="Mobile No." /></td>
+                    <td><input type="email" class="form-control" placeholder="Email" /></td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <select class="form-select form-select-sm usertype-select">
+                                <option value="House">🏠 House</option>
+                                <option value="FNCC">🏛 FNCC</option>
+                            </select>
+                            <button type="button" class="btn btn-sm btn-success" onclick="saveManualRow(this)">💾</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            $('#contactBody .manual-header').after(html);
+        }
+
+       function addManualRowEmail() {
+            // Add manual header only once
+            if ($('#contactBodyEmail .manual-header').length === 0) {
+                $('#contactBodyEmail').prepend(`<tr class="group-header manual-header"><td colspan="5">🆕 Add New Contact</td></tr>`);
+            }
+
+            const html = `
+           <tr class="manual-row">
+              <td><input type="text" class="form-control" placeholder="Name" /></td>
+              <td><input type="text" class="form-control" placeholder="Designation" /></td>
+              <td><input type="text" class="form-control" placeholder="Mobile No." /></td>
+              <td><input type="email" class="form-control" placeholder="Email" /></td>
+              <td>
+                  <div class="d-flex align-items-center gap-2">
+                      <select class="form-select form-select-sm usertype-select">
+                          <option value="House">🏠 House</option>
+                          <option value="FNCC">🏛 FNCC</option>
+                      </select>
+                      <button type="button" class="btn btn-sm btn-success" onclick="saveManualRowEmail(this)">💾</button>
+                  </div>
+              </td>
+          </tr>
+      `;
+
+            $('#contactBodyEmail .manual-header').after(html);
+        }
+
+
+
+       function saveManualRow(btn) {
+            const row = $(btn).closest('tr');
+            const inputs = row.find('input');
+            const userType = row.find('.usertype-select').val().trim();
+            const name = inputs.eq(0).val().trim();
+            const designation = inputs.eq(1).val().trim();
+            const mobile = inputs.eq(2).val().trim();
+            const email = inputs.eq(3).val().trim();
+
+            if (!name || !designation || !mobile || !userType) {
+                alert("All fields are required.");
+                return;
+            }
+            const normalizedUserType = userType;
+            const groupIcon = normalizedUserType === 'House' ? '🏠' : '🏛️';
+            let $existingHeader = null;
+            $('#contactBody .group-header').each(function () {
+                const val = $(this).data('group');
+                if (val && val.toString().trim() === normalizedUserType) {
+                    $existingHeader = $(this);
+                    return false;
+                }
+            });
+            const newRowHtml = `
+            <tr>
+            <td>${name}</td>
+            <td>${designation}</td>
+            <td>${mobile}</td>
+            <td>${email}</td>
+            <td>
+                <div class="form-check d-flex align-items-center gap-2">
+                    <input class="form-check-input" type="checkbox" value="${mobile}">
+                  <span class="delete-icon" style="cursor: pointer;" onclick="removeRow(this)">❌</span>
+                </div>
+            </td>
+            </tr>`;
+
+            if ($existingHeader) {
+                const $groupRows = $existingHeader.nextUntil('.group-header');
+                if ($groupRows.length > 0) {
+                    $groupRows.last().after(newRowHtml);
+                } else {
+                    $existingHeader.after(newRowHtml);
+                }
+            } else {
+                const newHeader = `<tr class="group-header" data-group="${userType.trim()}"><td colspan="5">${groupIcon} ${userType}</td></tr>`;
+                $('#contactBody').append(newHeader + newRowHtml);
+            }
+            row.remove();
+            alert("Saved successfully");
+
+            // Remove the manual input header and row if no other manual rows exist
+            $('.manual-header').remove();
+        }
+
+        function saveManualRowEmail(btn) {
+            const row = $(btn).closest('tr');
+            const inputs = row.find('input');
+
+            const userType = row.find('.usertype-select').val().trim();
+            const name = inputs.eq(0).val().trim();
+            const designation = inputs.eq(1).val().trim();
+            const mobile = inputs.eq(2).val().trim();
+            const email = inputs.eq(3).val().trim();
+
+            if (!name || !designation || !mobile || !userType) {
+                alert("All fields are required.");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("SaveManualContact", "Agenda")',
+                type: 'POST',
+                data: {
+                    //DeptId: $('#DeptId').val(),
+                    MemberType: userType,
+                    MemberName: name,
+                    Designation: designation,
+                    Mobile: mobile,
+                    Email: email
+                },
+                success: function (res) {
+
+                    if (!res.success) {
+                        alert(res.message);
+                        return;
+                    }
+
+                    // ✅ UI update only after DB success
+                    const groupIcon = userType === 'House' ? '🏠' : '🏛️';
+                    let $existingHeader = null;
+
+                    $('#contactBodyEmail .group-header').each(function () {
+                        if ($(this).data('group') === userType) {
+                            $existingHeader = $(this);
+                            return false;
+                        }
+                    });
+
+                    const newRowHtml = `
+            <tr>
+                <td>${name}</td>
+                <td>${designation}</td>
+                <td>${mobile}</td>
+                <td>${email}</td>
+                <td>
+                    <div class="form-check d-flex align-items-center gap-2">
+                        <input class="form-check-input" type="checkbox" value="${email}">
+                        <span class="delete-icon" style="cursor:pointer" onclick="removeRow(this)">❌</span>
+                    </div>
+                </td>
+            </tr>`;
+
+                    if ($existingHeader) {
+                        $existingHeader.nextUntil('.group-header').last().after(newRowHtml);
+                    } else {
+                        const newHeader = `
+                <tr class="group-header" data-group="${userType}">
+                    <td colspan="5">${groupIcon} ${userType}</td>
+                </tr>`;
+                        $('#contactBodyEmail').append(newHeader + newRowHtml);
+                    }
+
+                    row.remove();
+                    $('.manual-header').remove();
+
+                    // ✅ ONLY ONE ALERT HERE
+                    alert("Saved successfully");
+                },
+                error: function () {
+                    alert("Server error while saving.");
+                }
+            });
+        }
+
+
+
+
+       $(document).on('change', '.select-all-group', function () {
+            const groupName = $(this).data('group').toString().trim();
+            let $start = $(`.group-header[data-group="${groupName}"]`);
+            let $groupRows = $start.nextUntil('.group-header');
+            $groupRows.find('input.form-check-input[type="checkbox"]').prop('checked', this.checked);
+       });
+
+
+       function removeRow(element) {
+            if (confirm("Are you sure you want to delete this contact?")) {
+                $(element).closest('tr').remove();
+            }
+        }
+
+        $('#btnSMS').on('click', function () {
+
+            var agendaId = $('#hdnAgendaIdSMS').val();
+            var agendaPath = $('#hdAgendaPdfPathSMS').val();
+            var DocumentType = '20';
+          // Collect selected mobile numbers
+         let selectedNumbers = [];
+
+        $('#contactBody input.form-check-input[type="checkbox"]:checked').each(function () {
+            selectedNumbers.push($(this).val());
+        });
+
+        if (selectedNumbers.length === 0) {
+            alert("Please select at least one contact.");
+            return;
+        }
+
+            // Send to controller
+            $.ajax({
+                url: '@Url.Action("SendSMS", "Agenda")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ mobileNumbers: selectedNumbers, agendaId: agendaId, agendaPath: agendaPath, DocumentType }),
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (response) {
+                    $("#loader-wrapper").hide();
+                    alert("SMS sent successfully.");
+                },
+                error: function () {
+                    alert("An error occurred while sending SMS.");
+                }
+            });
+  });
+
+
+   $('#btnEmail').on('click', function () {
+       // Collect selected mobile numbers
+       //alert('')
+       var agendaId = $('#hdnAgendaIdEmail').val();
+       var agendaPath = $('#hdAgendaPdfPathEmail').val();
+       var covering = $('#SelectedCoveringLetters').val();
+       var DocumentType = '20';
+       //alert(agendaId);
+       //alert(agendaPath);
+       //alert(covering);
+       let selectedEmails = [];
+
+       $('#contactBodyEmail input.form-check-input[type="checkbox"]:checked').each(function () {
+           selectedEmails.push($(this).val());
+       });
+
+       if (selectedEmails.length === 0) {
+           alert("Please select at least one contact.");
+           return;
+       }
+
+           // Send to controller
+           $.ajax({
+               url: '@Url.Action("SendEmailFromAzureFile", "Agenda")',
+               type: 'POST',
+               contentType: 'application/json',
+               data: JSON.stringify({ emails: selectedEmails, agendaId: agendaId, agendaPath: agendaPath, CoveringLetter: covering, DocumentType }),
+               beforeSend: function () {
+                   $('#loader-wrapper').show();
+               },
+               success: function (response) {
+                   $("#loader-wrapper").hide();
+                   alert(response.message);
+               },
+               error: function () {
+                   alert("An error occurred while sending Email.");
+               }
+           });
+   });
+
+
+
+
+        var selectedCoveringPdfPaths = [];
+
+        function UpdateCoveringLetterStatus(obj) {
+            var pdfPath = $(obj).attr('pdfpath'); // attribute name is case-sensitive
+
+            if (!pdfPath) return;
+
+            const path = pdfPath.trim();
+
+            if ($(obj).prop("checked")) {
+                if (!selectedCoveringPdfPaths.includes(path)) {
+                    selectedCoveringPdfPaths.push(path);
+                }
+            } else {
+                selectedCoveringPdfPaths = selectedCoveringPdfPaths.filter(p => p !== path);
+            }
+
+
+
+            // Update hidden field if needed
+            $("#SelectedCoveringLetters").val(selectedCoveringPdfPaths.join(','));
+           // alert(selectedCoveringPdfPaths);
+
+        }
+    </script>
+
+
+
+    <style>
+        .pdf {
+            width: 5%;
+        }
+
+        .dept {
+            width: 15%;
+        }
+
+        .center {
+            width: 10%;
+        }
+
+        .Subject {
+            width: 25%;
+        }
+
+        .edit {
+            display: block;
+        }
+
+        .nonedit {
+            display: none;
+        }
+
+        .accordion-toggle:hover {
+            text-decoration: none;
+        }
+
+        .hideshow {
+            /*display:none;*/
+        }
+
+        .hshow {
+            display: block;
+        }
+
+        .btn-sq-lg {
+            width: 150px !important;
+            height: 150px !important;
+        }
+
+        .btn-sq {
+            width: 100px !important;
+            height: 100px !important;
+            font-size: 8px;
+            margin-left: 20px;
+        }
+
+        .btn-sq-sm {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 10px;
+        }
+
+        .btn-sq-xs {
+            width: 25px !important;
+            height: 25px !important;
+            padding: 2px;
+        }
+        /*
+        .sblFullScreen select, input, textarea {
+            width: 10%;
+        }*/
+
+        .active1 {
+            width: 120px !important;
+            height: 120px !important;
+            font-size: 18px;
+            margin-left: 50px;
+        }
+
+        .dark-font .breadcrumb-item + .breadcrumb-item::before {
+            color: #000;
+            font-size: x-large;
+        }
+
+        .dark-font .breadcrumb-item.active {
+            color: #455a64;
+        }
+
+        .small-box {
+            position: relative;
+            display: block;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .badge-notify {
+            background: red !important;
+            background-color: red !important;
+            position: relative;
+            top: -12px;
+            left: -13px;
+            font-weight: bold;
+        }
+
+        .small-box h3 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            padding: 0;
+            white-space: nowrap;
+            font-family: "Proxima Nova Regular","Segoe UI",Roboto,"Droid Sans","Helvetica Neue",Arial,sans-serif;
+        }
+
+        .small-box p {
+            font-size: 14px;
+            font-weight: 600;
+            margin: -4px;
+        }
+
+        .small-box > .inner {
+            padding: 10px;
+            max-height: 90px;
+        }
+
+        .small-box .icon {
+            position: absolute;
+            top: 0px;
+            bottom: 5px;
+            right: 5px;
+            z-index: 0;
+            font-size: 50px;
+            color: rgba(0,0,0,.15);
+        }
+
+        .small-box:hover > .icon > .fa {
+            font-size: 1.2em;
+            transition-duration: 0.5s;
+            transition-timing-function: linear;
+        }
+
+        .collapse.in {
+            display: inline-block !important;
+            width: 100%;
+        }
+
+
+        .small-box > .small-box-footer {
+            position: relative;
+            text-align: center;
+            padding: 3px 0;
+            color: #fff;
+            color: rgba(255,255,255,.8);
+            display: block;
+            z-index: 10;
+            background: rgba(0,0,0,.1);
+            text-decoration: none;
+        }
+
+        @@media (min-width: 800px) {
+            .col-md-2 {
+                width: 183px !important;
+            }
+
+            .marg129 {
+                margin-top: 203px !important;
+            }
+        }
+
+        @@media (max-width: 564px) {
+            .footer {
+                padding-top: 100px !important;
+            }
+        }
+
+        .sts {
+            display: none;
+        }
+    </style>
+</head>
+
+
+
+</html>

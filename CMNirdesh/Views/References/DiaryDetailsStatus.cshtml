@@ -1,0 +1,1072 @@
+﻿
+
+@model  CMNirdesh.Models.LstDashboard
+
+@{
+    int Totaldiary = Model._LstDashboard.Sum(x => x.Count);
+}
+<input type="hidden" id="intval" name="intval" value="" />
+<input type="hidden" id="diarydispatchValue" name="diarydispatchValue" value="" />
+<input type="hidden" id="DocumentTypeIdHdn" name="DocumentTypeIdHdn" value="" />
+<input type="hidden" id="sincefilterhdndiary" name="sincefilterhdndiary" value="" />
+
+<html>
+
+<body>
+    @{Html.RenderPartial("~/Views/References/_LeftNavigationMenu.cshtml");}
+
+    <div class="main-content">
+        <div class="widget-box " id="divAction">
+            <div class="widget-header widget-header-flat">
+                <h4 class="spn_select">  <span id="selected" class=""></span></h4>
+                <div class="widget-toolbar no-border">
+                    <button class="btn btn-xs btn-primary bigger" id="btnNew" style="display:none;" onclick="CreateNew()">
+                        <i class="ace-icon fa fa-pencil-square-o"></i>
+                        New
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 content-pad-0">
+            @Html.Hidden("maintype", "0")
+            <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
+            <div class="row">
+                @foreach (var mdl in Model._LstDashboard)
+                {
+                    <div class="col-md-2" title="Click to See Detail List" style="padding-left: 0px; margin-right: 20px;">
+                        <div class="small-box @mdl.CssClass" id="@mdl.DocumentTypeId" onclick="setvalueDiary(this.id);">
+                            <div class="inner">
+                                <h3 class="">@mdl.Count</h3>
+                                <p style="color:white;">@mdl.DocumentTypeName <br /></p>
+                            </div>
+                            @*<div class="icon">
+                                    <i class="fa fa-road"></i>
+                                </div>*@
+                            <div class="icon">
+                                <div class="dash_coman @mdl.documentId">
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+        </div>
+
+        <div class="row" id="DiaryTableDiv" style="display: none;">
+
+
+            <div class="col-md-12 col-lg-12 col-xl-12 row">
+                <div class="col-md-12 col-lg-12 col-xl-12 row" style="background: #175d91; height:45px;">
+                    <div class="col-md-6 col-lg-6 col-xl-6">
+                        <span style="color: white; font-size: 25px;" id="DocumentTypename"></span>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xl-3">
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xl-3">
+                        <span class="badge badge-danger pull-right" style="margin-top:15px;">Count  <span class="badge badge-danger" id="DiaryCount"></span></span>
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-2 col-lg-2 col-xl-2">
+                    <div>
+                        <label class="form fc"> <b>Department</b></label>
+                        <select class="form-control" id="DiaryDepartment" name="DiaryDepartment"></select>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-lg-2 col-xl-2 ">
+                    <div>
+                        <label class="form fc"> <b>Office</b></label><br />
+                        <select style="min-width: 50%;" class="form-control" id="DiaryoffId" name="DiaryoffId"></select>
+                    </div>
+                </div>
+
+                <div class="col-md-1 col-lg-1 col-xl-1 pull-right">
+                    <div>
+                        <label class="form fc"> <b>Status</b></label>
+                        <select class="form-control" id="StatusListMla" name="StatusListMla"></select>
+                    </div>
+                </div>
+
+                <div class="col-md-1 col-lg-1 col-xl-1 pull-right">
+                    <div>
+                        <label class="form fc"> <b>Term</b></label>
+                        <select class="form-control" name="DiaryTerm" id="DiaryTerm">
+                            <option value="" selected>-- Select --</option>
+                            <option value="1">Short</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Long</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-1 col-lg-1 col-xl-1 pull-right">
+                    <div>
+                        <label class="form fc"> <b>Priority</b></label>
+                        <select class="form-control" name="DiaryPriority" id="DiaryPriority">
+                            <option value="" selected>-- Select --</option>
+                            <option value="1">High</option>
+                            <option value="2">Normal</option>
+                            <option value="3">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-md-2 col-lg-2 col-xl-2 pull-right">
+                    <div>
+                        <label class="form fc"> <b>Last Action Since</b></label><br />
+                        <select class="form-control" name="since" id="sincefilterdiary">
+                            <option value="" selected="selected" onclick="ResetSinceDiary();">-- select --</option>
+                            <option value="1week">1 Week</option>
+                            <option value="2week">2 Week</option>
+                            <option value="1month">1 Months</option>
+                            <option value="3month">3 Months</option>
+                            <option value="6month">6 Months</option>
+                            <option value="year">1 Year</option>
+                            <option value="morethanyear">1 Year +</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-lg-2 col-xl-2 col-lg-2 pull-right">
+                    <div>
+                        <label class="form fc"> <b>Agenda</b></label>
+                        <select class="form-control" id="AgendaDate" name="AgendaDate" onchange="hideshowcheckbox();"></select>
+                    </div>
+                </div>
+
+            </div>
+
+            <h2 id="noDataFound" style="display: none;">No Data Found</h2>
+
+            <div class="table-responsive" style="margin-top: 10px;">
+                <table class="table table-bordered" id="DiaryTable">
+                    <thead>
+                        <tr>
+                            <th class="hideshow" style="text-align: center; width:3%;"><span class="font-weight-bold"></span></th>
+                            <th style="text-align: center; width:25%;"><span class="font-weight-bold">Subject</span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold ">Release Date </span></th>
+                            <th style="text-align: center; width: 15%;"><span class="font-weight-bold">Department </span></th>
+                            <th style="text-align: center; width: 25%;"><span class="font-weight-bold">Brief of Last Action Taken</span></th>
+                            <th style="text-align: center; width: 10%;"><span class="font-weight-bold">Status</span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold">Ref.Id /<br />Date </span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold">Priority </span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold">Term </span></th>
+                            <th style="text-align: center;"><span class="font-weight-bold">...more</span></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModalDiary"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl modal_design" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close close_btn" onclick="closediary()" data-dismiss="modal">x</button>
+                    <h4 class="widget-title modal_heading">Diary</h4>
+                </div>
+                <div class="modal-body" id="loginModaldiarybody">
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModaldiaryEdit"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl modal_design" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close close_btn" onclick="closediaryEdit()" data-dismiss="modal">x</button>
+                    <h4 class="widget-title modal_heading">Diary</h4>
+                </div>
+                <div class="modal-body" id="loginModaldiaryEditbody">
+
+                </div>
+              
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+
+
+
+
+
+<head>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/responsive.bootstrap.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <script>
+
+
+    $(document).ready(function () {
+
+        var offNamenew = '@Session["offNamenew"]';
+        var deptnameee = '@Session["deptnameee"]';
+        $("#offNamehdndiary").append(offNamenew);
+        $("#deptNamehdndiary").append(deptnameee);
+        showdepartment();
+            ShowButton();
+        var Text = "References Total Diary: " + "@Totaldiary";
+        $('#selected').text(Text);
+
+        $("#Pendency").hide();
+        $('#SinceLabel').hide();
+
+        $("#chkDiaryRef").click(function () {
+           // DiaryRefWise();
+            $("#DiaryTableDiv").css("display", "none");
+            $("#DiaryTableDiv").hide();
+            var diaryvalue = "Ref";
+            $("#diarydispatchValue").val(diaryvalue);
+        });
+
+        $("#chkDiaryAction").click(function () {
+          //  DiaryRefActionWise();
+            var diaryvalue = "Act";
+            $("#diarydispatchValue").val(diaryvalue);
+            $("#DiaryTableDiv").css("display", "none");
+            $("#DiaryTableDiv").hide();
+
+        });
+
+
+
+    });
+
+    function showdepartment() {
+        var type = 'Diary';
+              var DiaryDepartment = $("#DiaryDepartment");
+              DiaryDepartment.empty().append('<option selected="selected" value="">-- select --</option>');
+        $('#DiaryDepartment').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetAgendaDepartment", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type:type },
+                        success: function (data) {
+
+                            DiaryDepartment.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        DiaryDepartment.append($("<option></option>").val(this['deptId']).html(this['deptname']));
+                    });
+                        }
+
+                    });
+
+              BindActionStatusMladiary();
+
+        }
+
+    function statusvalue() {
+            var status = '10';
+        var statusn = $("#StatusListMla").val();
+            if (statusn != '') {
+                status = statusn
+            }
+            else {
+                status = '10'
+            }
+            return status;
+        }
+
+    $("#DiaryDepartment").change(function () {
+            var id = $("#DiaryDepartment").val();
+        var DiaryoffId = $("#DiaryoffId");
+        DiaryoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+        $('#DiaryoffId').empty().append('<option selected="selected" value="">-- select --</option>');
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetOfficebyDepartmentId", "References")',
+                datatype: "Json",
+                data: { deptid: id },
+                success: function (data) {
+                    DiaryoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+
+                    $.each(data, function (index, value) {
+                        $('#DiaryoffId').append('<option value="' + value.id + '">' + value.name + '</option>');
+
+                    });
+                }
+            });
+
+        var type = $('#DocumentTypeIdHdn').val();
+        GetDataForDiaryN(type);
+        });
+
+    $("#DiaryoffId").change(function () {
+            var type = $('#DocumentTypeIdHdn').val();
+            GetDataForDiaryN(type);
+        });
+
+    $("#sincefilterdiary").change(function () {
+            var sinceparam = $(this).val();
+            $("#sincefilterhdndiary").val(sinceparam);
+            var type = $('#DocumentTypeIdHdn').val();
+            GetDataForDiaryN(type);
+        });
+
+    $("#StatusListMla").change(function () {
+        var type = $('#DocumentTypeIdHdn').val();
+        var type1 = $('#StatusListMla').val();
+            GetDataForDiaryN(type);
+        });
+
+    $("#DiaryTerm").change(function () {
+            var type = $('#DocumentTypeIdHdn').val();
+            GetDataForDiaryN(type);
+        });
+
+    $("#DiaryPriority").change(function () {
+            var type = $('#DocumentTypeIdHdn').val();
+            GetDataForDiaryN(type);
+        });
+
+    function ShowButton() {
+        var type = 3;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowButton", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {type:type},
+            success: function (response) {
+                if (response[0].isupdate == 1) {
+                    $("#btnNew").css("display", "block");
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#btnNew").css("display", "none");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    function setvalueDiary(type) {
+        $('#maintype').val(type);
+        GetDataForDiary(type);
+        GetAgendaDate();
+    }
+
+    function GetAgendaDate() {
+            var type ="Diary"
+        var AgendaDate = $("#AgendaDate");
+        AgendaDate.empty().append('<option selected="selected" value="">-- select --</option>');
+            $('#AgendaDate').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetAgendaDate", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type:type },
+                success: function (data) {
+                    AgendaDate.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+
+                        AgendaDate.append($("<option></option>").val(this['id']).html(this['dropagenda']));
+                    });
+                    }
+                });
+    }
+
+    $("#favouriteMLA").change(function () {
+        getofcrData();
+    });
+
+    function Toggle() {
+        fillOffice();
+    }
+
+    function CreateNew() {
+        $('#loginModaldiarybody').html('');
+        $("#loader-wrapper").show();
+            $.ajax({
+                url: "/References/NewMlaEntryForm",
+                type: 'GET',
+                async: true,
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    if (data) {
+                        $("#loginModalDiary").css("display","block");
+                        $('#loginModaldiarybody').html(data);
+                    }
+                    else {
+                        alert("error");
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                }
+            });
+
+        }
+
+    function closediary() {
+            $("#loginModalDiary").css("display", "none");
+            $('#loginModaldiarybody').html('');
+             window.location.reload();
+        }
+
+    function closediaryEdit() {
+            $("#loginModaldiaryEdit").css("display", "none");
+            $('#loginModaldiaryEditbody').html('');
+            var type = $('#DocumentTypeIdHdn').val();
+            GetDataForDiary(type);
+
+        }
+
+    function Status() {
+        $("#loader-wrapper").show();
+        var Status = $("#favouriteMLA option:selected").val();
+        var Office = $("#Office option:selected").val();
+        if (Status == 10) {
+            $("#loader-wrapper").hide();
+            return false;
+        }
+        else {
+        }
+
+        var pathurl = '/References/Filtered_MLADiaryListForAll'
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            data: { Status: Status, Office: Office },
+            // data:{ params },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Diarylistdiv").html('');
+                $("#Diarylistdiv").html(data);
+            }
+        });
+    }
+
+    function GetActionStatusValueDiary() {
+        var StatusVal = '10';
+        $.each($("input[name='group2Mla']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+    }
+
+    function ActionStatusCheckDiary() {
+        var type = $('#DocumentTypeIdHdn').val();
+        GetDataForDiary(type);
+
+    }
+
+    function GetDataForDiary(type) {
+        $('#DocumentTypeIdHdn').val(type);
+        $('#AgendaDate').val('');
+        var since = '';
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryStatus", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid , officeid: officeid, term: term, priority: priority},
+                success: function (response) {
+                    if (response.length > 0) {
+
+                 var DocumentTypename = response[0].DocumentTypeName;
+                 if (DocumentTypename != "" || DocumentTypename != null) {
+                      $('#DocumentTypename').empty();
+                      $('#DocumentTypename').append(DocumentTypename);
+                 }
+                else {
+                     $('#DocumentTypename').empty();
+                     }
+                        $("#DiaryCount").empty();
+                        var count = response.length;
+                        $("#DiaryCount").append(count);
+                        getTableListDairy(response);
+
+                        $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').hide();
+
+                        $("#DiaryTableDiv").css("display", "block");
+                        $("#DiaryTable").css("display", "block");
+                        $("#Diarylistdiv").hide();
+                        $("#loader-wrapper").hide();
+
+                        $("#noDataFound").hide();
+                        $("#noDataFound").css("display", "none");
+                        showdepartment();
+                    }
+                    else {
+                        showdepartment();
+                        $("#noDataFound").show();
+                        $("#noDataFound").css("display", "block");
+                        $("#DiaryTable").css("display", "none");
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+              });
+    }
+
+    function GetDataForDiaryN(type) {
+        $('#DocumentTypeIdHdn').val(type);
+        $('#AgendaDate').val('');
+     var since = $("#sincefilterhdndiary").val();
+     var deptid = $("#DiaryDepartment").val();
+     var officeid = $("#DiaryoffId").val();
+     var status = statusvalue();
+     var term = $("#DiaryTerm").val();
+     var priority = $("#DiaryPriority").val();
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDiaryStatus", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid , officeid: officeid, term: term, priority: priority},
+                success: function (response) {
+                    if (response.length > 0) {
+
+                 var DocumentTypename = response[0].DocumentTypeName;
+                 if (DocumentTypename != "" || DocumentTypename != null) {
+                      $('#DocumentTypename').empty();
+                      $('#DocumentTypename').append(DocumentTypename);
+                 }
+                else {
+                     $('#DocumentTypename').empty();
+                     }
+                        $("#DiaryCount").empty();
+                        var count = response.length;
+                        $("#DiaryCount").append(count);
+                        getTableListDairy(response);
+
+                        $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').hide();
+
+                        $("#DiaryTableDiv").css("display", "block");
+                        $("#DiaryTable").css("display", "block");
+                        $("#Diarylistdiv").hide();
+                        $("#loader-wrapper").hide();
+
+                        $("#noDataFound").hide();
+                        $("#noDataFound").css("display", "none");
+                    }
+                    else {
+                        $("#noDataFound").show();
+                        $("#noDataFound").css("display", "block");
+                        $("#DiaryTable").css("display", "none");
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+              });
+    }
+
+    function getTableListDairy(tableData) {
+        $("#DiaryTable").DataTable().destroy();
+        $("#DiaryTable tbody").html('');
+        $.each(tableData, function (index, response) {
+
+            if (response.ReferencePriorityType == 1) {
+                //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                var img = 'High';
+            }
+            else if (response.ReferencePriorityType == 2) {
+                var img = 'Medium';
+            }
+            else if (response.ReferencePriorityType == 3) {
+                var img = 'Low';
+            }
+
+            if (response.ReferenceTerm == 1) {
+                var Term = 'Short';
+            }
+            else if (response.ReferenceTerm == 2) {
+                var Term = 'Medium';
+            }
+            else if (response.ReferenceTerm == 3) {
+                var Term = 'Long';
+
+            }
+
+
+
+            if (response.ActionTakenFile != "") {
+                var Actionpath1 = "https://e-nigam.punjab.gov.in" + response.ActionTakenFile;
+                var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+            }
+            else {
+                var link = '';
+            }
+
+            if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                response.ActionTakenDate = response.ActionTakenDate;
+            }
+            else {
+                response.ActionTakenDate = "";
+            }
+            var editclass=""
+            var edit = response.Editpermission;
+            if (edit == "1") {
+                editclass = "edit";
+            }
+            else {
+                editclass = "nonedit";
+            }
+
+            $("#DiaryTable tbody").append(
+                "<tr role='row' class='odd'>" +
+                //"<td id='checkboxgrid' style='font-size: 12px; display:none; text-align:center; width: 3%;'> <input type='checkbox'  id='" + response.RefId + "' onclick = SendToAgenda(this)></td>" +
+                "<td class='hideshow' style='font-size: 12px; text-align:center; width: 3%;'> <input type='checkbox'  id='" + response.RefId + "' onclick = checkInAgenda(this)></td>" +
+                "<td style='font-size: 12px; text-align:center; width: 25%;'>" + response.Subject + "</td>" +
+                "<td style='font-size: 12px; text-align:center; width: 6%;'><span >" + response.LetterDate + "</span></td>" +
+                "<td style='font-size: 12px; text-align:center; width: 15%;'><span >" + response.FromDept + "-" + response.FromOffice + "</span></td>" +
+                "<td style='font-size: 12px; text-align:center; width: 25%;'>" + response.ad + "</td>" +
+                "<td style='font-size: 12px; text-align:center; width: 10%;'>" + response.ActionTakenDate + "<br/>" + response.StatusName + "<br/>" + link + "</td>" +
+                "<td style='font-size: 12px; text-align:center; width: 6%;'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                "<td style='font-size: 12px; text-align:center; width: 6%;'>" + img + "</td>" +
+                "<td style='font-size: 12px; text-align:center; width: 6%;'>" + Term + "</td>" +
+                "<td  class='" + editclass +"' ><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDairy(this) ><i class='ace-icon fa fa-pencil bigger-120'></i> </a ></td>"
+                + "</tr>"
+            );
+        });
+        $('#DiaryTable').DataTable({
+            paging: true,
+            searching: true,
+            bInfo: false,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf'
+            ]
+
+        });
+    }
+
+    function getofcrDataAgency() {
+        $("#loader-wrapper").show();
+           //debugger;
+        var Agency = 0;
+        var DocumentType = $("#maintype").val();
+        var Office = $("#Office").val();
+        var Office = $("#Office option:selected").val();
+        var Status = $("#favouriteMLA option:selected").val();
+        if (Status != 0) {
+            $("#Pendency").hide();
+            $('#SinceLabel').hide();
+        }
+        else {
+            $("#Pendency").show();
+            $('#SinceLabel').show();
+        }
+      //  var SelectedSubTypetext = SubType.options[SubType.selectedIndex].text;
+
+        var DocumentType = $("#maintype").val();
+        var Status = $("#favouriteMLA option:selected").val();
+        var pathurl = '/References/FilteredMLADiaryListForAgency'
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            data: {
+
+                Office: Office,
+                DocumentType: DocumentType
+            },
+            // data:{ params },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Diarylistdiv").html('');
+                $("#Diarylistdiv").html(data);
+                // $("#loader-wrapper").hide();
+            }
+        });
+
+    }
+
+    function filterCount() {
+
+        $("#spnCount").text("");
+        var counter = 0;
+        //  alert('HELLO');
+        var Office = $("#Office option:selected").val();
+
+        if (Office != 0 && typeof Office != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Agency = $("#Agency option:selected").val();
+        if (Agency != 0 && typeof Agency != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var District = $("#District option:selected").val();
+        if (District != 0 && typeof District != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Constituency = $("#Constituency option:selected").val();
+        if (Constituency != 0 && typeof Constituency != 'undefined') {
+            counter = counter + 1;
+        }
+         //alert(counter);
+        if (counter > 0) {
+
+            $("#spnCount").text(counter);
+            $("#spnCount").show();
+        }
+        else {
+            $("#spnCount").hide();
+            counter = 0;
+        }
+        counter = 0;
+    }
+
+    function hideshowcheckbox() {
+            var id = $('#AgendaDate').val();
+            if (id != '') {
+                $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').show();
+            }
+            else {
+                $('table#DiaryTable th.hideshow,table#DiaryTable td.hideshow').hide();
+            }
+        }
+
+    function SendToAgenda(refid) {
+        var agendaid = $('#AgendaDate').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+
+                    }
+                    if (response == "0") {
+                        alert("Term Updation Failed.");
+                    }
+                }
+            });
+    }
+
+    function EditMlaDairy(IDD) {
+        var ID = IDD.id;
+        $('#loginModaldiaryEditbody').html('');
+         var pathurl = '@Url.Action("EditMlaDairyForm", "References")';
+       // var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+            async: true,
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#loginModaldiaryEdit").css("display", "block");
+                    $('#loginModaldiaryEditbody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+
+    function BindActionStatusMladiary() {
+            $("#loader-wrapper").show();
+        var since = $("#sincefilter").val();
+         var StatusListMla = $("#StatusListMla");
+        StatusListMla.empty().append('<option selected="selected" value="">-- select --</option>');
+        $("#StatusListMla").empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("BindActionStatusMla", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { since: since },
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+
+                            StatusListMla.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        StatusListMla.append($("<option></option>").val(this['Value']).html(this['Text']));
+                    });
+                        }
+
+                    });
+
+        }
+
+    function ResetSinceDiary() {
+        var dropDown = document.getElementById("sincefilterdiary");
+        dropDown.selectedIndex = 0;
+        $("#sincefilterdiary").val('');
+        GetDataForDiary($('#DocumentTypeIdHdn').val());
+    }
+
+    function checkInAgenda(idd) {
+        var refid = idd.id;
+
+        var agendaid = $('#AgendaDate').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckInAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Already Added in Agenda")
+                    }
+                    if (response == "0") {
+                        SendToAgenda(refid)
+                    }
+                }
+            });
+        }
+
+    </script>
+
+    <style>
+        .edit {
+            display: block;
+        }
+
+        .nonedit {
+            display: none;
+        }
+
+        .accordion-toggle:hover {
+            text-decoration: none;
+        }
+
+        .hideshow {
+            /*display:none;*/
+        }
+
+        .hshow {
+            display: block;
+        }
+
+        .btn-sq-lg {
+            width: 150px !important;
+            height: 150px !important;
+        }
+
+        .btn-sq {
+            width: 100px !important;
+            height: 100px !important;
+            font-size: 8px;
+            margin-left: 20px;
+        }
+
+        .btn-sq-sm {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 10px;
+        }
+
+        .btn-sq-xs {
+            width: 25px !important;
+            height: 25px !important;
+            padding: 2px;
+        }
+
+        .active1 {
+            width: 120px !important;
+            height: 120px !important;
+            /*padding:2px;*/
+            font-size: 18px;
+            margin-left: 50px;
+        }
+
+        .dark-font .breadcrumb-item + .breadcrumb-item::before {
+            color: #000;
+            font-size: x-large;
+        }
+
+        .dark-font .breadcrumb-item.active {
+            color: #455a64;
+        }
+
+        .small-box {
+            position: relative;
+            display: block;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #f9f9f9;
+            cursor: pointer;
+            /*height: 119px;
+            width: 127px;*/
+        }
+
+        .badge-notify {
+            background: red !important;
+            background-color: red !important;
+            position: relative;
+            top: -12px;
+            left: -13px;
+            font-weight: bold;
+        }
+
+        .small-box h3 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            padding: 0;
+            white-space: nowrap;
+            font-family: "Proxima Nova Regular","Segoe UI",Roboto,"Droid Sans","Helvetica Neue",Arial,sans-serif;
+        }
+
+        .small-box p {
+            font-size: 14px;
+            font-weight: 600;
+            margin: -4px;
+        }
+
+        .small-box > .inner {
+            padding: 10px;
+            max-height: 90px;
+        }
+
+        .small-box .icon {
+            position: absolute;
+            /*top: auto;*/
+            top: 0px;
+            bottom: 5px;
+            right: 5px;
+            z-index: 0;
+            font-size: 50px;
+            color: rgba(0,0,0,.15);
+        }
+
+        .small-box:hover > .icon > .fa { /*font-size: 1.2em;*/
+            font-size: 1.2em;
+            /*transition-delay:1s;*/
+            transition-duration: 0.5s;
+            transition-timing-function: linear;
+            /*transition-delay: 1s;*/
+        }
+
+        .collapse.in {
+            display: inline-block !important;
+            width: 100%;
+        }
+
+
+        .small-box > .small-box-footer {
+            position: relative;
+            text-align: center;
+            padding: 3px 0;
+            color: #fff;
+            color: rgba(255,255,255,.8);
+            display: block;
+            z-index: 10;
+            background: rgba(0,0,0,.1);
+            text-decoration: none;
+        }
+
+        .fc {
+            color: black;
+        }
+
+        @@media (min-width: 800px) {
+            .col-md-2 {
+                width: 183px !important;
+            }
+
+            .marg129 {
+                margin-top: 203px !important;
+            }
+        }
+
+        @@media (max-width: 564px) {
+            .footer {
+                padding-top: 100px !important;
+            }
+        }
+    </style>
+
+</head>
+</html>

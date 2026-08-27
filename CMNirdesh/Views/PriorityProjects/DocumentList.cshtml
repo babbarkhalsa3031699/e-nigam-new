@@ -1,0 +1,273 @@
+﻿@model IEnumerable<CMNirdesh.Models.DocumentViewModel>
+@{
+    ViewBag.Title = "DocumentList";
+    int count = 0;
+}
+
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<div id="main-content">
+
+    <div class="main-content">
+        <section class="form_dsign">
+              <div class="inr_frm_dsgn">
+                            <div class="Tab_hdr p-2" style="display:flex;">
+                                <div class="col-md-6">
+                                    <h2>Document List</h2>
+                                </div>
+                                <div class="col-md-6 text-right txt_rit">
+                                    <button style="font-size:14px;" class="btn btn-primary" onclick="javascript:window.location.href='/PriorityProjects/CreateDocument';">
+
+                                        <span class="bigger-110"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add Document</span>
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class="form_lyot">
+
+                                @if (Model != null)
+                                {
+                                    if (Model.Count() > 0)
+                                    {
+                                        <div class="tab_parent table-responsive table_rsponsv">
+                                            <table id="example" class="table table-hover table-striped table-bordered ">
+                                                <thead>
+                                                    <tr class="table-heading">
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Sr No.</span></th>
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Title</span></th>
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Project Name</span></th>
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Project Document</span></th>
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Date</span></th>
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Status</span></th>
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Action</span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        count = count + 1;
+
+                                                        <tr>
+                                                            <td class="center td-data" style="font-size:13px; padding: 14px 4px !important">
+                                                                @count
+                                                            </td>
+
+
+                                                            <td class="center td-data" style="font-size:13px; padding: 14px 4px !important">@item.DocumentTitle</td>
+
+                                                            <td class="center td-data" style="font-size:13px; padding: 14px 4px !important">@item.ProjectName</td>
+
+
+                                                            <td class="center td-data" style="font-size:13px; padding: 14px 4px !important"><a href="@Url.Content("~/MlaDiary/"+item.DocumentLocation )" target="_blank">click to download </a></td>
+                                                            <td class="center td-data" style="font-size:13px; padding: 14px 4px !important">@item.CreatedDate.ToString("dd MMM yyyy")</td>
+
+
+                                                            <td class="center td-data hidden-480" style="font-size:13px; padding: 14px 4px !important">
+                                                                @if (item.IsActive == 1)
+                                                                {
+                                                                    <span class="label label-sm label-primary">Published</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="label label-sm label-warning">Unpublished</span>
+                                                                }
+
+                                                            </td>
+
+                                                            <td class="center td-data" style="font-size:13px; padding: 14px 4px !important">
+                                                                <div class="hidden-sm hidden-xs action-buttons">
+
+
+                                                                    <a data-rel="tooltip" class=" tooltip-primary" title="Edit" href="@Url.Action("EditDocument", "PriorityProjects", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })">
+                                                                        <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                                    </a>
+                                                                    <a data-rel="tooltip" class="red tooltip-error DeleteContentLink" title="Delete" id="DeleteLink" href="@Url.Action("DeleteDocument", "PriorityProjects", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })">
+                                                                        <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                                    </a>
+                                                                </div>
+
+                                                                <div class="hidden-md hidden-lg" style="display:none">
+                                                                    <div class="inline position-relative">
+                                                                        <button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto">
+                                                                            <i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>
+                                                                        </button>
+
+                                                                        <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+                                                                            @*<li>
+                                                                                    <a  href="@Url.Action("ChangeOrganization", "Media", new { Id = item.LatestUpdateID })" class="tooltip-info" data-rel="tooltip" title="Change Status">
+                                                                                        <span class="blue">
+                                                                                        <i class="ace-icon fa fa-check-square-o bigger-120"></i>
+                                                                                        </span>
+                                                                                    </a>
+                                                                                </li>*@
+
+                                                                            <li>
+                                                                                <a href="@Url.Action("EditDocument", "PriorityProjects", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })" class="tooltip-primary" data-rel="tooltip" title="Edit">
+                                                                                    <span>
+                                                                                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                                                    </span>
+                                                                                </a>
+                                                                            </li>
+
+                                                                            <li>
+                                                                                <a href="@Url.Action("DeleteDocument", "PriorityProjects", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })" class="tooltip-error DeleteContentLink" data-rel="tooltip" title="Delete">
+                                                                                    <span class="red">
+                                                                                        <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                                                    </span>
+                                                                                </a>
+
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="alert alert-info">
+
+                                                    <strong>There are no record found</strong><br />
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+        </section>
+
+
+
+
+
+
+        <div class="footer">
+            <div class="footer-inner">
+                <!-- #section:basics/footer -->
+                <div class="footer-content">
+                    @* <span class="bigger-100">
+                            <span class="blue bolder">eVidhan@@@DateTime.Now.Year</span>
+
+                        </span>*@
+
+                </div>
+
+                <!-- /section:basics/footer -->
+            </div>
+        </div>
+
+        <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+            <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+        </a>
+    </div>
+
+
+
+    <div id="dialog-confirm" class="hide">
+        <div id="DialogMessage" class="alert alert-info bigger-110">
+            Are You Sure Want to Delete.
+        </div>
+
+        <div class="space-6"></div>
+    </div>
+
+</div>
+
+
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+
+        $('#example').DataTable();
+
+        $('[data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
+        $("#Projectmain").addClass("active open");
+        $("#Projectsub").addClass("nav-show").css("display", "block");
+        $("#doclist").addClass("active");
+    });
+
+
+    $(".DeleteContentLink").on('click', function (e) {
+
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        bootbox.confirm("Are you sure to Delete Project?", function (result) {
+
+            if (result) {
+
+                window.location.href = url;
+            }
+            else {
+
+
+            }
+
+        })
+    });
+
+    function tooltip_placement(context, source) {
+        var $source = $(source);
+        var $parent = $source.closest('table')
+        var off1 = $parent.offset();
+        var w1 = $parent.width();
+
+        var off2 = $source.offset();
+        //var w2 = $source.width();
+
+        if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+        return 'left';
+    }
+
+
+
+
+
+
+</script>
+
+<style>
+
+    
+    .inr_frm_dsgn {
+        margin-top: 20px;
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+    
+</style>

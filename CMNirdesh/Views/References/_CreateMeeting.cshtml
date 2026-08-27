@@ -1,0 +1,566 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@using CMNirdesh.Models
+
+<style>
+    body {
+        background: #f4f6fb;
+    }
+
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    .card-header {
+        background: #9cceff;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .txt_label {
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .timepicker-input {
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .section-title {
+        font-weight: 600;
+        color: #9cceff;
+        margin-bottom: 6px;
+    }
+
+    .header-preview {
+        background: #ffffff;
+        border: 1px dashed #cfd6df;
+        border-radius: 8px;
+        padding: 14px;
+        white-space: pre-line;
+        font-weight: 600;
+        line-height: 1.7;
+        color: #111827;
+    }
+
+    .btn-primary {
+        background-color: #1e3a8a;
+        border-color: #1e3a8a;
+    }
+</style>
+@*<link href="~/Content/flatpickr.min.css" rel="stylesheet" />
+<script src="~/Scripts/flatpickr.js"></script>*@
+
+
+
+
+<script>
+   
+    var startPicker = null;
+
+    function generateHeader() {
+
+        var ulb   = '@Model.deptnamelocal';
+        var type  = $("#MeetingTypeId option:selected").text();
+        var date = $("#txtallocationdate").val();
+        if (date) {
+            var parts = date.split("-");
+            var formattedDate = parts[2] + "-" + parts[1] + "-" + parts[0];
+            
+        }
+        var time  = $("#StartTime").val();
+        var chair = $("#ChairPerson").val();
+        var desig = $("#ChairDesignation").val();
+
+        var Type = '';
+        var headerText = `${ulb} ਦੀ ${type} ਜੋ ਕਿ ਮਿਤੀ: ${formattedDate} ਨੂੰ ਸਮਾਂ: ${time} ਵਜੇ ${chair}, ${desig} ਦੀ ਪ੍ਰਧਾਨਗੀ ਹੇਠ, ${ulb} ਦੇ ਮੀਟਿੰਗ ਹਾਲ ਵਿੱਚ ਆਯੋਜਿਤ ਕੀਤੀ ਜਾਣੀ ਨਿਸ਼ਚਿਤ ਕੀਤੀ ਗਈ ਹੈ।`;
+
+
+        $("#CreateMeetingHeader").val(headerText);
+        $("#HeaderPreview").text(headerText);
+    }
+
+    $(document).ready(function () {
+         // Close picker on scroll (prevents floating issues)
+        document.addEventListener("scroll", function () {
+            if (startPicker && startPicker.isOpen) {
+                startPicker.close();
+            }
+        }, true);
+
+        // Header generation events
+        $(document).on(
+            "keyup change",
+            "#txtallocationdate,#MeetingTypeId,#ChairPerson,#ChairDesignation, #StartTime",
+            generateHeader
+        );
+
+        $(document).on(
+            "keyup change",
+            "#Proceedingfirstpageheader, #meetingname,#meetingdate,#tChairPerson,#tChairpersonDesignation",
+            // generateHeaderUpdate
+
+        );
+
+
+    });
+
+
+
+    $('#HeaderPreview').on('input blur', function () {
+        $('#CreateMeetingHeader').val($(this).text().trim());
+    });
+
+    // SAVE (Your existing logic – untouched)
+    function SaveMeeting() {
+
+        if ($("#txtAgendaName").val().trim() === "") {
+            alert("Please enter meeting name");
+            return;
+        }
+        if ($("#txtallocationdate").val().trim() == "") {
+            alert("Please select Meeting Date");
+            $("#txtallocationdate").focus();
+            return false;
+        }
+
+        if ($("#StartTime").val().trim() == "") {
+            alert("Please select Start Time");
+            $("#StartTime").focus();
+            return false;
+        }
+
+        if ($("#txtAgendaName").val().trim() == "") {
+            alert("Please enter Meeting Name");
+            $("#txtAgendaName").focus();
+            return false;
+        }
+
+        if ($("#MeetingTypeId").val() == "" || $("#MeetingTypeId").val() == null) {
+            alert("Please select Meeting Type");
+            $("#MeetingTypeId").focus();
+            return false;
+        }
+
+        if ($("#ChairPerson").val().trim() == "") {
+            alert("Please enter Chair Person");
+            $("#ChairPerson").focus();
+            return false;
+        }
+
+        if ($("#ChairDesignation").val().trim() == "") {
+            alert("Please enter Chair Person Designation");
+            $("#ChairDesignation").focus();
+            return false;
+        }
+
+        var dataString = new FormData($("#formActionDispatch")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveAgenda", "References")',
+            data: dataString,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data) {
+                    $("#CreateMeeting").html(data);
+                    alert("Meeting added successfully.");
+                } else {
+                    alert("Error occurred.");
+                }
+            }
+        });
+    }
+
+
+    $('#editHeaderPreview').on('click', function () {
+
+        if (!confirm('Do you want to edit the Agenda header?')) {
+            return;
+        }
+
+        const $preview = $('#HeaderPreview');
+
+        $preview
+            .attr('contenteditable', 'true')
+            .focus();
+
+        // Move cursor to end
+        document.getSelection().selectAllChildren($preview[0]);
+        document.getSelection().collapseToEnd();
+    });
+
+</script>
+<div id="CreateMeeting">
+
+    <form id="formActionDispatch" method="post" enctype="multipart/form-data">
+
+        <!-- FINAL HEADER STORED -->
+        <input type="hidden"
+               id="CreateMeetingHeader"
+               name="CreateMeeting.Header" />
+
+        @if (Model.agendaId == "0")
+        {
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-header">
+                            Create Meeting
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <!-- Meeting Date -->
+                                <div class="col-md-3 mb-3">
+                                    <label class="txt_label">Meeting Date</label>
+                                    @Html.TextBoxFor(m => m.CreateMeeting.AgendaDate,
+                                        new
+                                             {
+                                            type = "date",
+                                            id = "txtallocationdate",
+                                            @class = "form-control",
+                                            required = "required"
+                                        })
+                                </div>
+
+                                <!-- Start Time -->
+                                <div class="col-md-3 mb-3">
+                                    <label class="txt_label">Start Time</label>
+
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(m => m.CreateMeeting.StartTime,
+                                            new
+                                            {
+                                                type="time",
+                                                id = "StartTime",
+                                                @class = "form-control",
+                                                placeholder = "Select time",
+                                                autocomplete = "off",
+                                                required = "required"
+                                            })
+                                        @*<span class="input-group-text">
+                                            <i class="fa fa-clock-o"></i>
+                                        </span>*@
+                                    </div>
+                                </div>
+
+                                <!-- Meeting Name -->
+                                <div class="col-md-3 mb-3">
+                                   
+                                    <label class="txt_label">Meeting Name</label>
+                                    @Html.TextBoxFor(m => m.CreateMeeting.AgendaName,
+                                        new
+                                             {
+                                            id = "txtAgendaName",
+                                            @class = "form-control",
+                                            required = "required",
+                                            Value = Model.Subject
+                                        })
+                                </div>
+
+                                <!-- Meeting Type -->
+                                <div class="col-md-3 mb-3">
+                                    <label class="txt_label">Meeting Type</label>
+                                    @Html.DropDownListFor(
+                                        m => m.CreateMeeting.MeetingType,
+                                        new SelectList(Model._MeetingType, "MeetingTypeId", "MeetingTypeName"),
+                                        "-- Select Meeting Type --",
+                                        new
+                                             {
+                                            id = "MeetingTypeId",
+                                            @class = "form-control",
+                                            required = "required"
+                                        })
+                                </div>
+
+                                <!-- Chair Person -->
+                                <div class="col-md-3 mb-3">
+                                    <label class="txt_label">Chair Person (Punjabi)</label>
+                                    @*<input type="text"
+                                        id="ChairPerson"
+                                        class="form-control"
+                                        placeholder="ਚੇਅਰਪਰਸਨ"
+                                        required />*@
+
+                                    @Html.TextBoxFor(m => m.CreateMeeting.ChairPerson,
+                                      new
+                                           {
+                                          id = "ChairPerson",
+                                          @class = "form-control",
+                                          required = "required"
+                                      })
+                                </div>
+
+                                <!-- Designation -->
+                                <div class="col-md-3 mb-3">
+                                    <label class="txt_label">Designation (Punjabi)</label>
+                                    @*<input type="text"
+                                        id="ChairDesignation"
+                                        class="form-control"
+                                        placeholder="ਚੇਅਰਪਰਸਨ ਅਹੁਦਾ"
+                                        required />*@
+
+                                    @Html.TextBoxFor(m => m.CreateMeeting.ChairPersonDesignation,
+                                      new
+                                          {
+                                          id = "ChairDesignation",
+                                          @class = "form-control",
+                                          required = "required"
+                                      })
+                                </div>
+
+                            </div>
+
+                            <!-- HEADER PREVIEW -->
+                            <div class="mt-4">
+                                <div class="fw-bold mb-2">
+                                    Auto-Generated Agenda Header
+                                    <i class="fas fa-pen text-primary"
+                                       id="editHeaderPreview"
+                                       style="cursor:pointer;"
+                                       title="Edit"></i>
+                                </div>
+                                <div id="HeaderPreview"
+                                     class="p-3 bg-light"
+                                     contenteditable="false"
+                                     style="min-height: 4.5em;border: 2px dotted #6c757d;border-radius: 0.5rem;">
+                                </div>
+                            </div>
+
+                            <!-- BUTTON -->
+                            <div class="text-end mt-4">
+                                <button type="button"
+                                        class="btn btn-primary px-4"
+                                        onclick="SaveMeeting()">
+                                    Create Meeting
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+        <div class="tooltip-modal dispatch_modal modal" id="myModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="max-width: 400px; margin: 0 auto;">
+            <!-- Modal content -->
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Preview</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="name" style="font-weight: bold;">Agenda/Proceeding First Page Header:</label>
+                                <h3 class="modal-title" id="header" style="color: #333; font-size: 24px; margin-top: 5px;"></h3>
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile" style="font-weight: bold;">Agenda/Proceeding Last Page Footer:</label>
+                                <h3 class="modal-title" id="footer" style="color: #333; font-size: 24px; margin-top: 5px;"></h3>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" style="background-color:#458cff !important" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Edit Meeting</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Meeting Name:</label>
+                                <input type="text" class="form-control" id="meetingname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="designation">Meeting Date:</label>
+                                <input type="Date" class="form-control" id="meetingdate" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mobile">Agenda First Page Header:</label>
+                                <input type="text" class="form-control" id="Proceedingfirstpageheader" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ChairPerson">Chair Person Name (In Punjabi):</label>
+                                <input type="text" class="form-control" id="tChairPerson" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mobile">Chair Person Designation (In Punjabi):</label>
+                                <input type="text" class="form-control" id="tChairpersonDesignation" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="starttime">Start Time:</label>
+                                <input type="text" class="form-control bootstrap-datetimepicker-widget" id="starttime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lasttime">Last Time:</label>
+                                <input type="time" class="form-control " id="lasttime">
+                            </div>
+                            @*<div class="form-group">
+                                    <label for="agendatype">Agenda Type:</label>
+                                    <select class="form-control" id="agendatype" required>
+                                        <option value="Diary">Diary</option>
+                                    </select>
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="agendatype">Meeting Status:</label>
+                                    <select class="form-control" id="agendaStatus" required>
+                                        <option value="0">Pending</option>
+                                        <option value="1">Completed</option>
+                                        <option value="2">Postponed</option>
+                                        <option value="3">Cancelled</option>
+                                    </select>
+                                </div>*@
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="validateForm()">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        @if (Model._LstAgenda != null && Model._LstAgenda.Count > 0)
+        {
+            <div class="row mt-4">
+                @{ Html.RenderPartial("~/Views/References/_AgendaList.cshtml", Model); }
+            </div>
+        }
+
+    </form>
+</div>
+<script>
+    function GetById(UserId) {
+    userid = UserId;
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("Edit", "Agenda")' + '?id=' + UserId,
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+        $('#DisplayModal').show();
+
+        var agendaData = JSON.parse([data]); // Parse the JSON string into an object
+        var now = new Date(agendaData[0].AgendaDate);
+
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#meetingdate").val(today);
+
+        $("#meetingname").val(agendaData[0].AgendaName);
+        $("#Proceedingfirstpageheader").val(agendaData[0].Header);
+        $("#proceedinglastpageheader").val(agendaData[0].Footer);
+
+        $("#tChairPerson").val(agendaData[0].ChairPerson);
+        $("#tChairpersonDesignation").val(agendaData[0].ChairPersonDesignation);
+
+        $("#starttime").val(agendaData[0].StartTime);
+        $("#starttime").val(agendaData[0].StartTime);
+        $("#lasttime").val(agendaData[0].EndTime);
+        $("#agendatype").val(agendaData[0].Agendatype);
+        $("#agendaStatus").val(agendaData[0].Status);
+        const footerElement = document.getElementById('footer');
+        footerElement.innerText = agendaData[0].Footer;
+
+        }
+
+
+        });
+        }
+
+        function validateForm() {
+
+        var meetingname = document.getElementById('meetingname');
+        var meetingdate = document.getElementById('meetingdate');
+
+        var header = document.getElementById('Proceedingfirstpageheader');
+        //var footer = document.getElementById('proceedinglastpageheader');
+        var ChairPerson = document.getElementById('tChairPerson');
+        var ChairPersonDesignation = document.getElementById('tChairpersonDesignation');
+        var starttime = document.getElementById('starttime');
+        var lasttime = document.getElementById('lasttime');
+        //var agendatype = document.getElementById('agendatype');
+
+        // Check if any of the required inputs are empty
+            if (meetingname.value === '' || meetingdate.value === '' || header.value === '' || ChairPersonDesignation.value === '' || starttime.value === '' || ChairPerson.value === '') {
+        alert('Please fill in all the required fields.');
+        return;
+        }
+        Update();
+
+        }
+
+        function Update() {
+
+        var empObj = {
+        AgendaId: userid,
+        AgendaDate: $('#meetingdate').val(),
+        AgendaName: $('#meetingname').val(),
+        Header: $('#Proceedingfirstpageheader').val(),
+        Footer: $('#proceedinglastpageheader').val(),
+        StartTime: $('#starttime').val(),
+        EndTime: $('#lasttime').val(),
+        ChairPerson: $('#tChairPerson').val(),
+        ChairPersonDesignation: $('#tChairpersonDesignation').val(),
+        Agendatype: "Diary",
+        Status: "1"
+        };
+
+        $.ajax({
+        type: "POST",
+        data: JSON.stringify(empObj),
+        url: "@Url.Action("UpdateAgenda", "References")",
+        contentType: "application/json"
+        }).done(function (result) {
+        alert("Updated Successfully");
+        $('#myModal').modal('hide');
+        $("#CreateMeeting").html(result);
+
+        });
+
+        @*$.ajax({
+                url: '@Url.Action("UpdateAgenda", "References")',
+                data: JSON.stringify(empObj),
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                //dataType: "json",
+                success: function (result) {
+                    // loadData();
+                    alert(result);
+                    alert("Updated Successfully");
+                    $('#myModal').modal('hide');
+                    //location.reload();
+
+                },
+                error: function (errormessage) {
+                    alert("Not Updated");
+                    $('#myModal').modal('hide');
+                    location.reload();
+                }
+            });*@
+    }
+</script>

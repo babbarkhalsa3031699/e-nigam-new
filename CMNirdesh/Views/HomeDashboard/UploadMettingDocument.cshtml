@@ -1,0 +1,390 @@
+﻿
+@model  CMNirdesh.Models.HouseMeetingsDocuments
+
+@{
+    ViewBag.Title = "Upload House Meeting Document";
+}
+
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/responsive.bootstrap.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/datatables/jszip.min.js"></script>
+<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+<script src="~/Scripts/datatables/vfs-fonts.js"></script>
+<script src="~/Scripts/datatables/buttons.print.min.js"></script>
+<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            order: [[0, 'desc']]
+        });
+
+        clearTextBox();
+        $("#btnUpdate").hide();
+        $("#btnSave").show();
+    });
+
+    function DeleteID(id) {
+        if (confirm("Are you sure you want to delete this item?")) {
+            var id = id
+            $.ajax({
+                url: '@Url.Action("DeleteMettingDocument", "HomeDashboard")',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    if (result.success) {
+                        alert("Document deleted successfully");
+                        window.location.href = '@Url.Action("UploadMettingDocument", "HomeDashboard")';
+                    } else {
+                        alert("Failed to delete item");
+                    }
+                },
+                error: function () {
+                    alert("Error occurred while deleting the item");
+                }
+            });
+        }
+
+    }
+
+    function getbyID(MeetingId) {
+        clearTextBox()
+        $("#myModalLabel").html("Update Document Record");
+        $("#btnUpdate").show();
+        $("#btnSave").hide();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("EditMettingDocument", "HomeDashboard")' + '?MeetingId=' + MeetingId,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var obj = JSON.parse(data);
+                var data = obj._houseDocumentsbyId[0];
+                $('#myModal').modal('show'); 
+                $("#mode").val('Edit');
+                $("#ddlhno").val(data.HouseNo);
+                $('#MeetingDate').val(data.MeetingDate);
+                $("#title").val(data.Title);
+                $("#MeetingType").val(data.MeetingType);
+                $("#DocuemtName").val(data.DocuemtName);
+                $("#MCID").val(data.MCID);
+                $("#mID").val(MeetingId);
+                $("#btnSave").hide();
+                $('#file1').removeAttr('required');
+                $('#myLink').attr('href', data.FullPath);
+                $('#myLink').text('View Attached File');
+            }
+        });
+    }
+
+    function clearTextBox() {
+        $('#ddlhno').val("");
+        $('#MeetingDate').val("");
+        $('#title').val("");
+        $('#MeetingType').val("");
+        $('#DocuemtName').val("");
+        $('#MCID').val("");
+        $("#btnSave").show();
+        $('#myLink').attr('href', '');
+        $('#myLink').text('');
+        $("#btnUpdate").hide();
+        $("#btnSave").show();
+    }
+
+
+</script>
+
+<style>
+
+    .inr_frm_dsgn {
+        /*margin-top: 20px;*/
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+
+    .pencil-class {
+        font-size: 15px;
+    }
+
+    .edit-1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+    }
+</style>
+
+<div id="main-content">
+     <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="inr_frm_dsgn">
+
+                    <div class="widget-box " id="divAction">
+                        <div class="widget-header widget-header-flat rounded-top rounded-0">
+                            <h4 class=""> House Proceeding </h4>
+                            <div class="widget-toolbar no-border">
+                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" style="font-size:14px;float:right" onclick="clearTextBox();">
+                                    <i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add New Proceeding Document
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    
+
+
+                    <div class="form_lyot" style="padding-top:5px">
+
+                        @if (Model != null)
+                        {
+                            if (Model._houseDocuments.Count() > 0)
+                            {
+
+
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-bordered  dataTable">
+                                        <thead>
+                                            <tr class="table-heading">
+                                                <th class="td-heading" style="width: 32%; display:none"><span class="font-weight-bold">MettingId</span></th>
+                                                <th class="td-heading" style="width: 32%"><span class="font-weight-bold">Title</span></th>
+                                                <th class="td-heading" style="width: 15%"><span class="font-weight-bold">Meeting Date</span></th>
+                                                <th class="td-heading" style="width: 15%"><span class="font-weight-bold">Document Type</span></th>
+                                                <th class="td-heading" style="width: 15%"><span class="font-weight-bold">File</span></th>
+                                                <th class="td-heading" style="width: 12%"><span class="font-weight-bold">Action</span></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                            @foreach (var items in Model._houseDocuments)
+                                            {
+                                                <tr>
+                                                    <td class="td-data border" style="display: none">@Html.DisplayFor(modelItem => items.MeetingID)</td>
+                                                    <td class="td-data border" style="">@Html.DisplayFor(modelItem => items.Title)</td>
+                                                    <td class="td-data border">@Html.DisplayFor(modelItem => items.MeetingDate)</td>
+                                                    <td class="td-data border">@Html.DisplayFor(modelItem => items.DocumentName)</td>
+                                                    <td class="td-data border">
+                                                        <a href="@Url.Content(Model.fileacessingUrl  +"/"+ items.FilePath)" target="_blank" style="padding-right: 1px; font-size: 25px; vertical-align: top" class="pdf-link">
+                                                            <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Proceeding File" width="24" height="24" />
+                                                        </a>
+                                                    </td>
+                                                    <td class="center td-data border" style="font-size: 18px; text-align: center; border-right: 1px solid gray; border-bottom: 1px solid gray; vertical-align: top; padding: 14px 4px !important ">
+                                                        <div>
+
+                                                            <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.MeetingID')">
+                                                                <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                            </a>
+                                                            <a data-rel="tooltip" class="red tooltip-primary" onclick="DeleteID('@items.MeetingID')">
+                                                              <i class="fas fa-trash-alt" style="width:24px; height:24px; font-size:25px"></i>
+                                                            </a>
+
+                                                        </div>
+                                                    </td>
+
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-info">
+                                            <strong>There are no record found</strong><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="coman_modal dispatch_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5" id="myModalLabel">Upload Proceeding</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @using (Html.BeginForm("UploadDocument", "HomeDashBoard", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                            <div class="row form-horizontal">
+                                @Html.HiddenFor(m => m.MCID)
+                                @Html.HiddenFor(m => m.MeetingID, new { @id = "mID" })
+                                @Html.HiddenFor(m => m.Mode, new { @id = "mode" })
+
+                                <div class="col-12  form-group">
+                                    <label for="HouseNo" class="txt_label">House Number:</label>
+                                    @Html.DropDownListFor(m => m.HouseNo, Model.HouseList, "Select House Number", new { @id = "ddlhno", @tabindex = "1", @class = "form-control", @required = "required" })
+                                    @Html.ValidationMessageFor(model => model.HouseNo)
+
+                                </div>
+                                <div class="col-12 form-group">
+                                    <label for="Title" class="txt_label">Title:</label>
+                                    @Html.TextAreaFor(model => model.Title, new { @type = "Text", @id = "title", @rows = "30", @cols = "50", @height = "1000px", @style = "width: 100%; max-height: 100%;height: 100px;max-width: 100%", @required = "required" })
+
+                                </div>
+
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <label for="inputPassword4" class="txt_label">Meeting Date:</label>
+                                    @Html.TextBoxFor(model => model.MeetingDate, new { @type = "Date", @id = "MeetingDate", @tabindex = "3", @class = "form-control txt_design", @required = "required" })
+                                </div>
+
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <label for="MeetingType" class="txt_label">Meeting Type:</label>
+                                    @Html.DropDownListFor(model => model.MeetingType, Model.MeetingTypesList, "Select Meeting Type", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.MeetingType)
+
+                                </div>
+
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <label for="DocumentName" class="txt_label">PDF :</label>
+                                    <input id="file1" type="file" name="file" required="required" accept=".pdf" />
+                                    @Html.ValidationMessageFor(model => model.DocumentName)
+
+                                </div>
+                              
+                                    <a  id="myLink" target="_blank" style="color:red" href="@ViewBag.fullpath"></a>
+
+                             
+
+
+                            </div>
+                            <div class="modal-footer" style="background-color:white;">
+                                <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+                                <button type="submit" class="btn btn-primary" id="btnUpdate">Update</button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                            }
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </section>
+    </div>
+

@@ -1,0 +1,420 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@using CMNirdesh.Models
+
+@if (Model != null)
+{
+
+
+
+    <style>
+        .ui-datepicker {
+            width: 25em;
+            /*padding: .2em .2em 0;*/
+            display: none;
+            border: 1px solid;
+            font-weight: bolder;
+        }
+
+
+        .Mytextarea {
+            font-size: 10px;
+            height: 14px !important;
+            color: #333 !important;
+            font-family: inherit;
+        }
+        /*
+        .sblFullScreen select, input, textarea {
+            width: 100%;
+        }*/
+    </style>
+
+
+
+
+
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+        <div class="widget-box ">
+
+            <div class="widget-header">
+                @if (Model.PaperEntryType == "NewEntry")
+                {
+                    <h4 class="widget-title">Diary Detail</h4>
+                }
+
+                <h4 class="widget-title" style="color:#d15b47; font-size:14px;font-weight: 600">
+                    Ref. Id:@Model.RefId
+                    |Office Diary No.:@Model.DiaryNumber
+                    |Date:@Model.CreatedDate
+                </h4>
+
+                @if (!(Model.LinkRefID == 0))
+                {
+                    <br />
+                    <h4 class="widget-title" style="color: #d15b47; font-size: 14px; font-weight: 600">Linked Ref.Id: @Model.LinkRefID</h4>
+
+                }
+
+
+
+
+
+                <div class="widget-main no-padding-right no-padding-left">
+                    <div class="">
+                        <div style="vertical-align: top; border-top: solid 1px black;"></div>
+                        <div class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name">From</div>
+                            </div>
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+
+                                    @Model.FromDept
+                                 
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div  class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name" style="vertical-align: top;">Office </div>
+                            </div>
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+
+                                    <div class="col-sm-9" >
+                                        @Model.FromOffice
+
+                                    </div>
+                                
+
+                                </div>
+                            </div>
+                        </div>
+                        <div style="vertical-align: top; border-top: solid 1px black;"></div>
+
+                        <div  class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name">To</div>
+                            </div><div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+
+                                    @Model.ToDept
+                                   
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name" style="vertical-align: top;">Office </div>
+                            </div>
+                            <div class=" col-md-9 col-lg-9">
+
+                                <div class="profile-info-value">
+                                    @Model.ToOffice
+                                 
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div style="vertical-align: top; border-top: solid 1px black;"></div>
+
+                        <div class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name">Document Type</div>
+                            </div>
+
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+                                    <span class="">
+                                        @Model.DocumentTypeName
+                                      
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name"> Letter/File No.</div>
+                            </div>
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+                                    <span class="">
+                                        @Model.LetterNo
+                               
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div  class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name"> Letter/File Date</div>
+                            </div>
+
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+
+                                    @Model.LetterDate
+                                  
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name">Subject</div>
+                            </div>
+
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+
+                                    @Model.Subject
+                                  
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div  class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name">Subject Details </div>
+                            </div>
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+                                    @Html.Raw(Model.SubjectDetails)
+                                  
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class=" col-md-3 col-lg-3">
+                                <div class="profile-info-name">Attached Enclosure (File) </div>
+                            </div>
+                            <div class=" col-md-9 col-lg-9">
+                                <div class="profile-info-value">
+
+
+
+
+                                    @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                                    {
+                                        <a href="@Model.EnclosureFile" target="_blank">Click here to download</a>
+                                        
+
+                                    }
+                                    else
+                                    {
+                                       
+
+                                    }
+
+                                
+                                </div>
+
+                            </div>
+
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ApplicantName) && !string.IsNullOrEmpty(Model.ApplicantAddress) && !string.IsNullOrEmpty(Model.ApplicantEmail) && !string.IsNullOrEmpty(Model.ApplicantMobile))
+
+                        {
+
+                            <div style="vertical-align: top; border-top: solid 1px black;"></div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ApplicantName))
+
+                        {
+
+
+
+                            <div  class="row">
+
+                                <div class=" col-md-3 col-lg-3">
+
+                                    <div style="vertical-align: top" class="profile-info-name">Applicant Name</div>
+
+                                </div>
+
+                                <div class=" col-md-9 col-lg-9">
+
+                                    <div class="profile-info-value">
+
+                                        @Html.Raw(Model.ApplicantName)
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
+
+                        {
+
+
+                            <div class="row">
+                                <div class=" col-md-3 col-lg-3">
+                                    <div style="vertical-align: top" class="profile-info-name">Applicant Address</div>
+                                </div>
+
+                                <div class=" col-md-9 col-lg-9">
+                                    <div class="profile-info-value">
+                                        @Html.Raw(Model.ApplicantAddress)
+                                     
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
+
+                        {
+
+                            <div class="row">
+                                <div class=" col-md-3 col-lg-3">
+                                    <div style="vertical-align: top" class="profile-info-name">Applicant Mobile</div>
+                                </div>
+                                <div class=" col-md-9 col-lg-9">
+                                    <div class="profile-info-value">
+                                        @Html.Raw(Model.ApplicantMobile)
+                                     
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
+
+                        {
+                            <div  class="row">
+                                <div class=" col-md-3 col-lg-3">
+                                    <div style="vertical-align: top" class="profile-info-name">Applicant Email</div>
+                                </div>
+                                <div class=" col-md-9 col-lg-9">
+                                    <div class="profile-info-value">
+                                        @Html.Raw(Model.ApplicantEmail)
+                                      
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        }
+
+
+
+
+
+
+                    </div>
+
+                </div>
+
+                <div>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+        <div class="widget-box">
+
+            <div  style="overflow: scroll; height: 170px;">
+                <div class="label label-danger arrowed-right arrowed-in" style="vertical-align: top;">Action Details </div>
+                @if (Model.PaperEntryType == "EditEntry")
+                {
+
+
+
+
+                    <div class="profile-info-value" style=" overflow: auto;">
+
+                        <table class="table table-bordered  dataTable ">
+                            <thead>
+                                <tr>
+                                    <th class="center sorting_disabled">Action Date</th>
+                                    <th class="center sorting_disabled">Action Description</th>
+                                    <th class="center sorting_disabled">Status</th>
+                                    <th class="center sorting_disabled">Action Enclosure (If any)</th>
+                                    <th class="center sorting_disabled">Action By</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item1 in Model.ActionDetailsList)
+                                {
+                                    DateTime aDate = Convert.ToDateTime(item1.ActionDate);
+                                    string s1 = aDate.ToString("dd/MM/yyyy");
+                                    string s2 = aDate.ToString("hh:mm tt");
+                                    <tr>
+                                        <td class="center sorting_disabled">
+                                            @s1 <br />
+                                            @s2
+
+                                        </td>
+                                        <td class="center sorting_disabled">@Html.Raw(item1.ActionDescription)</td>
+                                        <td class="center sorting_disabled">@Html.Raw(item1.StatusName)</td>
+                                        @if (item1.Enclosure != null && item1.Enclosure != "")
+                                        {
+                                            <td> <a href="@item1.Enclosure" target="_blank" >Attached (File)</a> </td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+
+                                        }
+
+
+                                        <td>@item1.ActionBy</td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+}

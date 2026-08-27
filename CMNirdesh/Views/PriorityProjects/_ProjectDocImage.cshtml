@@ -1,0 +1,212 @@
+﻿
+<style type="text/css">
+    .owl-carousel.owl-theme.owl-loaded.owl-drag .item img {
+        height: 280px;
+    }
+
+    .owl-carousel.owl-theme.owl-loaded.owl-drag .item img {
+        height: 280px;
+    }
+
+    .item {
+        padding: 20px 20px;
+    }
+    .owl-nav {
+        display: block !important;
+    }
+</style>
+
+@*<link href="~/Content/styles/lightbox.min.css" rel="stylesheet" />
+<link href="~/Content/styles/GridCss.css" rel="stylesheet" />
+
+<script defer=defer src="~/Scripts/owl.carousel.min.js"></script>
+<script src="~/Scripts/lightbox.min.js"></script>
+<script defer=defer type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>*@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var DocumentListalert = "@Session["DocumentListalert"]";
+        var ImageListalert = "@Session["ImageListalert"]";
+        if (DocumentListalert == "") {
+            
+        } else {
+            alert(DocumentListalert);
+        }
+
+        if (ImageListalert == "") {
+           
+        } else {
+            alert(ImageListalert);
+        }
+        //if (DocumentListalert != null || trim(DocumentListalert) != "") {
+        //    alert("Documents Not Attached with the Project.");
+        // }
+        //if (ImageListalert != null || trim(ImageListalert) != "") {
+        //    alert("Images Not Attached with the Project.");
+        //}
+        //$(".projectowl").owlCarousel({
+        //    items: 3, //10 items above 1000px browser width
+        //    autoplay: true,
+        //    autoplayTimeout: 5000,
+        //    navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"],
+        //    responsive: {
+        //        0: {
+        //            items: 1
+        //        },
+        //        600: {
+        //            items: 2
+        //        },
+        //        1000: {
+        //            items: 3
+        //        }
+        //    }
+        //});
+        getProjectConstituency();
+    });
+
+    function getProjectConstituency() {
+        var pathurl = '/PriorityProjects/GetProjectConstituency';
+        $("#ConstituencyList").empty();
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: {},
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+
+                        html = html + "<li><a value='" + item.ConstituencyId + "'> " + item.ConstituencyName + "</a></li>";
+
+                    }
+                    $("#ConstituencyList").html(html);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#ConstituencyList").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function skip() {
+        $('#PPpopup').css('display', 'none');
+
+    }
+</script>
+
+<div class="tab_content" style="width: 80%; margin-top: 10%; margin-left:10%; background-color:ghostwhite; " id="PPpopup">
+    <div class="col-md-12 col-lg-12 ">
+        <button type="button" class="close" onclick="skip()" data-dismiss="modal">&times;</button>
+    </div>
+
+    @if (@Model.IsImage)
+    {
+        <h2 class="hding_df">@Model.ProjectName</h2>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="owl-carousel owl-theme projectowl owl-loaded owl-drag" id="projectowl">
+                    @foreach (var img in Model.ImageList)
+                    {
+                        <div class="owl-item" style="width: 354.667px;">
+                            <div class="item">
+                                @*<a href="@Url.Content(@img.ImageLocation)" data-lightbox="gallery">
+                                    <img src="@Url.Content(@img.ImageLocation)" alt="" data-toggle="tooltip" title="@img.ImageTitle" />
+                                </a>*@
+                                 <a href="~/mlaDiary/@img.ImageLocation" data-lightbox="gallery">
+                                    <img src="~/mlaDiary/@img.ImageLocation" alt="" data-toggle="tooltip" title="@img.ImageTitle" />
+                                </a>
+                                <h3 class="images_title img_titl">@img.ImageTitle</h3>
+                            </div>
+                        </div>
+
+                    }
+
+
+                </div>
+
+            </div>
+        </div>
+
+    }
+<div class="cm_sec_container modal_pr_bx">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="globe_outer document">
+                    <h5>
+                        <i class="fa fa-map-marker"></i>
+                        <span class="modl_hding">Constituency</span>
+                    </h5>
+                        <div class="globe_inner">
+                                <div class="noticebox">
+                                    <ul id="ConstituencyList">
+                                    </ul>
+                                </div>
+                        </div>
+                    
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="project_description">
+                    <h5>
+                        <i class="fa fa-file-text"></i>
+                        <span class="modl_hding">Description</span>
+                    </h5>
+                    <div class="fr_box">
+                        <p class="MsoNormal" style="text-align: justify;">
+                            <span class="dis_spn">
+                                @Model.ProjectDescription
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @if (Model.DocumentList.Count > 0)
+            {
+                <div class="col-lg-4 col-md-4">
+                    <div class="globe_outer document">
+                        <h5>
+                            <i class="fa fa-map-marker"></i> 
+                            <span class="modl_hding">Project Documents Constituency</span>
+                        </h5>
+                        
+                            <div class="globe_inner">
+                                
+                                    <div class="noticebox">
+                                        <ul>
+                                            @foreach (var doc in Model.DocumentList)
+                                            {
+                                                <li>
+                                                    <a href="@Url.Content("~/MlaDiary/"+doc.DocumentLocation )" target="_blank">@doc.DocumentTitle </a>
+                                                    @*<a href="@Url.Content(doc.DocumentLocation)" target="_blank">@doc.DocumentTitle</a>*@
+                                                    @*<span><i class="fa fa-calendar" aria-hidden="true"></i> @doc.CreatedDate.ToString("dd-MM-yyyy") </span>*@
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </div>
+                                
+                            </div>
+                        
+                    </div>
+
+                </div>
+
+            }
+
+        </div>
+    </div>
+</div>
+
+
+
+    </div>

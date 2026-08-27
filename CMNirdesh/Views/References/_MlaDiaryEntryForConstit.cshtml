@@ -1,0 +1,983 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@using CMNirdesh.Models
+
+
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/TempFile/";
+}
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<style>
+    input[type="file" i] {
+        color: #fff;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        $('[type="date"]').prop('max', function () {
+            return new Date().toJSON().split('T')[0];
+        });
+
+        $.noConflict();
+
+        letterfile();
+
+         var menuname = $("#RefMenuName").val();
+
+          $('#myref').text(menuname);
+
+
+        $("#FromDept").change(function () {
+            bindOfficeDrpList($("#FromDept").val());
+        });
+        tinyMCE.init({
+            selector: "#SubjectDetails",
+            branding: false,
+            content_style:
+                "body {  font-size: 14px; font-family: inherit; }",
+        });
+
+        $("#chkApplicant").click(function () {
+
+            if ($("#chkApplicant").is(':checked')) {
+                $("#divApplicantDetails").show();
+            }
+            else {
+                $("#divApplicantDetails").hide();
+            }
+        });
+
+        $("#ToDept").change(function () {
+            bindToOfficeDrpList($("#FromDept").val());
+        });
+
+        var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+        var ActionFile = $("#Actionfile").text();
+        if (EnclosureFiletxt == "Yes") {
+            $("#IsEnclosureFile").val("Y");
+        }
+        else {
+            $("#IsEnclosureFile").val("N");
+        }
+
+        if (ActionFile == "Yes") {
+            $("#IsFile").val("Y");
+        }
+        else {
+            $("#IsFile").val("N");
+        }
+    });
+
+    function letterfile() {
+
+        var radiovalue = document.querySelector('input[name="isLetter"]:checked').value;
+
+        if (radiovalue == "Letter") {
+            $("#DdlDoctype").show();
+            $("#ddlFileDocyype").hide();
+            // $("#btnDraft").show();
+            //$("#btnSave").hide();
+            var menuname = $("#RefMenuName").val();
+            $('#myref').text(menuname);
+        }
+        else if (radiovalue == "File") {
+            $("#DdlDoctype").hide();
+            $("#ddlFileDocyype").show();
+            //$("#btnDraft").hide();
+            //$("#btnSave").show();
+            var MenuName2 = 'File No.:';
+            $('#myref').text(MenuName2);
+        }
+
+    }
+    function get() {
+        //alert('a');
+        var selected = $("#DdlCctype option:selected");
+        var message = "";
+        selected.each(function () {
+            message += $(this).val() + ",";
+            $("#hdnOfficeIdCC").val(message)
+        });
+       // alert($("#hdnOfficeIdCC").val());
+    }
+
+    function ShowTemplate() {
+        $("#divTemplates").show();
+        $("#atemplate").attr("onclick", "HideTemplate()");
+
+    }
+
+    function HideTemplate() {
+        $("#divTemplates").hide();
+        $("#atemplate").attr("onclick", "ShowTemplate()");
+
+    }
+
+    function GetTemplate(obj) {
+
+        var subject = $(obj).attr('subject');
+        var body = $(obj).attr('body');
+        $("#TxtSubject").val(subject);
+
+        tinyMCE.get('SubjectDetails').setContent(body);
+    }
+
+    $('#TxtForwardDate').attr('readonly', true);
+    $('#TxtActionTakenDate').attr('readonly', true);
+    $('#TxtEnclosureTakenDate').attr('readonly', true);
+
+
+
+
+    function bindOfficeDrpList(DeptID) {
+        $("#loader-wrapper").show();
+        $.ajaxSetup({ cache: false });
+        $.ajax({
+             url: '@Url.Action("OfficeDrpList", "References")',
+            type: 'GET',
+            async: true,
+            data: { deptid: DeptID },
+            success: function (data) {
+                if (data) {
+                    $("#divOfficeList").html(data);
+                    var office = $("#OfficeId").val();
+                    if (office != "") {
+                        $("#ddlFromOffice option[value=" + office + "]").prop("selected", "selected");
+                        $("#loader-wrapper").hide();
+                    }
+                    else {
+                        $("#ddlFromOffice option[value=0]").prop("selected", "selected");
+                        $("#loader-wrapper").hide();
+                    }
+                }
+                else {
+                    $("#loader-wrapper").hide();
+            }   },
+                error: function (xhr, ajaxOptions, thrownError) {
+                   $("#loader-wrapper").hide();
+                   alert(xhr.responseText);
+                   alert(thrownError);
+                }
+        });
+    }
+
+    function bindToOfficeDrpList(DeptID) {
+        $.ajaxSetup({ cache: false });
+        $.ajax({
+             url: '@Url.Action("ToOfficeDrpList", "References")',
+            type: 'GET',
+            async: true,
+            data: { deptid: DeptID },
+            success: function (data) {
+                if (data) {
+                    $("#divToOfficeList").html(data);
+                    var office = $("#OfficeId").val();
+                    if (office != "") {
+                        $("#ddlToOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlToOffice option[value=" + office + "]").prop("selected", "selected");
+                        var utype = $('#DdlUserType').val();
+                        if (utype == 4) {
+                            $('#ddlToOffice option:not(:selected)').attr('disabled', true);
+                        }
+                    }
+                    else {
+                        $("#ddlToOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlToOffice option[value=0]").prop("selected", "selected");
+                    }
+                }
+                else {
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    $("textarea#TxtTitle").focus(function () {
+        $("textarea#TxtTitle").animate({ height: "130px" }, 100)
+    })
+
+    $("textarea#TxtSubject").blur(function () {
+        $("textarea#TxtSubject").animate({ height: "55px" }, 100)
+    })
+
+    $("textarea#TxtRemarks").blur(function () {
+        $("textarea#TxtRemarks").animate({ height: "55px" }, 90)
+    })
+
+    $("textarea#TxtletterDescription").blur(function () {
+        $("textarea#TxtletterDescription").animate({ height: "55px" }, 100)
+    })
+
+    $("textarea#TxtItemDescription").blur(function () {
+        $("textarea#TxtItemDescription ").animate({ height: "55px" }, 90)
+    })
+
+    $("textarea#TxtRecieveFrom").blur(function () {
+        $("textarea#TxtRecieveFrom").animate({ height: "55px" }, 100)
+    })
+
+    $("textarea#TxtDocumentCC").blur(function () {
+        $("textarea#TxtDocumentCC").animate({ height: "55px" }, 100)
+    })
+
+    function Save(draft) {
+        debugger
+        try {
+            if (typeof window.tinymce != 'undefined' && $(window.tinymce.editors).length > 0) {
+                $(window.tinymce.editors).each(function (idx) {
+                    try {
+                        tinymce.remove(idx);
+                    } catch (e) { }
+                });
+            }
+
+            tinyMCE.triggerSave(true, true); // very importent for get data of editior
+            ////debugger;
+            if ($("#FromDept").val() == "") {
+                alert("Please select From Department ?");
+                return false;
+            }
+            if ($("#ddlFromOffice").val() == "") {
+                alert("Please Select From Offce ?");
+                return false;
+            }
+
+            //var doctype = $("#DdlDoctype").val();
+            //if (doctype == "" || doctype == null || doctype == undefined) {
+            //    alert("Please Select Document Type ?");
+            //    return false;
+            //}
+
+
+            //if ($("#DdlDoctype").val() == "0") {
+            //    alert("Please Select Document Type ?");
+            //    return false;
+            //}
+
+            var radiovalue = document.querySelector('input[name="isLetter"]:checked').value;
+
+            if (radiovalue == "Letter") {
+
+                var doctype = $("#DdlDoctype").val();
+                if (doctype == "" || doctype == null || doctype == undefined) {
+                    alert("Please Select Document Type ?");
+                    return false;
+                }
+
+                if ($("#DdlDoctype").val() == "0") {
+                    alert("Please Select Document Type ?");
+                    return false;
+                }
+
+            }
+            else if (radiovalue == "File") {
+                var meetid = $("#ddlFileDocyype").val();
+                if (meetid == "" || meetid == null || meetid == undefined) {
+                    alert("Please Select Document Type ?");
+                    return false;
+                }
+
+                if ($("#ddlFileDocyype").val() == "0") {
+                    alert("Please Select Document Type");
+                    return false;
+                }
+            }
+
+            if ($("#TxtLetterNo").val() == "") {
+                alert(2);
+                alert("Please Enter Letter Number ?");
+                return false;
+            }
+
+            if ($("#txtLetterDate").val() == "") {
+                alert("Please Select Letter Date ?");
+                return false;
+            }
+            if ($("#TxtSubject").val() == "") {
+                alert("Please Enter Subject ?");
+                return false;
+            }
+            //var idnew = $("#lettertype:checked").val();
+            //var idnew1 = $("#filetype:checked").val();
+            //alert(idnew)
+            //alert(idnew1)
+            //if (idnew != "letter" || idnew1 != "file") {
+            //    alert("Please Select wheter letter or File ?");
+            //    return false;
+            //}
+
+
+            else {
+
+                if (confirm("Are you sure to save ?")) {
+
+
+                  
+
+
+                    if (draft == "0") {
+                        $("#BtnCaption").val("Draft");
+                    } else {
+                        $("#BtnCaption").val("Save");
+                    }
+
+                    if ('@Model.PaperEntryType' == "NewEntry") {
+                        //alert('NewEntry');
+                        var FromDept = $("#FromDept").val();
+                        var ddlOffice = $("#ddlFromOffice").val();
+                        var ToDept = $("#ToDept").val()
+                        var ToOffice = $("#ddlToOffice").val()
+                        var Doctype = $("#DdlDoctype").val();
+                        var LetterNo = $("#TxtLetterNo").val();
+                        var LetterDate = $("#txtLetterDate").val();
+                        var Subject = $("#TxtSubject").val();
+                        var SubjectDetails = $("#SubjectDetails").val();
+                        var ApplicantName = $("#TxtApplicantName").val();
+                        var ApplicantAddress = $("#TxtApplicantAddress").val();
+                        var ApplicantMobile = $("#TxtApplicantMobile").val();
+                        var EnclosureFile_name = $("#file_nameEn").html();
+                        if (TxtEnclosureTakenDate != "" && EnclosureFile_name == "") {
+                            //alert("Please Upload Enclosure");
+                            //return false;
+                        }
+                        var Enclosuredate = $("#TxtEnclosureTakenDate").val();
+                        var Enclosurefile_name = $("#file_nameEn").html();
+                        $("#loader-wrapper").show();
+                        var action = $("#formDiary").attr("action");
+                        if ($("#formDiary").attr("enctype") == "multipart/form-data") {
+                            var dataString = new FormData($("#formDiary").get(0));
+                            processData = false;
+                        }
+                        $.ajax({
+                            type: "POST",
+                            url: action,
+                            async: true,
+                            data: dataString,
+                            dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+                                $("#loader-wrapper").hide();
+                                if (data == "U" && data != "E") {
+                                    $("#loginModaldiary").css("display", "none");
+                                    $("#loginModalDiary").css("display","none");
+                                    $("#loginModal").css("display", "none");
+                                    $(".modal-backdrop").hide();
+                                    alert("Reference diarised successfully with Ref.Id ");
+                                    
+                                }
+                                else if (data != "U" && data != "E") {
+
+                                    $("#loginModal").css("display", "none");
+                                    $("#loginModaldiary").css("display", "none");
+                                    $("#loginModalDiary").css("display", "none");
+                                    alert("Reference diarised successfully with Ref.Id " + data);
+                                    $(".modal-backdrop").hide();
+                                   // MainView1();
+                                    window.location.reload(true);
+
+
+
+                                    //$("#loginModalDispatch").css("display", "none");
+                                    //$("#loginModalDispatchNew").css("display", "none");
+                                    //$('#loginModalDispatchbody').html('');
+                                    //alert("Reference dispatched successfully with Ref.Id " + data);
+                                    //$(".modal-backdrop").hide();
+                                    ////MainView1();
+                                    //window.location.reload(true);
+
+                                }
+                                else {
+                                    $("#loginModaldiary").css("display", "none");
+                                    $("#loginModal").css("display", "none");
+                                    window.location.reload(true);
+                                    alert("Some error occurred,please try again");
+
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                $("#loader-wrapper").hide();
+                                //do your own thing
+                                alert("Some error occurred,please try again");
+                            },
+                        });
+                    }
+
+                    else if ('@Model.PaperEntryType' == "EditEntry") {e;
+                        var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+                        var ActionFile = $("#Actionfile").text();
+                        if (EnclosureFiletxt == "Yes") {
+                            $("#IsEnclosureFile").val("Y");
+                        }
+                        else {
+                            $("#IsEnclosureFile").val("N");
+                        }
+                        if (ActionFile == "Yes") {
+                            $("#IsFile").val("Y");
+                        }
+                        else {
+                            $("#IsFile").val("N");
+                        }
+                        var TxtEnclosureTakenDate = $("#TxtEnclosureTakenDate").val();
+                        var file_nameEn = $("#file_nameEn").html();
+                        var enclourelinktxt = $("#enclourelink").text();
+                        if (TxtEnclosureTakenDate != "" && file_nameEn == "" && enclourelinktxt == "") {
+                            //alert("Please Upload Enclosure");
+                            //return false;
+                        }
+                        var forwarddate = $("#TxtForwardDate").val();
+
+                        var TxtActionTakenDate = $("#TxtActionTakenDate").val();
+                        if (TxtActionTakenDate != "" || TxtActionTakenDate != null) {
+                            if (forwarddate == "" || forwarddate == null) {
+                                $("#TxtForwardDate").focus();
+                                alert("Enter Forward Date to complete action");
+                                return false;
+                            }
+                        }
+                        var ActionTaken_name = $("#file_name1").html();
+                        var actionlink = $("#actionlink").text();
+                        if (TxtActionTakenDate == "" && (ActionTaken_name != "" || actionlink != "")) {
+                            $("#TxtActionTakenDate").focus();
+                            alert(" Please Enter Action Taken Date");
+                            return false;
+                        }
+                        var actionremarks = $('#Remarks_ifr').contents().find('#tinymce').html();
+
+                        var chkdata = '<p><br data-mce-bogus="1"></p>';
+                        if (actionremarks.trim() != chkdata) {
+                            if (TxtActionTakenDate == "") {
+                                $("#TxtActionTakenDate").focus();
+                                alert(" Please Enter Action Taken Date");
+                                return false;
+                            }
+                        }
+
+                        var action = $("#formDiary").attr("action");
+                        if ($("#formDiary").attr("enctype") == "multipart/form-data") {
+                            var dataString = new FormData($("#formDiary").get(0));
+                            processData = false;
+                        }
+                        $.ajax({
+                            type: "POST",
+                            url: action,
+                            data: dataString,
+                            async: true,
+                            dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+
+                                if (data == "U" && data != "E") {
+                                    alert("Diary has been successfully updated");
+                                    MainView1();
+                                }
+                                else if (data != "U" && data != "E") {
+                                    alert("Diary has been successfully sent");
+                                    MainView1();
+                                }
+                                else {
+                                    alert("Some error occurred,please try again");
+                                    window.location.reload(true);
+
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                //do your own thing
+                                alert("Some error occurred,please try again");
+                                window.location.reload(true);
+                            },
+                        });
+                    }
+                }
+
+            }
+
+        }
+        catch (ex) {
+
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+            //alert(ex.message);
+        }
+    }
+
+    function MinistryChanged() {
+        var ministryID = $('#DdlEntryMinister').val();
+
+        if (ministryID == "0") {
+            $('#MinistryId').val(ministryID);
+            var select = $("#DdlDept");
+            select.empty();
+            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { MinistryId: ministryID },
+                success: function (data) {
+                    var opt = document.createElement("option");
+
+                    document.getElementById("DdlDept").options.add(opt);
+
+                    opt.text = 'Select Department';
+                    opt.value = 0;
+                }, error: function (data) {
+                    alert("Something wrong...")
+                }
+            })
+        }
+
+        if (ministryID != "" && ministryID != null) {
+            //cl.show();
+            $('#MinistryId').val(ministryID);
+            var select = $("#DdlDept");
+            select.empty();
+            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { MinistryId: ministryID },
+                success: function (data) {
+                    $.each(data, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.DepartmentId,
+                            text: itemData.DepartmentName
+                        }));
+                    });
+                    //cl.hide();
+                }, error: function (data) {
+                    alert("Something wrong...")
+                }
+            })
+        }
+    }
+
+    $("#fileuploadEnclosure").click(function (event) {
+        $('#EnclosureFile').text('No');
+        $('#IsEnclosureFile').val("N");
+        $('#fileuploadEnclosure').fileupload({
+            dataType: 'json',
+              url: '@Url.Action("UploadMlaEnclosureFiles", "eFile")',
+            //url: "/eFile/UploadMlaEnclosureFiles",
+            autoUpload: true,
+            async: true,
+            done: function (e, data) {
+                var sim = setTimeout("hidevalueActionEnclosure()", 1000);
+                $('.file_nameEn').html(data.result.pdfname);
+                $('#afile_nameEn').attr("href","@path" + data.result.name)
+                $('#enclosure').val(data.result.name);
+                $('.file_sizeEn').html(data.result.size);
+                $("#removeUploadEnclosure").css("display","block");
+            }
+        }).on('fileuploadprogressall', function (e, data) {
+
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('.progressEnclosure .progress-bar').css('width', progress + '%');
+           // $('#removeUploadEnclosure').css('display', 'block');
+        });
+        //  $("#removeUploadEnclosure").hide(true);
+    });
+
+    function hidevalueForwd() {
+        $('.progress1 .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueForwd()", 3000);
+    }
+
+    function hidevalueAction() {
+        $('.progress12 .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueAction()", 3000);
+    }
+
+    function hidevalueActionEnclosure() {
+        $('.progressEnclosure .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+    }
+
+    function removefileupload() {  // Forward File
+
+        $('.file_nameEn').html('');
+        $('.file_sizeEn').html('');
+        $('.progressEnclosure .progress-bar').css('width', '0%');
+        $("#removefileupload").hide();
+        $('#fileuploadcontant').css('border', '0px solid rgb(244, 239, 239)');
+        $("#removeUploadEnclosure").css("display", "none");
+
+        $.post("/eFile/RemoveMlaForwardFiles",
+           {
+           },
+           function (data) {
+           });
+    }
+
+    function allowOnlyNumber(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            alert('Please Enter Numeric Value.');
+            return false;
+        }
+        return true;
+    }
+
+    function Disablecontrols() {
+        $("#TxtGrantAmount").prop("readonly", true);
+        $("#TxtApplicantName").prop("readonly", true);
+        $("#TxtApplicantAddress").prop("readonly", true);
+        $("#TxtApplicantMobile").prop("readonly", true);
+        $("#TxtPresentAddress").prop("readonly", true);
+        $("#TxtProposedPlace").prop("readonly", true);
+        $("#TxtRecieveFrom").prop("readonly", true);
+        $("#TxtMobileNo").prop("readonly", true);
+        $("#TxtEnclosureTakenDate").prop("readonly", true);
+        $("#TxtForwardDate").prop("readonly", true);
+        $('#DdlDoctype option:not(:selected)').attr('disabled', true);
+        $('#DdlOffice option:not(:selected)').attr('disabled', true); // --- For kapoor
+        $('#ddFinancialYear option:not(:selected)').attr('disabled', true);
+        $('#DdlMappedMember option:not(:selected)').attr('disabled', true);
+
+        $("#TxtLetterNo").prop("readonly", true);
+        // $('#DdlCctype option:not(:selected)').attr('disabled', true);
+
+    }
+
+    function MainView() {
+        $.ajaxSetup({ cache: false });
+        var pathurl = '@Url.Action("MlaDiarySearchPage", "References")';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            success: function (data) {
+                $("#MainDiv").html("");
+                $("#MainDiv").html(data);
+                $("#loader-wrapper").hide();
+            }
+
+        });
+    }
+
+    function MainView1() {
+        $("#loader-wrapper").show();
+        $.ajaxSetup({ cache: false });
+        var pathurl = '@Url.Action("MLADiaryReport", "References")';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $('#MainDiv').empty();
+                $('#MainDiv').html(data);
+                $("#MainDiv").css("display", "block");
+            }
+             ,error: function (jqXHR, textStatus, errorThrown) {
+                $("#loader-wrapper").hide();
+                alert("Some error occurred,please try again");
+            },
+        });
+    }
+
+</script>
+
+<body>
+    @using (Html.BeginForm("SaveUpdateMlaDiary", "References", FormMethod.Post, new { @id = "formDiary", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        
+    <div class="row">
+
+        <div class="row col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                <span class="fotm_lbl">From Office:</span>
+                <span id="" class="slct">
+                    @Html.DropDownListFor(m => m.FromDeptId, Model.mDepartmentList, "--Select--", new { @id = "FromDept", @tabindex = "1", @class = "DdlClass" })
+                    @Html.HiddenFor(m => m.FromDeptId)
+                </span>
+            </div>
+
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                <span class="fotm_lbl">Office Detail:</span>
+                <span id="divOfficeList">
+                    @Html.DropDownListFor(m => m.FromOfficeId, Enumerable.Empty<SelectListItem>(), "-- Select --", new { @id = "ddlFromOffice", @class = "DdlClass", @tabindex = "2" })
+                </span>
+                @Html.HiddenFor(m => m.FromOfficeId)
+            </div>
+
+        </div>
+
+        <div class="row col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 form-group">
+                <span class="fotm_lbl">To Office:</span>
+                <div>
+                    <span class="form-control">
+                        @Model.deptname
+                        @Html.HiddenFor(m => m.ToDeptId)
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 form-group">
+                <div class="profile-info-name fotm_lbl">Office Detail:</div>
+                <div>
+                    <span class="form-control">
+                        @Model.officename
+                        @Html.HiddenFor(m => m.ToOfficeId)
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row col-sm-12 col-md-12 col-lg-12 col-xl-12">
+       
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 letr_box">
+                <span class="fotm_lbl">Reference Nature:</span>
+                <div class="rdo_box">
+                    @if (Model.RefFileType == "File")
+                    {
+                        @Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();" })
+                        <span>Reference</span>
+                        @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();", @checked = "checked" })
+                        <span>File</span>
+                    }
+                    else
+                    {
+                        @Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();", @checked = "checked" })
+                        <span>Reference</span>
+                        @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();" })
+                        <span>File</span>
+                    }
+
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
+                <span class="fotm_lbl">Type:</span>
+                <div>
+                    <span>
+                        @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, new { @id = "DdlDoctype", @tabindex = "3", @class = "DdlClass" })
+
+                        @Html.DropDownListFor(m => m.MeetingId, Model.FileDocumentTypelist, new { @id = "ddlFileDocyype", @tabindex = "3", @class = "DdlClass" })
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
+                <span class="fotm_lbl" id="myref"> No.:</span>
+                <div>
+                    @Html.TextBoxFor(m => m.LetterNo, new { @id = "TxtLetterNo", @tabindex = "4", @autocomplete = "off" })
+                    @Html.HiddenFor(m => m.LetterNo, new { id = "hdLetterNo" })
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
+                <span class="fotm_lbl">  Date:</span>
+                <div>
+                    @Html.TextBoxFor(m => m.LetterDate, new { @type = "Date", @id = "txtLetterDate", @tabindex = "5", @autocomplete = "off" })
+                    @Html.HiddenFor(m => m.LetterDate, new { id = "hdLetterDt" })
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row col-md-12 col-lg-12 col-xl-12">
+            <div class="col-md-6 col-lg-6" id="divsubject">
+                <span class="fotm_lbl">Subject:</span>
+                <span id="spnTitle" class="">
+                    @Html.TextAreaFor(m => m.Subject, new { @id = "TxtSubject", @tabindex = "6" })
+                </span>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                </div>
+
+            </div>
+
+        <div id="divitem" class="row col-md-12 col-lg-12">
+
+                <div class="col-md-12 col-lg-12">
+                    <span class="fotm_lbl">Details:</span>
+                    <div class="larg_txt_1">
+                        <div>
+                            @if (Model.PaperEntryType == "EditEntry")
+                            {
+                                @*<div><strong><a href="@Url.Action("PrintDiaryPdf", "Grievances", new { DiaryId = Model.RefId })" target="_blank">Print Details</a></strong></div>*@
+                                @Html.Raw(Model.SubjectDetails)
+                            }
+                        </div>
+                        @if (Model.PaperEntryType != "EditEntry")
+                        {
+                            <div>
+                                @Html.TextAreaFor(m => m.SubjectDetails, new { @tabindex = "7", @Class = "form-control" })
+                            </div>
+                        }
+
+                        else
+                        {
+                            <div>
+                                @Html.HiddenFor(m => m.SubjectDetails)
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        <div class="row col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+            <div class="col-sm-12 col-md-12 col-lg-12" id="divEnfile">
+
+                <div class="profile-info-name fotm_lbl div_inline" style="vertical-align: top;">Enclosure:</div>
+
+
+                <div class="row gap-3 mb-5">
+                    <div class="col-auto">
+                        <input style="font-size: 15px;" type="file" id="fileuploadEnclosure" name="fileuploadEnclosure">
+                    </div>
+                   @* <div class="uploadnew-section">
+                        <label class="btn-upload">
+                            <input type="file" id="fileuploadEnclosure" name="fileuploadEnclosure" >
+                            <button class="btn apply_now_btn upload_picture">Upload</button>
+                        </label>
+                    </div>*@
+
+                    <div class="col-xl-auto col-lg-10 col-md-6 col-sm-12 col-12 ">
+                       <div class="d-flex align-items-center gap-5 ">
+                            <div >
+                                <a href="#" id="afile_nameEn" target="_blank">
+                                    <span id="file_nameEn" class="file_nameEn"></span>
+                                </a>
+                                <div class="file_sizeEn"></div>
+                            </div>
+                            <div>
+                                <span id="removeUploadEnclosure" class="removeUploadEnclosure" onclick="removefileupload()"><i class="far fa-times"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+            @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+            {
+                <a href="@FileSettings.SettingValue@Model.EnclosureFile" target="_blank" id="wreqeqwe">Attached Enclosure (File)</a>
+                <span id="EnclosureFiletxt" style="display: none;">Yes</span>
+
+            }
+            else
+            {
+                <span id="EnclosureFiletxt" style="display: none;">No</span>
+            }
+
+            @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
+
+
+
+        </div>
+
+        <div class=" row col-sm-12 col-md-12 col-lg-2" id="divApplicant">
+                    <div class="chk_diry">
+                        <span id="spnTitle" class="">
+                            <input type="checkbox" id="chkApplicant" class="DdlClass" />
+                        </span>
+                        <div class="profile-info-name">
+                            Applicant Details:
+                        </div>
+                    </div>
+        </div>
+
+        <div style="display:none;" class="row col-sm-12 col-md-12 col-lg-12 col-xl-12" id="divApplicantDetails">
+                   
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
+                        <span class="fotm_lbl">Applicant Name:</span>
+                        <span>
+                            @Html.TextBoxFor(m => m.ApplicantName, new { @id = "TxtApplicantName", @autocomplete = "off", @tabindex = "9", @class = "DdlClass" })
+                        </span>
+             </div>
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
+                        <div class="profile-info-name fotm_lbl">Applicant Address:</div>
+                        <div class="profile-info-value">
+                            @Html.TextAreaFor(m => m.ApplicantAddress, new { @id = "TxtApplicantAddress", @tabindex = "10", @class = "DdlClass" })
+                        </div>
+                    </div>
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
+                        <span class="fotm_lbl">Applicant Mobile:</span>
+                        <span>
+                            @Html.TextBoxFor(m => m.ApplicantMobile, new { @id = "TxtApplicantMobile", @tabindex = "11", @autocomplete = "off", @class = "DdlClass", @maxlength = "10", @onkeypress = "return allowOnlyNumber(event);" })
+                        </span>
+                    </div>
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
+                        <span class="fotm_lbl">Applicant Email:</span>
+                        <span>
+                            @Html.TextBoxFor(m => m.ApplicantEmail, new { @id = "txtemail", @tabindex = "12", @autocomplete = "off", @class = "DdlClass" })
+                        </span>
+                    </div>
+      
+        </div>
+
+        <div class="profile-info-row">
+
+            @*<div class="profile-info-value">
+            <button class="btn btn-primary mt-2" type="button" id="btnSave" title="Send" onclick="Save()" tabindex="13">
+                <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                Submit
+            </button>
+        </div>*@
+
+            <div class=" col-md-12 col-lg-12 col-xl-12">
+                <div class="profile-info-value">
+                    <button class="btn btn-danger" type="button" id="btnDraft" title="Draft" onclick="Save(0)" tabindex="13">
+                        <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                        Save
+                    </button>
+                </div>
+
+                <div class="profile-info-value">
+                    <button class="btn btn-primary" type="button" id="btnSave" title="Send" onclick="Save(1)" tabindex="14" style="display:none">
+                        <i class="ace-icon fa fa-send align-top bigger-140"></i>
+                        Submit
+                    </button>
+                </div>
+            </div>
+
+            @Html.HiddenFor(m => m.BtnCaption)
+            @Html.HiddenFor(m => m.PaperEntryType)
+            @Html.HiddenFor(m => m.IsEnclosureFile)
+            @Html.HiddenFor(m => m.IsFile)
+            @Html.HiddenFor(m => m.DeptId, new { id = "spdeptid" })
+            @Html.HiddenFor(m => m.OfficeId, new { id = "spofcid" })
+
+            @Html.HiddenFor(m => m.LinkRefID)
+
+        </div>
+     
+    </div>
+               
+    }
+
+</body>

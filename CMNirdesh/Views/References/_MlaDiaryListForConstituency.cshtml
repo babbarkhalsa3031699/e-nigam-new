@@ -1,0 +1,396 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiary
+@using CMNirdesh.Models
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+
+    int count = 0;
+    if (ViewBag.CurrentPage > 1)
+    {
+
+        count = (ViewBag.PageSize * (ViewBag.CurrentPage - 1));
+    }
+}
+
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+@*<style>
+.modal{
+    /*display: block !important;*/ /* I added this to see the modal, you don't need this */
+}
+
+/* Important part */
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body{
+    height: 450px;
+    overflow-y: auto;
+}
+    </style>*@
+
+<div class="row">
+
+        @*div id="resize-left" class="ui-widget-content" style="overflow: hidden; position: relative;">
+          
+              <div id="divLeftContainer" style="position: absolute; top: 0; height: 20px; width: 100%; display: block;">
+                        <div style="border-bottom: 1px solid #e3e3e3; height: 1px; width: 80%; left: 10%; position: absolute; top: 50%;"></div>
+                        <div style="position: absolute; top: 0px; height: 22px; display: block; width: 20px; left: 50%; background-color: white;">
+                            <i onclick="resizeClick(1)" class="ace-icon fa fa-angle-double-left roundicon"></i>
+                        </div>
+                    </div><br /> <br />*@
+            <div class="col-xs-12">
+            <div id="divbindList">
+                <div class="widget-box" id="divAction">
+                    <div class="widget-header widget-header-flat">
+                        <div class="widget-toolbar no-border">
+                          @*  @if (CurrentSession.MemberCode != "" && CurrentSession.SubUserTypeID == "17")
+                            {
+                                <button class="btn btn-xs btn-primary bigger" id="btnNew" onclick="CreateNew()">
+                                    <i class="ace-icon fa fa-pencil-square-o"></i>
+                                    @Resources.Diaries.New
+                                </button>
+                            }
+                            else if (CurrentSession.SubUserTypeID == "37") { }*@
+                             <button class="btn btn-xs btn-primary bigger" id="btnNew" onclick="CreateNew()">
+                                    <i class="ace-icon fa fa-pencil-square-o"></i>
+                                    @Resources.Diaries.New
+                                </button>
+
+                           @* <button class="btn btn-xs btn-primary bigger" id="btnList" onclick="ListMla()">
+                                <i class="ace-icon fa fa-table"></i>
+                                @Resources.Member.List
+                            </button>*@
+                        </div>
+                    </div>
+                </div>
+
+
+                @Html.Partial("_SearchByType_MlaDiaryForConstituency", Model)
+
+
+                  <div class="col-xs-12">
+
+  <div class="pass-table">
+
+                    @if (Model.MlaDiaryList != null)
+                    {
+                        if (Model.MlaDiaryList.Count() > 0)
+                        {              
+              
+              
+                        <div class="table-header">
+                           @*<span class="label label-lg label-yellow arrowed-right" style="height: 24px; font-weight: bold; font-size: 14px;">MLA</span>*@
+                            <strong style="font-size: 18px;">Total Diary</strong>  - <strong style="color: #ffeb3b; font-size: medium;">@ViewBag.TotalDiary  </strong>
+
+                            @if (ViewBag.DocType == "3")
+                            {
+                                <strong style="font-size: 18px;">, Total Amount - Rs.</strong><strong style="color: #ffeb3b; font-size: medium;"> @ViewBag.TotalDiaryAmountCount </strong> 
+                               
+                            }
+
+                            <span class="label label-lg label-yellow arrowed-left" style="height: 24px; font-weight: bold; font-size: 14px; margin: 7px; float: right; cursor: pointer;">
+                                <a target="_blank" href="@Url.Action("GetDiaryPrint", "References", new { DocType = ViewBag.DocType, ActionType = ViewBag.ActionType, PendencySince = ViewBag.PendencySince }) ">Print List</a>
+                                @*                   <a target="_blank" href="#" onclick="return GetPrint('MLADIARY')">Print List1</a>*@
+                            </span>
+                            <br />
+                            @if (ViewBag.ActionType == "0")
+                            {
+                              @* <strong style="font-size: small;">Pending At Diary - </strong><strong style="color: #ffeb3b; font-size: medium;">@ViewBag.pendingDiaryCount</strong>*@
+                       
+                                <strong style="font-size: small;">Action Pending - </strong><strong style="color: #ffeb3b; font-size: medium;">@ViewBag.forwardActionPendingCount</strong>
+                      
+                                <strong style="margin-left: 5px; font-size: small;">, Action Taken - </strong> <strong style="color: #ffeb3b; font-size: medium;"> @ViewBag.forwardActionDoneCount</strong>
+                         
+                                if (ViewBag.DocType == "3")
+                                {
+                                @*<div style="margin-top: -15px;">
+                                  
+                                    <span style="margin-left: 0px;">Rs.</span> <strong style="color: #ffeb3b; font-size: small; margin-right: 70px;">@ViewBag.forwardActionPendingAmountCount</strong>
+                                    <span style="margin-left: 27px;">Rs.</span> <strong style="color: #ffeb3b; font-size: small;">@ViewBag.forwardActionDoneAmountCount</strong>
+                                </div>*@
+                                }
+                            }
+                            else if (ViewBag.ActionType == "1")
+                            {
+                                <strong style="font-size: small;">Action Taken - </strong><strong style="color: #ffeb3b; font-size: medium;">@Model.MlaDiaryList.Count()</strong>
+                    
+                                if (ViewBag.DocType == "3")
+                                {
+                                @*<div style="margin-top: -15px;">
+                                    <strong style="font-size: small;">Rs. </strong><strong style="color: #ffeb3b; font-size: small;">@ViewBag.forwardActionPendingAmountCount</strong>
+                                </div>*@
+                                }
+                            }
+                            else if (ViewBag.ActionType == "2")
+                            {
+                                <strong style="margin-left: 5px; font-size: small;">Action Taken - </strong> <strong style="color: #ffeb3b; font-size: medium;"> @Model.MlaDiaryList.Count()</strong>
+                                if (ViewBag.DocType == "3")
+                                {
+                                @*<div style="margin-top: -15px;">
+                                    <strong style="font-size: small;">Rs. </strong><strong style="color: #ffeb3b; font-size: small;">@ViewBag.forwardActionDoneAmountCount</strong>
+                                </div>*@
+                                }
+                            }
+                                    @* else if (ViewBag.ActionType == "3")
+                            {
+                                <strong style="font-size: small;">Pending At Diary - Rs. </strong><strong style="color: #ffeb3b; font-size: medium;">@Model.MlaDiaryList.Count()</strong>
+                   
+                                if (ViewBag.DocType == "3")
+                                {
+                                <div style="margin-top: -15px;">
+                                    <strong style="font-size: small;">Rs. </strong><strong style="color: #ffeb3b; font-size: small;">@ViewBag.pendingDiaryAmountCount</strong>
+                                </div>
+                                }
+                            }*@
+
+                        </div> 
+              <div class="table-responsive">
+                        <table class="table table-bordered  dataTable" id="sample-table-3" aria-describedby="sample-table-3_info" style="width: 100%; overflow: scroll;">
+                            <thead>
+                                <tr role="row">
+                                    <th style="display: none;" role="columnheader" rowspan="1" colspan="1"></th>
+                                    @*//column to be hide for get descending order of record *@
+                                <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" style="width: 10%;">From Councillor</th>
+                                    <th class="sorting" role="columnheader" rowspan="1" colspan="1" style="width: 8%;">Ref. Id</th>
+                                    <th class="sorting" role="columnheader" rowspan="1" colspan="1" aria-label="" style="text-align: center; width: 6%;">Date</th>
+                                   @* <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" style="width: 5%;">To/Cc</th>*@
+                                    <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" style="width: 10%;">Office</th>
+                                    
+                                    <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" style="width: 12%;">Subject</th>
+                                    <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="" style="text-align: center; width: 30%;">Details including Applicant Name, If Any</th>
+                                      <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" style="width: 6%;">Enclosure</th>
+                                    <th class="sorting" role="columnheader" rowspan="1" colspan="1" aria-label="" style="text-align: center; width: 10%;">Last Action</th>
+                                    <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="" style="text-align: center; width: 3%;"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                @foreach (var item in Model.MlaDiaryList)
+                                {
+                                    count = count + 1;                       
+                                   
+                                    <tr>
+                                        <td style="text-align: center; display: none;">
+                                            @count
+
+                                        </td>
+                                          <td style="text-align: center;">
+                                            @item.MappedMemberName
+                                           
+
+
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @item.RecordNumber
+
+                                        </td>
+
+                                        <td style="text-align: center;">
+
+                                            @* @{
+                                    // string Fpath = FileSettings.SettingValue + item.ForwardedFile;
+                                    string Enpath = FileSettings.SettingValue + item.EnclosureFile;            
+                                            }*@
+                                           
+                                            @if (item.ForwardDate != null)
+                                            {
+                                                @Convert.ToDateTime(item.ForwardDate).ToString("dd/MM/yyyy")
+                                            }
+                                            else
+                                            {
+
+                                            }
+
+                                            </td>
+                                           
+
+
+                                        <td style="text-align: center;">
+                                            @item.officename
+                                            <span id="hddoctype" style="display: none;">@item.DocmentType</span>
+
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @item.Subject
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @item.RecieveFrom
+                                        </td>
+                                       
+                                         <td style="text-align: center;">
+                                            @{
+                                          string Enpath1 = FileSettings.SettingValue + item.EnclosureFile;      }
+                                       @if (!string.IsNullOrEmpty(item.EnclosureFile))
+                                       {
+                                                <a href="@Enpath1" target="_blank">
+                                                    <img src="~/Images/Common/PDF.png" alt="Download" title="Download Enclosure" width="30" height="30" />
+                                                </a>
+                                       }
+                                       else
+                                       {
+
+                                       }                                           
+                                         </td>
+
+
+                                        <td style="text-align: center;">
+                                         
+                                           @if (item.ActiontakenDate != null)
+                                            {
+                                              @Convert.ToDateTime(item.ActiontakenDate).ToString("dd/MM/yyyy")
+                                            }                                       
+                                        </td>
+
+                                       <td>
+                                            <a data-rel="tooltip" class="green tooltip-success" title="Edit" href="#" onclick="EditMlaDairy('@item.mlaDiaryId')">
+                                                <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                 }
+                            </tbody>
+                        </table>   
+                       </div>
+                        }
+                        else
+                        {
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="alert alert-info">
+                                    <strong>No Data Found !!!</strong><br />
+                                </div>
+                            </div>
+                        </div>
+                        }
+                     }
+
+                   </div>
+  </div>
+                  </div>
+      
+            </div>
+</div>
+              
+
+   
+   
+<link rel="stylesheet" href="~/assets/css/jquery-ui.min.css" />
+<script src="~/assets/js/jquery-ui.custom.min.js"></script>
+<script src="/assets/js/jquery.dataTables.min.js"></script>
+<script src="/assets/js/jquery.dataTables.bootstrap.js"></script>
+
+<script src="~/assets/js/bootstrap.min.js"></script>
+
+
+<link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
+
+<script>
+    function CreateNew() {
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html(''); 
+        var options = {
+            "backdrop": "static",
+            keyboard: true
+        };
+        $("#loader-wrapper").show();
+        $.ajax({
+            url: "/References/NewMlaEntryForm",
+            type: 'GET',
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            data: {
+              
+            },
+            success: function (data) {
+                $('#loginModalBody').html('');
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModal").modal('show');
+                    $('#loginModalBody').html(data);
+                   
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+
+    }
+    </script>
+
+<script>
+    $(document).ready(function () {
+       $('#sample-table-3').dataTable({
+         "pagingType": "full_numbers",
+        });
+    });
+    
+    function ListMla() {
+        $('.widget-box').show();
+
+        $("#loader-wrapper").show();
+
+        $.ajax({
+            url: "/References/GetList_MlaForConstituency",
+            type: 'GET',
+            async: true,
+            data: {           
+
+            },
+            success: function (data) {
+                if (data) {
+                    $('#MainDiv').empty();
+                    $('#MainDiv').html(data);
+                    $("#MainDiv").css("display", "block");
+                    $("#loader-wrapper").hide();
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    function EditMlaDairy(ID) {
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html(''); 
+        var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+            type: "GET",
+            async: true,
+            url: pathurl,
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+             
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModal").modal('show');
+                    $('#loginModalBody').html(data);
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+    }
+   
+</script>
+
+

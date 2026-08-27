@@ -1,0 +1,303 @@
+﻿@model IEnumerable<CMNirdesh.Models.AssignProjectConstituencyWise>
+@{
+    ViewBag.Title = "ConstituencyProjectList";
+
+    int count = 0;
+    string fileacessingpath = ViewBag.FileAcessingPath;
+}
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<style>
+    .field-validation-error {
+        color: red;
+        padding-left: 10px;
+    }
+</style>
+<div id="main-content">
+    <div class="main-content">
+        <section class="form_dsign">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="inr_frm_dsgn">
+                            <div class="Tab_hdr" style="display:flex;">
+                                <div class="col-md-6">
+                                    <h2>Constituency List</h2>
+                                </div>
+                                <div class="col-md-6 text-right txt_rit">
+                                    <button class="btn btn-primary" style="font-size:14px;" onclick="javascript:window.location.href='/PriorityProjects/ConstituencyProjectMapping';">
+                                        <i class="ace-icon fa fa-pencil-square-o bigger-150"></i>
+                                        <span class="bigger-110">Add Constituency</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form_lyot">
+
+                                @if (Model != null)
+                                {
+                                    if (Model.Count() > 0)
+                                    {
+                                        <div class="tab_parent table-responsive table_rsponsv">
+                                            <table id="example" class="table table-hover table-striped table-bordered ">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="text-align: center; width:20%;"><span class="font-weight-bold">Sr No.</span></th>
+                                                        <th style="text-align: center; width:20%;"><span class="font-weight-bold">Project Name</span></th>
+                                                        <th style="text-align: center; width:20%;"><span class="font-weight-bold">Constituency Name</span></th>
+                                                        <th style="text-align: center; width:20%;"><span class="font-weight-bold">Status</span></th>
+                                                        <th style="text-align: center; width:20%;"><span class="font-weight-bold">Action</span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        count = count + 1;
+
+                                                        <tr>
+                                                            <td class="center" style="font-size:13px; padding: 14px 4px !important">
+                                                                @count
+                                                            </td>
+
+                                                            <td class="center" style="font-size:13px; padding: 14px 4px !important">
+                                                                @item.ConstituencyName
+                                                            </td>
+
+                                                            <td class="center" style="font-size:13px; padding: 14px 4px !important">
+                                                                @item.ProjectName
+                                                            </td>
+                                                            <td class="center hidden-480" style="font-size:13px; padding: 14px 4px !important">
+                                                                @if (item.IsActive == true)
+                                                                {
+                                                                    <span class="label label-sm label-primary">Published</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="label label-sm label-warning">Unpublished</span>
+                                                                }
+
+                                                            </td>
+
+                                                            <td class="center" style="font-size:13px; padding: 14px 4px !important">
+                                                                <div class="hidden-sm hidden-xs action-buttons">
+
+
+                                                                    <a data-rel="tooltip" class=" tooltip-primary" title="Edit" href="@Url.Action("EditConstituencyProjectList", "PriorityProjects", new { Id = (item.ProjectMappedConstituencyId.ToString()) })">
+                                                                        <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                                    </a>
+                                                                    <a data-rel="tooltip" class="red tooltip-error DeleteContentLink" title="Delete" id="DeleteLink" href="@Url.Action("Deleteconstituencyprojectlist", "PriorityProjects", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.ProjectMappedConstituencyId.ToString())})">
+                                                                        <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                                    </a>
+                                                                </div>
+
+                                                                <div class="hidden-md hidden-lg" style="display:none">
+                                                                    <div class="inline position-relative">
+                                                                        <button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto">
+                                                                            <i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>
+                                                                        </button>
+
+                                                                        <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+
+
+                                                                            <li>
+                                                                                <a href="@Url.Action("EditConstituencyProjectList", "PriorityProjects", new { Id = (item.ProjectMappedConstituencyId.ToString()) })" class="tooltip-primary" data-rel="tooltip" title="Edit">
+                                                                                    <span class="green">
+                                                                                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                                                    </span>
+                                                                                </a>
+                                                                            </li>
+
+                                                                            <li>
+                                                                                <a href="@Url.Action("Deleteconstituencyprojectlist", "PriorityProjects", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.ProjectMappedConstituencyId.ToString())})"
+                                                                                   class="tooltip-error DeleteContentLink" data-rel="tooltip" title="Delete">
+                                                                                    <span class="red">
+                                                                                        <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                                                    </span>
+                                                                                </a>
+
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="alert alert-info">
+
+                                                    <strong>There are no record found</strong><br />
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+
+    $("#projectDoc").change(function () {
+
+
+        CheckImage("#projectDoc", "projectDoc");
+
+    });
+
+    function CheckImage(input, name) {
+
+        var sizeInKB = $(input)[0].files[0].size / 1024;
+        var filename = $(input)[0].files[0].name;
+        var dots = $(input).val().split(".").length - 1;
+        var sizeLimit = 2048;
+        //if (sizeInKB > sizeLimit) {
+        //    toastr.error('File size must be less than 20 Mb.');
+        //    $(input).val('');
+        //    $(input + "hdn").val('');
+        //    $(input).focus();
+        //    $("#DocumentLocation").val('');
+
+        //}
+
+        if (dots > 1) {
+            toastr.error('Invalid file Format.');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $("#DocumentLocation").val('');
+        }
+
+
+        else {
+            var inpt = "input[name=" + name + "]";
+
+            var inputElement1 = $(inpt);
+
+            readImage(inputElement1).done(function (base64Data) {
+                $(input + "hdn").val(base64Data);
+                $("#DocumentLocation").val(base64Data);
+                $("#DocumentFileName").val(filename);
+                $("#adocLoc").hide();
+
+            });
+
+
+
+
+
+        }
+
+    }
+    function readImage(inputElement) {
+
+
+        var deferred = $.Deferred();
+
+        var files = inputElement.get(0).files;
+        if (files && files[0]) {
+            var fr = new FileReader();
+            fr.onload = function (e) {
+                deferred.resolve(e.target.result);
+            };
+            fr.readAsDataURL(files[0]);
+        } else {
+            deferred.resolve(undefined);
+        }
+
+        return deferred.promise();
+    }
+
+    $(document).ready(function () {
+        $("#Title").focus();
+
+        $("#Projectmain").addClass("active open");
+        $("#Projectsub").addClass("nav-show").css("display", "block");
+        $("#doclist").addClass("active");
+        $('#example').DataTable();
+    });
+
+
+    $(".DeleteContentLink").on('click', function (e) {
+
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        bootbox.confirm("Are you sure to Delete Details?", function (result) {
+            if (result) {
+                window.location.href = url;
+            }
+            else {
+            }
+        })
+    });
+
+    function resetFields() {
+        $(".field-validation-error").empty();
+        $("#Title").focus();
+
+    }
+
+
+</script>
+
+        <style>
+
+            .Tab_hdr {
+            background-color: #4c67a1;
+            padding: 1px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            color: #fff;
+            }
+            .inr_frm_dsgn {
+            margin-top: 20px;
+            box-shadow: 0px 0px 4px 1px #ccc;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            }
+
+            .inr_frm_dsgn {
+                margin-top: 20px;
+            }
+
+            .form_lyot {
+                padding: 10px;
+            }
+
+            .Tab_hdr h2 {
+            font-size: 23px;
+            font-weight: 500;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            }
+        </style>

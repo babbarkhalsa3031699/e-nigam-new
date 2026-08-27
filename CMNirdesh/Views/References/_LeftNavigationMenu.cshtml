@@ -1,0 +1,40 @@
+﻿@using CMNirdesh.Models;
+@{
+    var Menu = (CMNirdesh.Models.SubMenuModel)ViewBag.Menu;
+    var Menu1 = (CMNirdesh.Models.SubMenuModel)ViewData["Menu"];
+}
+
+@{
+    string currentController = ViewContext.RouteData.Values["controller"].ToString();
+    string currentAction = ViewContext.RouteData.Values["action"].ToString();
+    string devicetype = CurrentSession.DeviceName.ToString();
+    bool isLoginScreen = (currentController == "Account" && currentAction == "Login") ||
+                 Request.Url.AbsolutePath.Equals("/Account/Login", StringComparison.OrdinalIgnoreCase);
+}
+
+
+
+
+@if (devicetype == "mobile")
+{
+    <aside id="mySidebar" class="sidebar responsive">
+        <div class="cm_left_menu">
+
+
+        </div>
+    </aside>
+}
+else
+{
+    if (!isLoginScreen) // Add this condition
+    {
+        <aside id="mySidebar" class="sidebar responsive">
+            <div class="cm_left_menu">
+                @Html.Action("Menu", "User")
+
+            </div>
+        </aside>
+    }
+}
+
+

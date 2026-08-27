@@ -1,0 +1,545 @@
+﻿@model CMNirdesh.Models.LstMenu
+@using CMNirdesh;
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+@*@Html.Partial("~/views/references/_leftnavigationmenu.cshtml")*@
+<div id="main-content">
+
+<div class="main-content">
+    <!-- #section:basics/content.breadcrumbs -->
+
+    <section class="form_dsign">
+        <div class="container-fluid">
+            
+            <div class="inr_frm_dsgn">
+                <div class="Tab_hdr p-2 d-flex flex-wrap align-items-center" >
+                    <div class="col-md-6 col-sm-6 col-xs-12 p-2">
+                        <h2>Menu List</h2>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12 p-2 text-end txt_rit">
+                        <p>
+                            <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add Menu List</button>
+
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="form_lyot">
+                    @if (Model != null)
+                    {
+                        if (Model._LstMenu.Count() > 0)
+                        {
+                            <div class="table-responsive ">
+                                <table id="example" class="table table-hover table-bordered ">
+                                    <thead>
+                                        <tr class="table-heading">
+                                            <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Menu Id</span></th>
+                                            <th class="td-heading" style="width:35%;"><span class="font-weight-bold">Menu Name</span></th>
+                                            <th class="td-heading" style="width:35%;"><span class="font-weight-bold">Menu Icon</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold"></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                        @foreach (var items in Model._LstMenu)
+                                        {
+
+                                            <tr>
+                                                <td class="center td-data" style="font-size:14px;">@Html.DisplayFor(modelItem => items.MenuId)</td>
+                                                <td class="center td-data" style="font-size:14px;">@Html.DisplayFor(modelItem => items.MenuName)</td>
+
+                                                @*<td>@Html.DisplayFor(modelItem => items.AppIcon)</td>*@
+                                                <td class="center td-data" style="font-size:14px;"><img src="@Url.Content("~/" + items.icon)" height="25" width="25" /> </td>
+                                                <td class="center td-data edit-1" style="font-size:14px;">
+                                                    <div class="hidden-sm hidden-xs action-buttons">
+                                                        <input type="hidden" id="imageurl" value="@Url.Content("~/" + items.icon)" />
+
+                                                        <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.MenuId')">
+
+                                                            <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                        </a>
+                                                        @*<a data-rel="tooltip" class="red tooltip-error" onclick="DeleteDepartmentRecord('@items.MenuId')">
+
+                                                            <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                        </a>*@
+                                                    </div>
+
+                                                    <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.MenuId')" value="@items.MenuId" />
+                                                    <div class="hidden-sm hidden-xs action-buttons">
+                                                        <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.MenuId')" value="@items.MenuId" />
+                                                        <label class="toggle mb-0">
+                                                            <input type="checkbox" onclick="DeleteDepartmentRecord('@items.MenuId')" @(Convert.ToBoolean(items.IsDeleted) == false ? "checked='checked'" : string.Empty)>
+                                                            <span class="slider"></span>
+                                                            <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                        </label>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="alert alert-info">
+                                        <strong>There are no record found</strong><br />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+          
+        </div>
+
+        <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fs-5" id="myModalLabel">Add Menu Options</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="fileUpload" enctype="multipart/form-data">
+                            <div class="form-group" id="MenuOption">
+                                <div class="profile-info-name fotm_lbl">Menu Id:</div>
+                                <input type="text" class="form-control" id="MenuId" placeholder="Menu Id" />
+                            </div>
+                            <div class="form-group">
+                                <div class="profile-info-name fotm_lbl">
+                                    Menu Name:
+                                </div>
+                                <input type="text" class="form-control" id="MenuName" placeholder="Menu Name" />
+                            </div>
+                            <div class="form-group">
+                                <div class="profile-info-name fotm_lbl">
+                                    Menu Icon:
+                                </div>
+                                <input type="file" name="file" class="form-control" id="MenuIcon" placeholder="Menu Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                <img src="https://placehold.jp/100x100.png" id="imgPreview" class="form-control" style="width:100px; height:100px; border:1px solid red;" alt="Load Image" />
+
+                                <input type="hidden" id="DocumentIconName" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="background-color:white;">
+                        <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                        <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </div>
+
+</div>
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-5.2/css/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-5.2/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+
+
+
+<style>
+
+    
+    .inr_frm_dsgn {
+        margin-top: 20px;
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+    
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+
+    .pencil-class {
+        font-size: 15px;
+    }
+
+    .edit-1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+    }
+    
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+        });
+    });
+
+
+    function getbyID(EmpID) {
+
+        clearTextBox();
+       
+        var url = "/mMenu/Edit?id=" + EmpID;
+
+        $("#myModalLabel").html("Update Menu Options");
+
+        $("#btnUpdate").show();
+        $("#btnSave").hide();
+
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var obj = JSON.parse(data);
+
+                var data = obj._LstMenu[0];
+                $('#myModal').modal();
+                $("#MenuId").val(data.MenuId);
+                $("#MenuId").attr("disabled", "disabled");
+                $("#MenuName").val(data.MenuName);
+                $("#imgPreview").attr('src', '/' + data.icon);
+
+                /**/
+
+                /**/
+                /*  alert($("#DocumentIconImage").attr("src").val());*/
+
+
+
+                $("#btnSave").hide();
+            }
+        });
+    }
+
+
+
+
+    //Function for clearing the textboxes
+
+    //Valdidation using jquery
+    function validate() {
+
+        var isValid = true;
+        if ($('#MenuName').val() == "") {
+            $('#MenuName').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#MenuName').css('background-color', 'white');
+        }
+
+        return isValid;
+    }
+
+
+    function clearTextBox() {
+    
+        $('#MenuId').val("");
+        $('#MenuName').val("");
+        $('#MenuName').css('background-color', 'white');
+        $('#MenuIcon').val("");
+
+        $('#btnUpdate').hide();
+        $("#MenuId").removeAttr("disabled", "disabled");
+        $("#myModalLabel").html("Add Menu Options");
+        $("#MenuOption").hide();
+        $('#btnSave').show();
+        $("#imgPreview").attr('src', 'https://placehold.jp/100x100.png');
+
+    }
+    function Add() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#MenuIcon").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+            const courseDto = {
+                MenuName: $('#MenuName').val(),
+                icon: $('#MenuIcon').val()
+
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+
+
+
+            // Adding one more key to FormData object
+
+
+
+            $.ajax({
+                url: '/mMenu/Create',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+
+                    $('#myModal').hide
+                    alert("Updated Successfully");
+                    location.reload();
+
+                },
+                error: function (err) {
+                    $('#myModal').hide();
+                    alert("Not Updated");
+                    location.reload();
+
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+
+
+    function Update() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+
+
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#MenuIcon").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+
+            }
+
+
+            const courseDto = {
+                MenuId: $('#MenuId').val(),
+                MenuName: $('#MenuName').val(),
+                icon: $('#MenuIcon').val()
+
+
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+
+
+
+            // Adding one more key to FormData object
+
+
+
+            $.ajax({
+                url: '/mMenu/Update',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+
+                    $('#myModal').hide();
+                    alert("Updated Successfully");
+                    location.reload();
+                },
+                error: function (err) {
+                    $('#myModal').hide();
+                    alert("Not Updated");
+                    location.reload();
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+    var MyApp = {};
+    function DeleteDepartmentRecord(xyz) {
+
+
+
+        MyApp = xyz;
+        DeleteID();
+
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+    function DeleteID() {
+
+
+        var i = MyApp;
+
+
+        $.ajax({
+            type: "Post",
+            url: "/mMenu/Delete?id=" + i,
+            success: function (result) {
+
+                alert("Updated Successfully");
+
+
+            }
+        });
+    }
+    document.getElementById('MenuIcon').onchange = function (e) {
+        const [file] = MenuIcon.files;
+
+        if (file) {
+            $("#imgPreview").attr('src', URL.createObjectURL(file));
+        }
+
+
+    };
+   
+</script>
+
+

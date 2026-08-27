@@ -1,0 +1,123 @@
+﻿@model CMNirdesh.Models.UploadAttendanceViewModel
+
+
+    @Html.Hidden("meetingId", Model.MeetingId)
+
+<style>
+    /*.table.header {
+        background-color: #6d99ec !important;
+    }
+
+    .table > thead > tr {
+        color: #707070;
+        font-weight: normal;
+        background: #6d99ec !important;
+        
+    }*/
+
+</style>
+
+    <!-- Upload Form -->
+    <div class="card shadow mb-4">
+    
+        <div class="card-body">
+            <h6>Upload Attendance Document</h6>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input type="file" name="attendanceFile" id="attendanceFile" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-success">Upload</button>
+                <div id="uploadStatus" class="mt-3"></div>
+            </form>
+
+            <div class="row" id="documentList">
+
+                @if (Model.Documents != null && Model.Documents.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered dataTable no-footer">
+                            <thead>
+                                <tr class="header">
+                                    <th>File Name</th>
+                                    <th>Uploaded By</th>
+                                    <th>Uploaded On</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var doc in Model.Documents)
+                                {
+                                    <tr>
+                                        <td>Uploaded Member's Attendance Document for Current Agenda</td>
+                                        <td>@doc.UploadedBy</td>
+                                        <td>@doc.UploadedOn.ToString("dd-MM-yyyy hh:mm tt")</td>
+                                        <td>
+                                            <a href="@Model.fileacessingUrl/@doc.FilePath@doc.FileName" target="_blank">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-3">
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle me-1"></i> No attendance documents uploaded yet.
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+     
+    </div>
+
+
+
+
+
+<script>
+    $(function () {
+        $('#uploadForm').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData();
+            var file = $('#attendanceFile')[0].files[0];
+            var meetingId = $('#meetingId').val();
+
+            if (!file) {
+                $('#uploadStatus').html('<div class="alert alert-warning">Please select a file.</div>');
+                return;
+            }
+
+            formData.append("attendanceFile", file);
+            formData.append("meetingId", meetingId);
+
+            $.ajax({
+                url: '@Url.Action("UploadAttendanceDocuments", "Attendance")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    if (res.success) {
+                        $('#uploadStatus').html('<div class="alert alert-success">' + res.message + '</div>');
+                        $('#attendanceFile').val('');
+                        $.get('@Url.Action("ListAttendanceDocuments", "Attendance")', { meetingId: meetingId }, function (html) {
+                            $('#documentList').html("");
+                            $('#documentList').html(html);
+                        });
+                    } else {
+                        $('#uploadStatus').html('<div class="alert alert-danger">' + res.message + '</div>');
+                    }
+                },
+                error: function () {
+                    alert();
+                }
+            });
+        });
+    });
+</script>

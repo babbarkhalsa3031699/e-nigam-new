@@ -1,0 +1,9 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+
+@if (Model.OfficeList != null)
+{
+    @Html.DropDownListFor(m => m.ToOfficeId, Model.OfficeList, "--Select Office--", new { @id = "ddlToOffice", @class = "DdlClass", @tabindex = "2" })
+
+}
+
+

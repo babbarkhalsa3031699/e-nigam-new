@@ -1,0 +1,379 @@
+﻿
+<input type="hidden" id="intval" name="intval" value="" />
+<input type="hidden" id="diarydispatchValueW" name="diarydispatchValueW" value="" />
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <body>
+        <div class="" >
+            <h3 class="mb-3">Weekly Diary Report</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered  dataTable" id="diaryFilter" aria-describedby="sample-table-3_info" style="overflow: scroll;">
+                    <thead>
+                        <tr>
+                            <th class="b_right_none"> <span onclick="PreviousSevenDays();"> <i class="fa fa-arrow-left aro_txt" aria-hidden="true"></i> </span></th>
+                            <th class="b_right_none text-center" colspan="5" width="100%">
+                                <input type="radio" id="chkDiaryRef" value="Diary" name="group1" checked="checked" class="mr-2"><span>Reference Date wise</span>
+                                <input type="radio" id="chkDiaryAction" value="Dispatch" name="group1" class="ml-4 mr-2"><span>Action Date wise</span>
+                            </th>
+                            <th class="b_left_none"> <span onclick="NextSevenDays();" class="pull-right"> <i class="fa fa-arrow-right aro_txt" aria-hidden="true"></i> </span></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbodyDiaryWeekly">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-xl-12" id="Diarylistdiv" style="margin-top:10px;"></div>
+
+        </div>
+
+    </body>
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#loader-wrapper").show();
+
+            DiaryRefWise();
+            $("#chkDiaryRef").click(function () {
+                DiaryRefWise();
+            });
+
+            $("#chkDiaryAction").click(function () {
+                DiaryRefActionWise();
+            });
+        });
+
+
+        function DiaryRefWise() {
+            try {
+                $("#Diarylistdiv").html('');
+                $("#loader-wrapper").show();
+                $("#tbodyDiaryWeekly").html('');
+                var pathurl = '/References/DiaryRefWise';
+                $.ajax({
+                    url: pathurl,
+                    type: 'GET',
+                    async: true,
+                    data: { status: 0 },
+                    success: function (result) {
+                        var html = "";
+
+                        if (result.length > 0) {
+                            html = html + "<tr><td class='center'>" + result[0].Text + "</td>";
+                            html = html + "<td class='center'>" + result[1].Text + "</td>";
+                            html = html + "<td class='center'>" + result[2].Text + "</td>";
+                            html = html + "<td class='center'>" + result[3].Text + "</td>";
+                            html = html + "<td class='center'>" + result[4].Text + "</td>";
+                            html = html + "<td class='center'>" + result[5].Text + "</td>";
+                            html = html + "<td class='center'>" + result[6].Text + "</td></tr>";
+                            html = html + "<tr><td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[0].Text + "'>" + result[0].Value + "</a></td>";
+
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[1].Text + "'>" + result[1].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[2].Text + "'>" + result[2].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[3].Text + "'>" + result[3].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[4].Text + "'>" + result[4].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[5].Text + "'>" + result[5].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[6].Text + "'>" + result[6].Value + "</a></td></tr>";
+                            $("#tbodyDiaryWeekly").html(html);
+                            $("#loader-wrapper").hide();
+                        }
+
+                        else {
+                            $("#tbodyDiaryWeekly").html("No Data Found");
+                            $("#loader-wrapper").hide();
+                        }
+                    },
+                    error: function (result) {
+                        $("#loader-wrapper").hide();
+                    }
+                });
+            }
+            catch (e) {
+                alert('error occured' + e);
+
+            }
+
+        }
+
+        function DiaryRefActionWise() {
+            $("#Diarylistdiv").html('');
+            $("#loader-wrapper").show();
+            $("#tbodyDiaryWeekly").html('');
+            var pathurl = '/References/DiaryRefActionWise';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { status: 0 },
+                success: function (result) {
+                    var html = "";
+                    if (result.length > 0) {
+                        html = html + "<tr><td class='center'>" + result[0].Text + "</td>";
+                        html = html + "<td class='center'>" + result[1].Text + "</td>";
+                        html = html + "<td class='center'>" + result[2].Text + "</td>";
+                        html = html + "<td class='center'>" + result[3].Text + "</td>";
+                        html = html + "<td class='center'>" + result[4].Text + "</td>";
+                        html = html + "<td class='center'>" + result[5].Text + "</td>";
+                        html = html + "<td class='center'>" + result[6].Text + "</td></tr>";
+                        html = html + "<tr><td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[0].Text + "'>" + result[0].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[1].Text + "'>" + result[1].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[2].Text + "'>" + result[2].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[3].Text + "'>" + result[3].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[4].Text + "'>" + result[4].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[5].Text + "'>" + result[5].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[6].Text + "'>" + result[6].Value + "</a></td></tr>";
+
+                        $("#tbodyDiaryWeekly").html(html);
+                        $("#loader-wrapper").hide();
+                    }
+                    else {
+                        $("#tbodyDiaryWeekly").html("No Data Found");
+                        $("#loader-wrapper").hide();
+                    }
+                }
+                ,
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+
+            });
+        }
+
+        function DiaryRefWiseArrow(count) {
+            var status = count;
+            try {
+                $("#Diarylistdiv").html('');
+                $("#loader-wrapper").show();
+                $("#tbodyDiaryWeekly").html('');
+                var pathurl = '/References/DiaryRefWise';
+                $.ajax({
+                    url: pathurl,
+                    type: 'GET',
+                    async: true,
+                    data: { status: status },
+                    success: function (result) {
+                        var html = "";
+
+                        if (result.length > 0) {
+                            html = html + "<tr><td class='center'>" + result[0].Text + "</td>";
+                            html = html + "<td class='center'>" + result[1].Text + "</td>";
+                            html = html + "<td class='center'>" + result[2].Text + "</td>";
+                            html = html + "<td class='center'>" + result[3].Text + "</td>";
+                            html = html + "<td class='center'>" + result[4].Text + "</td>";
+                            html = html + "<td class='center'>" + result[5].Text + "</td>";
+                            html = html + "<td class='center'>" + result[6].Text + "</td></tr>";
+                            html = html + "<tr><td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[0].Text + "'>" + result[0].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[1].Text + "'>" + result[1].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[2].Text + "'>" + result[2].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[3].Text + "'>" + result[3].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[4].Text + "'>" + result[4].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[5].Text + "'>" + result[5].Value + "</a></td>";
+                            html = html + "<td class='center'> <a onclick='GetDiaryDataByDate(this)' diaryDate='" + result[6].Text + "'>" + result[6].Value + "</a></td></tr>";
+                            $("#tbodyDiaryWeekly").html(html);
+
+                            $("#loader-wrapper").hide();
+                        }
+
+                        else {
+                            $("#tbodyDiaryWeekly").html("No Data Found");
+                            $("#loader-wrapper").hide();
+                        }
+                    }
+                    ,
+                    error: function (result) {
+                        $("#loader-wrapper").hide();
+                    }
+                });
+            }
+            catch (e) {
+                alert('error occured' + e);
+            }
+        }
+
+        function DiaryRefActionWiseArrow(count) {
+            var status = count;
+            $("#Diarylistdiv").html('');
+            $("#loader-wrapper").show();
+            $("#tbodyDiaryWeekly").html('');
+            var pathurl = '/References/DiaryRefActionWise';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { status: status },
+                success: function (result) {
+                    var html = "";
+                    if (result.length > 0) {
+                        html = html + "<tr><td class='center'>" + result[0].Text + "</td>";
+                        html = html + "<td class='center'>" + result[1].Text + "</td>";
+                        html = html + "<td class='center'>" + result[2].Text + "</td>";
+                        html = html + "<td class='center'>" + result[3].Text + "</td>";
+                        html = html + "<td class='center'>" + result[4].Text + "</td>";
+                        html = html + "<td class='center'>" + result[5].Text + "</td>";
+                        html = html + "<td class='center'>" + result[6].Text + "</td></tr>";
+                        html = html + "<tr><td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[0].Text + "'>" + result[0].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[1].Text + "'>" + result[1].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[2].Text + "'>" + result[2].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[3].Text + "'>" + result[3].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[4].Text + "'>" + result[4].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[5].Text + "'>" + result[5].Value + "</a></td>";
+                        html = html + "<td class='center'> <a onclick='GetDiaryActionDataByDate(this)' diaryDate='" + result[6].Text + "'>" + result[6].Value + "</a></td></tr>";
+
+                        $("#tbodyDiaryWeekly").html(html);
+
+                        $("#loader-wrapper").hide();
+                    }
+                    else {
+                        $("#tbodyDiaryWeekly").html("No Data Found");
+                        $("#loader-wrapper").hide();
+                    }
+                }
+                ,
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+
+            });
+        }
+
+        function GetDiaryDataByDate(obj) {
+            $("#loader-wrapper").show();
+            $("#Diarylistdiv").html('');
+            var Agency = 0;
+            var DiaryDate = $(obj).attr('diaryDate');
+            var pathurl = '/References/GetDiaryDataByDate'
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { DiaryDate: DiaryDate },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    $("#Diarylistdiv").html('');
+                    $("#Diarylistdiv").show();
+                    $("#Diarylistdiv").html(data);
+                    $("#DiaryTableDiv").css("display", "none");
+                    $("#DiaryTableDiv").hide();
+                },
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+
+        function GetDiaryActionDataByDate(obj) {
+            $("#loader-wrapper").show();
+            $("#Diarylistdiv").html('');
+            var Agency = 0;
+            var DiaryDate = $(obj).attr('diaryDate');
+            var pathurl = '/References/GetDiaryActionDataByDate'
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { DiaryDate: DiaryDate  },
+                // data:{ params },
+                success: function (data) {
+
+                    //debugger;
+                    $("#loader-wrapper").hide();
+                    $("#Diarylistdiv").html('');
+                    $("#Diarylistdiv").show();
+
+                    $("#Diarylistdiv").html(data);
+                    $("#DiaryTableDiv").css("display", "none");
+                }
+                ,
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+            });
+
+
+        }
+
+        var count = 0;
+        function PreviousSevenDays() {
+            if (count >= 1) {
+                count = count - 1;
+                $("#intval").val(count);
+            }
+            NextPreviuosWeekData(count);
+
+        }
+
+        function NextSevenDays() {
+            count = count + 1;
+            $("#intval").val(count);
+            NextPreviuosWeekData(count);
+        }
+
+        function NextPreviuosWeekData(count)
+        {
+            var diarydispatchValue = $("#diarydispatchValueW").val();
+            if (diarydispatchValue == "Act") {
+                DiaryRefActionWiseArrow(count);
+            }
+            else {
+                DiaryRefWiseArrow(count);
+            }
+        }
+
+        function EditMlaDairy(IDD) {
+            var ID = IDD.id;
+            $('#loginModaldiarybody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+            var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { ID: ID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    // //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#loginModaldiary").css("display", "block");
+                        $('#loginModaldiarybody').html(data);
+
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+        }
+
+
+
+    </script>
+

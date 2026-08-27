@@ -1,0 +1,11 @@
+﻿@model CMNirdesh.Models.mUsers 
+
+@if (Model.OfficeDrpList != null)
+{
+     @Html.DropDownListFor(m => m.OfficeId, new SelectList(Model.OfficeDrpList, "OfficeId", "officename", 0), new { @id = "ddlToOffice", @class = "form-control", @tabindex = "1", @style = "width: 462px" })
+    
+}
+
+<script>
+  
+</script>

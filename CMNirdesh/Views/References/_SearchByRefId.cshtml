@@ -1,0 +1,173 @@
+﻿@using CMNirdesh.Models;
+@model  CMNirdesh.Models.LstDashboard
+
+<input type="hidden" id="diarydispatchval" name="diarydispatchval" value="" />
+
+<head>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#thirdLinkMenu").html('References >> Seach By Reference Id');
+
+            $("#DiarySearch").click(function () {
+                var diarydispatchvalue = "diary";
+                $("#diarydispatchval").val(diarydispatchvalue);
+                $("#refid").val('');
+                $("#Diarylistdiv").html('');
+                $("#Dispatchlistdiv").html('');
+            });
+
+            $("#DispatchSearch").click(function () {
+                var diarydispatchvalue = "dispatch";
+                $("#diarydispatchval").val(diarydispatchvalue);
+                $("#refid").val('');
+                $("#Diarylistdiv").html('');
+                $("#Dispatchlistdiv").html('');
+            });
+
+        });
+
+        function GetSearchdata() {
+            var diarydispatchvalue = $("#diarydispatchval").val();
+            if (diarydispatchvalue == "diary") {
+                GetsearchByRefIdDataDiary();
+            }
+            else {
+                GetsearchByRefIdDataDispatch();
+            }
+        }
+
+        function clrtext() {
+            $("#refid").val('');
+            $("#Diarylistdiv").html('');
+            $("#Dispatchlistdiv").html('');
+
+        }
+
+        function GetsearchByRefIdDataDiary() {
+            $("#loader-wrapper").show();
+            var refid = $("#refid").val();
+
+            if (refid == null || refid == "" || refid == undefined) {
+                alert("Please Enter Reference Id First");
+                $("#loader-wrapper").hide();
+
+                return false;
+            }
+
+            var pathurl = '/References/FilteredMLADiaryListForAgencyRefid'
+
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: {
+                    refid: refid
+                },
+                // data:{ params },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    $("#Diarylistdiv").html('');
+                    $("#Dispatchlistdiv").html('');
+                    $("#Diarylistdiv").html(data);
+                }
+            });
+
+        }
+
+        function GetsearchByRefIdDataDispatch() {
+            $("#loader-wrapper").show();
+            var refid = $("#refid").val();
+            if (refid == null || refid == "" || refid == undefined) {
+                alert("Please Enter Reference Id First");
+                $("#loader-wrapper").hide();
+
+                return false;
+            }
+
+            var pathurl = '/References/FilteredMLADispatchListForAgencyRefid'
+
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: {
+                    refid: refid
+                },
+                // data:{ params },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    $("#Dispatchlistdiv").html('');
+                    $("#Diarylistdiv").html('');
+                    $("#Dispatchlistdiv").html(data);
+                }
+            });
+
+        }
+
+    </script>
+
+</head>
+
+<style>
+
+    .cus-search-div {
+        background: white;
+        padding: 20px 15px;
+        border: 1px solid #e5e5e5;
+        box-shadow: 0px 2px 4px 1px #b5b5b5;
+        margin-top: 60px;
+    }
+</style>
+
+<body>
+    <div id="searchByRefId" class="c_box">
+        <h3 class="h3">Reference Id</h3>
+        <div class="sraech_form_box">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="srch_rdo">
+                        <input type="radio" id="DiarySearch" value="Diary" name="grou" checked="checked"> <span>Diary</span>
+                        <input type="radio" id="DispatchSearch" value="Dispatch" name="grou"> <span>Dispatch</span>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12 mt-2">
+                    <div class="srch_txt">
+                        <input id="refid" name="refid" placeholder="Enter Reference Id" type="text" class="form-control txt_value">
+                    </div>
+                </div>
+            </div>
+            <button class="btn srch_btn" type="submit" onclick="GetSearchdata()">Search </button>
+            <button class="btn clr_btn" id="clr" onclick="clrtext()" type="button">Clear</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12" style=" margin-top:20px;">
+            <div id="Diarylistdiv" class=""></div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12" style=" margin-top:20px;">
+            <div id="Dispatchlistdiv" class=""></div>
+        </div>
+    </div>
+
+
+</body>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/datatables/jszip.min.js"></script>
+<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+<script src="~/Scripts/datatables/vfs-fonts.js"></script>
+<script src="~/Scripts/datatables/buttons.print.min.js"></script>
+<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+

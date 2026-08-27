@@ -1,0 +1,639 @@
+﻿@model CMNirdesh.Models.MCHouse.TenderRecord
+@using CMNirdesh;
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<div id="main-content">
+
+    <div class="main-content">
+
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="inr_frm_dsgn">
+
+                            <div class="widget-box " id="divAction">
+                                <div class="widget-header widget-header-flat rounded-top rounded-0">
+                                    <h4 class=""> Add Tender </h4>
+                                    <div class="widget-toolbar no-border">
+                                        <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" style="font-size:14px;" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i>Add New Tender</button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form_lyot">
+                                @if (Model != null)
+                                {
+                                    if (Model._LstTenderRecord.Count() > 0)
+                                    {
+                                        <div class="table-responsive">
+                                            <table id="example" class="table table-hover table-bordered" style="font-size:20px;">
+                                                <thead>
+                                                    <tr class="table-heading">
+                                                        <th class="td-heading" style="width:5%;"><span class="font-weight-bold">Id</span></th>
+                                                        <th class="td-heading" style="width:10%;"><span class="font-weight-bold">StateName</span></th>
+                                                        <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Tender Name</span></th>
+                                                        <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Tender Name(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:10%;"><span class="font-weight-bold">TenderFile</span></th>
+                                                        <th class="td-heading" style="width:10%;"><span class="font-weight-bold">StartDate</span></th>
+                                                        <th class="td-heading" style="width:10%;"><span class="font-weight-bold">EndDate</span></th>
+                                                        <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Status(Stage)</span></th>
+                                                        <th class="td-heading" style="width:20%;"><span class="font-weight-bold">Action</span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                                    @foreach (var items in Model._LstTenderRecord)
+                                                    {
+                                                        <tr>
+                                                            <td class="center td-data">@Html.DisplayFor(modelItem => items.Id)</td>
+                                                            <td class="center td-data">@Html.DisplayFor(modelItem => items.StateName)</td>
+                                                            <td class="center td-data">@Html.DisplayFor(modelItem => items.TenderName)</td>
+                                                            <td class="center td-data">@Html.DisplayFor(modelItem => items.TenderName_local)</td>
+                                                            <td class="center td-data"><a target="_blank" href="@Url.Content(@Model.fileacessingUrl + "/" + items.TenderFileName)"><img src="/Assets/pdficon.jpg" height="25" width="25" /></a></td>
+                                                            <td class="center td-data">@Html.DisplayFor(modelItem => items.StartDate)</td>
+                                                            <td class="center td-data">@Html.DisplayFor(modelItem => items.EndDate)</td>
+                                                            <td class="center td-data">@Html.DisplayFor(modelItem => items.Status)</td>
+
+                                                            @*<td>@Html.DisplayFor(modelItem => items.AppIcon)</td>*@
+
+
+                                                            <td class="center td-data " style="font-size:14px; padding: 14px 4px !important">
+                                                                <div class="edit-1">
+                                                                    <div class="hidden-sm hidden-xs action-buttons">
+                                                                        <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.Id')">
+                                                                            <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="hidden-sm hidden-xs action-buttons">
+                                                                        <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.Id')" value="@items.Id" />
+                                                                        <label class="toggle mb-0">
+                                                                            <input type="checkbox" onclick="DeleteDepartmentRecord('@items.Id')" @(Convert.ToBoolean(items.Active) == true ? "checked='checked'" : string.Empty)>
+                                                                            <span class="slider"></span>
+                                                                            <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="alert alert-info">
+                                                    <strong>There are no record found</strong><br />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="coman_modal dispatch_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5" id="myModalLabel">Add New Record</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="row" id="fileUpload" enctype="multipart/form-data">
+                                <div class="col-md-6 col-sm-12 col-12 form-group" id="StateName">
+                                    <div class="profile-info-name fotm_lbl">State Name:</div>
+                                    <select id="StateDropDown">
+                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="State Name"></option>
+                                    </select>
+
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12 form-group" id="DocumentTypeId1">
+
+                                    <div class="profile-info-name fotm_lbl">Tender Name</div>
+                                    <input type="text" class="form-control" id="tendername" placeholder="Tender Name" />
+                                    <input type="hidden" class="form-control" id="newsid" placeholder="News Title" />
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <div class="profile-info-name fotm_lbl">
+                                        Tender Name(Punjabi):
+                                    </div>
+                                    <input type="text" class="form-control" id="tendernamepunjabi" placeholder="Tender Name(Punjabi)" />
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <div class="profile-info-name fotm_lbl">Tender File:</div>
+                                    <input type="file" name="file" class="form-control" id="tenderfile" placeholder="Document Icon" accept="application/pdf" />
+                                  
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <img src="https://placehold.jp/100x100.png" id="imgPreview" class="form-control" style="width:100px; height:100px !important; border:1px solid red;" alt="Load Image" />
+                                    <input type="hidden" id="DocumentIconName" />
+                                </div>
+
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <div class="profile-info-name fotm_lbl">StartDate:</div>
+                                    <input type="date" class="form-control" id="startdate" placeholder="Start Date" />
+
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12 form-group">
+                                    <div class="profile-info-name fotm_lbl">EndDate:</div>
+                                    <input type="date" class="form-control" id="enddate" placeholder="End Date" />
+
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12 form-group" id="StateName">
+                                    <div class="profile-info-name fotm_lbl">Status Stage:</div>
+                                    <select id="StatusDropDown">
+                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="State Name"></option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer" style="background-color:white;">
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+@*<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />*@
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+
+
+<style>
+
+
+    .inr_frm_dsgn {
+       /* margin-top: 20px;*/
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+
+    .pencil-class {
+        font-size: 15px;
+    }
+
+    .edit-1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+    }
+</style>
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+        });
+    });
+
+    var id = "";
+    function getbyID(EmpID) {
+        debugger
+        clearTextBox();
+
+        $("#myModalLabel").html("Update Tender Record");
+        $("#btnUpdate").show();
+        $("#btnSave").hide();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Edit", "TenderRecord")' + '?id=' + EmpID,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                var obj = JSON.parse(data);
+                var data = obj._LstTenderRecord[0];
+                $('#myModal').modal();
+                id = EmpID;
+                $('#tendername').val(data.TenderName);
+                $("#tendernamepunjabi").val(data.TenderName_local);
+                $("#startdate").val(data.StartDate);
+                $("#enddate").val(data.EndDate);
+                $("#StatusDropDown").val(data.StatusID);
+                $("#StateDropDown").val(data.StateId);
+              /* $("#newsimage").val(data.Images);*/
+                var pdfUrl = '/SecureFileStructure/Mohali/Tender/' + data.TenderFileName;
+
+                $("#imgPreview").attr('src', '/Assets/pdficon.jpg');
+                $("#imgPreview").attr('title', data.TenderFileName);
+
+                // Wrap the <img> element with an <a> tag and set the href attribute
+                $("#imgPreview").wrap('<a href="' + pdfUrl + '" target="_blank"></a>');
+              
+                $("#btnSave").hide();
+            }
+        });
+    }
+
+    var s = $("#StateDropDown");
+    s.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("StateDropDown", "TenderRecord")',
+        data: '{}',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            s.empty().append('<option selected="selected" value="0">Please select</option>');
+            $.each(response, function () {
+                s.append($("<option></option>").val(this['Value']).html(this['Text']));
+            });
+        },
+        failure: function (response) {
+            alert(response.responseText);
+        },
+        error: function (response) {
+            alert(response.responseText);
+        }
+    });
+
+    var d = $("#StatusDropDown");
+    d.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("StatusDropDown", "TenderRecord")',
+        data: '{}',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            d.empty().append('<option selected="selected" value="0">Please select</option>');
+            $.each(response, function () {
+                d.append($("<option></option>").val(this['Value']).html(this['Text']));
+            });
+        },
+        failure: function (response) {
+            alert(response.responseText);
+        },
+        error: function (response) {
+            alert(response.responseText);
+        }
+    });
+    function validate() {
+        var isValid = true;
+        if ($('#tendername').val() == 0) {
+            $('#tendername').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#tendername').css('background-color', 'white');
+        }
+      
+        if ($('#startdate').val() == "") {
+            $('#startdate').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#startdate').css('background-color', 'white');
+        }
+
+        if ($('#enddate').val() == "") {
+            $('#enddate').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#enddate').css('background-color', 'white');
+        }
+        if ($('#StateDropDown').val() == 0) {
+            $('#StateDropDown').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#StateDropDown').css('background-color', 'white');
+        }
+        if ($('#StatusDropDown').val() == 0) {
+            $('#StatusDropDown').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#StatusDropDown').css('background-color', 'white');
+        }
+        return isValid;
+    }
+    function clearTextBox() {
+        $('#myModal').data({backdrop: 'static', keyboard: false });
+        $('#tendername').val("");
+        $('#tenderfile').val("");
+        $('#tendername').css('background-color', 'white');
+        $('#tendernamepunjabi').css('background-color', 'white');
+        $('#startdate').css('background-color', 'white');
+        $('#enddate').css('background-color', 'white');
+        $('#StateDropDown').css('background-color', 'white');
+        $('#StatusDropDown').css('background-color', 'white');
+        $('#tendernamepunjabi').val("");
+        $('#startdate').val("");
+        $('#enddate').val("");
+        $('#StateDropDown').val(0);
+        $('#StatusDropDown').val(0);
+        $('#btnUpdate').hide();
+        $("#myModalLabel").html("Add Tender Record");
+        $('#btnSave').show();
+        $("#imgPreview").attr('src', 'https://placehold.jp/100x100.png');
+    }
+    function Add() {
+
+        var res = validate();
+        if (res === false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#tenderfile").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+
+            }
+            debugger
+            const courseDto = {
+                StateID: $("#StateDropDown").val(),
+                TenderName: $('#tendername').val(),
+                TenderName_local: $('#tendernamepunjabi').val(),
+                StartDate: $('#startdate').val(),
+                EndDate: $('#enddate').val(),
+                TenderFileName: $('#tenderfile').val(),
+                StatusID: $('#StatusDropDown').val(),
+                StateName: $('#StateDropDown option:selected').text(),
+              
+            };
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url: '@Url.Action("Create", "TenderRecord")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result === 0) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else {
+                        alert("Not Updated");
+                    }
+                }
+            });
+        }
+    }
+
+
+
+
+
+    function Update() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#tenderfile").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+
+            }
+
+
+            const courseDto = {
+                StateID: $("#StateDropDown").val(),
+                TenderName: $('#tendername').val(),
+                TenderName_local: $('#tendernamepunjabi').val(),
+                StartDate: $('#startdate').val(),
+                EndDate: $('#enddate').val(),
+                TenderFileName: $('#tenderfile').val(),
+                StatusID: $('#StatusDropDown').val(),
+                Id: id,
+                StateName: $('#StateDropDown option:selected').text(),
+
+
+
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url:'@Url.Action("Update", "TenderRecord")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result === 0) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else if (result == 1) {
+                        alert("Order Id already existing");
+
+                    }
+                    else {
+                        alert("Not Updated");
+                    }
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+    var MyApp = {};
+    function DeleteDepartmentRecord(xyz) {
+        MyApp = xyz;
+        DeleteID();
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+    function DeleteID() {
+
+        var i = MyApp;
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("Delete", "TenderRecord")' + '?id=' + i,
+            success: function (result) {
+            alert("Updated Successfully");
+            }
+        });
+    }
+    function showimage() {
+        var s = $("#tenderfile").val();
+        $(location).attr("~/" + s);
+    }
+    document.getElementById('tenderfile').onchange = function (e) {
+        const [file] = tenderfile.files;
+
+        if (file) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            if (fileExtension === 'pdf') {
+                $("#imgPreview").attr('src', '/Assets/pdficon.jpg');    
+                const pdfUrl = URL.createObjectURL(file);
+               
+                $("#imgPreview").parent('a').attr('href', pdfUrl);
+                $("#imgPreview").attr('title', file.name);
+            } else {
+                $("#tenderfile").val('');
+                alert("Please select a PDF file.");
+                $("#imgPreview").attr('src', '/Assets/pdficon.jpg');
+               
+            }
+        }
+    };
+
+
+</script>

@@ -1,0 +1,38 @@
+﻿@*<html>
+    <body>
+        <h1>
+            You Dont have Permission to access this module. Please Contact Administartor.
+            <a href="@Url.Action("Index", "References")">Back to Dashboard</a>
+        </h1>
+    </body>
+    </html>*@
+
+@model  CMNirdesh.Models.UserMenu
+<script>
+    $(window).on('load', function (e) {
+        $('body').hide();
+    });
+    $(document).ready(function () {
+        alert("you dont have Permission to access this module. Please Contact Administartor.");
+        window.location.href = '/References/Index';
+    });
+</script>
+
+<ul class="nav nav-list">
+
+
+    @*<li class="">
+            <a href="#UsermanagementSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle collapsed">
+
+                <i class="menu-icon fa fa-user"></i>
+                <span class="menu-text">User Management </span>
+            </a>
+
+            <ul class="collapse list-unstyled" id="UsermanagementSubmenu">
+                <li><a href="@Url.Action("CreateUser", "User")">User Registration</a></li>
+                <li><a href="@Url.Action("Permission", "User")">User Permission</a></li>
+            </ul>
+        </li>*@
+
+
+</ul>

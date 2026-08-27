@@ -1,0 +1,102 @@
+﻿@model CMNirdesh.Models.ContactUsList
+@using CMNirdesh;
+@{
+    ViewBag.Title = "Edit Contact Us";
+
+}
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+
+<script>
+    tinymce.init({
+        selector: '#editor',
+        menubar: false,
+        height: 1000,
+        plugins: 'link lists image code table media fullscreen preview',
+        toolbar: 'undo redo | styles | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist outdent indent | link image media | ' +
+            'code table fullscreen preview',
+        setup: function (editor) {
+            editor.on('keyup change', function () {
+                document.getElementById("preview").innerHTML = editor.getContent();
+            });
+        }
+    });
+</script>
+<div id="main-content">
+
+    <div class="main-content">
+
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+
+                <input type="hidden" id="PageName" value="@Model.ContactUs.PageName" />
+
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @*<h4>Edit Contact Content</h4>*@
+                        <textarea id="editor" name="HtmlContent">@Html.Raw(Model.ContactUs.HtmlContent)</textarea>
+
+                    </div>
+
+                    <div class="col-md-6">
+                        @*<h4>Live Preview</h4>*@
+                        <div id="preview" class="border p-3" style="max-height:100%; background-color:#f8f9fa;">@Html.Raw(Model.ContactUs.HtmlContent)</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" onclick="saveContactUs()">Save</button>
+                <div id="saveResult" class="mt-2 text-success">
+            </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    let ckEditorInstance;
+
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .then(editor => {
+            ckEditorInstance = editor;
+
+            editor.model.document.on('change:data', () => {
+                document.getElementById('preview').innerHTML = editor.getData();
+            });
+        })
+        .catch(error => console.error(error));
+
+
+    function saveContactUs() {
+        const htmlContent = ckEditorInstance.getData();
+        const pageName = $('#PageName').val();
+        $.ajax({
+            url: '/ContactUs/SaveContactUsAjax',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                PageName: pageName,
+                HtmlContent: htmlContent
+            }),
+            success: function (response) {
+                if (response.success) {
+                 alert('Saved successfully!');
+                    location.reload();
+                } else {
+                    alert('Save failed.');
+                }
+            },
+        error: function (xhr) {
+            console.error("Save failed:", xhr.responseText);
+            $('#saveResult').text('Error saving content.').addClass('text-danger');
+        }
+         });
+        }
+</script>
+

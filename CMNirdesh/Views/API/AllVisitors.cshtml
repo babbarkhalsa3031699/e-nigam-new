@@ -1,0 +1,197 @@
+﻿@model List<CMNirdesh.Models.VisitorModel>
+
+@{
+    ViewBag.Title = "Visitors";
+}
+<html>
+<head>
+    @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script>
+        $(document).ready(function () {
+
+            $('input[name="status"]').on('change', function () {
+                var status = $(this).val();
+                window.location.href = '/Secure/API/AllVisitors?status=' + status;
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <div id="main-content">
+        @if (Model != null && Model.Count > 0)
+        {
+            <div style="text-align:center; margin-bottom:15px;">
+                <h2>@Model[0].assemblyName</h2>
+                <h4 style="color:gray;">@Model[0].sessionName</h4>
+                <h5>
+                    @Convert.ToDateTime(@Model[0].sessionDate).ToString("dd-MMM-yyyy")
+                </h5>
+            </div>
+        }
+        <div style="margin-bottom:15px;">
+
+            <label style="margin-left:15px;">
+                <input type="radio" name="status" value="1"
+                       @(ViewBag.Status == 1 ? "checked" : "") /> Approved
+            </label>
+            <label>
+                <input type="radio" name="status" value="0"
+                       @(ViewBag.Status == 0 ? "checked" : "") /> Pending
+            </label>
+
+            <label style="margin-left:15px;">
+                <input type="radio" name="status" value="2"
+                       @(ViewBag.Status == 2 ? "checked" : "") /> Rejected
+            </label>
+
+            <a href="@Url.Action("ExportPdf", new { status = ViewBag.Status })"
+               class="btn btn-danger">
+                Export PDF
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead style="background:#2c3e50;color:white;">
+                    <tr>
+                        <th>S.No</th>
+                        <th>Photo</th>
+                        <th>
+                            @(ViewBag.Status == 1 ? "Approval ID" :
+                 ViewBag.Status == 2 ? "Visitor ID" :
+                 "Visitor ID")
+
+                        </th>
+                        <th>Name</th>
+                        <th>Father Name</th>
+                        <th>Age</th>
+                        <th>Blood Group</th>
+                        <th>Address</th>
+                        <th>Designation</th>
+                        <th>Mobile No</th>
+                        <th>Id Card Type</th>
+                        <th>Id No</th>
+                        <th>Media House</th>
+                        <th>Entry Type</th>
+                        <th>AddOns</th>
+                        <th>Status</th>
+                        <th>Session Period From</th>
+                        <th>Session Period To</th>
+                        @if (ViewBag.Status == 1)
+                        {
+                            <th>PDF</th>
+
+                        }
+                        @if (ViewBag.Status == 1 || ViewBag.Status == 2)
+                        {
+                            <th>
+                                @{
+                                    string label = "Action By";
+
+                                    if (ViewBag.Status == 1)
+                                    {
+                                        label = "Approved By";
+                                    }
+                                    else if (ViewBag.Status == 2)
+                                    {
+                                        label = "Rejected By";
+                                    }
+                                    else
+                                    {
+                                        label = "Pending With";
+                                    }
+                                }
+
+                                @label
+                            </th>
+
+                         }
+
+                        </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        int i = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.photoName))
+                                    {
+                                        <img src="https://punjabassembly.gov.in/PunjabAPI/Upload/@item.photoName"
+                                             width="60" height="60" style="border-radius:50%;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="https://via.placeholder.com/60" />
+                                    }
+                                </td>
+                                <td>
+                                    @(ViewBag.Status == 1 ? @item.approvalID :
+                              ViewBag.Status == 2 ? @item.visitorRefID :
+                              @item.visitorRefID)
+                                </td>
+                                <td>@item.visitorName</td>
+                                <td>@item.fatherName</td>
+                                <td>@item.age (@item.gender)</td>
+                                <td>@item.bloodGroup</td>
+                                <td>@item.address</td>
+                                <td>@item.designation</td>
+                                <td>@item.phoneNumber</td>
+                                <td>@item.idCardType</td>
+                                <td>@item.idNumber</td>
+                                <td>@item.mediaHouse</td>
+                                <td>@item.gallaryName</td>
+                                <td>@item.addOns</td>
+                                <td>@item.status</td>
+                                <td>
+                                    @Convert.ToDateTime(@item.sessionFromDate).ToString("dd-MMM-yyyy")
+                                </td>
+                                <td>
+                                    @Convert.ToDateTime(@item.sessionFromDate).ToString("dd-MMM-yyyy")
+                                </td>
+
+                                @if (ViewBag.Status == 1)
+                                {
+                                    <td>
+                                        <a href="https://punjabassembly.gov.in/PunjabAPI/@item.pdfUrl" target="_blank" title="View PDF">
+                                            <i class="fa-solid fa-file" style="color:red; font-size:20px;"></i>
+                                        </a>
+                                    </td>
+
+
+                                }
+
+                                @if (ViewBag.Status == 1 || ViewBag.Status == 2)
+                                {
+                                    <td>
+                                        @(ViewBag.Status == 0 ? @item.modifiedName :
+                                        ViewBag.Status == 1 ? @item.lying_With : @item.lying_With
+                                        )
+                                    </td>
+                                }
+
+
+
+                            </tr>
+
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center;">No Data Found</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        </div>
+</body>
+</html>

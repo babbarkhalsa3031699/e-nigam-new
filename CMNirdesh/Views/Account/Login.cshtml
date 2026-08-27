@@ -1,0 +1,678 @@
+﻿@model CMNirdesh.Models.LoginModel
+
+@using CaptchaMvc.HtmlHelpers
+@{
+    ViewBag.Title = "Login";
+    string sPath = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+
+}
+
+<head>
+
+    @Scripts.Render("~/bundles/LoginJs")
+    <link href="~/Content/style_ms.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/responsive_ms.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome_ms.min.css" rel="stylesheet" />
+
+    <title>CMNirdeshPunjab</title>
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/CryptoJSv3.1.2/rollups/pbkdf2.js"></script>
+    <script src="~/Scripts/CryptoJSv3.1.2/components/enc-base64.js"></script>
+    <script src="~/Scripts/CryptoJSv3.1.2/components/enc-base64-min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    @if (TempData["ChngPwdSucessMsg"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+
+        var msg = '@TempData["ChngPwdSucessMsg"]';
+        alert(msg);
+    });
+        </script>
+    }
+
+
+    <script>
+        $('#CaptchaText').keydown(function (e) {
+            alert(1);
+            if (e.keyCode == 13 || e.which == 13) {
+
+                SubmitForm();
+
+            }
+        });
+
+        $(document).ready(function () {
+            $("#saveUserNamehidden").val("False");
+          });
+
+
+
+    function LoginWithParichay() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("LoginButtonClik", "ParichayLogin")',
+
+                datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: { },
+                success: function (response) {
+                    if (response != null) {
+                        window.location = response;
+                    }
+                    else {
+                        alert("Login Failed..");
+                    }
+                },
+                error: function (error) {
+                }
+              });
+        }
+        function changepassword() {
+        $.ajax({
+        type: "GET",
+        url: '@Url.Action("ChangePassword", "Account")',
+
+        datatype: "Json",
+        contentType: "application/json; charset=utf-8",
+        data: { },
+        success: function (response) {
+            //if (response != null) {
+            //    window.location = response;
+            //}
+        },
+        error: function (error) {
+        }
+      });
+}
+
+      function SubmitForm() {
+            var username = document.getElementById("UserName");
+            var password = document.getElementById("Password");
+            var Captcha = document.getElementById("CaptchaText");
+            document.getElementById("hdnUserName").value = encodeURI(username.value);
+            var hashedPassword = $("#Password").val();
+            var randomSalt = generateRandomSalt();
+            document.getElementById("ActualPassword").value = generateSHA256Hash(hashedPassword) +  generateSHA256Hash(randomSalt);
+            var isValid = true;
+            if (username.value == "") {
+                $('#UsernameValidation').html('Username required');
+                isValid = false;
+            }
+            else {
+                $('#UsernameValidation').html('');
+                if (isValid != false) {
+                    isValid = true;
+                }
+            }
+            if (password.value == "") {
+                $('#PasswordValidation').html('Password required')
+                //event.preventDefault();
+                isValid = false;
+            }
+            else {
+                $('#PasswordValidation').html('');
+                if (isValid != false) {
+                    isValid = true;
+                }
+            }
+            if (Captcha.value == "") {
+                $('#CaptchaValidation').html('Captcha required')
+                //event.preventDefault();
+                isValid = false;
+            }
+            else {
+                $('#CaptchaValidation').html('');
+                if (isValid != false) {
+                    isValid = true;
+
+                }
+            }
+            if (isValid) {
+                $('#LoginForm').submit();
+
+                document.getElementById("Password").value = "";
+                document.getElementById("UserName").value ="";
+                return true;
+            }
+            else {
+                //event.preventDefault();
+                return false;
+            }
+
+        }
+
+        function generateRandomSalt() {
+            var salt = '';
+            var array = new Uint8Array(32);
+            window.crypto.getRandomValues(array);
+
+            for (var i = 0; i < array.length; i++) {
+                salt += (array[i] < 16 ? '0' : '') + array[i].toString(16);
+            }
+
+            return salt;
+        }
+
+        function generateSHA256Hash(data) {
+            return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
+        }
+
+        function HashKey(salt) {
+            var str = encodeURI($("#Password").val());
+            var strCode1 = toHex(salt);
+            var strCode2 = toHex(CryptoJS.enc.Latin1.parse(str).toString(Crypto.enc.Base64));
+            var key = encodeCodes(strCode1, strCode2);
+            //var Key = CryptoJS.PBKDF2(str, salt, { keySize: 256 / 24, iterations: 1000 });
+            //Key = Key.toString(CryptoJS.enc.Base64);
+            return key;
+        }
+        $("#saveUserNamehidden").val("true");
+        function toHex(str) {
+            var hex = '';
+            for (var i = 0; i < str.length; i++) {
+                hex += '' + str.charCodeAt(i).toString(16);
+            }
+            return hex;
+        }
+
+        function encodeCodes(str1, str2) {
+            var strEncoded = '';
+            var limit = str2.length;
+            if (str2.length > str1.length) limit = str1.length;
+            for (var i = 0; i < str2.length; i++) {
+                if (i > str1.length)
+                    strEncoded += '' + Math.floor(Math.random() * (9 - 1 + 1) + 1).toString() + str2.charAt(i);
+                else
+                    strEncoded += '' + str1.charAt(i) + str2.charAt(i);
+            }
+            return strEncoded;
+        }
+
+    </script>
+
+
+
+</head>
+<body>
+    @*@if(Model.MCName!="")
+        {
+            <script>
+                $(document).ready(function ()
+                {
+                    debugger
+                    localStorage.setItem("MCName", Model.MCName);
+                });
+            </script>
+        }*@
+    <!--<header>
+        <div class="login-header">
+            <nav class="navbar navbar-expand-lg  p-lg-2 p-md-3 p-sm-3 mc-login">
+                <div class="container-fluid">
+                    <a class="navbar-brand p-0" href="#">
+                        <div class="d-flex align-items-center ">
+                            <div> <img class="logo-img me-2" src="~/Assets/Home_Images/punjab-logo.png" alt="MC-House logo">  </div>
+                            <div class="brand_logo">
+                                <h2 class="">Digital-MC House </h2>
+                                <h4 class="mb-0">Department of Local Govt. Punjab  </h4>
+                            </div>
+                        </div>
+                    </a>-->
+    @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>*@
+
+    <!--<button class="navbar-toggler " type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end header-navbar " id="navbarSupportedContent">
+        <div>
+
+            <ul class="navbar-nav align-items-end justify-content-end mb-2 mb-lg-0 gap-4">
+
+
+                <li class="nav-item " id="notify">
+                    <a class="notifications-btn position-relative p-0" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                        <i class="far fa-bell"></i>
+                        <span class="notification-count"> 0</span>
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+                    <div class="dropdown " id="logoutpic">
+                        <button class="btn-profile dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="d-inline-flex align-items-center gap-2">
+                                <div class="user-image">
+                                    <img class="rounded-circle usr_img" src="~/Assets/Home_Images/user.png" alt="user-image">
+                                </div>
+                                <div>
+                                    <p class="mb-0"> Pradeep Kumar</p>
+                                </div>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Profile </a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="~/Account/LogOff">Logout</a></li>
+                        </ul>
+                    </div>
+                </li>-->
+    @*<li class="nav-item">
+            <a href="~/Account/Login" class="red_hover login_btn_hdr" id="loginnn" style="display:none;"><i class="fa fa-user"></i> login</a>
+        </li>*@
+
+
+    <!-- <li class="nav-item">
+      <button class="btn btn-outline-new" type="submit">Login</button>
+    </li> -->
+    <!--</ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+    </div>-->
+    <!-- notification offcanvas  start-->
+    <!--<div class="offcanvas offcanvas-end notificationer" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h6 class="offcanvas-title " id="offcanvasExampleLabel"> <i class="fas fa-bell"></i> &nbsp; Notifications</h6>
+            <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-2">
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled notification-list">
+                <li class="notifcation-item p-2">
+                    <div class="notification-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="notification-detail">
+                        <span>06/05/2023 &nbsp; &nbsp; 02:00</span>
+                        <p class="notification-text">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>-->
+    <!-- notification offcanvas  end -->
+    <!--</header>-->
+
+    <section class="reg_sec">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="login_form_box">
+                        <div class="reg_box">
+                            <div class="inr_reg ">
+                                <div class="inr_reg_tab">
+                                    <img src="~/Assets/Home_Images/govt_of_ind_logo_white_106px.png" alt="" class="ind_gov_logo"><br />
+                                    <img src="~/Assets/Home_Images/nic_180.png" alt="" class="nic_logo">
+
+                                    <h2 class="h2">Parichay</h2>
+
+
+                                    <p class="mb-2">Users can also login through NIC Single Sign-On</p>
+                                    <button class="btn btn_regst" onclick="LoginWithParichay();">
+                                        Login with Parichay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="login_box login_form">
+                            <div class="login_form_child">
+                                @*<form class="login_form">*@
+                                <img src="~/assets/images/punjab_logo.jpg" alt="">
+                                @*   <h4>ਮੁੱਖ ਮੰਤਰੀ ਨਿਰਦੇਸ਼ - ਪੰਜਾਬ</h4>
+                                    <h5>CM NIRDESH - Punjab</h5>*@
+
+                                <h4 class="mb-3 mt-0">Login</h4>
+
+                                @Html.TextBoxFor(m => m.UserName, new { autocomplete = "off", @class = "loginUsername txt_login form-control", @placeholder = "User Id", oncopy = "return false", onpaste = "return true", onblur = "OnChangeTextBox1(this);", @maxlength = "100" })
+                                <p><span class="field-validation-error" id="UsernameValidation"></span></p>
+
+                                <input type="hidden" name="MCId" value="1001" />
+
+
+                                  <div style="position:relative;">
+      @Html.PasswordFor(m => m.Password, new
+      {
+          autocomplete = "off",
+          @placeholder = "Password",
+          @class = "txt_login form-control",
+          id = "Password",
+          oncopy = "return false",
+          onpaste = "return false",
+          onblur = "OnChangeTextBox(this);",
+          @maxlength = "20"
+      })
+
+      <span class="toggle-password"
+            data-target="Password"
+            style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;">
+          <i class="fa fa-eye"></i>
+      </span>
+  </div>
+
+  <span class="field-validation-error" id="PasswordValidation"></span>
+
+                                @using (Html.BeginForm("LoginCMNirdesh", "Account", new { area = "", }, FormMethod.Post, new { onkeypress = "if(e.keyCode==13 || e.which == 13) {return SubmitForm();}", @id = "LoginForm", autocomplete = "off" }))
+                                {
+
+
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="saveUserName" id="saveUserNamehidden" value="@Model.RememberMe" />
+                                    @Html.HiddenFor(m => m.ActualPassword)
+                                    @Html.HiddenFor(m => m.UserName, new { @id = "hdnUserName" })
+                                    @Html.Hidden("AuthVerify", new Guid().ToString())
+                                    @Html.HiddenFor(m => m.returnUrl, new { ViewBag.returnUrl })
+
+                                    <div class="form_cph" id="captchacontainer">
+
+                                        <div class="editor-field edt_flt">
+                                            <input type="text" class="txt_login form-control txt_cpha_input" placeholder="Captcha" name="CaptchaText" id="CaptchaText" value="@ViewBag.CaptchaText" maxlength="6" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+                                            <p><span class="field-validation-error" id="CaptchaValidation"></span></p>
+
+                                        </div>
+                                        @*<div class="editor-field edt_cpha">
+                                            <img src="@Url.Action("GetCaptchaImage", "Account", new { area = "" })" />
+                                            <a id="refresh1" tabindex="6" class="ref_sign" href="@Url.Action("Login", "Account", new { area = "" })"><span class="fa fa-refresh" style="font-size: 17px;"></span></a>
+                                            </div>*@
+
+                                        <div class="editor-field edt_cpha">
+                                            <img id="captchaImage" src="@Url.Action("GetCaptchaImage", "Account")" alt="Captcha" />
+                                            <a id="refreshCaptcha" tabindex="6" class="ref_sign" href="javascript:void(0);">
+                                                <span class="fa fa-refresh" style="font-size: 17px;"></span>
+                                            </a>
+                                        </div>
+
+                                        @if (Model.ErrorMessage != null)
+                                        {
+                                            <p class="field-validation-error captchaMsg" id="CaptchaServerError">@Model.ErrorMessage </p>
+                                        }
+
+                                    </div>
+
+                                }
+                                <div class="form-group">
+                                    <input type="button" name="submit" value="Login" onclick="return SubmitForm();" class="btn_login red_hover">
+
+                                </div>
+                                @*</form>*@
+
+                            </div>
+
+                            <div id="formFooter">
+                                <a class="underlineHover" style="font-size:18px;" href='@Url.Action("ChangePassword", "Account")'>Forgot Password?</a><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+</body>
+
+<script>
+    $(document).on("click", ".toggle-password", function () {
+        var input = $("#" + $(this).data("target"));
+        var icon = $(this).find("i");
+
+        if (input.attr("type") === "password") {
+            input.attr("type", "text");
+            icon.removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            input.attr("type", "password");
+            icon.removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var refreshButton = document.getElementById('refreshCaptcha');
+        var captchaImage = document.getElementById('captchaImage');
+        var captchaInput = document.getElementById('CaptchaText');
+
+        refreshButton.addEventListener('click', function () {
+         
+            if (captchaInput) {
+                captchaInput.value = '';
+            }
+
+          
+            if (captchaImage) {
+                var newSrc = '@Url.Action("GetCaptchaImage", "Account")' + '?t=' + new Date().getTime();
+                captchaImage.src = newSrc;
+            }
+        });
+    });
+</script>

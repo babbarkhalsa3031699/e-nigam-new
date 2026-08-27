@@ -1,0 +1,1160 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+}
+<div class="modal-header">
+    <h5 class="modal-title">
+        <b>Project: </b>@Model.PromiseName <br />
+        @if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+        {
+            <b>Department: </b>
+        }
+        else
+        {
+            <b>Office: </b>
+        }
+        @Model.DeptName
+    </h5>
+    <button type="button" class="btn-close" id="closework" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body" style="overflow: auto; height: 600px ">
+    <div class="row" id="divWorkDetails">
+        <div class="col-md-9">
+            <div class="row mrgn_tp mt-2">
+                <div class="col-md-12">
+                    <label for="inputinfo" class="control-label lbl_txt" style="font-size: 11pt;">
+                        <b>Work Name:</b> @Model.worksdatalist.ProjectName
+                    </label>
+                </div>
+                <div class="col-md-12">
+                    <label for="inputinfo" class="control-label lbl_txt" style="font-size: 11pt;">
+                        <b>Work Description:</b> @Html.Raw(Model.worksdatalist.Remark)
+                    </label>
+                </div>
+                <div class="col-md-12">
+                    <label for="inputinfo" class="control-label lbl_txt" style="font-size: 11pt;">
+                        <b>Resolution No:</b> @Html.Raw(Model.worksdatalist.Resolution)
+                    </label>
+                </div>
+                @Html.Hidden("hdnCurrentModule", CMNirdesh.Models.CurrentSession.CurrentModule)
+            </div>
+            @if (Model.worksdatalist.ProjectName == null)
+            {
+                <div class="row mrgn_tp mt-2">
+                    <div class="col-md-12 mt-5 pt-5 text-center">
+                        <h4 style="font-size: 30pt; color: #dbd7d7; font-weight: bolder;">
+                            Work Details Not Added For This Project<br />
+                            Click On Add New Work Button To Add Work Details
+                        </h4>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row mrgn_tp mt-2">
+                    <div class="col-md-12">
+                        <label for="inputinfo" class="control-label lbl_txt" style="font-size: 11pt;">
+                            <b>Details:</b>
+                        </label>
+                        <table class="table table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <td>Implementing Agency/Firm</td>
+                                    <td>Category</td>
+                                    <td>Estimated Amount <br />(In Lakh)</td>
+                                    <td>Revised Estimated Amount <br />(In Lakh)</td>
+                                    <td>Funds Released Till Date <br />(In Lakh)</td>
+                                    <td>Expenditure Till Date <br />(In Lakh)</td>
+                                    <td>Physical Progress(%)</td>
+                                    <td>Start Date</td>
+                                    <td>End Date</td>
+                                    <td>Status</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@Model.worksdatalist.FirmName</td>
+                                    <td>@Model.worksdatalist.CategoryName</td>
+                                    <td>@Model.worksdatalist.EstimatedAmount</td>
+                                    <td>@Model.worksdatalist.RevisedEstimatedAmount</td>
+                                    <td>@Model.worksdatalist.FundReleased</td>
+                                    <td>@Model.worksdatalist.Expenditure</td>
+                                    <td>@Model.worksdatalist.PhysicalProgress</td>
+                                    <td>@Model.worksdatalist.SStartDate</td>
+                                    <td>@Model.worksdatalist.SEndDate</td>
+                                    <td>@Model.worksdatalist.ProjectStatusName</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-12">
+                        <label for="inputinfo" class="control-label lbl_txt" style="font-size: 11pt;">
+                            <b>Work Related Images</b>
+                            @Html.HiddenFor(model => model.worksdatalist.ProjectId, new { @Id = "hdnWorkId" })
+                            @Html.HiddenFor(model => model.worksdatalist.PromiseId, new { @Id = "hdnWorkProjectId" })
+                            @Html.HiddenFor(model => model.worksdatalist.DeptId, new { @Id = "hdnWorkDeptId" })
+                            @if ((Model.workedityn == "Y" || CMNirdesh.Models.CurrentSession.isApex == "0") && CMNirdesh.Models.CurrentSession.CurrentModule != "View")
+                            {
+                                <a id="btnUploadImages2" class="loader blue tooltip-primary" onclick="loadImagesPopup();">
+                                    <i class="fa fa-plus-square"></i>
+                                </a>
+                            }
+                        </label>
+                        <div id="imgcarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" role="listbox" id="imgcarouselBody"></div>
+                        </div>
+                        <div id="imgcarouselBtn">
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-lg-12" id="divButtons">
+                    @*<a class="no-print loader btn btn-sm btn-danger" onclick="printPage()" style="font-size:14px !important;float:right;" title="Print Page"><i class="fas fa-print"></i></a>*@
+                    @if ((Model.workedityn == "Y" || CMNirdesh.Models.CurrentSession.isApex == "0") && CMNirdesh.Models.CurrentSession.CurrentModule != "View")
+                    {
+                        if (@Model.worksdatalist.ProjectName != null)
+                        {
+                            <a class="loader btn btn-sm btn-primary mr-2 no-print" style=" font-size:14px !important;float:right" onclick="editProjectWork(@Model.PromiseId,'@Model.DeptId',@Model.ProjectId);">
+                                <i class="ace-icon fa fa-pencil-square-o"></i>
+                                <span class="bigger-110">Edit Work</span>
+                            </a>
+                        }
+                        <a class="loader btn btn-sm btn-success mr-2 no-print" style=" font-size: 14px !important; float: right;display:none" onclick="AddWorkDetails(@Model.PromiseId,'@Model.DeptId');">
+                            <i class="fa fa-plus"></i>
+                            <span class="bigger-110">Add New Work</span>
+                        </a>
+                    }
+                </div>
+                <div class="col-lg-12">
+                    <div class="card inr_frm_dsgn">
+                        <div class="card-header p-2">
+                            <h4 style="font-size: 12pt;display:inline" class="mb-0">Documents</h4>
+                            @Html.HiddenFor(model => model.worksdatalist.ProjectId, new { @Id = "hdnDocWorkId" })
+                            @if ((Model.workedityn == "Y" || CMNirdesh.Models.CurrentSession.isApex == "0") && CMNirdesh.Models.CurrentSession.CurrentModule != "View" && @Model.worksdatalist.ProjectName != null)
+                            {
+                                <a class="loader blue tooltip-primary" id="btnUploadDocument" onclick="loadWorkDocuments(@Model.PromiseId,'@Model.DeptId',@Model.worksdatalist.ProjectId);">
+                                    <i class="fa fa-plus-square"></i>
+                                </a>
+                            }
+                        </div>
+                        <div class="card-body" style="height: 250px; overflow-y: auto;">
+                            <ul id="documentsList">
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card inr_frm_dsgn mt-2">
+                        <div class="card-header p-2">
+                            @if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+                            {
+                                <h4 style="font-size: 12pt;display:inline" class="mb-0">Constituencies</h4>
+                            }
+                            else
+                            {
+                                <h4 style="font-size: 12pt;display:inline" class="mb-0">MC Wards</h4>
+                            }
+                            @Html.HiddenFor(model => model.worksdatalist.ProjectId, new { @Id = "hdnConstWorkId" })
+                            @Html.HiddenFor(model => model.worksdatalist.PromiseId, new { @Id = "hdnConstProjectId" })
+                            @Html.HiddenFor(model => model.worksdatalist.DeptId, new { @Id = "hdnConstDeptId" })
+                            @if ((Model.workedityn == "Y" || CMNirdesh.Models.CurrentSession.isApex == "0") && CMNirdesh.Models.CurrentSession.CurrentModule != "View" && @Model.worksdatalist.ProjectName != null)
+                            {
+                                <a class="loader blue tooltip-primary" id="btnAddConstituency" onclick="loadWorkConstituencies(@Model.PromiseId,'@Model.DeptId',@Model.worksdatalist.ProjectId);">
+                                    <i class="fa fa-plus-square"></i>
+                                </a>
+                            }
+                        </div>
+                        <div class="card-body" style="height: 250px; overflow-y: auto;">
+                            <ul id="constituencyList">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if ((Model.workedityn == "Y" || CMNirdesh.Models.CurrentSession.isApex == "0") && CMNirdesh.Models.CurrentSession.CurrentModule != "View")
+    {
+        <div class="row" id="divAddWork" style="display:none">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-6">
+                        <h5 id="headAddWork" class="modal-category pb-2">Add Work Basic Details</h5>
+                    </div>
+                    <div class="col-6 float-right" style="display:none">
+                        <a class="loader btn btn-sm btn-danger no-print" style="font-size:14px;float:right" href="@Url.Action("ViewProjectWorks", "PriorityProjects", new { ProjectId = CMNirdesh.Models.EncryptionUtility.Encrypt(Model.PromiseId.ToString()), deptID = CMNirdesh.Models.EncryptionUtility.Encrypt(Model.DeptId.ToString()), workID = Model.ProjectId.ToString() })">
+                            <i class="ace-icon fa fa-pencil-square-o bigger-150"></i>
+                            <span class="bigger-110">View Work Details</span>
+                        </a>
+
+                        <a class="loader btn btn-sm btn-success mr-2 no-print" style="font-size:14px;float:right" onclick="AddWorkDetails(@Model.PromiseId,'@Model.DeptId');">
+                            <i class="fa fa-plus bigger-150"></i>
+                            <span class="bigger-110">Add New Work</span>
+                        </a>
+                    </div>
+                    <div class="col-12">
+                        @using (Html.BeginForm("SavePriorityProjectWork", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "PriorityProjectWorks", enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken() @Html.HiddenFor(model => model.PromiseId) @Html.HiddenFor(model => model.DeptId) @Html.HiddenFor(model => model.worksdatalist.PromiseId) @Html.HiddenFor(model => model.worksdatalist.ProjectId) @Html.HiddenFor(model => model.worksdatalist.mode) @Html.HiddenFor(model => model.worksdatalist.DeptId) <div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="inputinfo" class="control-label lbl_txt">Resolution Type </label>
+                                        @Html.DropDownListFor(model => model.worksdatalist.ResolutionOfcType, Model.ResolutionOfcTypeList, new { @id = "ddlResolutionType", @class = "txt_design", @tabindex = "0" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputinfo" class="control-label lbl_txt">Resolution No. </label>
+                                        <select class="txt_design" id="ddlResolutionNo" name="ResolutionNo"></select>
+                                        @Html.HiddenFor(model => model.worksdatalist.ResolutioNo, new { @id = "resolutionNo" })
+                                        @*@Html.DropDownListFor(model => model.worksdatalist.ResolutioNo, Model.ResolutionList, "Select", new { @id = "ddlResolutionNo", @class = "txt_design", @tabindex = "0" })*@
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="inputinfo" class="control-label lbl_txt">Work Name:  </label>
+
+                                        @Html.TextAreaFor(model => model.worksdatalist.ProjectName, new { @id = "txtWorkName", @placeholder = "Enter Work Name", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "1", @rows = 3 })
+
+                                        @Html.ValidationMessageFor(model => model.worksdatalist.ProjectName)
+                                    </div>
+                                </div>
+                                <div class="row mrgn_tp mt-2">
+                                    <div class="col-md-6">
+                                        <label for="inputinfo" class="control-label lbl_txt"> Category </label>
+
+                                        @Html.DropDownListFor(model => model.worksdatalist.CategoryId, Model.CategoryTypeList, new { @id = "ddlworkCategory", @class = "width-100 form-control drop_txt", @tabindex = "2" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputinfo" class="control-label lbl_txt">Firm Name </label>
+
+                                        @Html.TextBoxFor(model => model.worksdatalist.FirmName, new { @id = "txtFirmName", @placeholder = "Enter Firm Name", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "3" })
+
+                                        @Html.ValidationMessageFor(model => model.worksdatalist.FirmName)
+                                    </div>
+                                </div>
+                                <div class="row mrgn_tp mt-2">
+                                    <div class="col-md-3">
+                                        <label for="inputinfo" class="control-label lbl_txt">Estimated Amount<b style="color:red">  &nbsp; (in lakhs)</b> </label>
+
+                                        @Html.TextBoxFor(model => model.worksdatalist.EstimatedAmount, new { @id = "txtEstimatedAmount", @placeholder = "Enter Estimated Amount", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "4" })
+
+                                        @Html.ValidationMessageFor(model => model.worksdatalist.EstimatedAmount)
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="inputinfo" class="control-label lbl_txt">Revised Estimated Amount<b style="color:red">  &nbsp; (in lakhs)</b></label>
+
+                                        @Html.TextBoxFor(model => model.worksdatalist.RevisedEstimatedAmount, new { @id = "txtRevisedEstimatedAmount", @placeholder = "Enter Revised Estimated Amount", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "5" })
+
+                                        @Html.ValidationMessageFor(model => model.worksdatalist.RevisedEstimatedAmount)
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="inputinfo" class="control-label lbl_txt">Start Date</label>
+
+                                        @Html.TextBoxFor(model => model.worksdatalist.SStartDate, "{0:dd/MM/yyyy}", new { @Id = "txtstartDate", @placeholder = "DD/MM/YYYY", @type = "text", @class = "form-control datepicker", @tabindex = "6", @autocomplete = "off" })
+                                        @Html.HiddenFor(model => model.worksdatalist.SStartDate, new { @Id = "startDate" })
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="inputinfo" class="control-label lbl_txt">End Date </label>
+                                        @Html.TextBoxFor(model => model.worksdatalist.SEndDate, "{0:dd/MM/yyyy}", new { @Id = "txtendDate", @placeholder = "DD/MM/YYYY", @type = "text", @class = "form-control datepicker", @tabindex = "7", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                                <div id="divEditDetails" style="display:block">
+                                    <div class="row mrgn_tp mt-2">
+                                        <div class="col-md-3">
+                                            <label for="inputinfo" class="control-label lbl_txt"> Fund Released <b style="color:red"> &nbsp; (in lakhs)</b> </label>
+                                            @Html.TextBoxFor(model => model.worksdatalist.FundReleased, new { @id = "FundReleased", @placeholder = "Enter Released Fund Amount", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "8" })
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label for="inputinfo" class="control-label lbl_txt"> Expenditure Amount <b style="color:red">  &nbsp; (in lakhs)</b> </label>
+                                            @Html.TextBoxFor(model => model.worksdatalist.Expenditure, new { @id = "Expenditure", @placeholder = "Enter Expenditure Amount", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "9" })
+
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label for="inputinfo" class="control-label lbl_txt"> Physical Progress <b style="color:red">  &nbsp; (in %)</b> </label>
+                                            @Html.TextBoxFor(model => model.worksdatalist.PhysicalProgress, new { @id = "PhysicalProgress", @placeholder = "Enter Physical Progress", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "10" })
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label for="inputinfo" class="control-label lbl_txt"> Work Status </label>
+                                            @Html.DropDownListFor(model => model.worksdatalist.ProjectStatusId, Model.ProjectStatusTypeList, new { @id = "ddlWorkStatus", @class = "width-100 form-control drop_txt", @tabindex = "11" })
+                                        </div>
+                                    </div>
+                                    @*<div class="row mrgn_tp mt-2">
+                                            <div class="col-md-3">
+                                                <label for="inputinfo" class="control-label lbl_txt"> Status </label>
+                                                @Html.DropDownListFor(model => model.worksdatalist.isActive, Model.StatusTypeList, new { @class = "width-100 form-control drop_txt", @tabindex = "12" })
+                                            </div>
+                                        </div>*@
+                                </div>
+                                @*<div class="row mrgn_tp mt-2">
+                                        <div class="col-md-3">
+                                            <label for="inputinfo" class="control-label lbl_txt"> Constituency </label>
+                                            @Html.DropDownListFor(model => model.mWorkConstituencyList, new SelectList(Model.mProjectConstituencyList, "Value", "Text"), new { @id = "ddlConstituencyId", @class = "form-control width-100", @style = "height:30px", @tabindex = "3", @multiple = "multiple" })
+                                            @Html.ValidationMessageFor(model => model.ConstituencyId)
+                                            @Html.HiddenFor(m => m.cdid, new { @id = "cdid" })
+                                        </div>
+                                    </div>*@
+                                <div class="row mrgn_tp mt-2">
+                                    <div class="col-md-12">
+                                        <label for="inputinfo" class="control-label lbl_txt">Work Description </label>
+
+                                        <div class="wysiwyg-editor wysiwyg-style2 dtl_l_box" id="editor-eng"></div>
+
+                                        @Html.TextAreaFor(model => model.worksdatalist.Remark, new { @id = "Remark", @class = "hide form-control", @placeholder = "Description", @autocomplete = "off", @tabindex = "13" })
+                                        <div class="help-block col-xs-12 col-sm-reset inline">
+                                            @Html.ValidationMessageFor(model => model.worksdatalist.Remark)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mrgn_tp pt-3">
+                                    <div class="col-md-12">
+                                        <div class="pull-right c_btn">
+                                            <button id="saveWorkbtn" class="loader btn btn-sm btn-success" onclick="SaveWorkDetails();return false;">
+                                                <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                                                Save
+                                            </button>
+                                            <button type="reset" class="loader btn btn-sm btn-danger" onclick="resetFields();">
+                                                <i class="ace-icon fa fa-times bigger-125"></i>
+                                                Reset
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+<script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script>
+    $("#closework").on("click", function () {
+        $("#modalWorks").hide();
+    });
+    function loadImagesPopup() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnConstWorkId').val();
+        var ProjectId = $('#hdnConstProjectId').val();
+        var DeptId = $('#hdnConstDeptId').val();
+        var path = $('#hdnPath').val();
+        $('#modalImagesbody').html('');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("openImageView", "PriorityProjects")',
+            async: true,
+            data: { ProjectId: ProjectId, DeptId: DeptId, workID: workID, path: path },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalImages").css("display", "block");
+                    $('#modalImagesbody').html(data);
+                    loadImages();
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+    function loadWorkConstituencies(ProjectId, DeptId, workID) {
+        $('#modalAddConstituencyBody').html('');
+        $("#loader-wrapper").show();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ViewConstituencies", "PriorityProjects")',
+            async: true,
+            data: { ProjectId: ProjectId, deptID: DeptId, workID: workID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalAddConstituency").css("display", "block");
+                    $('#modalAddConstituencyBody').html(data);
+                    loadConstituency();
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+    function loadWorkDocuments(ProjectId, DeptId, workID) {
+        $('#modalAddDocumentBody').html('');
+        $("#loader-wrapper").show();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ViewDocuments", "PriorityProjects")',
+            async: true,
+            data: { promiseid: ProjectId, deptID: DeptId, workID: workID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalAddDocument").css("display", "block");
+                    $('#modalAddDocumentBody').html(data);
+                    loadDocuments();
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+    function loadConstituency() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnConstWorkId').val();
+        var ProjectId = $('#hdnConstProjectId').val();
+        var DeptId = $('#hdnConstDeptId').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getProjectConstituency", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html += "<tr role='row'><td> <span>" + item.Text + "</span </td><td><a class='loader text-danger mr-1' style='font-size: 10pt; padding: 2px 5px;' title='Delete' id='btnDeletConst' href='/PriorityProjects/DeleteProjectConstituency?ProjectId=" + ProjectId + "&deptID=" + DeptId + "&workID=" + workID + "&contituencyId=" + item.Value + "'><i class='fa fa-times'></i></a></td></tr >";
+
+                        $('#tbodyWorkConstituency').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "No Record Available" +
+                        "</td>'</tr > ";
+                    $('#tbodyWorkConstituency').append(html);
+                }
+                closePopup();
+                $("#modalWorks").modal('show');
+                $("#modalAddConstituency").modal('show');
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "No Record Available" +
+                    "</td>'</tr > ";
+                $('#tbodyWorkConstituency').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function loadDocuments() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnDocWorkId').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkDocuments", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                $('#tblDocuments').html('');
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<tr><td>" +
+                            "<a class='loader' href='@url/mlaDiary/" + item.DocumentLocation + "' target='_blank'>" + item.DocumentTitle + "</a>" +
+                            "</td><td style='padding-left: 10px;'>" +
+                            "<a class='loader text-danger' title='Delete Document' href='/PriorityProjects/DeleteWorkDocument?ProjectId=" + item.PromiseId + "&deptID=" + item.DeptId + "&workID=" + workID + "&docId=" + item.ProgrammeDocsId + "'><i class='fa fa-times'></i></a>" +
+                            "</td></tr > ";
+                        $('#tblDocuments').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Documents not added with this work" +
+                        "</td>'</tr > ";
+                    $('#tblDocuments').append(html);
+                }
+                closePopup();
+                $("#modalWorks").modal('show');
+                $("#modalAddDocument").modal('show');
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "Documents not added with this work" +
+                    "</td>'</tr > ";
+                $('#tblDocuments').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function loadImages() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnWorkId').val();
+        var PromiseId = $('#hdnWorkProjectId').val();
+        var DeptID = $('#hdnWorkDeptId').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkImages", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                console.log("workID- " + workID);
+                $('#divImages').html(html);
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<div class='col-12 col-sm-3 col-md-2 col-lg-2'>" +
+                            "<img src='@url/mlaDiary/" + item.ImageThumbLocation + "' id = '@url/mlaDiary/" + item.ImageLocation + "' alt = " + item.ImageLocation + " class= 'myWorkImage d-block float-left' alt = '" + item.ImageDescription + "' data-toggle='tooltip' title ='" + item.ImageTitle + "' style='width: 120px;height:80px'>" +
+                            "<a class='loader text-danger float-right' title='Delete Image' href='/PriorityProjects/DeleteImage?ProjectId=" + PromiseId + "&deptID=" + DeptID + "&workID=" + workID + "&imageId=" + item.ProgrammeImageId + "'>" +
+                            "<i class='fa fa-times'></i>" +
+                            "</a>" +
+                            "<div class='clearfix'></div>" +
+                            "<h4 class='carousal_title text-center mt-1' style='font-size:10pt;'>" + item.ImageDescription + "</h4></div>";
+                        $('#divImages').append(html);
+                    });
+                }
+                else {
+                    html = "<h4 style='color: #b9b4b4; margin-top: 20px; font-size: 13pt;'>Images Not Avaialable</h4>";
+                    $('#divImages').append(html);
+                }
+                closePopup();
+                $("#modalWorks").modal('show');
+                $("#modalImages").modal('show');
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function DeleteImage(imageId) {
+        try {
+            if (confirm("Are you sure you want to delete image ?")) {
+                $("#loader-wrapper").show();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteImage", "PriorityProjects")',
+                    async: true,
+                    data: { imageId: imageId },
+                    beforeSend: function () {
+                        $('#loader-wrapper').show();
+                    },
+                    success: function (data) {
+                        $("#loader-wrapper").hide();
+                        if (data == "1") {
+                            loadWorkImages();
+                            return false;
+                        }
+                        else {
+                            $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                            alert("Some error occurred,please try again");
+                            return false;
+                            e.preventDefault();
+                        }
+                        $("#loader-wrapper").hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#loader-wrapper").hide();
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again");
+                        $("#loader-wrapper").hide();
+                    },
+                });
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+            $("#loader-wrapper").hide();
+        }
+    }
+</script>
+<script>
+    var engdata = $("#Remark").val();
+    $("div#editor-eng").html(engdata);
+    $(document).ready(function () {
+        //$("#ddlResolutionNo").multipleSelect({
+        //    columns: 1,
+        //    filter: true,
+        //    maxHeight: 350,
+        //    placeholder: 'Select Resolution No',
+        //});
+        loadWorkImages();
+        loadWorkDocumentsList();
+        loadConstituencyList();
+        tinyMCE.init({
+            selector: "#editor-eng",
+            branding: false,
+            content_style:
+                "body {  font-size: 14px; font-family: inherit; }",
+        });
+        $('.datepicker').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            dateFormat: "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        });
+        $('#txtEstimatedAmount').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+        $('#txtRevisedEstimatedAmount').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+        $('#Expenditure').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+        $('#FundReleased').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+        $('#PhysicalProgress').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+    });
+    function resetFields() {
+        $("#txtWorkName").empty();
+        $("#PhysicalProgress").val('');
+        $('#FundReleased').val('');
+        $('#Expenditure').val('');
+        $('#txtRevisedEstimatedAmount').val('');
+        $('#txtEstimatedAmount').val('');
+        $('#txtFirmName').val('');
+        $("#Remark").val('');
+        $("#txtstartDate").val('');
+        $("#txtendDate").val('');
+        tinymce.get('editor-eng').setContent('');
+        $("#ddlworkCategory").val('');
+        $("#ddlResolutionNo").val('');
+        $('#ddlResolutionNo').attr('disabled', false);
+    }
+</script>
+<script>
+    function editProjectWork(ProjectId, deptID, workID) {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+            url: '@Url.Action("ViewWorkDetails", "PriorityProjects")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { promiseid: ProjectId, deptID: deptID, workID: workID },
+            success: function (data) {
+                if (data != null) {
+                    $("#divAddWork").toggle();
+                    $("#divWorkDetails").toggle();
+                    $("#headAddWork").html('Edit Basic Details');
+                    tinyMCE.init({
+                        selector: "#editor-eng",
+                        branding: false,
+                        content_style:
+                            "body {  font-size: 14px; font-family: inherit; }",
+                    });
+                }
+                else {
+                    $("#loader-wrapper").hide();
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+</script>
+<script>
+    function loadWorkDocumentsList() {
+        $("#loader-wrapper").show();
+        var useraction = '@Model.useractiontype';
+        var apex = '@TempData["apex"]';
+        var workedityn = '@Model.workedityn';
+        var workID = $('#hdnDocWorkId').val();
+        var module = $('#hdnCurrentModule').val();
+        var html = '';
+        $('#documentsList').html('');
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkDocuments", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<li>" +
+                            "<a class='loader' href='@url/mlaDiary/" + item.DocumentLocation + "' target='_blank' title='Click to View Document'>" + item.DocumentTitle + "</a>";
+                        if ((apex == "0" || workedityn == "Y") && module != "View") {
+                            html += "<a class='loader text-danger' title = 'Delete Document' style = 'float:right' onclick='DeleteWorkDocument(" + item.ProgrammeDocsId + ");return false;'> "+
+                            "<i class='fa fa-times' ></i ></a> ";
+                        }
+                        html += "</li> ";
+                        $('#documentsList').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Documents not added with this work" +
+                        "</td>'</tr > ";
+                    $('#documentsList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "Documents not added with this work" +
+                    "</td>'</tr > ";
+                $('#documentsList').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function DeleteWorkDocument(docId) {
+        try {
+            $("#loader-wrapper").show();
+            var workID = $('#hdnConstWorkId').val();
+            var ProjectId = $('#hdnConstProjectId').val();
+            var DeptId = $('#hdnConstDeptId').val();
+            if (confirm("Are you sure you want to delete document ?")) {
+                $("#loader-wrapper").show();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteDocument", "PriorityProjects")',
+                    async: true,
+                    data: { ProjectId: ProjectId, deptID: DeptId, workID: workID, docId: docId },
+                    beforeSend: function () {
+                        $('#loader-wrapper').show();
+                    },
+                    success: function (data) {
+                        $("#loader-wrapper").hide();
+                        if (data == "1") {
+                            $('#documentsList').html('');
+                            loadWorkDocumentsList();
+                            return false;
+                        }
+                        else {
+                            $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                            alert("Some error occurred,please try again");
+                            return false;
+                            e.preventDefault();
+                        }
+                        $("#loader-wrapper").hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#loader-wrapper").hide();
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again22");
+                        $("#loader-wrapper").hide();
+                    },
+                });
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+    function loadConstituencyList() {
+        $("#loader-wrapper").show();
+        var useraction = '@Model.useractiontype';
+        var apex = '@TempData["apex"]';
+        var workedityn = '@Model.workedityn';
+        var workID = $('#hdnConstWorkId').val();
+        var module = $('#hdnCurrentModule').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getProjectConstituency", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                $("#modalAddConstituency").modal('hide');
+                $("#modalAddConstituency").css("display", "none");
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<li>" +
+                            "<span>" + item.Text + "</span>";
+                        if ((apex == "0" || workedityn == "Y") && module !="View") {
+                            html += "<a class='loader text-danger' style = 'float:right' title = 'Delete' id = 'btnDeleteDept' onclick='DeleteConstituency(" + item.Value + "); return false;' })' > " +
+                                "<i class='fa fa-times' style = 'font-weight: 700;' ></i > " +
+                                "</a > ";
+                        }
+                        html += "</li > ";
+                        $('#constituencyList').append(html);
+                    });
+                    /**/
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "No Record Found" +
+                        "</td>'</tr > ";
+                    $('#constituencyList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "No Record Found" +
+                    "</td>'</tr > ";
+                $('#constituencyList').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function DeleteConstituency(contituencyId) {
+        try {
+            var workID = $('#hdnConstWorkId').val();
+            var ProjectId = $('#hdnConstProjectId').val();
+            var DeptId = $('#hdnConstDeptId').val();
+            if (confirm("Are you sure you want to delete condtituency ?")) {
+                $("#loader-wrapper").show();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteProjectConstituency", "PriorityProjects")',
+                    async: true,
+                    data: { ProjectId: ProjectId, deptID: DeptId, workID: workID, contituencyId: contituencyId },
+                    beforeSend: function () {
+                        $('#loader-wrapper').show();
+                    },
+                    success: function (data) {
+                        $("#loader-wrapper").hide();
+                        if (data == "1") {
+                            $('#constituencyList').html('');
+                            loadConstituencyList();
+                            return false;
+                        }
+                        else {
+                            $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                            alert("Some error occurred,please try again");
+                            return false;
+                            e.preventDefault();
+                        }
+                        $("#loader-wrapper").hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#loader-wrapper").hide();
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again");
+                        $("#loader-wrapper").hide();
+                    },
+                });
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+            $("#loader-wrapper").hide();
+        }
+    }
+    var myCarousel = new bootstrap.Carousel(document.querySelector('#imgcarousel'), {
+        interval: 5000000,
+        display: 'flex'// Specify the duration between slide transitions in milliseconds
+        // Other configuration options
+    });
+    function loadWorkImages() {
+        $("#loader-wrapper").show();
+        var apex = '@TempData["apex"]';
+        var useraction = '@Model.useractiontype';
+        var workedityn = '@Model.workedityn';
+        var workID = $('#hdnWorkId').val();
+        var module = $('#hdnCurrentModule').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkImages", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                $('#imgcarouselBody').html('');
+                if (data.length > 0) {
+                    console.log(data);
+                    html = "";
+                    var dataLength = data.length;
+                    for (var i = 0; i < data.length; i++) {
+                        if (data.length == 1) {
+                            html = "<div class='carousel-item p-1" + i + " " + (i === 0 ? "active" : "") + "'><div class='d-flex flex-row flex-nowrap' style='width:100% !important;'>";
+                        }
+                        else {
+                            html = "<div class='carousel-item p-1" + i + " " + (i === 0 ? "active" : "") + "'><div class='d-flex flex-row flex-nowrap'>";
+                        }
+                        for (var j = i; j < data.length; j++) {
+                            html += "<div class='card border-0 col-lg-3'><div class='card-img' style='width:220px !important;'>" +
+                                "<img src='@url/mlaDiary/" + data[j].ImageThumbLocation + "' class='myWorkImage d-block float-left' id='@url/mlaDiary/" + data[j].ImageLocation + "' alt='" + data[j].ImageDescription + "' data-toggle='tooltip' title='" + data[j].ImageTitle + "' style='width:200px !important;height:150px'>";
+                            if ((apex == "0" || workedityn == "Y") && module != "View") {
+                                html += "<a class='loader text-danger float-right pr-2' title='Delete Image' onclick='DeleteImage(" + data[j].ProgrammeImageId + ");' })'>" +
+                                    "<i class='fa fa-times'></i></a>";
+                            }
+                            html += "</div><h4 class='text-center mt-1' style='font-size:10pt'>" + data[j].ImageDescription +"</h4></div>"
+                            
+                        }
+
+                        html += "</div ></div > ";
+                        $('#imgcarouselBody').append(html);
+                        var html = '';
+                        html+="<button class='carousel-control-prev no-print' type='button' data-bs-target='#imgcarousel' data-bs-slide='prev'>"+
+                            "<span class='carousel-control-prev-icon' aria-hidden='true'></span>"+
+                            "<span class='visually-hidden' > Previous</span > "+
+                            "</button > <button class='carousel-control-next no-print' type='button' data-bs-target='#imgcarousel' data-bs-slide='next'>"+
+                            "<span class='carousel-control-next-icon' aria-hidden='true'></span>"+
+                            "<span class='visually-hidden'> Next</span></button>";
+                        $('#imgcarouselBtn').append(html);
+                    };
+                }
+                else {
+                    html = "<h4 style='color: #b9b4b4; margin - top: 20px; font - size: 13pt;'>Images Not Avaialable</h4>";
+                    $('#imgcarouselBody').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        adjustCarouselSize();
+        loadResolutionList();
+        $(window).on('resize', adjustCarouselSize);
+    });
+    function adjustCarouselSize() {
+        var container = $('#imgcarousel');
+        var itemWidth = $('.carousel-item').outerWidth(true);
+        var numItems = $('.carousel-item').length;
+
+        if (numItems === 1) {
+            container.width(itemWidth);
+        } else {
+            container.width(itemWidth * numItems);
+        }
+    }
+</script>
+<script>
+    function SaveWorkDetails() {
+        try {
+            var engdata = tinymce.activeEditor.getContent();
+            $("#Remark").val(engdata);
+
+            var workName = $("#txtWorkName").val();
+            var startDate = $("#txtstartDate").val();
+            var endDate = $("#txtendDate").val();
+            var workCategory = $("#ddlworkCategory").val();
+            var status = $("#ddlWorkStatus").val();
+            if (workName === '') {
+                alert("Enter Work Name");
+                return;
+            }
+            if (workCategory === '') {
+                alert("Select Work Category");
+                return;
+            }
+            if (status === '') {
+                alert("Select Work Status");
+                return;
+            }
+            if (startDate === '') {
+                alert("Enter Start Date");
+                return;
+            }
+            if (confirm("Are you sure you want to save ?")) {
+                $("#loader-wrapper").show();
+                var action = $("#PriorityProjectWorks").attr("action");
+                if ($("#PriorityProjectWorks").attr("enctype") == "multipart/form-data") {
+                    var dataString = new FormData($("#PriorityProjectWorks").get(0));
+                    processData = false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: action,
+                    async: true,
+                    data: dataString,
+                    dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        console.log("data" + data);
+                        $("#loader-wrapper").hide();
+                        if (data == "1") {
+                            var stepno = $("#hdnStepNo").val();
+                            if (stepno == "1") {
+                                loadProjects();
+                            }
+                            else {
+                                var CurrDeptID = $('#hdnSelectedCurrDeptID').val();
+                                var deptId = $('#hdnSelectedDeptID').val();
+                                var projectId = $('#hdnSelectedProjectid').val();
+                                var statusId = $('#hdnSelectedStatusid').val();
+                                if (stepno == "2") {
+                                    loadDeptWiseProjectWorkStatus(projectId);
+                                }
+                                else if (stepno == "3") {
+                                    loadDeptOfficeProjectStatus(projectId, CurrDeptID);
+                                }
+                                else if (stepno == "4") {
+                                    loadProjectWiseWorkStatus(CurrDeptID, deptId);
+                                }
+                                else if (stepno == "5") {
+                                    loadProjectDeptWiseWorkStatus();
+                                }
+                                else if (stepno == "6") {
+                                    loadProjectDeptworkStatus(projectId);
+                                }
+                                getSummaryProjectsList(CurrDeptID, projectId, deptId, statusId);
+                            }
+                            $('#modalWorks').hide();
+                            alert("Work Details Saved successfully");
+                            return false;
+                        }
+                        else {
+                            $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                            alert("Some error occurred,please try again");
+                            return false;
+                            e.preventDefault();
+                        }
+                        $("#loader-wrapper").hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#loader-wrapper").hide();
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again" + errorThrown);
+                    },
+                });
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again" + ex.message);
+            window.location.reload(true);
+        }
+    }
+    function printPage() {
+        window.print();
+        //$("#divButtons").hide();
+    }
+    window.onafterprint = function () {
+        //$("#divButtons").show();
+    }
+    $("#ddlResolutionNo").change(function () {
+        $("#loader-wrapper").show();
+        var resolutionNo = $(this).val();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getResolutionDetails", "PriorityProjects")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { resolutionNo: resolutionNo },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        $("#txtWorkName").val(item.ProjectName);
+                        $("#Remark").val(item.Remark);
+                    });
+                }
+                var engdata = $("#Remark").val();
+                $("div#editor-eng").html($(engdata).text());
+                tinyMCE.activeEditor.setContent($(engdata).text());
+                $("#loader-wrapper").hide();
+                 },
+            error: function (error) {
+                                $("#loader-wrapper").hide();
+                            }
+                  });
+    });
+    $('#txtWorkName').on('input', function () {
+        this.style.height = 'auto';
+        this.style.height =
+            (this.scrollHeight) + 'px';
+    });
+    $('#ddlResolutionNo').on('change', function () {
+        var ResolutionNo = $(this).val();
+        $('#resolutionNo').val(ResolutionNo);
+    });
+    $('#ddlResolutionType').on('change', function () {
+        loadResolutionList();
+    });
+    function loadResolutionList() {
+        $('#ddlResolutionNo').prop('disabled', false);
+        var ResolutionType = $('#ddlResolutionType').val();
+    var ResolutionNo = $('#resolutionNo').val();// alert(ResolutionNo);
+        var ddlResolutionNo = $("#ddlResolutionNo");
+    ddlResolutionNo.empty().append('<option selected="selected" value="0"> select</option>');
+$("#loader-wrapper").show();
+$.ajax({
+    type: 'GET',
+    url: '@Url.Action("GetResolutionOfcTypeList", "PriorityProjects")',
+    data: { ResolutionOfcType: ResolutionType },
+    success: function (data) {
+        $('#ddlResolutionNo').empty();
+        ddlResolutionNo.empty().append('<option selected="selected" value="0">Select</option>');
+
+        $.each(data, function (index, item) {
+            $('#ddlResolutionNo').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+
+        });
+
+        if (ResolutionType > 0) {
+            $('#ddlResolutionNo').val(ResolutionNo).prop('selected', true);
+        }
+        $("#loader-wrapper").hide();
+    },
+    error: function () {
+        $("#loader-wrapper").hide();
+    }
+});
+    }
+</script>
+<style>
+    #txtWorkName {
+        display: block;
+        overflow: hidden;
+        resize: none;
+        min-height: 90px !important;
+    }
+</style>

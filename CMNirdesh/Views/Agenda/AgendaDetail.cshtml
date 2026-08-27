@@ -1,0 +1,619 @@
+﻿@model  CMNirdesh.Models.AgendaDetailModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Agenda</title>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    @*<script src="~/Scripts/jquery-sortable.js"></script>*@
+    <script src="https://cdn.datatables.net/rowreorder/1.3.2/js/dataTables.rowReorder.min.js"></script>
+
+    <link href="https://cdn.datatables.net/rowreorder/1.3.2/css/rowReorder.dataTables.min.css" rel="stylesheet" />
+
+    
+</head>
+<style>
+ 
+
+   
+
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        opacity: 0.5;
+        top:0;
+        z-index: 2000;
+    }
+   
+    .sorted_table tr.placeholder {
+        display: block;
+        background: red;
+        position: relative;
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    .sorted_table tr {
+        cursor: pointer;
+    }
+        .sorted_table tr.placeholder::before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 5px solid transparent;
+            border-right-color: transparent;
+            border-right-style: solid;
+            border-right-width: 5px;
+            border-left-color: transparent;
+            border-left-color: red;
+            margin-top: -5px;
+            left: -5px;
+            border-right: none;
+        }
+        .dragged{
+            background-color:black !important;
+        }
+    #btnaddref {
+        float: right;
+    }
+</style>
+<body>
+    @Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")
+
+    <div class="main-content cm_fund fund_rcipt">
+        <div>
+
+            @using (Html.BeginForm("AgendaDetail", "Agenda", FormMethod.Post, new { @id = "formAgenda", enctype = "multipart/form-data" }))
+            {
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Agenda Detail</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-sm-6 col-md-3 col-lg-3">
+                                        <label for="inputEmail4" class="txt_label">Agenda:</label>
+                                        @Html.DropDownListFor(m => m.AgendaId, Model.AgendaList, "Select", new { @id = "ddlagenda", @tabindex = "1", @class = "txt_design", @required = "required", @Onchange = "Getdata();" })
+
+                                    </div>
+                                    <input id="btngetagenda" type="submit" value="Get User" class="btn add_btn col-md-4" style="display:none" />
+                                    @if (Model.IsOpen)
+                                    {
+                                        <div class="col-md-7"></div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-xs btn-primary bigger" id="btnaddref" onclick="return showdiv()">
+                                                <i class="ace-icon fa fa-pencil-square-o"></i>
+                                                New
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+
+                                @if (Model.IsOpen)
+                                {
+                                    <div class="AgendaRefDetail" id="sortdiv">
+
+
+                                        <table id="tableRef" class="table table-striped table-bordered sorted_table">
+                                            <thead>
+                                                <tr>
+                                                    <th>SrNo.</th>
+                                                    <th>Id</th>
+                                                    <th class="center " style="background-color: rgb(121, 166, 223); color: white;">Reference Id</th>
+                                                    <th class="center " style="background-color: rgb(206, 107, 48); color: white; ">Letter Number</th>
+                                                    <th class="center " style="background-color: rgb(206, 107, 48); color: white; ">Subject</th>
+                                                    <th class="center " style="background-color: rgb(193, 33, 33); color: white; ">Attatched File</th>
+                                                    <th class="center " style="background-color: rgb(193, 33, 33); color: white; ">Subject Details</th>
+                                                    <th class="center " style="background-color: rgb(193, 33, 33); color: white; ">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{int a = 1;}
+                                                @foreach (var mdl in Model._LstReferences)
+                                                {
+
+                                                    <tr id="tr_@mdl.Id">
+                                                        <td>@a</td>
+                                                        <td>@mdl.Id</td>
+                                                        <td>@mdl.RefId</td>
+                                                        <td>@mdl.LetterNo</td>
+                                                        <td>@mdl.Subject</td>
+                                                        <td>
+                                                            @{
+
+                                                                string Enpath1 = System.Web.Configuration.WebConfigurationManager.AppSettings["Site"] + @mdl.attachedfile; }
+                                                            @if (!string.IsNullOrEmpty(@mdl.attachedfile))
+                                                            {
+                                                                <a href="@Enpath1" target="_blank">
+                                                                    <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+
+                                                            }
+
+                                                        </td>
+                                                        <td>
+                                                            <a onclick="ViewSB('@mdl.RefId')">View</a>
+                                                            <textarea id="sb_@mdl.RefId" style="display:none">@mdl.SubjectDetails</textarea>
+
+                                                        </td>
+                                                        <td>
+                                                            <a data-rel="tooltip" class="tooltip-primary" title="Delete" onclick="Delete('@mdl.Id');">
+                                                                <i class="ace-icon fa fa-trash bigger-130"  style="color:red"></i>
+                                                            </a>
+                                                        </td>
+                                                        @*@Html.Raw(mdl.SubjectDetails)*@
+                                                    </tr>
+                                                    a++;
+                                                }
+
+                                            </tbody>
+                                        </table>
+
+
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-5"></div>
+                                        <div class="col-3">
+                                            <input type="button" id="btnLOP" class="btn btn-primary" value="Save Agenda" onclick="SendtoLOB()" />
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal fade bd-example-modal-lg" id="SubjectDetailModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content card">
+                            <div class="modal-header card-header">
+                                <h3 class="card-title">Subject Details</h3>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div id="SubjectDetailBody" class="modal-body">
+
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                        }
+                    </div>
+
+                    <div class="modal fade bd-example-modal-lg" id="NewAgendaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content card">
+                                <div class="modal-header card-header">
+                                    <h3 class="card-title">New Detail</h3>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                @using (Html.BeginForm("AddNewRef", "Agenda", FormMethod.Post, new { @id = "formAgenda", enctype = "multipart/form-data" }))
+                                {
+                                    if (Model.IsOpen)
+                                    {
+                                        <div class="modal-body">
+                                            <div id="refdiv" style="display:none">
+                                                <div class="row">
+                                                    <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                                        <label for="inputEmail4" class="txt_label">Letter Number:</label>
+                                                      @Html.TextBoxFor(m=> m.NewLetterNo, new { @id = "txtletterno", @tabindex = "1", @class = "form-control txt_design", @required = "required" })
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                                        <label for="inputEmail4" class="txt_label">Subject:</label>
+                                                        @Html.TextAreaFor(m => m.NewSubject, new { @id = "txtsubject", @tabindex = "1", @class = "form-control txt_design", @required = "required" })
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-sm-6 col-md-3 col-lg-3">
+                                                        <label for="inputattach" class="txt_label">Attachment:</label>
+                                                        <div id="divAcfile" class="file_btn_width">
+                                                            <div class="input-group">
+                                                                <label class="lbl_file">
+                                                                    <span class="fileinput-button file_btn">
+                                                                        <span>Choose file</span>
+                                                                        <input id="fileupload1" type="file" name="fileupload1" accept=".pdf" tabindex="6" style="display:none">
+                                                                    </span>
+                                                                </label>
+                                                            </div>
+                                                            @Html.HiddenFor(m => m.IsFile)
+
+                                                            <a href="#" id="afile_nameEn" target="_blank" class="pdf_link">  <span id="file_nameEn" class="file_nameEn"></span></a>
+                                                            <span class="file_sizeEn"></span>
+                                                            <div style="width: 100%;" id="fileuploadcontant1">
+                                                                <div style="width: 100%;">
+                                                                    <span id="removefileupload1" onclick="removefileupload()" class="fa fa-close" style="color: red; float: left; display: none; margin-left: 125px; cursor:pointer;"></span>
+
+                                                                </div>
+                                                                <div style="width: 100%;">
+                                                                    <div class="show_hide">
+                                                                        <div class="progress12" style="height: 10px; width: 100%">
+                                                                            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5" style="width: 0%;">
+                                                                                <span class="sr-only">0% complete</span>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                                        @Html.EditorFor(m => m.NewSubjectDetails, new { @id = "txtSubjectDetails", @tabindex = "7" })
+                                                        @*@Html.Raw(Model.NewSubjectDetails)*@
+                                                        @Html.HiddenFor(m => m.HdnAgendaId, new { @id = "hdnAgendaId" })
+
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button id="btnadd" type="submit" class="btn btn-primary">Add</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+</body>
+
+
+<script>
+
+        $(document).ready(function () {
+           var useralert = "@Session["userExist"]";
+            var useradded = "@Session["userAdded"]";
+
+           if (useralert == "") {
+
+           } else {
+               alert(useralert);
+           }
+
+           if (useradded == "") {
+
+           } else {
+               alert(useradded);
+               $('#txtsubject').val("");
+               $("input[type=text]").each(function () {
+                   $(this).val("");
+               });
+            }
+
+            var table = $('#tableRef').DataTable({
+                rowReorder: true,
+                paging: false,
+                columnDefs: [
+                    { targets: 0, visible: false, } ,
+                    { targets: 1, visible: false, }
+                ]
+            });
+
+            //table.on('row-reorder', function (e, diff, edit) {
+            //    var categories = [];
+            //    table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            //        // here
+            //        console.log(this.data());
+            //        categories.push(this.data().at(1));
+            //    });
+
+            //    console.log(categories);
+
+            //});
+
+
+            tinyMCE.init({
+                selector: "#NewSubjectDetails",
+                plugins: 'preview  importcss searchreplace autolink autosave save directionality  visualblocks visualchars fullscreen image link media  template codesample table charmap  pagebreak nonbreaking anchor  insertdatetime advlist lists  wordcount      help    charmap   quickbars  emoticons  colorpicker imagetools spellchecker ',
+
+                branding: false,
+                content_style:
+                    "body {  font-size: 14px; font-family: inherit; }",
+                toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | advcode spellchecker  a11ycheck code',
+                powerpaste_allow_local_images: true,
+                powerpaste_word_import: 'prompt',
+                powerpaste_html_import: 'prompt',
+                spellchecker_language: 'en',
+                spellchecker_dialog: true,
+
+            });
+
+
+
+            //Getdata();
+
+            //var group= $('.sorted_table').sortable({
+            //    containerSelector: 'table',
+            //    itemPath: '> tbody',
+            //    itemSelector: 'tr',
+            //    placeholder: '<tr class="placeholder"/>',
+            //    distance:'100',
+            //    onDragStart: function ($item, container, _super) {
+
+            //        var offset = $item.offset(),
+            //            pointer = container.rootGroup.pointer;
+
+
+            //        oldIndex = $item.index();
+            //        $item.appendTo($item.parent());
+
+            //        console.log($item);
+            //        adjustment = {
+            //            left: pointer.left - offset.left,
+            //            top: pointer.top - offset.top
+            //        };
+
+            //        _super($item, container);
+            //    },
+            //    onDrop: function ($item, container, _super) {
+            //        var $clonedItem = $('<tr/>').css({ height: 0 });
+            //        $item.before($clonedItem);
+            //        $clonedItem.animate({ 'height': $item.height() });
+
+            //        $item.animate($clonedItem.position(), function () {
+            //            $clonedItem.detach();
+            //            _super($item, container);
+            //        });
+
+            //        console.log(group.sortable("serialize").get().join("\n"));
+            //    },
+            //    serialize: function (parent, children, isContainer) {
+
+            //        return isContainer ? children.join() : parent.text();
+            //    },
+            //    onDrag: function ($item, position) {
+            //        $item.css({
+            //            left: position.left - adjustment.left,
+            //            top: position.top - adjustment.top
+            //        });
+            //    }
+            //});
+
+        });
+
+
+
+        $(function () {
+            $('[type="date"]').prop('min', function () {
+                return new Date().toJSON().split('T')[0];
+            });
+            $('#txtfundamount').val('');
+
+        });
+        $("#fileupload1").click(function (event) {
+            $('#Actionfile').text('No');
+            $('#IsFile').val("N");
+
+            $('#fileupload1').fileupload({
+
+                dataType: 'json',
+                async: true,
+               // url: "/eFile/UploadFundFiles",
+                 url: '@Url.Action("UploadFundFiles", "eFile")',
+                autoUpload: true,
+
+                done: function (e, data) {
+                 var sim = setTimeout("hidevalueAction()", 1000);
+                  $('.file_nameEn').html(data.result.name);
+                $('#afile_nameEn').attr("href", "@path" + data.result.name);
+                    $('#removefileupload1').show();
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.progress12 .progress-bar').css('width', progress + '%');
+                $('#removefileupload1').css('display', 'none');
+            });
+
+        });
+
+
+
+        function hidevalueForwd() {
+            $('.progress1 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueForwd()", 3000);
+        }
+
+        function hidevalueAction() {
+            $('.progress12 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueAction()", 3000);
+        }
+
+        function hidevalueActionEnclosure() {
+            $('.progressEnclosure .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+        }
+
+        function RemoveActionEnclosureFiles() {
+
+            $('.file_nameEn').html('');
+            $('.file_sizeEn').html('');
+            $('.progressEnclosure .progress-bar').css('width', '0%');
+            $("#removeUploadEnclosure").hide();
+            $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
+            $.post("/eFile/RemoveActionEnclosureFiles",
+                {
+                },
+                function (data) {
+                });
+
+        }
+
+
+
+        function removefileupload() { //ActionFile
+            $('.file_nameEn').html('');
+            $('.file_size1').html('');
+            $('.progress12 .progress-bar').css('width', '0%');
+            $("#removefileupload1").hide();
+            $('#fileuploadcontant1').css('border', '0px solid rgb(244, 239, 239)');
+            //$.post("/eFile/RemoveMlaForwardFiles",
+            //    {
+            //    },
+            //    function (data) {
+            //    });
+
+    }
+
+    function Getdata() {
+
+        var userid = $("#ddlagenda").val();
+
+        if (userid != "") {
+
+            $('#btngetagenda').click();
+        } else {
+
+            $('.AgendaRefDetail').hide();
+            $('#refdiv').hide();
+        }
+    }
+
+
+    function showdiv() {
+
+        $('#NewAgendaModal').modal('show');
+        $('#refdiv').show();
+        var aid = $('#ddlagenda').val();
+        $('#hdnAgendaId').val(aid);
+        return false;
+    }
+
+    function ViewSB(refid) {
+        var sb = $('textarea#sb_' + refid).val();
+        var sb = "<div style='padding: 40px;'>" + sb + "</div>";
+
+        $('#SubjectDetailBody').html(sb);
+        $('#SubjectDetailModel').modal('show');
+
+    }
+
+    function SendtoLOB() {
+
+        var agendid = $("#ddlagenda").val();
+
+        if (agendid != "") {
+            var categories = [];
+            var roworder = "";
+            $('#tableRef').DataTable().rows().every(function (rowIdx, tableLoop, rowLoop) {
+                categories.push(this.data().at(1));
+                roworder = roworder + this.data().at(1) + ","
+            });
+            var n = roworder.lastIndexOf(",");
+            roworder = roworder.substring(0, n);
+            console.log(roworder);
+
+            var pathurl = '/Agenda/FreezeAgenda';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { AID: agendid, RowOrder: roworder  },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        alert("Data Saved Successfully.");
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+
+
+        } else {
+
+
+        }
+    }
+
+
+    function Delete (id){
+
+        if (id != "") {
+
+            var pathurl = '/Agenda/DeleteAgendaDetail';
+
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { AgendaDetailId: id },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#tr_"+id).hide();
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
+
+    }
+
+</script>
+
+

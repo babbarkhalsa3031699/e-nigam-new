@@ -1,0 +1,489 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+<style>
+    .custom-primary-header {
+        background-color: #428BCA; /* rgb(66,139,202) */
+        color: #fff;
+        border-bottom: 1px solid #357EBD;
+    }
+</style>
+
+
+
+
+<div class="container-fluid">
+
+    
+    <div id="endorsementFormSection"
+         class="card shadow-sm mt-3 border-0">
+
+        <div class="card-header custom-primary-header d-flex justify-content-between align-items-center">
+
+            <h6 class="mb-0 fw-bold">
+                <i class="fa fa-edit me-1"></i>
+                Add / Subject / Header / Endorsement
+            </h6>
+
+            <label class="mb-0 fw-semibold px-3 py-2 rounded"
+                   style="background-color:#eef4ff;
+              border:1px solid #c7d7f2;
+              color:#1f3b64;
+              cursor:pointer;
+              box-shadow:0 1px 2px rgba(0,0,0,0.08);">
+
+                <input type="checkbox"
+                       id="chkAddRejectionFormat"
+                       onchange="ToggleRejectionSection();"
+                       style="margin-right:6px; accent-color:#2f6fed;" />
+
+                Add Order Format
+            </label>
+
+        </div>
+
+        <div class="card-body">
+
+            <input type="hidden" id="AgendaId" value="@Model.agendaId" />
+            <input type="hidden" id="FileReferenceId" value="@Model.RefId" />
+            <input type="hidden" id="EndorsementId" value="0" />
+
+            <div id="dvNonRejectionFormat" style="border:1px solid #ddd; padding:15px; margin-top:10px;">
+
+                <div class="mb-3">
+                    <label class="fw-bold">
+                        Addressed To
+                    </label>
+
+                    <input type="text" id="SendEditor"
+                           class="form-control" />
+                </div>
+                <!-- Subject -->
+                <div class="mb-3">
+                    <label class="fw-bold">
+                        Subject
+                    </label>
+
+                    <input type="text" id="ApprovalSubject"
+                           class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">
+                        Header Details
+                    </label>
+
+                    <textarea id="HeaderEditor"
+                              class="form-control"
+                              style="height:100px !important;"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-bold">
+                        Footer Details
+                    </label>
+
+                    <textarea id="footerEditor"
+                              class="form-control"
+                              rows="6"></textarea>
+                </div>
+              
+                
+                <div class="mb-3">
+                    <label class="fw-bold">
+                        Endorsement Details
+                    </label>
+
+                    <textarea id="EndorsementEditor"
+                              class="form-control"
+                              rows="6"></textarea>
+                </div>
+            </div>
+               
+          
+
+
+                <div id="dvRejectionFormat" style="display:none; border:1px solid #ddd; padding:15px; margin-top:10px;">
+                    <div class="mb-3">
+                        <label class="fw-bold">
+                           Add Rejection Content
+
+                        </label>
+                        <!-- Editor -->
+                        <textarea id="txtRejectionFormat"
+                                  class="form-control" rows="12"></textarea>
+                    </div>
+                </div>
+
+
+
+                <!-- Dispatch Number -->
+                <div class="mb-3 col-md-4">
+                    <label class="fw-bold">Dispatch Number <span class="text-danger">*</span></label>
+
+                    <input type="text"
+                           id="DispatchNumber"
+                           class="form-control"
+                           autocomplete="off"
+                           placeholder="Enter Dispatch Number" />
+                </div>
+
+                <div class="text-end">
+                    <button type="button"
+                            class="btn btn-success me-2"
+                            onclick="SaveEndorsement()">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            onclick="CancelForm()">
+                        Cancel
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    <!-- ================= LIST SECTION ================= -->
+
+    <div class="card shadow-sm mt-4 border-0">
+
+        <div class="card-header bg-light">
+            <h6 class="mb-0 fw-bold">
+                <i class="fa fa-list me-1 text-secondary"></i>
+                Endorsement List
+            </h6>
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-hover table-bordered mb-0">
+                <thead class="table-secondary text-center">
+                    <tr>
+                        <th style="width:60px;">#</th>
+                        <th>Addressed To</th>
+                        <th>Approval Subject</th>
+                        <th>Approval Header</th>
+                        <th>Endorsement Details</th>
+                        <th>Footer</th>
+                        <th>Rejection Content</th>
+                        <th style="width:150px;">Dispatch No.</th>
+                        <th style="width:120px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="endorsementTableBody"></tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- ===================== SCRIPTS ===================== -->
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        InitRejectionFormatEditor();
+        InitEditor();
+        InitEditor2();
+        InitEditor3();
+        InitEditor4();
+        LoadEndorsementList();
+    });
+
+    // Toggle Rejection Format Div
+
+
+    $("#chkAddRejectionFormat").change(function () {
+
+        if ($(this).is(":checked")) {
+
+            $("#dvRejectionFormat").slideDown(300);
+            $("#dvNonRejectionFormat").slideUp(300);
+
+
+        }
+        else {
+
+            $("#dvRejectionFormat").slideUp(300);
+            $("#dvNonRejectionFormat").slideDown(300);
+        }
+
+    });
+
+
+    function ToggleRejectionFormat(isChecked) {
+        if (isChecked) {
+            $("#dvRejectionFormat").stop(true, true).slideDown(300);
+            $("#dvNonRejectionFormat").stop(true, true).slideUp(300);
+        } else {
+            $("#dvRejectionFormat").stop(true, true).slideUp(300);
+            $("#dvNonRejectionFormat").stop(true, true).slideDown(300);
+        }
+    }
+
+
+    function InitRejectionFormatEditor() {
+
+        if (tinymce.get("txtRejectionFormat")) {
+            tinymce.get("txtRejectionFormat").remove();
+        }
+
+        tinymce.init({
+            selector: '#txtRejectionFormat',
+            height: 500,
+            menubar: false,
+            plugins: 'lists link table',
+            toolbar: 'undo redo | bold italic underline | alignjustify alignleft aligncenter alignright| bullist numlist | table',
+            branding: false,
+            content_style: `
+        body {
+            text-align: justify;
+        }
+    `
+        });
+    }
+
+
+    // Initialize Editor
+    function InitEditor() {
+
+        if (tinymce.get("EndorsementEditor")) {
+            tinymce.get("EndorsementEditor").remove();
+        }
+
+        tinymce.init({
+            selector: '#EndorsementEditor',
+            height: 250,
+            menubar: false,
+            plugins: 'lists link table',
+            toolbar: 'undo redo | bold italic underline | alignjustify alignleft aligncenter alignright| bullist numlist | table',
+            branding: false,
+            content_style: `
+    body {
+        text-align: justify;
+    }
+`
+        });
+    }
+
+
+    function InitEditor2() {
+
+        if (tinymce.get("footerEditor")) {
+            tinymce.get("footerEditor").remove();
+        }
+
+        tinymce.init({
+            selector: '#footerEditor',
+            height: 250,
+            menubar: false,
+            plugins: 'lists link table',
+            toolbar: 'undo redo | bold italic underline | alignjustify alignleft aligncenter alignright| bullist numlist | table',
+            branding: false,
+            content_style: `
+    body {
+        text-align: justify;
+    }
+`
+        });
+    }
+
+    function InitEditor3() {
+
+        if (tinymce.get("HeaderEditor")) {
+            tinymce.get("HeaderEditor").remove();
+        }
+
+        tinymce.init({
+            selector: '#HeaderEditor',
+            height: 250,
+            menubar: false,
+            plugins: 'lists link table',
+            toolbar: 'undo redo | bold italic underline | alignjustify alignleft aligncenter alignright| bullist numlist | table',
+            branding: false,
+            content_style: `
+    body {
+        text-align: justify;
+    }
+`
+        });
+    }
+
+    function InitEditor4() {
+
+        if (tinymce.get("SendEditor")) {
+            tinymce.get("SendEditor").remove();
+        }
+
+        tinymce.init({
+            selector: '#SendEditor',
+            height: 100,
+            menubar: false,
+            plugins: 'lists link table',
+            toolbar: false,
+            //toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table',
+            branding: false,
+            content_style: `
+    body {
+        text-align: justify;
+    }
+`
+        });
+    }
+    // SAVE
+   function SaveEndorsement() {
+    tinymce.triggerSave();
+
+    var model = {
+        RefID: $("#FileReferenceId").val(),
+        SendTo: $("#SendEditor").val(),
+        Subject: $("#ApprovalSubject").val(),
+        Header: $("#HeaderEditor").val(),
+        EndorsementId: $("#EndorsementId").val(),
+        AgendaId: $("#AgendaId").val(),
+        EndorsementSubject: $("#EndorsementEditor").val(),
+        FooterSubject: $("#footerEditor").val(),
+        DispatchNumber: $("#DispatchNumber").val(),
+        RejectionFormat: $("#txtRejectionFormat").val()
+    };
+
+    $.ajax({
+        url: '@Url.Action("SaveEndorsement", "Approval")',
+        type: 'POST',
+        data: model,
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                ResetForm();
+                LoadEndorsementList();
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function () {
+            alert("Something went wrong. Please try again.");
+        }
+    });
+}
+
+
+    // LOAD LIST
+    function LoadEndorsementList() {
+
+        $.get('@Url.Action("GetEndorsementList","Approval")',
+            { agendaId: $("#AgendaId").val() },
+            function (data) {
+
+                var rows = "";
+
+                if (data && data.length > 0) {
+
+                    $("#endorsementFormSection").hide();
+                    $("#btnAddNew").show();
+
+                    $.each(data, function (i, item) {
+
+                        rows += "<tr>";
+                        rows += "<td class='text-center'>" + (i + 1) + "</td>";
+                        rows += "<td>" + item.SendTo + "</td>";
+                        rows += "<td>" + item.Subject + "</td>";
+                        rows += "<td>" + item.Header + "</td>";
+                        rows += "<td>" + item.EndorsementSubject + "</td>";
+                        rows += "<td>" + item.FooterSubject + "</td>";
+                        rows += "<td>" + item.RejectionFormat + "</td>";
+                        rows += "<td class='text-center'>" + (item.DispatchNumber || "") + "</td>";
+                        rows += "<td class='text-center'>";
+                        rows += "<button type='Button' class='btn btn-sm btn-warning' onclick='EditEndorsement(" + item.EndorsementId + ")'>";
+                        rows += "<i class='fa fa-pencil'></i> Edit</button>";
+                        rows += "</td>";
+                        rows += "</tr>";
+                    });
+
+                } else {
+
+                    $("#endorsementFormSection").show();
+                    $("#btnAddNew").hide();
+
+                    rows = "<tr><td colspan='4' class='text-center text-muted'>No records found</td></tr>";
+                }
+
+                $("#endorsementTableBody").html(rows);
+            });
+    }
+
+
+    // EDIT
+    function EditEndorsement(id) {
+
+        $.get('@Url.Action("GetEndorsementById","Approval")',
+            { id: id },
+            function (res) {
+                if (res.RejectionFormat != null &&
+                    res.RejectionFormat != '') {
+                    $("#chkAddRejectionFormat").prop("checked", true);
+                    ToggleRejectionFormat(true);
+
+                    $("#dvRejectionFormat").show();
+                }
+                else {
+                    $("#chkAddRejectionFormat").prop("checked", false);
+                    ToggleRejectionFormat(false);
+                    $("#dvRejectionFormat").hide();
+                }
+
+                $("#endorsementFormSection").slideDown();
+                $("#EndorsementId").val(res.EndorsementId);
+                $("#DispatchNumber").val(res.DispatchNumber);
+                $("#ApprovalSubject").val(res.Subject);
+
+
+                tinymce.get("EndorsementEditor")
+                    .setContent(res.EndorsementSubject || "");
+                tinymce.get("footerEditor")
+                    .setContent(res.FooterSubject || "");
+
+                tinymce.get("HeaderEditor")
+                    .setContent(res.Header || "");
+
+                tinymce.get("SendEditor")
+                    .setContent(res.SendTo || "");
+                tinymce.get("txtRejectionFormat")
+                    .setContent(res.RejectionFormat || "");
+            });
+    }
+
+
+    // OPEN NEW
+    function OpenNewForm() {
+        ResetForm();
+        $("#endorsementFormSection").slideDown();
+    }
+
+
+    // RESET
+    function ResetForm() {
+
+        $("#EndorsementId").val(0);
+        $("#DispatchNumber").val("");
+
+        if (tinymce.get("EndorsementEditor")) {
+            tinymce.get("EndorsementEditor").setContent("");
+        }
+    }
+
+
+    function CancelForm() {
+        $("#endorsementFormSection").slideUp();
+    }
+
+
+
+
+</script>
+

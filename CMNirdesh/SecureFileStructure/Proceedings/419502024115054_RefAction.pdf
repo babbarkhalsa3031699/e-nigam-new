@@ -1,0 +1,45 @@
+<html>
+                                <head><meta charset='UTF-8'><title>MC-House: FileActionsReport</title>
+                                    <script src='https://code.jquery.com/jquery-3.6.4.min.js'></script>
+                                    <script>
+                                            $(document).ready(function() {
+                                                // Attach a click event to the print button
+                                                $('#printButton').on('click', function() {
+                                                    $(this).hide();
+                                                    // Call the window.print() function to open the print dialog
+                                                    window.print();
+                                                    $(this).show();
+                                                    
+                                                });
+                                            });
+                                        </script>
+                                        <style>
+                                        @media print {
+                                            .header {
+                                                display: none;
+                                            }
+                                        }
+                                            p{
+                                            line-height:1.7;
+                                            }
+                                        </style>
+                                    </head> 
+                                    <body><div><button id='printButton' style='float:right'>Print Page</button><div style='text-align:center'><img src='/Assets/Images/Govt-of-punjab.png' height='50' width='55' /><p style='margin:0px'>ਪੰਜਾਬ ਸਰਕਾਰ</p><p style='margin:0px'>ਸਥਾਨਕ ਸਰਕਾਰ ਵਿਭਾਗ</p><p style='margin:0px'>ਪਲਾਟ ਨੰ. 03, ਮਿਉਂਸਪਲ ਭਵਨ, ਸੈਕਟਰ-35 ਏ, ਚੰਡੀਗੜ੍ਹ 160036</p><hr></div><p style='font-size: 15px;font-weight:bold; text-align: center'>ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ.ਨਗਰ ਮੁਹਾਲੀ : MC Meeting Dated: 12.01.2024, ਮਿਤੀ:- 12/01/2024</p></div><table style='font-size:15px;width:100%; vertical-align: top;border: 1px solid #cdcdcd;border-collapse: collapse;'><tr style = 'padding:5px;'>
+                  <th style ='padding:10px;border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;text-align:left;width:100px !important'>Resolution No.</th> 
+                  <th style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;text-align:left'>Resolution Description </th>
+                  <th style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;text-align:left;width:30% !important'>Comments at Local Government</th></tr><tr>										
+										<td style='padding: 10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top '>
+                                        1<br>12/01/2024   
+                                        </td>
+                                        <td style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top'><u><b>References 1 :- </b></u> <p>ਲੋਰੇਮ ਇਪਸਮ ਪ੍ਰਿੰਟਿੰਗ ਅਤੇ ਟਾਈਪਸੈਟਿੰਗ ਉਦਯੋਗ ਦਾ ਸਿਰਫ਼ ਡਮੀ ਟੈਕਸਟ ਹੈ। Lorem Ipsum 1500 ਦੇ ਦਹਾਕੇ ਤੋਂ ਉਦਯੋਗ ਦਾ ਮਿਆਰੀ ਡਮੀ ਟੈਕਸਟ ਰਿਹਾ ਹੈ, ਜਦੋਂ ਇੱਕ ਅਣਜਾਣ ਪ੍ਰਿੰਟਰ ਨੇ ਕਿਸਮ ਦੀ ਇੱਕ ਗੈਲੀ ਲੈ ਲਈ ਅਤੇ ਇੱਕ ਕਿਸਮ ਦੇ ਨਮੂਨੇ ਦੀ ਕਿਤਾਬ ਬਣਾਉਣ ਲਈ ਇਸ ਨੂੰ ਰਗੜਿਆ। ਇਹ ਨਾ ਸਿਰਫ਼ ਪੰਜ ਸਦੀਆਂ ਤੋਂ ਬਚਿਆ ਹੈ, ਸਗੋਂ ਇਲੈਕਟ੍ਰਾਨਿਕ ਟਾਈਪਸੈਟਿੰਗ ਵਿੱਚ ਵੀ ਛਾਲ ਮਾਰੀ ਗਈ ਹੈ, ਜੋ ਜ਼ਰੂਰੀ ਤੌਰ 'ਤੇ ਬਦਲਿਆ ਨਹੀਂ ਹੈ। ਇਹ 1960 ਦੇ ਦਹਾਕੇ ਵਿੱਚ ਲੋਰੇਮ ਇਪਸਮ ਪੈਸਿਆਂ ਵਾਲੀ ਲੈਟਰਸੈੱਟ ਸ਼ੀਟਾਂ ਦੇ ਜਾਰੀ ਹੋਣ ਨਾਲ, ਅਤੇ ਹਾਲ ਹੀ ਵਿੱਚ ਐਲਡਸ ਪੇਜਮੇਕਰ ਵਰਗੇ ਡੈਸਕਟੌਪ ਪਬਲਿਸ਼ਿੰਗ ਸੌਫਟਵੇਅਰ ਨਾਲ ਲੋਰੇਮ ਇਪਸਮ ਦੇ ਸੰਸਕਰਣਾਂ ਸਮੇਤ ਪ੍ਰਸਿੱਧ ਹੋਇਆ ਸੀ।</p><br><b>House Decision:- </b>Passed<br><br><b>Specify Under Which Point of Instruction Dated 10.10.2022 this Resolution is covered:-</b>ਸ਼ਹਿਰੀ ਸਥਾਨਕ ਸੰਸਥਾਵਾਂ ਵੱਲੋਂ ਲੋਨ ਲੈਣ ਸਬੰਧੀ ਮਤੇ।<br><br><b>Comments of Commissioner:-</b></td><td style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;width:30%'><div id='LGComments' Class='SDHide'><div class='row'><p class='col-12'>1. comment1&#x0D;
+comment2&#x0D;
+comment3&#x0D;
+&amp;nbsp; </p> <p style='font-size:12px'>Director, Director, Local Govt., Director </br >  19/01/2024 11:50:46</br ></p> <hr class='dotted'> </div></div></td></tr><tr>										
+										<td style='padding: 10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top '>
+                                        2<br>12/01/2024   
+                                        </td>
+                                        <td style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top'><u><b>Reference 2 :- </b></u> <p>ਲੋਰੇਮ ਇਪਸਮ ਪ੍ਰਿੰਟਿੰਗ ਅਤੇ ਟਾਈਪਸੈਟਿੰਗ ਉਦਯੋਗ ਦਾ ਸਿਰਫ਼ ਡਮੀ ਟੈਕਸਟ ਹੈ। Lorem Ipsum 1500 ਦੇ ਦਹਾਕੇ ਤੋਂ ਉਦਯੋਗ ਦਾ ਮਿਆਰੀ ਡਮੀ ਟੈਕਸਟ ਰਿਹਾ ਹੈ, ਜਦੋਂ ਇੱਕ ਅਣਜਾਣ ਪ੍ਰਿੰਟਰ ਨੇ ਕਿਸਮ ਦੀ ਇੱਕ ਗੈਲੀ ਲੈ ਲਈ ਅਤੇ ਇੱਕ ਕਿਸਮ ਦੇ ਨਮੂਨੇ ਦੀ ਕਿਤਾਬ ਬਣਾਉਣ ਲਈ ਇਸ ਨੂੰ ਰਗੜਿਆ। ਇਹ ਨਾ ਸਿਰਫ਼ ਪੰਜ ਸਦੀਆਂ ਤੋਂ ਬਚਿਆ ਹੈ, ਸਗੋਂ ਇਲੈਕਟ੍ਰਾਨਿਕ ਟਾਈਪਸੈਟਿੰਗ ਵਿੱਚ ਵੀ ਛਾਲ ਮਾਰੀ ਗਈ ਹੈ, ਜੋ ਜ਼ਰੂਰੀ ਤੌਰ 'ਤੇ ਬਦਲਿਆ ਨਹੀਂ ਹੈ। ਇਹ 1960 ਦੇ ਦਹਾਕੇ ਵਿੱਚ ਲੋਰੇਮ ਇਪਸਮ ਪੈਸਿਆਂ ਵਾਲੀ ਲੈਟਰਸੈੱਟ ਸ਼ੀਟਾਂ ਦੇ ਜਾਰੀ ਹੋਣ ਨਾਲ, ਅਤੇ ਹਾਲ ਹੀ ਵਿੱਚ ਐਲਡਸ ਪੇਜਮੇਕਰ ਵਰਗੇ ਡੈਸਕਟੌਪ ਪਬਲਿਸ਼ਿੰਗ ਸੌਫਟਵੇਅਰ ਨਾਲ ਲੋਰੇਮ ਇਪਸਮ ਦੇ ਸੰਸਕਰਣਾਂ ਸਮੇਤ ਪ੍ਰਸਿੱਧ ਹੋਇਆ ਸੀ।</p><br><b>House Decision:- </b>Passed<br><br><b>Specify Under Which Point of Instruction Dated 10.10.2022 this Resolution is covered:-</b>ਸ਼ਹਿਰੀ ਸਥਾਨਕ ਸੰਸਥਾਵਾਂ ਵੱਲੋਂ ਲੋਨ ਲੈਣ ਸਬੰਧੀ ਮਤੇ।<br><br><b>Comments of Commissioner:-</b></td><td style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;width:30%'></td></tr><tr>										
+										<td style='padding: 10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top '>
+                                        3<br>12/01/2024   
+                                        </td>
+                                        <td style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top'><u><b>Reference 3 :- </b></u> <p>ਲੋਰੇਮ ਇਪਸਮ ਪ੍ਰਿੰਟਿੰਗ ਅਤੇ ਟਾਈਪਸੈਟਿੰਗ ਉਦਯੋਗ ਦਾ ਸਿਰਫ਼ ਡਮੀ ਟੈਕਸਟ ਹੈ। Lorem Ipsum 1500 ਦੇ ਦਹਾਕੇ ਤੋਂ ਉਦਯੋਗ ਦਾ ਮਿਆਰੀ ਡਮੀ ਟੈਕਸਟ ਰਿਹਾ ਹੈ, ਜਦੋਂ ਇੱਕ ਅਣਜਾਣ ਪ੍ਰਿੰਟਰ ਨੇ ਕਿਸਮ ਦੀ ਇੱਕ ਗੈਲੀ ਲੈ ਲਈ ਅਤੇ ਇੱਕ ਕਿਸਮ ਦੇ ਨਮੂਨੇ ਦੀ ਕਿਤਾਬ ਬਣਾਉਣ ਲਈ ਇਸ ਨੂੰ ਰਗੜਿਆ। ਇਹ ਨਾ ਸਿਰਫ਼ ਪੰਜ ਸਦੀਆਂ ਤੋਂ ਬਚਿਆ ਹੈ, ਸਗੋਂ ਇਲੈਕਟ੍ਰਾਨਿਕ ਟਾਈਪਸੈਟਿੰਗ ਵਿੱਚ ਵੀ ਛਾਲ ਮਾਰੀ ਗਈ ਹੈ, ਜੋ ਜ਼ਰੂਰੀ ਤੌਰ 'ਤੇ ਬਦਲਿਆ ਨਹੀਂ ਹੈ। ਇਹ 1960 ਦੇ ਦਹਾਕੇ ਵਿੱਚ ਲੋਰੇਮ ਇਪਸਮ ਪੈਸਿਆਂ ਵਾਲੀ ਲੈਟਰਸੈੱਟ ਸ਼ੀਟਾਂ ਦੇ ਜਾਰੀ ਹੋਣ ਨਾਲ, ਅਤੇ ਹਾਲ ਹੀ ਵਿੱਚ ਐਲਡਸ ਪੇਜਮੇਕਰ ਵਰਗੇ ਡੈਸਕਟੌਪ ਪਬਲਿਸ਼ਿੰਗ ਸੌਫਟਵੇਅਰ ਨਾਲ ਲੋਰੇਮ ਇਪਸਮ ਦੇ ਸੰਸਕਰਣਾਂ ਸਮੇਤ ਪ੍ਰਸਿੱਧ ਹੋਇਆ ਸੀ।</p><br><b>House Decision:- </b>Passed<br><br><b>Specify Under Which Point of Instruction Dated 10.10.2022 this Resolution is covered:-</b>ਨਗਰ ਨਿਗਮਾਂ ਅਤੇ ਨਗਰ ਕੌਂਸਲਾਂ/ਨਗਰ ਪੰਚਾਇਤਾਂ ਦੇ ਕੰਟਰੋਲ ਤੋਂ ਬਾਹਰ ਦੇ ਖੇਤਰ ਵਿਚ ਕੰਮ ਕਰਵਾਉਣ ਸਬੰਧੀ    ਮਤੇ।  <br><br><b>Comments of Commissioner:-</b></td><td style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;width:30%'><div id='LGComments' Class='SDHide'><div class='row'><p class='col-12'>1. hfghfghfgdhdfg </p> <p style='font-size:12px'>Director, Director, Local Govt., Director </br >  18/01/2024 10:20:53</br ></p> <hr class='dotted'> </div></div></td></tr></table></div></body> </html>

@@ -1,0 +1,1389 @@
+@using CMNirdesh.Models
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    @{
+        Response.ContentEncoding = System.Text.Encoding.UTF8;
+        Response.ContentType = "text/html; charset=utf-8";
+    }
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" />
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <script src="~/Scripts/sidebar.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    @*<link href="~/Content/bootstrap.css" rel="stylesheet" />*@
+    @*<link href="~/Content/font-awesome_ms.min.css" rel="stylesheet" />*@
+    <link href="~/Content/ace.css" rel="stylesheet" />
+    <link href="~/Content/style_ms.css" rel="stylesheet" />
+    @*<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">*@
+
+    <title> MC House</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+
+            var alertcount = $("#hdnalertCount").val();
+            $("#alertcount").html(alertcount);
+            var messagecount = $("#hdnMessageCount").val();
+            $("#Observationcount").html(messagecount);
+
+            $("#openbtn").click(function () {
+                $("#closebtn").fadeIn("slow");
+                $("#openbtn").fadeOut("slow");
+                $(".menu-item-text").addClass("shown");
+                $(".menu-item-text").removeClass("hidden");
+
+            });
+
+            $("#closebtn").click(function () {
+                $("#openbtn").fadeIn("slow");
+                $("#closebtn").fadeOut("slow");
+                $(".menu-item-text").addClass("hidden");
+                $(".menu-item-text").removeClass("shown");
+            });
+
+            @*if (@CurrentSession.UserID != '') {
+                GetDepartment();
+
+            }
+            else {
+
+
+
+            }*@
+
+            var sess = '@Session["LoggedIn"]';
+            var HomeButton = '@Session["HomeButton"]';
+
+           // var parichaysess = '@Session["LoggedIn"]';
+            if (sess == 'no' && HomeButton == 'no') {
+                $("#loginnn").css("display", "block");
+                $("#logouttt").css("display", "none");
+                $("#navbarSupportedContent").css("display", "none");
+                $("#logoutpic").css("display", "none");
+                $("#homebutton").css("display", "none");
+                $("#notify").css("display", "none");
+
+
+            }
+            else if (sess == 'no' && HomeButton == 'yes') {
+                $("#loginnn").css("display", "none");
+                $("#logouttt").css("display", "none");
+               $("#navbarSupportedContent").css("display", "none");
+                $("#logoutpic").css("display", "none");
+                $("#homebutton").css("display", "block");
+                $("#notify").css("display", "none");
+            }
+            else if (sess == 'yes') {
+                $("#loginnn").css("display", "none");
+                $("#logouttt").css("display", "block");
+                $("#navbarSupportedContent").css("display", "block");
+                GetSwitchUser();
+                GetDepartmentNav();
+                //getofficenav();
+                $("#logoutpic").css("display", "block");
+                $("#homebutton").css("display", "none");
+            }
+            //else {
+            //    $("#loginnn").css("display", "none");
+            //    $("#logouttt").css("display", "block");
+            //    $("#navbarSupportedContent").css("display", "block");
+            //    GetDepartmentNav();
+            //    //getofficenav();
+            //    $("#logoutpic").css("display", "block");
+            //    $("#homebutton").css("display", "none");
+            //}
+
+            $("#news_slider").owlCarousel({
+                items: 8,
+                itemsDesktop: [1199, 8],
+                itemsDesktopSmall: [980, 6],
+                itemsMobile: [600, 3],
+                navigation: true,
+                navigationText: ["", ""],
+                pagination: true,
+                autoPlay: true
+            });
+        //    // RESTYLE THE DROPDOWN MENU
+        //    $('#google_translate_element').on("click", function () {
+
+        //        // Change font family and color
+        //        $("iframe").contents().find(".goog-te-menu2-item div, .goog-te-menu2-item:link div, .goog-te-menu2-item:visited div, .goog-te-menu2-item:active div, .goog-te-menu2 *")
+        //            .css({
+        //                'color': '#544F4B',
+        //                'font-family': 'Roboto',
+        //                'width': '100%'
+        //            });
+        //        // Change menu's padding
+        //        $("iframe").contents().find('.goog-te-menu2-item-selected').css('display', 'none');
+        //        // Change menu's padding
+        //        $("iframe").contents().find('.goog-te-menu2').css('padding', '10px');
+        //        // Change the padding of the languages
+        //        $("iframe").contents().find('.goog-te-menu2-item div').css('padding', '10px');
+        //        // Change the width of the languages
+        //        $("iframe").contents().find('.goog-te-menu2-item').css('width', '100%');
+        //        $("iframe").contents().find('td').css('width', '100%');
+        //        // Change hover effects
+        //        $("iframe").contents().find(".goog-te-menu2-item div").hover(function () {
+        //            $(this).css('background-color', '#4385F5').find('span.text').css('color', 'white');
+        //        }, function () {
+        //            $(this).css('background-color', 'white').find('span.text').css('color', '#544F4B');
+        //        });
+        //        // Change Google's default blue border
+        //        $("iframe").contents().find('.goog-te-menu2').css('border', 'none');
+            //    });
+
+
+
+
+        });
+
+        //function googleTranslateElementInit() {
+        //    new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,pa', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
+        //}
+
+
+        /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+        function openNav() {
+            document.getElementById('mySidebar').style.width = "300px";
+            document.getElementById("body").style.marginLeft = "300px";
+            document.getElementsByClassName("menu-item-text").style.display = "initial";
+            document.getElementById("openbtn").style.display = "none";
+            document.getElementById("closebtn").style.display = "initial";
+
+        }
+
+        /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+        function closeNav() {
+            document.getElementById('#mySidebar').style.width = "88px";
+            document.getElementById("body").style.marginLeft = "88px";
+            document.getElementsByClassName("menu-item-text").style.display = "none";
+            document.getElementById("openbtn").style.display = "initial";
+            document.getElementById("closebtn").style.display = "none";
+
+        }
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    </script>
+
+    <script src="~/Content/bootstrap-5.2/js/bootstrap.min.js"></script>
+    @*<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&amp;display=swap" rel="stylesheet">*@
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>*@
+    <script src="~/Content/fontawesome-free-5.15.4-web/js/fontawesome.js"></script>
+    <link href="~/Content/fontawesome-free-5.15.4-web/css/regular.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome-free-5.15.4-web/css/brands.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome-free-5.15.4-web/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome-free-5.15.4-web/css/v4-shims.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome-free-5.15.4-web/css/svg-with-js.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome-free-5.15.4-web/css/solid.min.css" rel="stylesheet" />
+
+    @*<link rel="stylesheet" href="https://kit-pro.fontawesome.com/releases/v5.15.1/css/pro.min.css">*@
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/brands.min.css" integrity="sha512-L+sMmtHht2t5phORf0xXFdTC0rSlML1XcraLTrABli/0MMMylsJi3XA23ReVQkZ7jLkOEIMicWGItyK4CAt2Xw==" crossorigin="anonymous" referrerpolicy="no-referrer" />*@
+    <link href="~/Content/styleheader.css" rel="stylesheet" />
+    <link href="~/Content/brands.min.css" rel="stylesheet" />
+    <script src="~/Scripts/sidebar.js"></script>
+    <link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+    <link href="~/Content/multiple-select.css" rel="stylesheet" />
+    <script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+
+    <style>
+        .notifications-btn {
+            margin-left: 12px;
+        }
+
+        .profile-dropdown {
+            min-width: 260px;
+            border-radius: 10px;
+        }
+
+        .profile-img-wrapper {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 2px solid #dee2e6;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .profile-designation {
+            font-size: 12px;
+            display: block;
+        }
+
+        .profile-dropdown .dropdown-item {
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+
+            .profile-dropdown .dropdown-item:hover {
+                background-color: #f8f9fa;
+            }
+
+        .bubble {
+            background-color: red;
+            color: white;
+            font-size: 16px;
+            border-radius: 47px;
+            position: absolute;
+            text-align: center;
+            padding: 3px 12px 1px 10px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .hand {
+            cursor: pointer;
+        }
+
+        .dropdown-arrow .ms-parent .ms-drop.bottom {
+            height: 103px;
+        }
+
+        .form-control1 {
+            position: absolute;
+            margin-top: -20px;
+        }
+
+        #officeNavcount {
+            position: static !important;
+        }
+
+        #depcount {
+            position: static !important;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+
+
+    <header class="inner-header">
+        <div class="login-header">
+            <nav class="navbar navbar-expand-lg p-lg-2 p-md-3 p-sm-3 p-2">
+                <div class="container-fluid first-div">
+                    <div class="header-left">
+                        <div>
+                            <img class="logo-img" src="~/Assets/Home_Images/punjab-logo.png">
+                            @*<img  class="logo-img" src="@Model.SiteUrl/@Model.MCLogo" />*@
+                            @*<img class="logo-img" src="~/Assets/Home_Images/punjab-logo.png">*@
+                        </div>
+                        <div>
+                            <div class="brand-identity mb-1">
+                                <h2 class="mb-0 Brand-name fw-bold"> <span class=""> Digital-MC House </span> </h2>
+
+                            </div>
+
+                            @*<div class="brand-identity mb-1">
+
+                                    <h2 class="mb-0 Brand-name fw-bold"> <span class=""> @Model.MCName </span> </h2>
+                                </div>*@
+
+                            <p class="full-form mb-0 inititive-tag"> Department of Local Govt. Punjab  </p>
+
+                        </div>
+                    </div>
+                    @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>*@
+
+
+                    <div class="collapse justify-content-end header-navbar" id="navbarSupportedContent" style="display:none">
+                        <div>
+                            <ul class="list-unstyled d-flex align-items-center justify-content-end mb-2 mb-lg-0 gap-4 float-right">
+                                <li class="nav-item " id="notify">
+                                    <a title="Observations/Advice" class="notifications-btn position-relative p-0" data-bs-toggle="offcanvas" href="#offcanvasObservation" role="button" aria-controls="offcanvasExample">
+                                        <i class="far fa-envelope"></i>
+                                        <span id="Observationcount" class="notification-count">  </span>
+                                    </a>
+
+                                    <a title="Notifications/Circulars/Approvals" class="notifications-btn position-relative p-0" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                                        <i class="far fa-bell"></i>
+                                        <span id="alertcount" class="notification-count">  </span>
+                                    </a>
+
+                                </li>
+                                <li>
+
+                                    <div id="clock" class="clock"></div>
+                                    @*<script src="script.js"></script>
+                                        <label id="clockllabel">Session Time Out In: </label>*@
+                                </li>
+                                <li>
+                                    <i style="" id="refreshTimerBtn" class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 30px;" title="Session Time Reset" onclick="TimeRefresh();"></i>
+                                </li>
+
+                                <li class="nav-item">
+                                    <div class="dropdown" id="logoutpic">
+                                        <button class="btn-profile dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <div class="d-inline-flex align-items-center user-section gap-2">
+                                                <div class="user-image">
+                                                    @*<img class="rounded-circle usr_img" src="~/Assets/Home_Images/user.png" alt="user-image">*@
+                                                    <img src="@(
+                                                        string.IsNullOrEmpty(CurrentSession.UserPicPath)
+                                                        ? Url.Content("~/Assets/Home_Images/user.png")
+                                                        : "https://enigambackuprestore.blob.core.windows.net/securefilestructure/" + CurrentSession.UserPicPath
+                                                    )" class="rounded-circle usr_img" alt="user-image">
+                                                </div>
+                                                <div class="user-detail">
+                                                    <p class="mb-0 user-name"> @CurrentSession.Name</p>
+                                                    <p class="mb-0 user-designation" data-bs-toggle="tooltip" data-bs-title="Default tooltip"> @CurrentSession.Designation</p>
+                                                    <p id="userdept" class="mb-0 user-deptname" data-bs-toggle="tooltip" data-bs-title="Default tooltip"> @CurrentSession.DeptNameNew</p>
+                                                </div>
+                                            </div>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end profile-dropdown shadow-sm">
+                                            <!-- User Info -->
+                                            <li class="px-3 py-3">
+                                                <a href="javascript:void(0);"
+                                                   class="d-flex align-items-center gap-3 text-decoration-none"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#exampleModal"
+                                                   onclick="getUserProfileDetail();">
+
+                                                    <!-- User Image -->
+                                                    <div class="profile-img-wrapper">
+                                                    <img src="@(
+                                                        string.IsNullOrEmpty(CurrentSession.UserPicPath)
+                                                        ? Url.Content("~/Assets/Home_Images/user.png")
+                                                        : "https://enigambackuprestore.blob.core.windows.net/securefilestructure/" + CurrentSession.UserPicPath
+                                                    )" class="rounded-circle profile-pic mb-2" alt="User Photo">
+                                                    </div>
+
+                                                    
+   
+
+
+
+                                                    <!-- User Details -->
+                                                    <div class="profile-info">
+                                                        <h6 class="mb-0 profile-name">@CurrentSession.Name</h6>
+                                                        <small class="text-muted profile-designation"
+                                                               data-bs-toggle="tooltip"
+                                                               data-bs-title="@CurrentSession.Designation">
+                                                            @CurrentSession.Designation
+                                                        </small>
+                                                    </div>
+                                                </a>
+                                            </li>
+
+                                            <li><hr class="dropdown-divider"></li>
+
+                                            <!-- Edit Profile -->
+                                            @*<li>
+                                                <a class="dropdown-item d-flex align-items-center gap-2"
+                                                   href="javascript:void(0);"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#editProfileModal">
+                                                    <i class="fa fa-user-edit text-primary"></i>
+                                                    <span>Edit Profile</span>
+                                                </a>
+                                            </li>*@
+
+                                            <!-- Logout -->
+                                            <li>
+                                                <a class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                                   href="~/Account/LogOff">
+                                                    <i class="fa fa-sign-out-alt"></i>
+                                                    <span>Logout</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </li>
+                                <li class="nav-item " id="Switchbutton">
+                                    <a id="subutton" title="Switch User" class="notifications-btn position-relative p-0" data-bs-toggle="offcanvas" href="#SwitchUser" role="button" aria-controls="offcanvasExample">
+                                        <span id="sucount" class="userbubble blink"></span>
+                                        <i class="far fa-user"></i>
+                                    </a>
+                                </li>
+                                @*<li class="nav-item">
+                                        <a href="~/Account/Login" class="red_hover login_btn_hdr" id="loginnn" style="display:none;"><i class="fa fa-user"></i> login</a>
+                                    </li>*@
+
+
+                                <!-- <li class="nav-item">
+                                  <button class="btn btn-outline-new" type="submit">Login</button>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+                    <button class="navbar-toggler" id="btntoggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenuExample">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+
+            </nav>
+            <div>
+                <div class="bg-position2 mb-0 px-2" id="logouttt" style="display:none">
+                    @*<div class="row align-items-center flex-wrap">
+                            <div class="col-lg-2 col-md-4 col-sm-4 col-12 ">
+                                 <a class="my-link" href="~/References/Dashboard?type=0"> <img src="~/Assets/Home_Images/icon/Dashboard.svg" /> &nbsp; Dashboard </a>
+                            </div>
+                            <div class="col-lg-10 col-md-8 col-sm-8 col-12 Select-office">
+                                <div class="col-md-2 selct-label p-2">
+                                    <label class="lbl_ofict mb-0">House/Committee:</label>
+                                </div>
+                                <div class="row w-100 align-items-center px-2">
+
+                                    <div class="col-md-3 col-sm-6 col-xs-6 col-12 p-2 ">
+                                        <div class="dropdown-arrow">
+                                            <select class="form-control" id="depttNav" name="depttNav"></select>
+                                            <i class=" fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-6 col-xs-6 col-12 p-2 ">
+                                        <div class="dropdown-arrow">
+                                            <select class="form-control" id="AssignedOffice" name="AssignedOffice"></select>
+                                            <i class="fas fa-chevron-down"></i>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-6 col-xs-6 col-12 p-2 ">
+                                        <div class="dropdown-arrow">
+                                            <select class="form-control" id="offIdNav" name="offIdNav"></select>
+                                            <i class="fas fa-chevron-down"></i>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col-12">
+                                        <span id="officecount" class="bubble blink" style="margin-top: -11px;"></span>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>*@
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <ul class="ul-flex">
+                                <li> <a class="my-link" href="~/References/Dashboard?type=0"> <img src="~/Assets/Home_Images/icon/Dashboard.svg" /> &nbsp;Analytics Dashboard </a></li>
+                                <li>
+                                    <div class="adjust-label">
+                                        @*<label class="lbl_ofict mb-0">House/Committee:</label>*@
+                                        <div class="dropdown-arrow">
+                                            <select class="form-control" id="depttNav" name="depttNav"></select>
+                                            <i class=" fas fa-chevron-down"></i>
+                                        </div>
+                                        <span id="depcount" class="bubble blink"></span>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="dropdown-arrow">
+                                        <select class="form-control" id="AssignedOffice" name="AssignedOffice"></select>
+                                        <i class="fas fa-chevron-down"></i>
+
+                                    </div>
+                                    <span id="officecount" class="bubble blink"></span>
+                                </li>
+
+
+                                @if(CurrentSession.DeptID != "LG00001") { 
+                                <li>
+                                    <div class="dropdown-arrow">
+                                        <select class="form-control" id="offIdNav" name="offIdNav"></select>
+                                        @*<i class="fas fa-chevron-down"></i>*@
+
+                                    </div>
+                                    <span id="officeNavcount" class="bubble blink"></span>
+                                </li>
+                                }
+                            </ul>
+                        </div>
+
+                    </div>`
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(CurrentSession.UserID))
+        {
+            @Html.Action("Alerts", "User")
+        }
+
+
+    </header>
+
+    <section class="container-fluid position-relative data-section">
+
+
+        <!--<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasMenuLabel">MLA e-Connect</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">-->
+        @*@if (!string.IsNullOrEmpty(CurrentSession.UserID))
+            {
+                Html.RenderPartial("~/Views/References/_SidenavigationMobile.cshtml");
+            }*@
+        <!--</div>
+        </div>-->
+
+
+        @if (!string.IsNullOrEmpty(CurrentSession.UserID))
+        {
+            Html.RenderPartial("~/Views/References/_LeftNavigationMenu.cshtml");
+        }
+        <div id="body">
+            @RenderBody()
+        </div>
+
+        <div id="loader-wrapper" style="display: none">
+            <div id="loader"></div>
+        </div>
+
+
+    </section>
+
+    @*Header End*@
+
+    <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #ecf9ff; border: none">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="text-center justify-content-center" style="height: 110px; background: #ecf9ff;">
+                    <img class="text-center" src="~/Assets/Home_Images/user.png" style="border-radius: 50%; border: 1px solid white; width: 150px; box-shadow: 1px 0px 4px 4px #f5f5f5;" />
+                </div>
+                <div class="text-center" style="padding: 50px; color: #808080; font-size: 12pt;">
+                    <span class="font-weight-bold mb-2" style="font-size: 15pt;" id="userName"></span><br />
+                    <i class="fa fa-level-up"></i> <span id="userDesignation"></span><br />
+                    <i class="fa fa-phone"></i> <span id="userMobile"></span><br />
+                    <i class="fa fa-envelope"></i> <span id="userEmail"></span><br />
+                    <i class="fa fa-building"></i> <span id="userOffice"></span>
+
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end Switch" tabindex="-1" id="SwitchUser" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+
+            <h6 class="offcanvas-title " id="offcanvasExampleLabel"> <i class="fas fa-bell"></i> &nbsp;User Switch</h6>
+            <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+        </div>
+        <div id="alertbody" class="offcanvas-body p-2">
+            <div class="card shadow" style="max-width: 420px; width:100%;">
+                <div class="card-body" s>
+
+                    <h4 class="text-center mb-4">Switch Account</h4>
+                    <div id="accountList">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" style="width: 50%; margin: 0 auto;overflow-x: hidden; overflow-y: auto;"
+         id="editProfileModal"
+         tabindex="-1"
+         aria-labelledby="editProfileModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editProfileModalLabel">
+                        <i class="fa fa-user"></i> Edit Profile (Name : @CurrentSession.Name  ,Designation: @CurrentSession.Designation)
+                    </h5>
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <form id="frmEditProfile"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <div class="modal-body">
+
+                        <!-- Profile Photo -->
+                        <div class="row mb-3">
+                            <label class="col-md-4 col-form-label">
+                                Profile Photo
+                            </label>
+                           
+                            <div class="col-md-8">
+                            <img  style="width:100px;height:100px" src="@(
+                                string.IsNullOrEmpty(CurrentSession.UserPicPath)
+                                ? Url.Content("~/Assets/Home_Images/user.png")
+                                : "https://enigambackuprestore.blob.core.windows.net/securefilestructure/" + CurrentSession.UserPicPath
+                            )"class="rounded-circle profile-pic mb-2"alt="User Photo">
+
+                    <input type="file" name="ProfilePhoto" class="form-control"  accept=".jpg,.jpeg,.png">
+                     </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label class="col-md-4 col-form-label">
+                                Email ID <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-md-8">
+                                <input type="email"
+                                       name="Email"
+                                       value="@CurrentSession.loginEmailID"
+                                       class="form-control"
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Mobile (Read-only) -->
+                        <div class="row mb-3">
+                            <label class="col-md-4 col-form-label">
+                                Mobile Number
+                            </label>
+                            <div class="col-md-8">
+                                <input type="text" name="MobileNo"
+                                       value="@CurrentSession.MemberMobile"
+                                       class="form-control">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-success">
+                            <i class="fa fa-save"></i> Save Changes
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    @*Footer START*@
+    <footer class="footer_sec p_fixd bg_light_rd">
+        @*@if (string.IsNullOrEmpty(CurrentSession.UserID))
+            {
+
+                <div class="foot_vistr">
+                    <div class="terms_list">
+                        <ul class="trms_condtion">
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Website Policies</a></li>
+                            <li class="footr_txt"><a href="#">Portal Visitors : @ApplicationInstance.Application["NoOfVisitors"] </a></li>
+                        </ul>
+                    </div>
+
+
+
+
+                </div>
+
+            }*@
+
+        <div class="footer_sec logn_fotr">
+            <p class="footr_txt">Copyright &copy 2022 Digital-MC House: All Rights Reserved National Informatics Centre, Punjab</p>
+        </div>
+    </footer>
+
+    @*Footer END*@
+
+
+
+</body>
+
+<script>
+    $('#frmEditProfile').submit(function (e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '@Url.Action("UpdateProfile", "User")',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function () {
+                alert('Profile updated successfully');
+                location.reload();
+            },
+            error: function () {
+                alert('Error while saving profile');
+            }
+        });
+    });
+
+
+      function GetSwitchUser() {
+          let accountList = $('#accountList');
+          accountList.html(''); // clear
+         $.ajax({
+                 type: "GET",
+                 url: '@Url.Action("GetSwitchUser", "References")',
+                 datatype: "Json",
+                 data: {},
+                 success: function (data) {
+                     if (data.length > 0) {
+                         $('#sucount').html(data.length);
+                         //var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(
+                         //    document.getElementById('SwitchUser')
+                         //);
+                         //offcanvas.show();
+                     } else {
+                         $('#sucount').hide();
+                         $('#Switchbutton').hide();
+                         
+                     }
+
+                     $.each(data, function (i, user) {
+
+                         let activeClass = user.active == 1
+                             ? 'bg-primary bg-opacity-10'
+                             : '';
+
+                         let html = `
+                                <div class="d-flex align-items-center p-3 mb-3 border rounded account-item ${activeClass} hand"
+                                     data-id="${user.UserId}" onclick="SetUser('${user.UserName}')"">
+
+                                    <img src="/Assets/Home_Images/user.png"
+                                         class="rounded-circle me-3"
+                                         width="45" height="45">
+
+                                    <div class="flex-grow-1">
+                                        <strong>${user.Name}</strong><br>
+                                        <small class="text-muted">${user.UserName}</small>
+                                    </div>
+                                </div>
+                            `;
+
+                         accountList.append(html);
+                     });
+
+                 }
+             });
+         }
+
+
+    function SetUser(email){
+
+         $.ajax({
+               type: "GET",
+               url: '@Url.Action("SetSwitchUser", "References")',
+               datatype: "Json",
+                data: { email: email },
+               success: function (data) {
+                   setTimeout(window.location.reload(), 2000);
+               }
+
+             });
+
+    }
+
+     function GetDepartmentNav() {
+        var depttNav = $("#depttNav");
+        var id = $("#depttNav").val();
+       // deptt.empty().append('<option  value="">Please select</option>');
+       // $('#deptt').empty().append('<option  value="">Please select</option>');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDepartmentsNav", "References")',
+            datatype: "Json",
+            data: {},
+            success: function (data) {
+                if (data.length > 1) {
+                    $('#depcount').html(data.length);
+                } else {
+                    $('#depcount').hide();
+                }
+                //depttNav.empty().append('<option value=""> -- select --</option>');
+                $.each(data, function () {
+                    depttNav.append($("<option></option>").val(this['id']).html(this['name']));
+                });
+                $("#depttNav").val('@CurrentSession.DeptID');//OfficeName
+                Getofficenav('@CurrentSession.DeptID', '@CurrentSession.MapId');
+                GetAssignedOffice('@CurrentSession.DeptID', '@CurrentSession.OfficeId');
+                if (data.length == 1) {
+                    $("#userdept").html(data[0].name)
+                }
+            }
+        });
+    }
+
+      $("#depttNav").change(function () {
+
+        var depid = $("#depttNav").val();
+        GetAssignedOffice(depid, '');
+        Getofficenav(depid, '');
+    });
+
+
+
+
+
+
+    function GetAssignedOffice(deptttid, officeid) {
+
+        $('#AssignedOffice').empty();
+     $('#offId').empty();
+     $.ajax({
+         type: "GET",
+         url: '@Url.Action("GetOfficebyDepartmentId", "References")',
+         datatype: "Json",
+         data: { deptid: deptttid },
+         success: function (data) {
+
+
+
+             if (data.length > 1) {
+	        $('#officecount').html(data.length);
+             } else {
+                 $('#officecount').hide();
+
+             }
+
+
+             $('#AssignedOffice').append('<option value="0" selected >-Select-</option>');
+
+             $.each(data, function (index, value) {
+                 var selected = '';
+                 if (value.id == officeid) {
+                     selected = 'selected';
+
+                 } else {
+                     selected = '';
+                 }
+
+                 $('#AssignedOffice').append('<option value="' + value.id + '" ' + selected +'>' + value.name + '</option>');
+             });
+
+             //if (data.length >= 1) {
+
+             //    $("#offIdNav").multipleSelect({
+             //        columns: 1,
+             //        filter: false,
+             //        maxHeight: 100,
+             //        placeholder: 'Select Office',
+             //        isOpen: true,
+             //        keepOpen: true,
+             //    });
+             //    $('#offIdNav').multipleSelect('refresh');
+             //}
+
+         }
+
+     });
+
+
+    }
+
+    function Getofficenav(deptttid, officeid) {
+
+         $('#offIdNav').empty();
+        $('#offId').empty();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetOfficebyDepartmentIdNav", "References")',
+            datatype: "Json",
+            data: { deptid: deptttid },
+            success: function (data) {
+
+                if (data.length == 0) {
+                    $('#offIdNav').hide();
+                }
+		        $('#offIdNav').append('<option value="0" selected >-All-</option>');
+                if (data.length > 1) {
+ 			        $('#officeNavcount').html(data.length);
+                } else {
+                    $('#officeNavcount').hide();
+                }
+
+
+                $.each(data, function (index, value) {
+                    var selected = '';
+                    if (value.id == officeid) {
+                        selected = 'selected';
+
+                    } else {
+                        selected = '';
+                    }
+                    $('#offIdNav').append('<option value="' + value.id + '" ' + selected +'>' + value.name + '</option>');
+                });
+
+                //if (data.length >= 1) {
+
+                //    $("#offIdNav").multipleSelect({
+                //        columns: 1,
+                //        filter: false,
+                //        maxHeight: 100,
+                //        placeholder: 'Select Office',
+                //        isOpen: true,
+                //        keepOpen: true,
+                //    });
+                //    $('#offIdNav').multipleSelect('refresh');
+                //}
+
+            }
+
+        });
+
+
+    }
+
+    $("#AssignedOffice").change(function () {
+
+     var depid = $("#depttNav").val();
+        var officeid = $("#AssignedOffice").val();
+       $.ajax({
+         type: "GET",
+         url: '@Url.Action("SetAssignedOffice", "References")',
+         datatype: "Json",
+           data: { deptid:depid,officeid: officeid },
+         success: function (data) {
+             setTimeout(window.location.reload(), 2000);
+         }
+
+       });
+     //alert("Office Changed Successfully");
+
+ })
+
+    $("#offIdNav").change(function () {
+
+        var depid = $("#depttNav").val();
+        var officeid = $("#offIdNav").val();
+          $.ajax({
+            type: "GET",
+            url: '@Url.Action("SetOffice", "References")',
+            datatype: "Json",
+              data: { deptid:depid,officeid: officeid },
+            success: function (data) {
+                setTimeout(window.location.reload(), 2000);
+            }
+
+          });
+        //alert("Office Changed Successfully");
+
+    })
+      document.addEventListener('DOMContentLoaded', function () {
+
+      });
+
+    $(document).ready(function () {
+
+
+                showclock();
+
+    });
+
+      function showclock() {
+      const pageTitle = '@Html.Raw(ViewBag.Title)';
+  // If the page title is "Login," set userId to true
+      const userId = (pageTitle === 'Login');
+      // If on the "otherpage.html," proceed with the timer functionality
+      if (!userId) {
+          // Check if the timer state is stored in sessionStorage
+          //let remainingSeconds = sessionStorage.getItem('remainingSeconds');
+          //// If no state found in sessionStorage, set the initial time to 30 minutes (30:00)
+          //if (remainingSeconds === null) {
+          //    remainingSeconds = 30 * 60;
+          //} else {
+          //    // Parse the value to an integer
+          //    //remainingSeconds = parseInt(remainingSeconds);
+          //    remainingSeconds = 30 * 60;
+          //}
+           let remainingSeconds = (typeof IDLE_TIMEOUT_MS !== 'undefined') ? Math.floor(IDLE_TIMEOUT_MS / 1000) : 30 * 60;
+
+           window.resetUIClock = function () {
+               remainingSeconds = (typeof IDLE_TIMEOUT_MS !== 'undefined') ? Math.floor(IDLE_TIMEOUT_MS / 1000) : 30 * 60;
+               updateClock();
+           };
+
+           let intervalId;
+
+
+          // Update the clock every second
+     //const intervalId = setInterval(updateClock, 1000);
+          function updateClock() {
+              // Calculate minutes and seconds
+              const minutes = Math.floor(remainingSeconds / 60);
+              const seconds = remainingSeconds % 60;
+              // Display the time in the format 00:00
+              const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+              document.getElementById('clock').innerText = formattedTime;
+              document.getElementById('clock1').innerText = formattedTime;
+              // Decrease remaining seconds
+              remainingSeconds--;
+              // Store the updated timer state in sessionStorage
+              sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
+               // Stop the clock when it reaches 0 and trigger 30-sec idle warning modal
+               if (remainingSeconds < 0) {
+                   clearInterval(intervalId);
+                   document.getElementById('clock').innerText = '00:00';
+                   document.getElementById('clock1').innerText = '00:00';
+                   sessionStorage.removeItem('remainingSeconds');
+                   if (typeof showIdleWarningModal === 'function') {
+                       showIdleWarningModal();
+                   } else {
+                       window.location.href = '@Url.Action("LogOff", "Account")';
+                   }
+               }
+          }
+
+              function startTimer() {
+                  clearInterval(intervalId); // Clear existing interval if any
+                  intervalId = setInterval(updateClock, 1000);
+              }
+
+              function RefreshSession() {
+                   $.ajax({
+                      url: '@Url.Action("RefreshSession", "Account")',
+                      type: 'POST',
+                      success: function() { console.log('Session refreshed'); }
+                  });
+              }
+
+                startTimer();
+
+              function resetTimer() {
+                  remainingSeconds = 30 * 60;
+                  sessionStorage.setItem('remainingSeconds', remainingSeconds);
+                  updateClock();
+                  startTimer();
+                  RefreshSession();
+              }
+              const refreshBtn = document.getElementById('refreshTimerBtn');
+
+              refreshBtn.addEventListener('click', () => {
+                  remainingSeconds = 30 * 60; // Reset to 30 minutes
+                  sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
+                  updateClock(); // Update immediately on refresh
+                  startTimer();   // Restart interval
+                  RefreshSession();
+              });
+
+               const refreshBtn2 = document.getElementById('PopRefresh');
+               //console.log(refreshBtn2);
+                refreshBtn2.addEventListener('click', () => {
+                   remainingSeconds = 30 * 60; // Reset to 30 minutes
+                   sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
+                   updateClock(); // Update immediately on refresh
+                   startTimer();   // Restart interval
+                   RefreshSession();
+               });
+
+      }
+      else {
+          // If not on the "otherpage.html," hide the clock
+          document.getElementById('clock').style.display = 'none';
+          document.getElementById('clock1').style.display = 'none';
+          document.getElementById('clockllabel').style.display = 'none';
+          sessionStorage.removeItem('remainingSeconds');
+      }
+
+
+
+  }
+
+    function showclockold() {
+        const pageTitle = '@Html.Raw(ViewBag.Title)';
+    // If the page title is "Login," set userId to true
+        const userId = (pageTitle === 'Login');
+        // If on the "otherpage.html," proceed with the timer functionality
+        if (!userId) {
+            // Check if the timer state is stored in sessionStorage
+            let remainingSeconds = sessionStorage.getItem('remainingSeconds');
+            // If no state found in sessionStorage, set the initial time to 30 minutes (30:00)
+            if (remainingSeconds === null) {
+                remainingSeconds = 30 * 60;
+            } else {
+                // Parse the value to an integer
+                remainingSeconds = parseInt(remainingSeconds);
+            }
+            remainingSeconds = 30 * 60;
+            // Update the clock every second
+        const intervalId = setInterval(updateClock, 1000);
+            function updateClock() {
+                // Calculate minutes and seconds
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                // Display the time in the format 00:00
+                const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                document.getElementById('clock').innerText = formattedTime;
+                // Decrease remaining seconds
+                remainingSeconds--;
+                // Store the updated timer state in sessionStorage
+                sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
+                // Stop the clock when it reaches 0
+                if (remainingSeconds < 0) {
+                    clearInterval(intervalId);
+                    document.getElementById('clock').innerText = '00:00';
+                    // Clear the stored timer state when it reaches 0
+                    sessionStorage.removeItem('remainingSeconds');
+                    window.location.href = '/Secure';//~/Account/LogOff
+                }
+            }
+        }
+        else {
+            // If not on the "otherpage.html," hide the clock
+            document.getElementById('clock').style.display = 'none';
+            document.getElementById('clockllabel').style.display = 'none';
+            sessionStorage.removeItem('remainingSeconds');
+        }
+    }
+    function getUserProfileDetail()
+    {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getUserProfileDetail", "User")',
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $("#userName").text(data[0].Name);
+                    $("#userEmail").text(data[0].Email);
+                    $("#userMobile").text(data[0].MobileNo);
+                    $("#userDesignation").text(data[0].Designation);
+                    $("#userOffice").text(data[0].OfficeName + "-" + data[0].DepartmentName);
+
+                }
+            }
+        });
+            }
+
+            function TimeRefresh() {
+                //sessionStorage.setItem('remainingSeconds', (30 * 60).toString());
+                showclock(); // Optional: restart clock after reset
+            }
+
+    $("#btntoggle").on("click", function () {
+        //alert("clicked");
+        if ($("body").hasClass("menu-open")) {
+            $("body").removeClass("menu-open");
+        } else {
+            $("body").addClass("menu-open");
+        }
+    });
+
+
+</script>
+<style>
+    .clock {
+        font-size: 30px;
+        font-weight: bold;
+        text-align: center;
+        padding: 0px 10px;
+        background-color: #f2f2f2;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: auto;
+        min-width: 105px;
+        margin: 0 auto;
+    }
+
+
+    .userbubble {
+        background-color: red;
+        color: white;
+        font-size: 11px;
+        border-radius: 47px;
+        position: absolute;
+        text-align: center;
+        padding: 1px 5px 2px 5px;
+        font-weight: bold;
+        margin-left: 18px;
+    }
+
+    .offcanvas.Switch1 {
+        top: 25%;
+        left: 40%;
+        transform: translate(-50%, -50%);
+        width: 420px; /* fixed width */
+        max-width: 90%;
+        height: auto;
+        max-height: 90vh;
+        border-radius: 12px;
+        transition: none !important;
+    }
+
+    .offcanvas1-backdrop.show {
+        opacity: 0.6;
+    }
+</style>
+
+<!-- Session Idle Warning Modal -->
+<div id="sessionIdleWarning" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999999; background:rgba(0,0,0,0.65); backdrop-filter:blur(3px); align-items:center; justify-content:center;">
+    <div style="background:#ffffff; width:420px; max-width:90%; padding:25px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.4); text-align:center; font-family:inherit;">
+        <div style="width:55px; height:55px; border-radius:50%; background:#fff3cd; color:#856404; display:inline-flex; align-items:center; justify-content:center; margin:0 auto 15px auto;">
+            <i class="fa fa-exclamation-triangle" style="font-size:26px;"></i>
+        </div>
+        <h4 style="margin:0 0 10px 0; color:#222; font-weight:700;">Session Expiration Warning</h4>
+        <p style="color:#555; font-size:14px; margin-bottom:20px; line-height:1.5;">
+            You have been inactive. Your session will expire in <strong id="idleCountdownText" style="color:#d9534f; font-size:16px;">30</strong> seconds.
+            <br />Click <strong>Stay Logged In</strong> to refresh your session.
+        </p>
+        <div style="display:flex; gap:12px; justify-content:center;">
+            <button type="button" id="btnRefreshSession" style="background:#0d6efd; color:#fff; border:none; padding:10px 22px; border-radius:6px; font-weight:600; font-size:14px; cursor:pointer; box-shadow:0 2px 6px rgba(13,110,253,0.3);">
+                <i class="fa fa-refresh" style="margin-right:6px;"></i> Stay Logged In
+            </button>
+            <button type="button" id="btnLogoutSession" style="background:#6c757d; color:#fff; border:none; padding:10px 18px; border-radius:6px; font-weight:600; font-size:14px; cursor:pointer;">
+                Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var isLoggedIn = '@(Session["LoggedIn"] != null && Session["LoggedIn"].ToString() == "yes" ? "true" : "false")';
+        if (isLoggedIn !== 'true') return;
+
+        var IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes idle limit (PRODUCTION MODE)
+        var KEEP_ALIVE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes auto-renew interval for active users
+        var WARNING_COUNTDOWN_SEC = 30; // 30 seconds warning modal countdown
+
+        var lastActivityTime = Date.now();
+        var lastKeepAliveTime = Date.now();
+        var isModalShowing = false;
+        var countdownTimerId = null;
+
+        // Record activity timestamp without spamming clock resets on every mouse pixel movement
+        function resetActivity() {
+            if (isModalShowing) return;
+            lastActivityTime = Date.now();
+        }
+
+        var activityEvents = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'click'];
+        for (var i = 0; i < activityEvents.length; i++) {
+            window.addEventListener(activityEvents[i], resetActivity, { passive: true });
+        }
+
+        // Show warning modal with countdown
+        function showIdleWarningModal() {
+            isModalShowing = true;
+            var remainingSec = WARNING_COUNTDOWN_SEC;
+            var countdownText = document.getElementById("idleCountdownText");
+            var warningModal = document.getElementById("sessionIdleWarning");
+
+            if (countdownText) countdownText.innerText = remainingSec;
+            if (warningModal) warningModal.style.display = "flex";
+
+            countdownTimerId = setInterval(function () {
+                remainingSec--;
+                if (countdownText) countdownText.innerText = remainingSec;
+
+                if (remainingSec <= 0) {
+                    clearInterval(countdownTimerId);
+                    window.location.href = '@Url.Action("LogOff", "Account")';
+                }
+            }, 1000);
+        }
+        window.showIdleWarningModal = showIdleWarningModal;
+
+        // Renew session when user clicks "Stay Logged In" or active auto-renew
+        function renewSession(userAction) {
+            if (countdownTimerId) clearInterval(countdownTimerId);
+            isModalShowing = false;
+
+            var warningModal = document.getElementById("sessionIdleWarning");
+            if (warningModal) warningModal.style.display = "none";
+
+            if (userAction) {
+                lastActivityTime = Date.now();
+            }
+            lastKeepAliveTime = Date.now();
+
+            if (typeof window.resetUIClock === 'function') {
+                window.resetUIClock();
+            }
+
+            $.ajax({
+                url: '@Url.Action("RefreshSession", "Account")',
+                type: 'POST',
+                cache: false,
+                success: function (res) {
+                    console.log("[SESSION REFRESHED]", res);
+                }
+            });
+        }
+
+        // Attach click handlers to modal buttons
+        document.addEventListener("DOMContentLoaded", function () {
+            var btnRefresh = document.getElementById("btnRefreshSession");
+            var btnLogout = document.getElementById("btnLogoutSession");
+
+            if (btnRefresh) {
+                btnRefresh.addEventListener("click", function () {
+                    renewSession(true);
+                });
+            }
+            if (btnLogout) {
+                btnLogout.addEventListener("click", function () {
+                    window.location.href = '@Url.Action("LogOff", "Account")';
+                });
+            }
+        });
+
+        // Background Monitor loop (runs every 1 second)
+        setInterval(function () {
+            if (isModalShowing) return;
+
+            var now = Date.now();
+            var idleTime = now - lastActivityTime;
+
+            if (idleTime >= IDLE_TIMEOUT_MS) {
+                showIdleWarningModal();
+                return;
+            }
+
+            // Auto-renew session ONLY if user is actively working (not idle)
+            if (idleTime < KEEP_ALIVE_INTERVAL_MS) {
+                if (now - lastKeepAliveTime >= KEEP_ALIVE_INTERVAL_MS) {
+                    renewSession(false);
+                }
+            }
+        }, 1000);
+    })();
+</script>
+
+</html>

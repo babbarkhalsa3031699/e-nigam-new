@@ -1,0 +1,28 @@
+﻿
+
+@model CMNirdesh.Models.EsignRequestModel
+
+@{
+    ViewBag.Title = "eSign Request";
+}
+<h2>eSign Request</h2>
+<div id="main-content">
+    <div class="main-content">
+        <section class="form_dsign">
+            @using (Html.BeginForm("Submit", "PdfSign", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="DocumentContent">Document</label>
+                    <input type="file" name="DocumentContent1" id="DocumentContent1" class="form-control" />
+                </div>
+               <button type="submit" class="btn btn-primary">eSign Request</button>
+            }
+
+         </section>
+    </div>
+</div>
+
+
+
+

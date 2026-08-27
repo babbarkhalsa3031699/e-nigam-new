@@ -1,0 +1,480 @@
+﻿@model  CMNirdesh.Models.PermissionModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
+}
+
+@{
+    // int Totaldispatch = Model._LstDashboard.Sum(x => x.Count);
+    string SiteName = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceName"];
+    string BlobPath = CMNirdesh.Models.BlobStorage.GetStorageAcessingPath();
+}
+<style>
+    .ddlnewuser .ms-parent .ms-drop.bottom {
+        margin-top: -388px;
+        height: 300px;
+    }
+
+    .hide{
+        display:none;
+    }
+</style>
+<body>
+    <div id="main-content">
+        <div class="main-content cm_fund fund_rcipt  ">
+            <div class="row">
+                <div class="card p-0">
+                    <div class="card-header">
+                        <h3 class="card-title">User Transfer</h3>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("GetUserInbox", "User", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data" }))
+                        {
+                            <div class="row">
+                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                    <label for="inputEmail4" class="txt_label">Old User:</label>
+                                    @Html.DropDownListFor(m => m.UserId, Model.UserList, "Select", new { @id = "ddlolduser", @tabindex = "1", @class = "txt_design", @required = "required" })
+
+                                </div>
+                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                    <input id="btngetuser" type="button" value="Get Files" class="btn add_btn" onclick="GetFiles()" />
+                                </div>
+                            </div>
+
+
+                            <div id="InboxTable" class="table-responsive" style="margin-top: 20px; height:auto; display:none">
+                                <table class="table table-bordered" id="DispatchTable" style="width: 100%; border-width: 0 0 1px 0;">
+                                    <thead>
+                                        <tr>
+                                            <th class="td-heading" style="width: 5%;"><span></span></th>
+                                            <th class="td-heading" id="Questionno" style="width: 5%;"><span>No./Date</span></th>
+                                            <th class="td-heading" style="width: 15%;"><span>From</span></th>
+                                            <th class="td-heading" style="width: 15%;"><span>To</span></th>
+                                            <th class="td-heading" style="width: 20%;"><span>Subject</span></th>
+                                            @*<th class="td-heading" style="width: 10%;"><span> Type</span></th>*@
+                                            <th class="td-heading" style="width: 5%;"><span>Status</span></th>
+                                            <th class="td-heading" style="width: 10%;"><span>Ref.Id/Date </span></th>
+                                            <th class="td-heading" style="width: 5%;"><span>Sent Date </span></th>
+                                            <th class="td-heading" style="width: 10%;" id="SentTittle"><span>Sent By</span></th>
+                                            <th class="td-heading" style="width: 10%;" id="Currently"><span>Currently With</span></th>
+                                            @*<th class="td-heading brief-cell-width"><span>Brief of Last Action Taken</span></th>*@
+
+
+                                            @*<th class="td-heading" style="max-width:80px;"><span>Priority </span></th>
+                            <th class="td-heading" style="max-width:80px;"><span>Term </span></th>*@
+                                            <th>   </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+
+
+                            <div id="DivNewUser" class="row" style="display:none;">
+                                @Html.HiddenFor(m => m.refids, new { @id = "AchiveUpdate" });
+                                <div class="ddlnewuser form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                    <label for="inputEmail4" class="txt_label">New User:</label>
+                                    @Html.DropDownListFor(m => m.NewUserId, Model.UserList, "Select", new { @id = "ddlnewuser", @tabindex = "1", @class = "txt_design", @required = "required", @Onchange = "Getdata();" })
+
+                                </div>
+                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                    <input id="btnTransfer" type="submit" value="Transfer" class="btn add_btn" onclick="return Transfer()" />
+                                </div>
+                            </div>
+
+
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Transfer</title>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+
+    <link href="~/Content/multiple-select.css" rel="stylesheet" />
+    <script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#ddlolduser").multipleSelect({
+                columns: 1,
+                filter: true,
+                maxHeight: 350,
+                placeholder: 'Select User',
+            });
+
+            $("#ddlnewuser").multipleSelect({
+                columns: 1,
+                filter: true,
+                maxHeight: 350,
+                placeholder: 'Select User',
+            });
+
+        });
+
+
+        function GetFiles() {
+           
+            var UserId = $("#ddlolduser").val();
+            if (UserId != "") {
+                GetDataForDispatchInbox(UserId, "File");
+                $("#InboxTable").show()
+            }
+        }
+
+        function GetDataForDispatchInbox(UserId,value) {
+         var notchecked = '0';
+         $.ajax({
+             type: "GET",
+               url: '@Url.Action("GetUserInbox", "References")',
+             datatype: "Json",
+             contentType: "application/json; charset=utf-8",
+             data: { UserId: UserId ,isLetter:value},
+             success: function (response) {
+                 if (response.length > 0) {
+
+                     getTableListDispatch(response,"Inbox");
+
+                        // $("#DispatchTable").css("display", "block");
+                         $("#loader-wrapper").hide();
+                     }
+                 else {
+                     $("#DispatchTable").DataTable().destroy();
+                     $("#DispatchTable tbody").html('');
+                     $("#DispatchTable").DataTable();
+                     $("#loader-wrapper").hide();
+                     }
+                 },
+                 error: function (error) {
+                 }
+         });
+        }
+
+
+        function getTableListDispatch(tableData, InboxArch) {
+
+    var isLetter = "";
+    $("#DispatchTable").DataTable().destroy();
+    $("#DispatchTable tbody").html('');
+    $.each(tableData, function (index, response) {
+        if (response.ReferencePriorityType == 1) {
+            //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+            var img = 'High';
+        }
+        else if (response.ReferencePriorityType == 2) {
+            var img = 'Normal';
+        }
+        else if (response.ReferencePriorityType == 3) {
+            var img = 'Low';
+        }
+        if (response.ReferenceTerm == 1) {
+            var Term = 'Short';
+        }
+        else if (response.ReferenceTerm == 2) {
+            var Term = 'Medium';
+        }
+        else if (response.ReferenceTerm == 3) {
+            var Term = 'Long';
+
+        }
+
+        var editclass = ""
+        var edit = response.Editpermission;
+        if (edit == "1") {
+            editclass = "edit";
+        }
+        else {
+            editclass = "nonedit";
+        }
+
+        if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+            response.ActionTakenDate = response.ActionTakenDate;
+        }
+        else {
+            response.ActionTakenDate = "";
+        }
+
+        if (response.ActionTakenFile != "") {
+            //var Actionpath1 = "https://cmnirdesh.punjab.gov.in" + response.ActionTakenFile;
+            var Actionpath1 = '@BlobPath'+ response.ActionTakenFile;
+            var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+        }
+        else {
+            var link = '';
+        }
+
+        var click = ""
+         isLetter = response.isLetter;
+        if (isLetter == "File") {
+            //click = "<td class='" + editclass + "'><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = ViewFile(this," + response.AgendaId + ") ><i class='ace-icon fa fa-eye bigger-150'></i> </a ></td>";
+            click = "<td class='" + editclass + "'><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDispatch(this," + response.MoveId + ",'" + response.mtype + "') ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>";
+        }
+        else {
+            click = "<td class='" + editclass + "'><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDispatch(this," + response.MoveId + ",'" + response.mtype + "') ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>";
+        }
+        var mortxt = "";
+        if (response.Subject.length > 100) {
+            mortxt = "<input type='checkbox' class='check-read' />";
+        }
+        var mortxtad = "";
+        if (response.ad.length > 100) {
+            mortxtad = "<input type='checkbox' class='check-read' />";
+        }
+
+        var check = ""
+        if (InboxArch == "Inbox") {
+
+            check = "<td> <input type='checkbox' id='" + response.id + "' value='" + response.id + "' onclick='UpdateRefStatus(this," + response.RefId + ")' ></td > ";
+        }
+        else {
+            check = "<td> </td > ";
+        }
+
+        var PartFile = "";
+        var IsPartFile = response.Filetype;
+
+        if (IsPartFile == "2") {
+            // PartFile = "<spam class='PartFile'> (Part File) </spam>";
+            PartFile = "<spam class='PartFile'><a class='green' onclick='OpenUserDashboard(" + response.RefId + ", " + response.deptid + ")'> (Part File) </a></spam>";
+
+        } else {
+            PartFile = "";
+
+        }
+
+        var isRead = "";
+        var isReadFile = response.isRead;
+
+        if (isReadFile == "0" || isReadFile == null) {
+            isRead = "NewFile";
+        } else {
+            isRead = "";
+        }
+
+        $("#DispatchTable tbody").append(
+            "<tr id='row_" + response.RefId + "' role='row' class='odd " + isRead +"'>" +
+            check
+            +
+            "<td class='td-data'><span >" + response.LetterNo + "</span></td>" +
+            "<td class='td-data'><span>" + response.FromDept + "-" + "</br>" + response.FromOffice + "</span></td>" +
+            "<td class='td-data'><span>" + response.ToDept + "-" + "</br>" + response.ToOffice + "</span></td>" +
+            "<td class='td-data text-line-clamp'>" + "<p class='read-more-text' >" + response.Subject + "</p > " + mortxt + "</td>" +
+           /* "<td class='td-data'>" + response.DocumentTypeName + "</td>" +*/
+            "<td class='td-data'>" + response.StatusName + "<br/>" + link + "</td>" + /*+ "<br/>" + response.ActionTakenDate*/
+            "<td class='td-data'><span >" + response.RefId +"</br>"+ PartFile +"</br>" + response.CreatedDate + "</span></td>" +
+            "<td class='td-data'><span >" + response.SentDate + "</span></td>" +
+            "<td class='td-data'>" + response.SentBy + "</br>" + response.UserDept + "</td>" +
+            "<td class='td-data'><span></span></td>" +
+           /* "<td class='td-data text-line-clamp'>" + "<p class='read-more-text' >" + response.ad + "</p > " + mortxtad + "</td>" +*/
+
+
+            //"<td class='td-data'>" + img + "</td>" +
+            //"<td class='td-data'>" + Term + "</td>" +
+            check +
+            "</tr>"
+        );
+    });
+
+
+    if (isLetter == "File") {
+
+        var table = $('#DispatchTable').DataTable({
+            paging: true,
+            pageLength: 50,
+            searching: true,
+            bInfo: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf'
+            ],
+            aaSorting: [[0, 'desc']],
+            "aoColumnDefs": [{ "bVisible": false, "aTargets": [10, 2] }],
+            scrollX: true,
+            colResize: {
+                isEnabled: true,
+                hoverClass: 'dt-colresizable-hover',
+                hasBoundCheck: true,
+                minBoundClass: 'dt-colresizable-bound-min',
+                maxBoundClass: 'dt-colresizable-bound-max',
+                saveState: true,
+                isResizable: function (column) {
+                    //return column.idx !== 0;
+                    return true;
+                },
+                onResize: function (column) {
+                    //console.log('...resizing...');
+                },
+                onResizeEnd: function (column, columns) {
+                    console.log('I have been resized!');
+                },
+                stateSaveCallback: function (settings, data) {
+                    let stateStorageName = window.location.pathname + "/colResizeStateData";
+                    localStorage.setItem(stateStorageName, JSON.stringify(data));
+                },
+                stateLoadCallback: function (settings) {
+                    let stateStorageName = window.location.pathname + "/colResizeStateData",
+                        data = localStorage.getItem(stateStorageName);
+                    return data != null ? JSON.parse(data) : null;
+                }
+            }
+        });
+    }
+    else {
+        var table = $('#DispatchTable').DataTable({
+            paging: true,
+            pageLength: 50,
+            searching: true,
+            bInfo: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf'
+            ],
+            aaSorting: [[0, 'desc']],
+            "aoColumnDefs": [{ "bVisible": false, "aTargets": [10] }],
+            scrollX: true,
+            colResize: {
+                isEnabled: true,
+                hoverClass: 'dt-colresizable-hover',
+                hasBoundCheck: true,
+                minBoundClass: 'dt-colresizable-bound-min',
+                maxBoundClass: 'dt-colresizable-bound-max',
+                saveState: true,
+                isResizable: function (column) {
+                    // return column.idx !== 0;
+                    return true;
+                },
+                onResize: function (column) {
+                    //console.log('...resizing...');
+                },
+                onResizeEnd: function (column, columns) {
+                    console.log('I have been resized!');
+                },
+                stateSaveCallback: function (settings, data) {
+                    let stateStorageName = window.location.pathname + "/colResizeStateData";
+                    localStorage.setItem(stateStorageName, JSON.stringify(data));
+                },
+                stateLoadCallback: function (settings) {
+                    let stateStorageName = window.location.pathname + "/colResizeStateData",
+                        data = localStorage.getItem(stateStorageName);
+                    return data != null ? JSON.parse(data) : null;
+                }
+            }
+        });
+    }
+
+
+
+    var p = "#filter p";
+    if (isLetter == "File") {
+        $(p).html("");
+        $("#lbloff").hide();
+        p = "";
+    } else {
+        $("#lbloff").show();
+    }
+
+        $(p).each(function (i) {
+            var dt = "";
+            if (i == 0) {
+                i = 3;
+                dt = '--All--';
+            }
+
+            var select = $('<select class="form-control"><option value="">' + dt + '</option></select>')
+                .appendTo($(this).empty())
+                .on('change', function () {
+                    var val = $(this).val().replace("<span>", "");
+                    val = val.replace("</span>", "");
+                    table.column(3)
+                        .search(val)
+                        .draw();
+
+                });
+
+
+                table.column(3).data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>')
+                });
+
+
+
+        });
+
+
+
+
+        }
+
+        var mlarr = new Array();
+        var mlref = new Array();
+        function UpdateRefStatus(RefId, MainRefid) {
+
+            if ($(RefId).prop("checked") == true) {
+                mlarr.push(RefId.id);
+                mlref.push({
+                    MoveId: RefId.id,
+                    RefId: MainRefid
+                });
+                //var val = $("#MultiUpdate").val();
+                //$("#MultiUpdate").val(val + RefId.id + ',');
+            }
+            else if ($(RefId).prop("checked") == false) {
+                //console.log("Checkbox is unchecked.");
+                mlarr = jQuery.grep(mlarr, function (value) {
+                    return value != RefId.id;
+                });
+
+                mlref = jQuery.grep(mlref, function (value) {
+                    return value.RefId != MainRefid;
+                });
+            }
+
+            
+            if (mlref.length > 0) {
+                $("#DivNewUser").show();
+            } else {
+                $("#DivNewUser").hide();
+            }
+
+            //console.log(mlarr);
+            console.log(mlref);
+            //$("#AchiveUpdate").val(mlarr);
+            var fd = JSON.stringify(mlref)
+            console.log(fd);
+            $("#AchiveUpdate").val(fd);
+
+        }
+
+
+        function Transfer() {
+         
+            var NewUserId = $("#ddlnewuser").val();
+            if (NewUserId == "") {
+                alert("Please Select New User");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+
+</head>

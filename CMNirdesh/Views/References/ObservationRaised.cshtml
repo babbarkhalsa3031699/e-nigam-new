@@ -1,0 +1,593 @@
+﻿@{
+    // int Totaldispatch = Model._LstDashboard.Sum(x => x.Count);
+    string SiteName = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceName"];
+    string URL = System.Web.Configuration.WebConfigurationManager.AppSettings["URL"];
+    string BlobPath = CMNirdesh.Models.BlobStorage.GetStorageAcessingPath();
+}
+
+
+
+<head>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <style>
+        .select-box {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .dropdown {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        .dropdown-options {
+            display: none;
+            border: 1px solid #ccc;
+            background: #fff;
+            position: absolute;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+            .dropdown-options label {
+                display: block;
+                padding: 5px;
+                cursor: pointer;
+            }
+
+            .dropdown-options input {
+                margin-right: 5px;
+            }
+
+        .search-box {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .selected-items {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .selected-item {
+            background: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+            .selected-item span {
+                margin-left: 5px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+                .selected-item span:hover {
+                    color: #ff4d4d;
+                }
+
+        .compact-filter {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            overflow: visible !important;
+        }
+
+        #showOuterSearchResolution,
+        #filterLG,
+        #filterLG .row,
+        #filterLG .col-md-2,
+        #filterLG .position-relative {
+            overflow: visible !important;
+        }
+
+        #mcSuggestions {
+            display: none;
+            position: fixed !important;
+            background: #fff;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 2147483647 !important;
+        }
+
+        .mc-item {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+            .mc-item:hover {
+                background: #f5f5f5;
+            }
+
+        .compact-filter label {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #555;
+            display: block;
+        }
+
+        .compact-filter select.form-control {
+            height: 30px !important;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .compact-filter input.form-control {
+            height: 30px !important;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 6px !important;
+        }
+    </style>
+
+    <script>
+        $('#ObservationRaisedSearch').DataTable({
+            pageLength: 25,
+            lengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            scrollX: true,
+            autoWidth: false,
+            ordering: true,
+            order: [[0, 'desc']],
+            dom: '<"row"<"col-md-6"B><"col-md-6"f>>' +
+                '<"row"<"col-md-6"l><"col-md-6">>' +
+                'rt' +
+                '<"row"<"col-md-6"i><"col-md-6"p>>',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF'
+                }
+            ],
+            language: {
+                search: "",
+                searchPlaceholder: "Search observations..."
+            }
+        });
+
+    </script>
+</head>
+
+<div id="main-content" style="margin-top: 30px;">
+    <div class="col-md-12 col-lg-12 col-xl-12">
+
+        <!-- ================= PAGE HEADER ================= -->
+        <h4 id="breadcrumb">Observation Raised</h4>
+        <hr />
+
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="inr_frm_dsgn">
+
+                    <!-- ================= TABLE HEADER ================= -->
+                    <div class="widget-box" id="divAction">
+                        <div class="widget-header widget-header-flat rounded-top rounded-0">
+                            <h4 class="">List of Observation Raised</h4>
+
+                            <div class="widget-toolbar no-border">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ================= TABLE ================= -->
+                    <div class="form_lyot">
+                        <div id="showOuterSearchResolution">
+                            <div id="showOuterSearchResolutionData"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= INBOX MODAL ================= -->
+        <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="InboxModel"
+             data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important ">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <h4 id="InboxHeader1" class="widget-title "></h4>
+                            </div>
+                            <div class="col-lg-3">
+                                <div id="clock1" class="clock"></div>
+                            </div>
+                            <div class="col-1">
+                                <i id="PopRefresh" class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 15px;" title="Session Time Reset"></i>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close" style=""></button>
+                    </div>
+                    <div class="modal-body" id="InboxModelbody">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= HIDDEN REF ID ================= -->
+        <input type="hidden" id="RefId" name="RefId" />
+
+        <!-- ================= SINGLE EDIT MODAL ================= -->
+        <div class="modal inr_modal coman_modal edit_modal"
+             tabindex="-1"
+             id="SingleModelEdit"
+             data-keyboard="false"
+             data-backdrop="static"
+             style="z-index:9999 !important">
+
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design"
+                 id="Scroll2">
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <button type="button"
+                                class="btn-close"
+                                onclick="closeSingleEdit()"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body" id="SingleModelEditbody">
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+
+    // ============================================================
+    // LOAD OBSERVATION RAISED
+    // ============================================================
+
+    $(document).ready(function () {
+        ObservationRaised();
+    });
+
+
+    function ObservationRaised() {
+
+        $.ajax({
+
+            url: '@Url.Action("ObservationRaisedSearch", "References")',
+
+            type: 'GET',
+
+            data: {},
+
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+
+            success: function (res) {
+
+                // Load table HTML
+                $("#showOuterSearchResolutionData")
+                    .html(res)
+                    .show();
+
+                // Initialize DataTable
+                if ($.fn.DataTable.isDataTable('#ObservationRaisedSearch')) {
+
+                    $('#ObservationRaisedSearch')
+                        .DataTable()
+                        .destroy();
+                }
+
+                $('#ObservationRaisedSearch').DataTable({
+
+                    pageLength: 100,
+
+                    responsive: true,
+
+                    ordering: false,
+
+                    dom: 'Bfrtip',
+
+                    buttons: [
+
+                        {
+                            extend: 'excelHtml5',
+                            text: 'Export Excel'
+                        },
+
+                        {
+                            extend: 'pdfHtml5',
+                            text: 'Export PDF'
+                        }
+                    ]
+
+                });
+
+            },
+
+            error: function (xhr) {
+
+                alert(xhr.responseText);
+
+            },
+
+            complete: function () {
+
+                $('#loader-wrapper').hide();
+
+            }
+
+        });
+
+    }
+
+
+    // ============================================================
+    // CLOSE INBOX MODAL
+    // ============================================================
+
+    function EditMlaDispatch(IDD, moveid, mtype) {
+    var ID = IDD.id;
+    $('#row_'+ID).removeClass('NewFile');
+    $('#InboxModelbody').html('');
+    $('#InboxModelbody').html('');
+    $('#InboxModelBody').html('');
+    $('#InboxModelbody').html('');
+    if (mtype == "Diary") {
+        var pathurl = '/References/EditMlaDairyForm';
+         $.ajax({
+             type: "GET",
+             cache: false,
+    url: '@Url.Action("EditMlaDairyForm", "References")',
+
+    data: { ID: ID, MoveId: moveid },
+    beforeSend: function () {
+        $('#loader-wrapper').show();
+    },
+    success: function (data) {
+        $('#InboxModelbody').html('');
+        //debugger;
+        var options = {
+            "backdrop": "static",
+            keyboard: true
+        };
+        $("#loader-wrapper").hide();
+        if (data) {
+            $("#InboxModel").css("display", "block");
+            $('#InboxModelbody').html(data);
+
+            //$("#ulnoting").animate({ scrollTop: $('ul#ulnoting li:last').offset().top + 60 });
+
+        } else { alert("error"); }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.responseText);
+        alert(thrownError);
+    },
+    complete: function (results) {
+        $('#loader-wrapper').hide();
+    }
+});
+    } else {
+        var pathurl = '/References/EditMlaDispatchFormOutbox';
+         $.ajax({
+             type: "GET",
+             cache: false,
+    url: '@Url.Action("EditMlaDispatchFormOutbox", "References")',
+
+    data: { ID: ID, MoveId: moveid },
+    beforeSend: function () {
+        $('#loader-wrapper').show();
+    },
+    success: function (data) {
+        $('#InboxModelbody').html('');
+        //debugger;
+        var options = {
+            "backdrop": "static",
+            keyboard: true
+        };
+        $("#loader-wrapper").hide();
+        if (data) {
+            $("#InboxModel").css("display", "block");
+            $('#InboxModelbody').html(data);
+
+            $("#ulnoting").animate({ scrollTop: $('ul#ulnoting li:last').offset().top + 30 });
+
+        } else { alert("error"); }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.responseText);
+        alert(thrownError);
+    },
+    complete: function (results) {
+        $('#loader-wrapper').hide();
+    }
+});
+    }
+
+    //Rajeev
+
+var menutype = $("#lblmenuname").html();
+
+
+var heading = $('#inboxlabel').html();
+
+
+
+
+$('#InboxHeader1').html(menutype+">>"+heading);
+
+   }
+
+
+
+
+    $(document).ready(function () {
+
+        $("#txtMCName").keyup(function () {
+
+            var term = $(this).val();
+
+            if (term.length < 1) {
+
+                $("#mcSuggestions").hide();
+
+                return;
+            }
+
+
+            $.getJSON(
+                '@Url.Action("GetMCNames","References")',
+                { term: term },
+
+                function (data) {
+
+                    var html = "";
+
+                    $.each(data, function (i, item) {
+
+                        html +=
+                            "<div class='mc-item' " +
+                            "data-id='" + item.deptId + "' " +
+                            "style='padding:8px;cursor:pointer;border-bottom:1px solid #eee;'>" +
+                            item.deptname +
+                            "</div>";
+
+                    });
+
+
+                    if (html !== "") {
+
+                        var rect =
+                            $("#txtMCName")[0].getBoundingClientRect();
+
+
+                        $("#mcSuggestions")
+
+                            .html(html)
+
+                            .css({
+
+                                top: rect.bottom + "px",
+
+                                left: rect.left + "px",
+
+                                width: rect.width + "px",
+
+                                position: "fixed",
+
+                                zIndex: 2147483647
+
+                            })
+
+                            .show();
+
+                    }
+                    else {
+
+                        $("#mcSuggestions").hide();
+
+                    }
+
+                }
+
+            );
+
+        });
+
+
+        // Select MC
+        $(document).on("click", ".mc-item", function () {
+
+            $("#txtMCName").val($(this).text());
+
+            $("#MCID").val($(this).data("id"));
+
+            $("#mcSuggestions").hide();
+
+        });
+
+
+        // Hide suggestions
+        $(document).click(function (e) {
+
+            if (!$(e.target).closest(
+                "#txtMCName, #mcSuggestions"
+            ).length) {
+
+                $("#mcSuggestions").hide();
+
+            }
+
+        });
+
+
+        // Clear MCID when user edits manually
+        $("#txtMCName").on("input", function () {
+
+            $("#MCID").val("");
+
+        });
+
+    });
+
+
+    // ============================================================
+    // SUBJECT / RESOLUTION DETAIL POPUP
+    // ============================================================
+
+     function closeInboxEdit() {
+     $("#InboxModel").css("display", "none");
+     $('#InboxModelbody').html('');
+     S_enable = 0, SD_enable = 0, office_enable = 0;
+
+ }
+
+</script>

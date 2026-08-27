@@ -1,0 +1,462 @@
+﻿@model CMNirdesh.Models.EmailUserMappingModel
+
+<style>
+    /* ===== Header ===== */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+
+        .page-header h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    /* ===== Filters ===== */
+    .filter-bar {
+        margin-bottom: 12px;
+    }
+
+    /* ===== Table ===== */
+    .table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    /* ===== Status Badges ===== */
+    .badge-mapped {
+        background-color: #198754;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        border-radius: 12px;
+    }
+
+    .badge-unmapped {
+        background-color: #adb5bd;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        border-radius: 12px;
+        color: #212529;
+    }
+
+    /* ===== Checkbox ===== */
+    .form-check-input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    /* ===== Modal (Compact) ===== */
+    #mapModal .modal-dialog {
+        width: 30%;
+    }
+
+    #mapModal .modal-content {
+        border-radius: 8px;
+    }
+
+    #mapModal .modal-header,
+    #mapModal .modal-body,
+    #mapModal .modal-footer {
+        padding: 12px 16px;
+    }
+
+    label.form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+</style>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+
+<div id="main-content">
+    <div class="main-content">
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="inr_frm_dsgn">
+
+                    <!-- HEADER -->
+                    <div class="page-header">
+                        <h4>
+                            <i class="fa fa-envelope text-primary"></i>
+                            Email ↔ User Mapping
+                        </h4>
+
+                        <button class="btn btn-sm btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#mapModal">
+                            <i class="fa fa-plus"></i> Map Email
+                        </button>
+                    </div>
+
+                    <!-- SEARCH & FILTER -->
+                    <div class="row filter-bar">
+                        <div class="col-md-6">
+                            <input type="text"
+                                   id="txtSearch"
+                                   class="form-control"
+                                   placeholder="Search by User / Email / Designation" />
+                        </div>
+                        <div class="col-md-3">
+                            <select id="ddlStatusFilter" class="form-control">
+                                <option value="all">All</option>
+                                <option value="mapped">Mapped</option>
+                                <option value="unmapped">Unmapped</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- TABLE -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>User Name</th>
+                                    <th>Designation</th>
+                                    <th>Email</th>
+                                    <th>Activated On</th>
+                                    <th>Deactivated On</th>
+                                    <th>Status</th>
+                                    <th>Map/Unmap</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblMappedUsers">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        Loading mappings...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MAP MODAL -->
+            <div class="modal fade" id="mapModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h6 class="modal-title">
+                                <i class="fa fa-link text-primary"></i>
+                                Map Parichay Email ID
+                            </h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <div id="mapMessage" class="alert alert-danger d-none"></div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Name</label>
+                                <input type="text"
+                                       id="txtName"
+                                       class="form-control"
+                                       placeholder="Full Name" />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Mobile No</label>
+                                <input type="text"
+                                       id="txtMobile"
+                                       class="form-control"
+                                       maxlength="10"
+                                       placeholder="10-digit Mobile Number" />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Email ID</label>
+                                <label class="form-label" style="color:red">(Enter the Parichay Email ID)</label>
+                                    <input type="email"
+                                           id="txtEmail"
+                                           class="form-control"
+                                           placeholder="user@domain.com" />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Select User</label>
+                                <select id="ddlUsers" class="form-control">
+                                    <option value="">-- Select User --</option>
+                                    @foreach (var u in Model.Users)
+                                    {
+                                        <option value="@u.UserId">@u.UserName</option>
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button id="btnMapUser"
+                                    class="btn btn-success btn-sm"
+                                    onclick="mapUser()">
+                                Map
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm"
+                                    data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</div>
+
+<script>
+    var allMappings = [];
+
+    $(document).ready(function () {
+        loadMappedUsers();
+
+        $("#txtSearch").on("keyup", renderTable);
+        $("#ddlStatusFilter").on("change", renderTable);
+    });
+
+    function loadMappedUsers() {
+        $.ajax({
+            url: '@Url.Action("GetMappedUsers", "EmailMapping")',
+            type: 'GET',
+            success: function (res) {
+                allMappings = res || [];
+                renderTable();
+            },
+            error: function () {
+                alert("Error loading mappings");
+            }
+        });
+    }
+
+    function renderTable() {
+
+        var search = ($("#txtSearch").val() || "").toLowerCase();
+        var filter = $("#ddlStatusFilter").val();
+
+        var filtered = allMappings.filter(function (x) {
+
+            var name = (x.Name || "").toLowerCase();
+            var userName = (x.UserName || "").toLowerCase();
+            var email = (x.EmailId || "").toLowerCase();
+            var designation = (x.Designation || "").toLowerCase();
+
+            var matchSearch =
+                !search ||
+                name.includes(search) ||
+                userName.includes(search) ||
+                email.includes(search) ||
+                designation.includes(search);
+
+            var matchStatus =
+                filter === "all" ||
+                (filter === "mapped" && x.IsActive === true) ||
+                (filter === "unmapped" && x.IsActive === false);
+
+            return matchSearch && matchStatus;
+        });
+
+        var html = "";
+
+        if (filtered.length === 0) {
+
+            html = `
+        <tr>
+            <td colspan="8" class="text-center text-muted">
+                No matching records found
+            </td>
+        </tr>`;
+
+        } else {
+
+            filtered.forEach(function (x) {
+
+                var statusBadge = x.IsActive
+                    ? `<span class="badge badge-mapped">Mapped</span>`
+                    : `<span class="badge badge-unmapped">Unmapped</span>`;
+
+                var activatedOn = formatDotNetDate(x.ActivatedOn);
+                var deactivatedOn = formatDotNetDate(x.DeactivatedOn);
+
+                // Deactivation logic
+                var isDeactivated = !!x.DeactivatedOn;
+                var isDisabled = isDeactivated ? "disabled" : "";
+
+                var tooltipText = isDeactivated
+                    ? "User is deactivated. Activate the user again to enable mapping."
+                    : "Map / Unmap user";
+
+                var rowClass = isDeactivated ? "table-secondary" : "";
+
+                html += `
+            <tr class="${rowClass}">
+                <td><strong>${x.Name || "-"}</strong></td>
+                <td>${x.UserName || "-"}</td>
+                <td>${x.Designation || "-"}</td>
+                <td>${x.EmailId || "-"}</td>
+                <td class="text-center">${activatedOn}</td>
+                <td class="text-center">${deactivatedOn}</td>
+                <td class="text-center">${statusBadge}</td>
+                <td class="text-center">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           ${x.IsActive ? "checked" : ""}
+                           ${isDisabled}
+                           title="${tooltipText}"
+                           onclick="return toggleMapping(${x.MappingId}, this)" />
+                </td>
+            </tr>`;
+            });
+        }
+
+        $("#tblMappedUsers").html(html);
+    }
+
+    function formatDotNetDate(dotNetDate) {
+        if (!dotNetDate) return "-";
+
+        // Extract milliseconds from /Date(1767171426313)/
+        var match = /\/Date\((\d+)\)\//.exec(dotNetDate);
+        if (!match) return "-";
+
+        var date = new Date(parseInt(match[1], 10));
+        if (isNaN(date.getTime())) return "-";
+
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+  function mapUser() {
+      var email = ($("#txtEmail").val() || "").trim();
+      var Name = ($("#txtName").val() || "").trim();
+      var Mobile = ($("#txtMobile").val() || "").trim();
+      var userId = $("#ddlUsers").val();
+
+
+    if (!email || !userId) {
+        alert("Email and User are required.");
+        return;
+    }
+    if (!Name) {
+            alert("Name are required.");
+            return;
+    }
+    if (!Mobile) {
+        alert("Mobile are required.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to map this user?")) {
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("MapUser", "EmailMapping")',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            emailId: email,
+            userId: userId,
+            Name: Name,
+            Mobile: Mobile
+        },
+        beforeSend: function () {
+            $("#btnMapUser").prop("disabled", true);
+        },
+        success: function (res) {
+             if (res && res.success) {
+                alert(res.message || "User mapped successfully.");
+                loadMappedUsers();
+                $("#txtEmail").val("");
+                $("#ddlUsers").val("");
+                $("#mapModal").modal('hide');
+
+            } else {
+                if (res.code === "ALREADY_MAPPED") {
+                    alert("This user is already mapped. Please unmap it first, then try again.");
+                } else {
+                    alert(res.message || "Mapping failed.");
+                }
+            }
+        },
+        error: function (xhr) {
+            alert("Error while mapping user.");
+            console.error(xhr.responseText);
+        },
+        complete: function () {
+            $("#btnMapUser").prop("disabled", false);
+        }
+    });
+  }
+
+
+    function toggleMapping(mappingId, checkbox) {
+    var currentState = ! checkbox.checked; // old state
+    var newState = ! currentState;
+    var actionText = newState ? "map" : "unmap";
+    if (!confirm("Are you sure you want to " + actionText + " this user?")) {
+        return false; // checkbox will NOT change
+    }
+    $.ajax({
+        url: '@Url.Action("ToggleMapping", "EmailMapping")',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            mappingId: mappingId,
+            isActive: newState
+        },
+        success: function (res) {
+            if (res.success) {
+                checkbox.checked = newState; // apply change
+                alert(res.message);
+                loadMappedUsers();
+            } else {
+                alert(res.message);
+            }
+        },
+        error: function () {
+            alert("Error updating mapping");
+        }
+    });
+    return false;
+}
+
+
+    $('#mapModal').on('shown.bs.modal', function () {
+
+        // Clear all fields
+        $("#txtName").val("");
+        $("#txtMobile").val("");
+        $("#txtEmail").val("");
+        $("#ddlUsers").val("");
+
+        // Hide message
+        $("#mapMessage")
+            .addClass("d-none")
+            .text("");
+
+        // Focus first field (nice UX)
+        $("#txtName").focus();
+    });
+
+</script>

@@ -1,0 +1,837 @@
+@model CMNirdesh.Models.AgendaDetailModel
+@using CMNirdesh.Models;
+@{
+    Layout = null;
+    string BlobPath = CMNirdesh.Models.BlobStorage.GetStorageAcessingPath();
+}
+
+@{
+    int Sr = 1;
+}
+
+<head>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+
+    <style>
+        /* Header Toolbar Combined Group Styling */
+        #MeetingTable .custom-header-group {
+            display: flex !important;
+            align-items: center !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            gap: 5px !important;
+            padding: 0 6px 0 2px !important;
+            margin: 0 !important;
+            border-right: 1px solid #cbd5e1 !important;
+            height: 45px !important;
+        }
+
+            /* Responsive Resolution Badge inside TinyMCE Toolbar */
+            #MeetingTable .custom-header-group .rsln-header-badge {
+                display: flex !important;
+                align-items: center !important;
+                flex: 2 1 0 !important;
+                flex-wrap: wrap !important;
+                min-width: 0 !important;
+                font-size: 12px !important;
+                background-color: #e9ecef;
+                padding: 1px 6px !important;
+                border-radius: 3px;
+                border: 1px solid #ced4da;
+                height: 40px !important;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+                #MeetingTable .custom-header-group .rsln-header-badge span,
+                #MeetingTable .custom-header-group .rsln-header-badge a {
+                    font-size: 14px !important;
+                }
+
+                #MeetingTable .custom-header-group .rsln-header-badge::-webkit-scrollbar {
+                    height: 3px;
+                }
+
+                #MeetingTable .custom-header-group .rsln-header-badge::-webkit-scrollbar-thumb {
+                    background: #adb5bd;
+                    border-radius: 2px;
+                }
+
+        #MeetingTable .custom-header-group select.action-ddl {
+            display: block !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            height: 40px !important;
+            padding: 1px 4px !important;
+            font-size: 12px !important;
+            border-radius: 3px !important;
+            border: 1px solid #cbd5e1 !important;
+            background-color: #ffffff !important;
+            color: #333 !important;
+        }
+
+            #MeetingTable .custom-header-group .action-save {
+                flex: 0 0 40px !important;
+                width: 40px !important;
+                height: 40px !important;
+                padding: 0 !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center;
+            }
+
+                #MeetingTable .custom-header-group .action-save i {
+                    font-size: 20px !important;
+                }
+
+        #MeetingTable .tox-tinymce {
+            min-height: 400px !important;
+            width: 100% !important;
+        }
+
+        /* Compact TinyMCE Toolbar */
+        #MeetingTable .tox .tox-editor-header {
+            background-color: #f8f9fa !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 3px 4px !important;
+            margin: 0 !important;
+        }
+
+        #MeetingTable .tox .tox-toolbar-overlord {
+            background-color: transparent !important;
+            padding: 0 !important;
+        }
+
+        #MeetingTable .tox .tox-toolbar,
+        #MeetingTable .tox .tox-toolbar__overflow,
+        #MeetingTable .tox .tox-toolbar__primary {
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            gap: 0 !important;
+            row-gap: 10px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        #MeetingTable .tox .tox-toolbar__group {
+            padding: 0 1px !important;
+            margin: 0 !important;
+            border-right: 1px solid #e2e8f0 !important;
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+            #MeetingTable .tox .tox-toolbar__group:last-child {
+                border-right: none !important;
+            }
+
+        #MeetingTable .tox .tox-tbtn {
+            height: 22px !important;
+            min-height: 22px !important;
+            width: 22px !important;
+            border-radius: 2px !important;
+            margin: 0 1px !important;
+            padding: 0 !important;
+        }
+
+            #MeetingTable  .tox .tox-tbtn svg {
+                transform: scale(0.85);
+            }
+
+        #MeetingTable .tox .tox-tbtn--select {
+            height: 22px !important;
+            min-height: 22px !important;
+            width: auto !important;
+            padding: 0 4px !important;
+        }
+
+        #MeetingTable .tox .tox-tbtn__select-label {
+            font-size: 11px !important;
+            line-height: 22px !important;
+        }
+
+        #MeetingTable .custom-header-group .drpdwn-container {
+            display: flex !important;
+            align-items: center !important;
+            width: 100% !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            gap: 5px !important;
+        }
+            #MeetingTable  .custom-header-group .drpdwn-container > div:nth-child(2) {
+                flex: 1 1 0 !important;
+                min-width: 0 !important;
+            }
+        #MeetingTable .tox .tox-toolbar__group.custom-header-group {
+            flex: 1 1 100% !important;
+            width: 100% !important;
+            max-width: none !important;
+            border: none !important;
+        }
+
+        #MeetingTable .rsln {
+            padding: 4px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        #MeetingTable .drpdwn .dataTables_wrapper input,
+        #MeetingTable .drpdwn .dataTables_wrapper select {
+            margin-bottom: 0 !important;
+            margin: 0px 0px;
+        }
+
+        #MeetingTable .tox-statusbar__path {
+            display: none !important;
+        }
+
+        #MeetingTable td {
+            word-wrap: anywhere;
+        }
+    </style>
+
+    <script>
+        function adjustTinyMceHeights() {
+            setTimeout(function () {
+                $('#tbodyType tr').each(function () {
+                    var $row = $(this);
+                    var leftTd = $row.find('td:first-child');
+                    if (leftTd.length > 0) {
+                        var leftHeight = leftTd.outerHeight();
+                        var editorTextArea = $row.find('textarea.tiny-editor');
+                        if (editorTextArea.length > 0) {
+                            var id = editorTextArea.attr('id');
+                            var ed = tinymce.get(id);
+                            if (ed) {
+                                var targetH = Math.max(400, leftHeight - 15);
+                                if (ed.theme && ed.theme.resizeTo) {
+                                    ed.theme.resizeTo(null, targetH);
+                                }
+                                var container = ed.getContainer();
+                                if (container) {
+                                    $(container).css('height', targetH + 'px');
+                                    var iframe = $(container).find('iframe');
+                                    if (iframe.length) {
+                                        var headerH = $(container).find('.tox-editor-header').outerHeight() || 70;
+                                        var statusH = $(container).find('.tox-statusbar').outerHeight() || 25;
+                                        iframe.css('height', Math.max(250, targetH - headerH - statusH) + 'px');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 300);
+        }
+
+        $(window).on('resize', adjustTinyMceHeights);
+
+        var agendaId = @Model.AgendaId;
+        var tinyMceDataStore = {};
+        var storageKey = "ActionDescriptionNoting_" + agendaId;
+
+        $(document).ready(function () {
+
+            $('#MeetingTable').DataTable({
+                "bLengthChange": false,
+                "autoWidth": false,
+                pageLength: 100,
+                order: [],
+
+                // ✅ SAVE content before paging / redraw
+                preDrawCallback: function () {
+                    $('.tiny-editor').each(function () {
+                        var refIds = $(this).data('refid');
+                        if (!refIds) return;
+
+                        var safeId = refIds.toString().replace(/,/g, '_');
+                        var editor = tinymce.get('txt_' + safeId);
+
+                        if (editor && editor.getContent()) {
+                            var status = $('select[data-refid="' + refIds + '"]').val();
+                            var resolutionNo = $(this).data('resolution');
+                            tinyMceDataStore[safeId] = {
+                                RefId: safeId,
+                                Comments: editor.getContent(),
+                                Status: status || '',
+                                resolutionNo: resolutionNo
+                            };
+                        }
+                    });
+                },
+
+                // ✅ RELOAD + RESTORE after paging
+                drawCallback: function () {
+                    $('.tiny-editor').each(function () {
+                        var refIds = $(this).data('refid');
+                        if (!refIds) return;
+
+                        var safeId = refIds.toString().replace(/,/g, '_');
+                        var selector = '#txt_' + safeId;
+
+                        // 🔥 Destroy old instance if exists
+                        if (tinymce.get('txt_' + safeId)) {
+                            tinymce.get('txt_' + safeId).remove();
+                        }
+
+                        // 🔥 Re-init TinyMCE for current page rows
+                        tinymce.init({
+                            selector: selector,
+                            min_height: 400,
+                            height: 400,
+                            menubar: false,
+                            plugins: 'lists link table code',
+                            toolbar: 'anxbutton undo redo | bold italic | alignjustify alignleft aligncenter alignright',
+                            toolbar_mode: 'wrap',
+                            content_style: `
+                                body {
+                                    text-align: justify;
+                                }
+                            `,
+                            setup: function (editor) {
+                                editor.ui.registry.addSplitButton('anxbutton', {
+                                    text: 'Annexure',
+                                    onAction: function () { },
+                                    onItemAction: function (api, value) {
+                                        var file = JSON.parse(value);
+                                        var link =
+                                            "<a class='hand' href='@BlobPath" + file.FileName + "' " +
+                                            "target='_blank' " +
+                                            "style='color:blue;text-decoration:underline;cursor: pointer;'>" +
+                                            "" + file.isDeleted.replace(".pdf", "") +
+                                            "</a>&nbsp;";
+                                        editor.insertContent(link);
+                                    },
+                                    fetch: function (callback) {
+                                        var files = (typeof multiFiles !== 'undefined') ? multiFiles : [];
+                                        var items = files.map(function (file) {
+                                            return {
+                                                type: 'choiceitem',
+                                                text: file.isDeleted.replace(".pdf",""),
+                                                value: JSON.stringify(file)
+                                            };
+                                        });
+                                        callback(items);
+                                    }
+                                });
+
+                                editor.on('init', async function () {
+                                    var refIds = $('#' + editor.id).data('refid');
+                                    var firstId = refIds.toString().replace(/,/g, '_');
+
+                                    // 🔥 MOVE Branch Comments Dropdown & Save Button into TinyMCE Header Toolbar
+                                    var $container = $(editor.getContainer());
+                                    var $toolbar = $container.find('.tox-toolbar__primary, .tox-toolbar');
+                                    var $drpdwn = $('#drpdwn_' + firstId);
+
+                                    if ($toolbar.length && $drpdwn.length) {
+                                        var $group = $('<div class="tox-toolbar__group custom-header-group"></div>');
+                                        $group.append($drpdwn.show());
+                                        $toolbar.prepend($group);
+                                    }
+
+                                    // 🔥 Safe Content Restoration
+                                    if (tinyMceDataStore[firstId]) {
+                                        var content = typeof tinyMceDataStore[firstId] === 'object'
+                                            ? tinyMceDataStore[firstId].Comments
+                                            : tinyMceDataStore[firstId];
+                                        editor.setContent(content || '');
+                                    }
+
+                                    adjustTinyMceHeights();
+
+                                    let savedDraft = localStorage.getItem(storageKey);
+                                    if (savedDraft && savedDraft.trim() !== "") {
+                                        fillDraftData(editor, savedDraft, firstId);
+                                    } else {
+                                        savedDraft = await GetDraft();
+                                        if (savedDraft) {
+                                            fillDraftData(editor, savedDraft, firstId);
+                                        }
+                                    }
+                                });
+
+                                editor.on('change keyup paste', function () {
+                                    saveEditorData(editor, false);
+                                });
+                                editor.on('blur Undo Redo', function () {
+                                    saveEditorData(editor, true);
+                                });
+                            }
+                        });
+                    });
+                    adjustTinyMceHeights();
+                },
+
+                initComplete: function () {
+                    $('#MeetingTable_filter').append(`
+                        <button type="button" class="btn btn-primary btn-sm ml-2" id="btnMaximizeAction">
+                            <i class="fa fa-expand"></i>
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm ml-2" id="btnRestoreAction" style="display:none;">
+                            <i class="fa fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm ml-2" onclick="return saveAllData(event);">
+                            Submit All
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm ml-2 btnCloseActionSection">
+                            Close
+                        </button>
+                    `);
+                }
+            });
+        });
+
+        function fillDraftData(editor, savedDraft, firstId) {
+            try {
+                var ls = JSON.parse(savedDraft);
+                if (ls != null && ls != "" && firstId && ls[firstId]) {
+                    editor.setContent(ls[firstId].Comments || '');
+                    tinyMceDataStore[firstId] = {
+                        RefId: ls[firstId].RefId,
+                        Comments: ls[firstId].Comments || '',
+                        Status: ls[firstId].Status,
+                        resolutionNo: ls[firstId].resolutionNo
+                    };
+
+                    //if (ls[firstId].Status) {
+                    //    $('select[data-refid="' + ls[firstId].RefId.replace(/_/g, ',') + '"]').val(ls[firstId].Status);
+                    //}
+                }
+            } catch (e) {
+                console.error("Error parsing draft data:", e);
+            }
+        }
+
+        function saveEditorData(editor, toSave) {
+            var $element = $('#' + editor.id);
+            var refIds = $element.data('refid');
+            var resolutionNo = $element.data('resolution');
+
+            if (!refIds) return;
+
+            var status = $('select[data-refid="' + refIds + '"]').val();
+            var comments = editor.getContent();
+            var refId = refIds.toString().replace(/,/g, '_');
+
+            tinyMceDataStore[refId] = {
+                RefId: refId,
+                Comments: comments,
+                Status: status || '',
+                resolutionNo: resolutionNo
+            };
+
+            localStorage.setItem(storageKey, JSON.stringify(tinyMceDataStore));
+
+            if (toSave) {
+                SaveDraft(storageKey);
+            }
+        }
+
+        function SaveDraft(storageKey) {
+            $.ajax({
+                url: '@Url.Action("SaveDraft", "References")',
+                type: 'POST',
+                data: {
+                    UserId: '@CurrentSession.UserID',
+                    DraftKey: "Agenda" + agendaId + "_ActionDescriptionNoting_Action" + "@CurrentSession.UserID",
+                    DraftContent: localStorage.getItem(storageKey)
+                },
+                success: function (res) { localStorage.removeItem(storageKey); },
+                error: function (xhr, status, error) {
+                    console.log("Status:", xhr.status);
+                    console.log("Error:", error);
+                    console.log("Response:", xhr.responseText);
+                }
+            });
+        }
+
+        async function GetDraft() {
+            try {
+                var res = await $.ajax({
+                    url: '@Url.Action("GetDraft", "References")',
+                    type: 'POST',
+                    data: {
+                        DraftKey: "Agenda" + agendaId + "_ActionDescriptionNoting_Action" + "@CurrentSession.UserID"
+                    }
+                });
+                return res ? res.DraftContent : "";
+            }
+            catch (xhr) {
+                console.log("Status:", xhr.status);
+                console.log("Error:", xhr.statusText);
+                console.log("Response:", xhr.responseText);
+                return "";
+            }
+        }
+
+        function saveAllData(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            var dataList = [];
+            const btn = event ? event.target : null;
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "Saving...";
+            }
+
+            let hasError = false;
+
+            $('.tiny-editor').each(function () {
+                var refIds = $(this).data('refid');
+                var resolutionNos = $(this).data('resolution');
+                if (!refIds) return;
+
+                var safeId = refIds.toString().replace(/,/g, '_');
+                var editor = tinymce.get('txt_' + safeId);
+                var comments = editor ? editor.getContent() : '';
+                var status = $('select[data-refid="' + refIds + '"]').val();
+
+                if (!comments || comments.trim() === "") {
+                    alert("Comment cannot be empty for Resolution No(s): " + resolutionNos);
+                    hasError = true;
+                    return false; // break loop
+                }
+
+                if (!status) {
+                    alert("Please select status for Resolution No(s): " + resolutionNos);
+                    hasError = true;
+                    return false;
+                }
+
+                // split multiple ids
+                var refIdArray = refIds.toString().split(',');
+
+                refIdArray.forEach(function (id) {
+
+                    if (id.trim() !== '') {
+                        dataList.push({
+                            RefId: id.trim(),
+                            Comments: comments,
+                            Status: status
+                        });
+                    }
+
+                });
+                 // count++;  // 🔥 increment only per row
+            });
+
+            if (hasError) {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "Save All";
+                }
+                return;
+            }
+
+            // 🔄 show loader (if exists)
+            $('#loader-wrapper').show();
+            $.ajax({
+                url:'@Url.Action("UpdateBulkData", "References")' ,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(dataList),
+
+                success: function () {
+                    // ✅ success UI
+                    $('.tiny-editor').closest('tr').css('background', '#d4edda');
+                    alert("All data saved successfully");
+
+                   CloseActionSection();
+                   OpenNotingSection();
+                   InsertRemarksToActionDescription();
+
+                    return false;
+                },
+                error: function () {
+                    alert("Error saving data");
+                },
+                complete: function () {
+                    $('#loader-wrapper').hide();
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerText = "Save All";
+                    }
+                }
+            });
+
+            return false;
+        }
+
+        function InsertActionRemarks(refId) {
+            fetch('@Url.Action("GetResAndRemarks", "References")?refId=' + refId)
+                .then(response => response.json())
+                .then(function (data) {
+                    let table = `
+                        <table border="1" style="width:100%;border-collapse:collapse">
+                            <thead>
+                                <tr>
+                                    <th>ਮਤਾ ਨੰ:</th>
+                                    <th>ਦਫ਼ਤਰ ਦਾ ਸੁਝਾਵ</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                    data.forEach(function (x) {
+                        table += `
+                            <tr>
+                                <td>
+                                    <span class="notetag" data-refid="${x.RefId}" style="color:blue;cursor:pointer;text-decoration:underline;">
+                                        ${x.ResNo}
+                                    </span>
+                                </td>
+                                <td>${x.Remakes}</td>
+                            </tr>`;
+                    });
+
+                    table += `</tbody></table>`;
+
+                    CloseActionSection();
+                    OpenNotingSection();
+                    InsertRemarksToActionDescription();
+                })
+                .catch(function (err) {
+                    console.error(err);
+                    alert("Error loading remarks.");
+                });
+        }
+
+        function OpenNotingSection() {
+            $("#addNotingSection").addClass("active");
+            $("#ulnoting").addClass("expanded");
+
+            var modalBody = $("#InboxModel .modal-body");
+            if (modalBody.length > 0) {
+                modalBody.animate({
+                    scrollTop: modalBody[0].scrollHeight
+                }, 400);
+            }
+
+            $("#dragBar").addClass("active");
+            $(".note-list").css("max-height", "300px");
+            $("#addNotingSection").css("max-height", "550px");
+            $("#addnotingbottom").hide();
+
+            setTimeout(function () {
+                $("#ActionDescription_ifr").trigger("focus");
+            }, 500);
+        }
+
+        function CloseActionSection() {
+            $('#EditActionSectionBody').empty();
+            $('#EditActionSection').hide();
+
+            $("#addNotingSection").removeClass("active");
+            $("#ulnoting").removeClass("expanded");
+
+            $(".note-list").css("max-height", "800px");
+            $("#addNotingSection").css("max-height", "0");
+
+            $("#dragBar").removeClass("active");
+            $("#addnotingbottom").show();
+        }
+
+        function saveRowDraft(btn, refIds) {
+            var row = $(btn).closest('tr');
+            var safeId = refIds.toString().replace(/,/g, '_');
+            var editor = tinymce.get('txt_' + safeId);
+            var comments = editor ? editor.getContent() : '';
+            var status = $('select[data-refid="' + refIds + '"]').val();
+            
+            if (!status || status === "") {
+                alert("Please select status");
+                return;
+            }
+
+            if (!comments || comments.trim() === '') {
+                alert('Please enter comments');
+                return;
+            }
+
+            btn.disabled = true;
+            //btn.innerText = 'Saving...';
+            if (refIds.trim() === '') return;
+
+            $.ajax({
+                url: '@Url.Action("SaveDraftRow", "References")',
+                type: 'POST',
+                data: {
+                    RefId: refIds.toString().trim(),
+                    Comments: comments,
+                    Status: status
+                },
+                success: function (res) {
+                    if (res.Status == 1 || res.Status == "1") {
+                        row.css('background', '#fff3cd');
+                        $(btn).html('<i class="fa fa-check-square-o"></i>');
+                        setTimeout(function () {
+                            $(btn).html('<i class="fa fa-floppy-o"></i>');
+                            btn.disabled = false;
+                            row.css('background', 'none');
+                        }, 2000);
+                    } else {
+                        alert(res.Message || 'Failed to save draft');
+                        btn.disabled = false;
+                        row.css('background', 'none');
+                        $(btn).html('<i class="fa fa-floppy-o"></i>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Status:", xhr.status);
+                    console.log("Error:", error);
+                    console.log("Response:", xhr.responseText);
+                    //alert('Error saving draft');
+                    btn.disabled = false;
+                    row.css('background', 'none');
+                    $(btn).html('<i class="fa fa-floppy-o"></i>');
+                }
+            });
+        }
+    </script>
+</head>
+
+<div>
+    <div class="main-content">
+        <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
+            <table class="table table-bordered" id="MeetingTable" aria-describedby="sample-table-3_info" style="border-collapse: collapse;">
+                <thead>
+                    <tr style="color: white; font-size:16px; font-weight:bold;">
+                        @*<th class="center" style="width:10% !important; font-size:16px;" id="tdFrom" rowspan="1" colspan="1">Resolution No.</th>*@
+                        <th class="center" style="width:90% !important; font-size:16px;" id="tdFrom" rowspan="1" colspan="1">Add Action</th>
+                    </tr>
+                </thead>
+
+                <tbody class="bordered" role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                    @foreach (var items in Model._LstResolutionActions)
+                    {
+                        <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3;">
+                            @*<td style="font-size:16px; border:1px solid #D3D3D3; width:10% !important; vertical-align:top; padding:10px; text-align:center; display: none;">
+                                <div class="rsln">
+                                    @{
+                                        var resolutionList = items.ResolutionNo.Split(',');
+                                        var refIdList = items.RefId.Split(',');
+                                    }
+
+                                    @for (int i = 0; i < resolutionList.Length; i++)
+                                    {
+                                        var resolution = resolutionList[i].Trim();
+                                        var currentRefId = (i < refIdList.Length) ? refIdList[i].Trim() : "";
+
+                                        <a href="javascript:void(0);"
+                                           onclick="ShowSDPopUp(0,'@currentRefId')"
+                                           title="Open Resolution"
+                                           style="color:#007bff;cursor:pointer;font-weight:bold;font-size:16px;">
+                                            @resolution
+                                        </a>
+
+                                        if (i < resolutionList.Length - 1)
+                                        {
+                                            @:,
+                                        }
+                                    }
+                                </div>
+                            </td>*@
+                            <td style="font-size: 16px; border: 1px solid #D3D3D3; width:90% !important;">
+                                <div class="drpdwn-container" id="drpdwn_@items.RefId.Replace(",", "_")" style="display:none;">
+                                    <!-- 🔥 Resolution No. Badge inside TinyMCE Header -->
+                                    <div class="rsln-header-badge" title="Resolution No(s)">
+                                        <span style="font-weight:700; color:#495057; margin-right: 5px;">Resolution No:</span>
+                                        @{
+                                            var resolutionListHeader = items.ResolutionNo.Split(',');
+                                            var refIdListHeader = items.RefId.Split(',');
+                                        }
+                                        @for (int i = 0; i < resolutionListHeader.Length; i++)
+                                        {
+                                            var resolution = resolutionListHeader[i].Trim();
+                                            var currentRefId = (i < refIdListHeader.Length) ? refIdListHeader[i].Trim() : "";
+
+                                            <a href="javascript:void(0);"
+                                               onclick="ShowSDPopUp(0,'@currentRefId')"
+                                               title="Open Resolution @resolution"
+                                               style="color:#007bff; cursor:pointer; font-weight:bold; text-decoration:underline;">
+                                                @resolution
+                                            </a>
+
+                                            if (i < resolutionListHeader.Length - 1)
+                                            {
+                                                <span style="color:#6c757d; margin-right: 2px;">,</span>
+                                            }
+                                        }
+                                    </div>
+                                    <div>
+                                        <!-- 🔥 Branch Comments Dropdown -->
+                                        @{
+                                            var actionList = Model.ActionTypeList_Ref.ToList();
+                                        }
+
+                                        @if (actionList.Count == 1)
+                                        {
+                                            @Html.DropDownList(
+                                                "ActionCode_" + items.RefId,
+                                                new SelectList(actionList, "Value", "Text", actionList[0].Value),
+                                                new
+                                                {
+                                                    @class = "action-ddl",
+                                                    data_refid = items.RefId
+                                                })
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownList(
+                                                "ActionCode_" + items.RefId,
+                                                new SelectList(actionList, "Value", "Text", items.StatusName),
+                                                "Select",
+                                                new
+                                                {
+                                                    @class = "action-ddl",
+                                                    data_refid = items.RefId
+                                                })
+                                        }
+                                    </div>
+                                    <div>
+                                        <button type="button"
+                                                class="action-save btn btn-warning btn-sm"
+                                                onclick="saveRowDraft(this,'@items.RefId')"
+                                                title="Save Draft">
+                                            <i class="fa fa-floppy-o"></i>
+                                        </button>
+                                    </div>
+                                    
+                                </div>
+
+                                <textarea class="tiny-editor"
+                                          id="txt_@items.RefId.Replace(",", "_")"
+                                          data-refid="@items.RefId"
+                                          data-resolution="@items.ResolutionNo">@(string.IsNullOrEmpty(items.LGComments) ? items.ActionDescription : items.LGComments)</textarea>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div style="margin-top:15px; text-align:right;">
+                <button type="button"
+                        class="btn btn-success"
+                        onclick="return saveAllData(event);">
+                    Submit All
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

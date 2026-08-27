@@ -1,0 +1,815 @@
+﻿@using CMNirdesh.Models;
+
+<input type="hidden" id="sincefilterhdnType" name="sincefilterhdnType" value="" />
+<input type="hidden" id="diarydispatchvalType" name="diarydispatchvalType" value="" />
+
+<style>
+    .plus {
+        content: url( '../../assets/home_images/plus.png');
+        border: 0px solid #ddd !important;
+        width: 20px;
+    }
+
+    .minus {
+        content: url( '../../assets/home_images/minus.png');
+        border: 0px solid #ddd !important;
+        width: 20px;
+    }
+</style>
+
+<head>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#loader-wrapper").show();
+        GetDepartmentDasboardType();
+        BindActionStatusType();
+        DashboardBindType();
+        GetAllDiaryCountType();
+
+        $("#chkDiaryType").click(function () {
+            var diarydispatchvalue = "diary";
+            $("#diarydispatchvalType").val(diarydispatchvalue);
+            DashboardBindType();
+            GetAllDiaryCountType();
+            BindActionStatusType();
+        });
+
+        $("#chkDispatchType").click(function () {
+            var diarydispatchvalue = "dispatch";
+            $("#diarydispatchvalType").val(diarydispatchvalue);
+            DashDispatchboardBindType();
+            GetAllDispatchCountType();
+            BindActionStatusDispatchType();
+
+        });
+    });
+
+    function GetDepartmentDasboardType() {
+        var deptt = $("#deptdashboardtype");
+       deptt.empty().append('<option  value="">Please select</option>');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDepartments", "References")',
+            datatype: "Json",
+            data: {},
+            success: function (data) {
+                $.each(data, function () {
+                    deptt.append($("<option></option>").val(this['id']).html(this['name']));
+                });
+            }
+        });
+    }
+
+    $("#deptdashboardtype").change(function () {
+        var id = $("#deptdashboardtype").val();
+        $('#offIddashboardtype').empty().append('<option  value=""> -- Select -- </option>');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetOfficebyDepartmentId", "References")',
+            datatype: "Json",
+            data: { deptid: id },
+            success: function (data) {
+                $.each(data, function (index, value) {
+                    $('#offIddashboardtype').append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    })
+
+    function BindActionStatusType() {
+        $("#loader-wrapper").show();
+        $("#tdFrom").html("From");
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        var since = $("#sincefilterType").val();
+        var pathurl = '/References/BindActionStatusType';
+        $("#StatusListType").empty();
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { startDt: startDt, endDt: endDt, since: since },
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    html = html + "<input type='radio' onclick='ActionStatusCheckType();' id='chk' value='99' name='groupType2' checked='checked' style='width:3%;'>";
+                    html = html + "<span style='width:5% cursor:pointer;'>All(</span> <span  style='cursor:pointer;' id='TotalDiaryTypenew'></span>)";
+
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];                       
+                        html = html + "<input type='radio' style='margin-left:5px; margin-top:5px;font:bold;' onclick='ActionStatusCheckType()' id='chk'" + item.Text + "' value='" + item.Value + "' name='groupType2'>";
+                        html = html + "<span style=''>" + item.Text + "</span>";
+                        html = html + "<span onclick='DiaryCountClickType( " + item.Value + ")' style='cursor:pointer; '>" + '(' + item.count + ')' + "</span>";
+                    }
+                   
+                    $("#StatusListType").html(html);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#StatusListType").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetAllDiaryCountType() {
+        var diarydispatchvalue = "diary";
+        $("#diarydispatchvalType").val(diarydispatchvalue);
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        var since = $("#sincefilterType").val();
+
+        $("#loader-wrapper").show();
+
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenecFrom - ReferenceTo  or since filter!!");
+            $("#loader-wrapper").hide();
+            return false;
+        }
+           $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetAllDiaryCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+               data: { startDt: startDt, endDt: endDt, since: since },
+                success: function (response) {
+                    if (response != null) {
+                        var TotalDiary = new Intl.NumberFormat('en-IN').format(response[0].TotalDiary);
+                        $("#TotalDiaryType").append().html(TotalDiary);
+                        $("#TotalDiaryTypenew").append().html(TotalDiary);
+
+                        $("#loader-wrapper").hide();
+                        $("#dispatchcounttrType").hide();
+                        $("#diarycounttrType").show();
+                    }
+                    else {
+                        $("#dispatchcounttrType").hide();
+                        $("#diarycounttrType").hide();
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+           });
+    }
+
+    function ActionStatusCheckType() {
+        if ($("#chkDiaryType").prop("checked")) {
+            var diarydispatchvalue = "diary";
+            $("#diarydispatchvalType").val(diarydispatchvalue);
+            DashboardBindType();
+        }
+        else {
+            var diarydispatchvalue = "dispatch";
+            $("#diarydispatchvalType").val(diarydispatchvalue);
+            DashDispatchboardBindType();
+        }
+    }
+
+    function GetActionStatusValueType() {
+        var StatusVal = 99;
+        $.each($("input[name='groupType2']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+    }
+
+    function DashboardBindType() {
+        var diarydispatchvalue = "diary";
+        $("#diarydispatchval").val(diarydispatchvalue);
+
+        $("#tdFromType").html("From");
+        var status = 99;
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        status = GetActionStatusValueType();
+        var since = $("#sincefilterType").val();
+
+        $("#loader-wrapper").show();
+        $("#listdiv").html('');
+        $("#listdivType").html('');
+
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenecFrom - ReferenceTo  or since filter!!");
+            return false;
+            $("#loader-wrapper").hide();
+        }
+
+        var pathurl = '/References/DashboardBindType';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+            data: { status: status, startDt: startDt, endDt: endDt, since: since },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyDashboardType").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyDashboardType").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDasdhboardDataType(obj) {
+        var status = 99;
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        status = GetActionStatusValueType();
+        var since = $("#sincefilterType").val();
+        $("#loader-wrapper").show();
+        $("#listdiv").html('');
+        $("#listdivType").html('');
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var Agency = 0;
+        var DocumentType = $(obj).attr('doctypeid');
+        var deptId = $(obj).attr('deptid');
+        var pathurl = '/References/FilteredMLADiaryListForDeptType'
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: {
+                deptId: deptId, DocumentType: DocumentType, status: status, startDt: startDt,
+                endDt: endDt, since: since
+            },
+            success: function (data) {
+                var pos = $("#listdivType").offset().top;
+                // animated top scrolling
+                $('body, html').animate({ scrollTop: pos });
+                $("#loader-wrapper").hide();
+                $("#listdivType").html(data);
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function expandType(obj) {
+        var tdidType = $(obj).attr("id");
+
+        var className = $(obj).attr('class');
+
+        if (className == 'plus') {
+            $("#" + tdidType).removeClass("plus");
+            $("#" + tdidType).addClass("minus");
+        } else {
+            $("#" + tdidType).removeClass("minus");
+            $("#" + tdidType).addClass("plus");
+            var expidType = '.trofcType' + tdidType;
+            $(expidType).remove();
+            return false;
+        }
+        GetDiaryDataByDeptType($("#" + tdidType).attr('deptid'), tdidType);
+
+    }
+
+    function GetDiaryDataByDeptType(deptId, tdidType) {
+        $("#loader-wrapper").show();
+
+        var since = $("#sincefilterType").val();
+        var html = "";
+        var status = 99;
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        status = GetActionStatusValueType();
+        var pathurl = '/References/GetDiaryDataByDepttType';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { deptId: deptId, status: status, startDt: startDt, endDt: endDt, since: since },
+            success: function (result) {
+                if (result.length != 0) {
+                    if (@CurrentSession.isApex == 1) {
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].ForApproval == null || result[i].ForApproval == "null" || result[i].ForApproval == "" || result[i].ForApproval == undefined ) {
+                                result.ForApproval = 0;
+                            }
+
+                            if (result[i].Approved == null || result[i].Approved == "null" || result[i].Approved == "" || result[i].Approved == undefined ) {
+                                result[i].Approved = 0;
+                            }
+
+                            if (result[i].Rejected == null || result[i].Rejected == "null" || result.Rejected == "" || result[i].Rejected == undefined ) {
+                                result[i].Rejected = 0;
+                            }
+
+                            if (result[i].Sanctioned == null || result[i].Sanctioned == "null" || result[i].Sanctioned == "" || result[i].Sanctioned == undefined ) {
+                                result[i].Sanctioned = 0;
+                            }                                                 
+
+                            var Total = result[i].ForApproval + result[i].Approved + result[i].Rejected + result[i].Sanctioned;
+
+                            html = html + "<tr class='trofcType" + tdidType + "'>";
+                            html = html + "<td class='center'>  </td> ";
+                            html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='0'>" + result[i].ForApproval +"</a> </td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='1'>" + result[i].Approved + "</a> </td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='2'>" + result[i].Rejected + "</a> </td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='3'>" + result[i].Sanctioned + "</a> </td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='99'>" + Total + "</a> </td > ";
+                            html = html + "</tr>";
+                        }
+                    }
+
+                    else {
+                        for (var i = 0; i < result.length; i++) {                          
+
+                            if (result[i].NotImplemented == null || result[i].NotImplemented == "null" || result[i].NotImplemented
+                                == "") {
+                                result[i].NotImplemented = 0;
+                            }
+
+                            if (result[i].UnderImplementation == null || result[i].UnderImplementation == "null" || result[i].UnderImplementation
+                                == "") {
+                                result[i].UnderImplementation = 0;
+                            }
+                            if (result[i].Implemented == null || result[i].Implemented == "null" || result[i].Implemented == "") {
+                                result[i].Implemented = 0;
+                            }                       
+
+                            var Total = result[i].NotImplemented + result[i].UnderImplementation + result[i].Implemented;
+
+                            html = html + "<tr class='trofcType" + tdidType + "'>";
+                            html = html + "<td class='center'>  </td> ";
+                            html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='4'>" + result[i].NotImplemented + "</a> </td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='5'>" + result[i].UnderImplementation + "</a> </td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='6'>" + result[i].Implemented + "</a> </td > ";
+                            html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='99'>" + Total + "</a> </td > ";
+                            "</tr>";
+                        }
+                    }
+
+
+                    var expid = '#tr' + tdidType;
+                    $(expid).remove();
+                    $(html).insertAfter($('#tr' + tdidType));
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDasdhboardDataByOfficeType(obj) {
+        var status = 99;
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        status = GetActionStatusValueType();
+        var since = $("#sincefilterType").val();
+
+            $("#loader-wrapper").show();
+            $("#listdiv").html('');
+            $("#listdivType").html('');
+            $('#loginModaldiarybody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+            var DocumentType = $(obj).attr('StatusId');
+            var officeId = $(obj).attr('OfcId');
+            var DeptId = $(obj).attr('DeptId');
+            var pathurl = '/References/DiaryDataByOfficeandDeptTypedashboard'
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                data: {
+                    DeptId: DeptId,
+                    officeId: officeId,
+                    DocumentType: DocumentType,
+                    status: status,
+                    startDt: startDt,
+                    endDt: endDt,
+                    since: since
+                },
+                // data:{ params },
+                success: function (data) {
+                    var pos = $("#listdivType").offset().top;
+                    $('body, html').animate({ scrollTop: pos });
+                    $("#loader-wrapper").hide();
+                    $("#listdivType").html(data);
+                }
+                ,
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+
+
+
+
+
+
+//------------------------------Dispatch---------------------------------------------------------------
+
+     function GetAllDispatchCountType() {
+        var diarydispatchvalue = "dispatch";
+        $("#diarydispatchvalType").val(diarydispatchvalue);
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        var since = $("#sincefilterType").val();
+        $("#loader-wrapper").show();
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenecFrom - ReferenceTo  or since filter!!");
+            $("#loader-wrapper").hide();
+            return false;
+        }
+           $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetAllDispatchCount", "References")',
+              datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+               data: { startDt: startDt, endDt: endDt, since: since },
+                success: function (response) {
+                    if (response != null) {
+                        var TotalDispatch = new Intl.NumberFormat('en-IN').format(response[0].TotalDispatch);
+                        $("#TotalDispatchType").append().html(TotalDispatch);
+                        $("#TotalDispatchTypenew").append().html(TotalDispatch);
+
+                        $("#loader-wrapper").hide();
+                        $("#dispatchcounttrType").show();
+                        $("#diarycounttrType").hide();
+                    }
+                    else {
+                        $("#dispatchcounttrType").hide();
+                        $("#diarycounttrType").hide();
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+           });
+    }
+
+    function DashDispatchboardBindType() {
+            var diarydispatchvalue = "dispatch";
+            $("#diarydispatchvalType").val(diarydispatchvalue);
+            $("#tdFrom").html("To");
+
+            var status = 3;
+            var startDt = $("#Fromdashboardtype").val();
+            var endDt = $("#Todashboardtype").val();
+            status = GetActionStatusValueType();
+            var since = $("#sincefilterType").val();
+           $("#listdivType").html('');
+            $("#listdiv").html('');
+            $("#loader-wrapper").show();
+
+            if (since != "" && (startDt != "" || endDt !== "")) {
+                alert("Please select either ReferenceFrom - ReferenceTo  or since filter!!");
+                $("#loader-wrapper").hide();
+                return false;
+            }
+
+            var pathurl = '/References/DashDispatchboardBindType';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                data: { status: status, startDt: startDt, endDt: endDt, since: since },
+                success: function (result) {
+                    //debugger;
+                    var html = "";
+
+                    if (result.length > 0) {
+                        $("#tbodyDashboardType").html(result);
+                        $("#loader-wrapper").hide();
+                    }
+
+                    else {
+                        $("#tbodyDashboardType").html("No Data Found");
+                        $("#loader-wrapper").hide();
+                    }
+                }
+                ,
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+
+    function BindActionStatusDispatchType() {
+            var diarydispatchvalue = "diary";
+            $("#diarydispatchvalType").val(diarydispatchvalue);
+
+            $("#tdFrom").html("To");
+            var startDt = $("#txtFrom").val();
+            var endDt = $("#txtTo").val();
+            var since = $("#sincefilter").val();
+
+            var pathurl = '/References/BindActionStatusDispatchType';
+        $("#StatusListType").empty();
+
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                data: { startDt: startDt, endDt: endDt, since: since },
+
+                async: true,
+                success: function (result) {
+                    var html = "";
+                    if (result.length > 0) {
+                        html = html + "<input type='radio' onclick='ActionStatusCheckType(this)' id='chk' value='99' name='groupType2' checked='checked' style='width:3%;'>";
+                        html = html + "<span style='width:5% cursor:pointer;'>All(</span><span  style='cursor:pointer;' id='TotalDispatchTypenew'></span>)";
+
+                        for (var i = 0; i < result.length; i++) {
+                            var item = result[i];                         
+                                html = html + "<input type='radio' onclick='ActionStatusCheckType(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='groupType2' style='width:3%;'>";
+                            html = html + "<span style='width:5%'>" + item.Text + "</span>";
+                            html = html + "<span  onclick='DispatchCountClickType(" + item.Value + ")' style='width:5%; cursor:pointer; margin-left:5px;" + item.background + "; '>" + '(' + item.count + ')' + "</span>";
+                        }
+                        
+
+                        $("#StatusListType").html(html);
+                        $("#loader-wrapper").hide();
+                    }
+
+                    else {
+                        $("#StatusListType").html("No Data Found");
+                        $("#loader-wrapper").hide();
+
+                    }
+                }
+                ,
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+
+            });
+
+        }
+
+    function GetDasdhboardDispatchDataType(obj) {
+        var status = 99;
+        var startDt = $("#Fromdashboardtype").val();
+        var endDt = $("#Todashboardtype").val();
+        status = GetActionStatusValueType();
+        var since = $("#sincefilterType").val();
+
+            $("#loader-wrapper").show();
+            $('#loginModaldiarybody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+            var Agency = 0;
+            var DocumentType = $(obj).attr('doctypeid');
+            var deptId = $(obj).attr('deptid');
+            var pathurl = '/References/FilteredMLADispatchListForDeptType'
+
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                data: {
+                    deptId: deptId,
+                    DocumentType: DocumentType,
+                    status: status,
+                    startDt: startDt,
+                    endDt: endDt
+                },
+                success: function (data) {
+                    var pos = $("#listdivType").offset().top;
+                    // animated top scrolling
+                    $('body, html').animate({ scrollTop: pos });
+                    $("#loader-wrapper").hide();
+                    $("#listdivType").show('');
+                    $("#listdivType").html('');
+                    $("#listdivType").html(data);
+                }
+                ,
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+
+    function expandDType(obj) {
+            var tdidType = $(obj).attr("id");
+            var className = $(obj).attr('class');
+
+            if (className == 'plus') {
+                $("#" + tdidType).removeClass("plus");
+                $("#" + tdidType).addClass("minus");
+            } else {
+                $("#" + tdidType).removeClass("minus");
+                $("#" + tdidType).addClass("plus");
+                var expid = '.trDofcType' + tdidType;
+                $(expid).remove();
+                return false;
+            }
+        GetDispatchDataByDeptType($("#" + tdidType).attr('deptid'), tdidType);
+        }
+
+    function GetDispatchDataByDeptType(deptId, tdidType) {
+            var html = "";            
+            $("#loader-wrapper").show();
+            var status = 99;
+            var since = $("#sincefilterType").val();                    
+            var startDt = $("#Fromdashboardtype").val();
+            var endDt = $("#Todashboardtype").val();
+            status = GetActionStatusValueType();
+            $("#listdiv").html('');
+            $("#listdivType").html('');
+            var pathurl = '/References/GetDispatchDataByDeptType';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                data: { deptId: deptId, status: status, startDt: startDt, endDt: endDt, since: since },
+                success: function (result) {
+                    if (result.length > 0) {
+
+                        if (@CurrentSession.isApex == 1) {
+                            for (var i = 0; i < result.length; i++) {
+
+                                if (result[i].NotImplemented == null || result[i].NotImplemented == "null" || result[i].NotImplemented
+                                    == "") {
+                                    result[i].NotImplemented = 0;
+                                }
+
+                                if (result[i].UnderImplementation == null || result[i].UnderImplementation == "null" || result[i].UnderImplementation
+                                    == "") {
+                                    result[i].UnderImplementation = 0;
+                                }
+                                if (result[i].Implemented == null || result[i].Implemented == "null" || result[i].Implemented == "") {
+                                    result[i].Implemented = 0;
+                                }
+
+                                var Total = result[i].NotImplemented + result[i].UnderImplementation + result[i].Implemented;
+
+                                html = html + "<tr class='trofcType" + tdidType + "'>";
+                                html = html + "<td class='center'>  </td> ";
+                                html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                                html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='4'>" + result[i].NotImplemented + "</a> </td > ";
+                                html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='5'>" + result[i].UnderImplementation + "</a> </td > ";
+                                html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='6'>" + result[i].Implemented + "</a> </td > ";
+                                html = html + "<td  class='center'><a onclick='GetDasdhboardDataByOfficeType(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' StatusId='99'>" + Total + "</a> </td > ";
+                                "</tr>";
+                            }
+                        }
+                        else {
+                           
+
+                            for (var i = 0; i < result.length; i++) {
+                                if (result[i].ForApproval == null || result[i].ForApproval == "null" || result[i].ForApproval == "" || result[i].ForApproval == undefined) {
+                                    result.ForApproval = 0;
+                                }
+
+                                if (result[i].Approved == null || result[i].Approved == "null" || result[i].Approved == "" || result[i].Approved == undefined) {
+                                    result[i].Approved = 0;
+                                }
+
+                                if (result[i].Rejected == null || result[i].Rejected == "null" || result.Rejected == "" || result[i].Rejected == undefined) {
+                                    result[i].Rejected = 0;
+                                }
+
+                                if (result[i].Sanctioned == null || result[i].Sanctioned == "null" || result[i].Sanctioned == "" || result[i].Sanctioned == undefined) {
+                                    result[i].Sanctioned = 0;
+                                }
+
+                                var Total = result[i].ForApproval + result[i].Approved + result[i].Rejected + result[i].Sanctioned;
+
+                                html = html + "<tr class='trofcType" + tdidType + "'>";
+                                html = html + "<td class='center'>  </td> ";
+                                html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                                html = html + "<td  class='center'>" + result[i].ForApproval + "</td > ";
+                                html = html + "<td  class='center'>" + result[i].Approved + "</td > ";
+                                html = html + "<td  class='center'>" + result[i].Rejected + "</td > ";
+                                html = html + "<td  class='center'>" + result[i].Sanctioned + "</td > ";
+                                html = html + "<td  class='center'>" + Total + "</td > ";
+                                html = html + "</tr>";
+                            }
+                        }
+                        
+                        var expid = '#tr' + tdidType;
+                        $(expid).remove();
+                        $(html).insertAfter($('#tr' + tdidType));
+                        $("#loader-wrapper").hide();
+                    }
+                    else {
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+
+
+
+
+
+    </script>
+</head>
+
+
+<body>
+    <div class="col-md-12 col-lg-12 col-xl-12" style="background-color: #ccd1dd;">
+        <div class="col-md-12 col-lg-12 col-xl-12 row">
+            <div class="col-md-6 col-lg-6 col-xl-6 row" style="margin-top:15px;">
+                <div class="col-md-6 col-lg-6 col-xl-6">
+                    <label class="lbl_ofict">From Office:</label>
+                    <select class="form-control" id="deptdashboardtype" name="deptdashboardtype" required></select>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-6">
+                    <label class="lbl_ofict">Office Detail:</label>
+                    <select class="form-control" name="offIddashboardtype" id="offIddashboardtype" required>    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-6 row" style="margin-top:15px;">
+                <div class="col-md-5 col-lg-5 col-xl-5">
+                    <label class="lbl_ofict">Reference From:</label>
+                    <input class="form-control" type="date" id="Fromdashboardtype" />
+                </div>
+                <div class="col-md-5 col-lg-5 col-xl-5">
+                    <label class="lbl_ofict">Reference To:</label>
+                    <input class="form-control" type="date" id="Todashboardtype" />
+                </div>
+                <div class="col-md-2 col-lg-2 col-xl-2">
+                    <label class="lbl_ofict"></label>
+                    <input style="margin-top:25px;" type="button" id="btnSearch" value="Search" class="ref_srch_btn" />
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-12 col-lg-12 col-xl-12 row">
+            <div class="col-md-3 col-lg-3 col-xl-3 col-xl-4 row" style="margin-top: 15px;">
+                <div class="col-md-4 col-lg-4 ">
+                    <input type="radio" id="chkDiaryType" value="Diary" name="groupType" checked="checked">
+                    <label class="lbl_ofict">Diary</label>
+                    <span id="diarycounttrType" style="display: none;">(<span style="cursor: pointer; color: darkred" onclick="DiaryCountClickType('T');" id="TotalDiaryType"></span>)</span>         
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-6">
+                    <input type="radio" id="chkDispatchType" value="Dispatch" name="groupType">
+                    <label class="lbl_ofict">Dispatch</label>
+                    <span id="dispatchcounttrType" style="display:none;">(<span style="cursor: pointer;color:darkred" onclick="DispatchCountClickType('T');" id="TotalDispatchType"></span>)</span>
+                    
+                </div>
+            </div>
+            <div class="col-md-7 col-lg-7 col-xl-7 row" style="margin-top: 15px;">
+                <div id="StatusListType" class="int_rdo">
+
+                </div>
+            </div>
+
+            <div class="col-md-2 col-lg-2 col-xl-2" style="margin-top: 15px;">
+
+                <label class="form"> <b>Since</b></label>
+                <select name="since" id="sincefilterType">
+                    <option value="" selected onclick="ResetSinceType();">Select</option>
+                    <option value="1week">1 Week</option>
+                    <option value="2week">2 Week</option>
+                    <option value="1month">1 Months</option>
+                    <option value="3month">3 Months</option>
+                    <option value="6month">6 Months</option>
+                    <option value="year">1 Year</option>
+                    <option value="morethanyear">1 Year +</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-lg-12 col-xl-12" style="margin-top: 15px;">
+            <table class="table table-bordered dataTable" id="myConstituencyType" aria-describedby="sample-table-3_info">
+                <thead>
+
+                </thead>
+                <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyDashboardType">
+                </tbody>
+            </table>
+
+        </div>
+
+        <div id="expand">
+
+        </div>
+
+
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-xl-12">
+        <div id="listdivType" class="marg129"></div>
+    </div>
+</body>

@@ -1,0 +1,493 @@
+﻿@model CMNirdesh.Models.AgendaDetailModel
+@{
+    Layout = null;
+}
+
+@{
+    int Sr = 1;
+}
+
+<head>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <style>
+        .tox-tinymce {
+            min-height: 400px !important;
+            width: 100% !important;
+        }
+    </style>
+
+    <script>
+
+        var tinyMceDataStore = {};
+
+        function adjustTinyMceHeights() {
+            setTimeout(function () {
+                $('#tbodyType tr').each(function () {
+                    var $row = $(this);
+                    var leftTd = $row.find('td:first-child');
+                    if (leftTd.length > 0) {
+                        var leftHeight = leftTd.outerHeight();
+                        var editorTextArea = $row.find('textarea.tiny-editor');
+                        if (editorTextArea.length > 0) {
+                            var id = editorTextArea.attr('id');
+                            var ed = tinymce.get(id);
+                            if (ed) {
+                                var targetH = Math.max(400, leftHeight - 15);
+                                if (ed.theme && ed.theme.resizeTo) {
+                                    ed.theme.resizeTo(null, targetH);
+                                }
+                                var container = ed.getContainer();
+                                if (container) {
+                                    $(container).css('height', targetH + 'px');
+                                    var iframe = $(container).find('iframe');
+                                    if (iframe.length) {
+                                        var headerH = $(container).find('.tox-editor-header').outerHeight() || 70;
+                                        var statusH = $(container).find('.tox-statusbar').outerHeight() || 25;
+                                        iframe.css('height', Math.max(250, targetH - headerH - statusH) + 'px');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 300);
+        }
+
+        $(window).on('resize', adjustTinyMceHeights);
+
+        $(document).ready(function () {
+
+            // 🔥 Initial TinyMCE load (first page)
+            tinymce.init({
+                selector: '.tiny-editor',
+                min_height: 400,
+                height: 400,
+                menubar: false,
+                plugins: 'lists link table code advlist',
+                toolbar: 'fullscreen anxbutton undo redo |  bold italic |alignjustify alignleft aligncenter alignright ',
+                content_style: `
+                        body {
+                            text-align: justify;
+                        }
+                    `,
+                setup: function (editor) {
+                    editor.on('init', function () {
+                        adjustTinyMceHeights();
+                    });
+                }
+            });
+
+            // 🔥 DataTable with TinyMCE fix
+            $('#MeetingTable1').DataTable({
+                "bLengthChange": false,
+                "autoWidth": false,
+                dom: 'Bfrtip',
+                buttons: ['excelHtml5', 'csvHtml5', 'pdfHtml5'],
+                pageLength: 100,
+                order: [],
+
+                // ✅ SAVE content before paging / redraw
+                preDrawCallback: function () {
+
+                    $('.tiny-editor').each(function () {
+
+                        var refIds = $(this).data('refid'); // "101,102"
+                        if (!refIds) return;
+
+                        var safeId = refIds.toString().replace(/,/g, '_');
+
+                        var editor = tinymce.get('txt_' + safeId);
+
+                        if (editor) {
+                            tinyMceDataStore[refIds] = editor.getContent();
+                        }
+                    });
+                },
+
+                // ✅ RELOAD + RESTORE after paging
+                drawCallback: function () {
+
+                    $('.tiny-editor').each(function () {
+
+                        var refIds = $(this).data('refid');
+                        if (!refIds) return;
+
+                        var safeId = refIds.toString().replace(/,/g, '_');
+                        var selector = '#txt_' + safeId;
+
+                        // 🔥 Destroy old instance (important)
+                        if (tinymce.get('txt_' + safeId)) {
+                            tinymce.get('txt_' + safeId).remove();
+                        }
+
+                        // 🔥 Re-init TinyMCE
+                        tinymce.init({
+                            selector: selector,
+                            min_height: 400,
+                            height: 400,
+                            menubar: false,
+                            plugins: 'lists link table code',
+                            toolbar: 'fullscreen anxbutton undo redo |  bold italic |alignjustify alignleft aligncenter alignright ',
+                            content_style: `
+                                    body {
+                                        text-align: justify;
+                                    }
+                                `,
+                            setup: function (editor) {
+                                editor.on('init', function () {
+
+                                    // 🔥 Restore saved content
+                                    if (tinyMceDataStore[refIds]) {
+                                        editor.setContent(tinyMceDataStore[refIds]);
+                                    }
+                                    adjustTinyMceHeights();
+                                });
+                            }
+                        });
+                    });
+                    adjustTinyMceHeights();
+                }
+            });
+
+        });
+
+        function saveAllData(event) {
+
+            var dataList = [];
+            //let count = 0;   // 🔥 limit counter
+            // 🔒 disable button
+            const btn = event ? event.target : null;
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "Saving...";
+            }
+
+            let hasError = false;
+
+            $('.tiny-editor').each(function () {
+                //if (count >= 2) return false;  // 🔥 STOP after 2 rows
+                var refIds = $(this).data('refid');   // "101,102"
+                var resolutionNos = $(this).data('resolution'); // 🔥 get resolution
+
+                if (!refIds) return;
+
+                // 🔥 convert to valid id
+                var safeId = refIds.toString().replace(/,/g, '_');
+
+                var editor = tinymce.get('txt_' + safeId);
+                var comments = editor ? editor.getContent() : '';
+
+                var status = $('select[data-refid="' + refIds + '"]').val();
+
+                // ⚠️ validation
+                if (!comments || comments.trim() === "") {
+                    alert("Comment cannot be empty for Resolution No(s): " + resolutionNos);
+                    hasError = true;
+                    return false; // break loop
+                }
+
+                if (!status) {
+                    alert("Please select status for Resolution No(s): " + resolutionNos);
+                    hasError = true;
+                    return false;
+                }
+
+                // split multiple ids
+                var refIdArray = refIds.toString().split(',');
+
+                refIdArray.forEach(function (id) {
+
+                    if (id.trim() !== '') {
+                        dataList.push({
+                            RefId: id.trim(),
+                            Comments: comments,
+                            Status: status
+                        });
+                    }
+
+                });
+                // count++;  // 🔥 increment only per row
+            });
+
+            if (hasError) {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "Save All";
+                }
+                return;
+            }
+
+            console.log(dataList);
+
+            // 🔄 show loader (if exists)
+            $('#loader-wrapper').show();
+
+            $.ajax({
+                url: '@Url.Action("UpdateBulkData", "References")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(dataList),
+
+                success: function () {
+
+                    // ✅ success UI
+                    $('.tiny-editor').closest('tr').css('background', '#d4edda');
+
+                    alert("All data saved successfully");
+                },
+
+                error: function () {
+                    alert("Error saving data");
+                },
+
+                complete: function () {
+
+                    $('#loader-wrapper').hide();
+
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerText = "Save All";
+                    }
+                }
+            });
+        }
+
+        function saveRowDraft(btn, refIds) {
+
+            var row = $(btn).closest('tr');
+
+            var safeId = refIds.toString().replace(/,/g, '_');
+
+            var editor = tinymce.get('txt_' + safeId);
+
+            var comments = editor
+                ? editor.getContent()
+                : '';
+
+            var status = row.find('.DdlClass').val();
+
+            if (!status || status === "") {
+
+                alert("Please select status");
+
+                return;
+            }
+
+            // validation
+            if (!comments || comments.trim() === '') {
+
+                alert('Please enter comments');
+
+                return;
+            }
+
+            btn.disabled = true;
+
+            btn.innerText = 'Saving...';
+
+            // 🔥 split multiple refids
+            var refIdArray = refIds.toString().split(',');
+
+            refIdArray.forEach(function (id) {
+
+                if (id.trim() === '')
+                    return;
+
+                $.ajax({
+
+                    url: '@Url.Action("SaveDraftRow", "References")',
+
+                    type: 'POST',
+
+                    data: {
+
+                        RefId: id.trim(),
+
+                        Comments: comments,
+
+                        Status: status
+                    },
+
+                    success: function (res) {
+
+                        if (res.Status == 1 ||
+                            res.Status == "1") {
+
+                            row.css('background', '#fff3cd');
+
+                            btn.innerText = 'Draft Saved';
+
+                            setTimeout(function () {
+
+                                btn.innerText = 'Save Draft';
+
+                                btn.disabled = false;
+
+                            }, 2000);
+                        }
+                        else {
+
+                            alert(res.Message);
+
+                            btn.disabled = false;
+
+                            btn.innerText = 'Save Draft';
+                        }
+                    },
+
+                    error: function () {
+
+                        alert('Error saving draft');
+
+                        btn.disabled = false;
+
+                        btn.innerText = 'Save Draft';
+                    }
+                });
+
+            });
+
+        }
+    </script>
+    <style>
+        .dtebuton {
+            padding: 4px;
+            margin: 1px;
+            height: 30px;
+            /* max-width:50%*/
+        }
+
+        .tox-statusbar__path {
+            display: none !important;
+        }
+
+        td {
+            word-wrap: anywhere;
+        }
+    </style>
+
+</head>
+
+<div id="">
+    <div class="main-content">
+
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <div style="margin-top:15px; text-align:right;">
+                <button class="btn btn-success" onclick="saveAllData()">
+                    Submit All
+                </button>
+            </div>
+
+        </div>
+
+        <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
+
+            <table class="table table-bordered" id="MeetingTable1" aria-describedby="sample-table-3_info" style="border-collapse: collapse;">
+                <thead>
+                    <tr style="color: white; font-size:16px; font-weight:bold;margin-left:10px;">
+                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">Resolution No.</th>
+                        <th class="center" style="width:30%" id="tdFrom" rowspan="1" colspan="1">Last Comments</th>
+                        <th class="center" style="width:30%" id="tdFrom" rowspan="1" colspan="1">Add Action</th>
+                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody class="bordered" role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                    @foreach (var items in Model._LstResolutionActions)
+                    {
+                    <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3; padding-left: 20px;">
+                        @*
+                        <td style="font-size: 16px; border: 1px solid #D3D3D3 " onclick="ShowSDPopUp(0, @items.RefId)">@items.ResolutionNo</td>*@
+                        <td style="font-size:16px; border:1px solid #D3D3D3">
+
+                            @{
+                            var resolutionList = items.ResolutionNo.Split(',');
+                            var refIdList = items.RefId.Split(',');
+                            }
+
+                            @for (int i = 0; i < resolutionList.Length; i++)
+                            {
+                            var resolution = resolutionList[i].Trim();
+
+                            var currentRefId = "";
+
+                            if (i < refIdList.Length)
+                            {
+                            currentRefId = refIdList[i].Trim();
+                            }
+
+                            <a href="javascript:void(0);"
+                               onclick="ShowSDPopUp(0,'@currentRefId')"
+                               title="Open Resolution"
+                               style="color:#007bff;
+                                      cursor:pointer;">
+
+                                @resolution
+
+                            </a>
+                            if (i < resolutionList.Length - 1)
+                            {
+                            @:,
+                            }
+                            }
+
+                        </td>
+                        <td style="font-size: 16px; border: 1px solid #D3D3D3; vertical-align: top; padding: 10px;">
+                            @Html.Raw(items.ActionDescription)
+                        </td>
+                        <td style="font-size: 16px; border: 1px solid #D3D3D3 ">
+                            <textarea class="tiny-editor"
+                                      id="txt_@items.RefId.Replace(" ,", "_" )"
+                                      data-refid="@items.RefId" data-resolution="@items.ResolutionNo">
+                                @(string.IsNullOrEmpty(items.LGComments)
+                                    ? items.ActionDescription
+                                    : items.LGComments)
+                                      
+                                    </textarea>
+
+                        </td>
+                        <td>
+                            @Html.DropDownList(
+                            "ActionCode_" + items.RefId,   // unique name
+                            new SelectList(Model.ActionTypeList_Ref, "Value", "Text", items.StatusName),
+                            "Select Action",
+                            new
+                            {
+                            @class = "DdlClass",
+                            @data_refid = items.RefId
+                            }
+                            )
+                            <button type="button"
+                                    class="btn btn-warning btn-sm"
+                                    onclick="saveRowDraft(this,'@items.RefId')">
+                                <i class="ace-icon fa fa-floppy-o align-top bigger-140" style="color:white"></i>
+                            </button>
+
+                        </td>
+
+                    </tr>
+                    }
+                </tbody>
+
+            </table>
+            <div style="margin-top:15px; text-align:right;">
+                <button class="btn btn-success" onclick="saveAllData()">
+                    Submit All
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+

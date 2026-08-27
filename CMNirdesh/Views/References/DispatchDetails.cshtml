@@ -1,0 +1,906 @@
+﻿@model CMNirdesh.Models.LstDashboard
+
+@{
+    int Totaldispatch = Model._LstDashboard.Sum(x => x.Count);
+}
+
+<input type="hidden" id="intval" name="intval" value="" />
+<input type="hidden" id="diarydispatchValue" name="diarydispatchValue" value="" />
+<input type="hidden" id="DocumentTypeDIdHdn" name="DocumentTypeDIdHdn" value="" />
+<input type="hidden" id="sincefilterhdndispatch" name="sincefilterhdndispatch" value="" />
+<html>
+
+
+<head>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <script>
+
+    $(document).ready(function () {
+          var offNamenew = '@Session["offNamenew"]';
+        var deptnameee = '@Session["deptnameee"]';
+        $("#offNamehdndispatch").append(offNamenew);
+        $("#deptNamehdndispatch").append(deptnameee);
+        BindActionStatusMladispatch();
+
+        var Text = "References Total Dispatch: " + "@Totaldispatch";
+        $('#selectednew').text(Text);
+        $('#selected').text(Text);
+
+        $("#Pendency").hide();
+        $('#SinceLabel').hide();
+        ShowButton();
+
+
+    });
+
+    function ShowButton() {
+        var type = 4;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowButton", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {type:type},
+            success: function (response) {
+                if (response[0].isupdate == 1) {
+                    $("#btnNewD").css("display", "block");
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#btnNewD").css("display", "none");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    function ResetSinceDispatch() {
+        var dropDown = document.getElementById("sincefilterdispatch");
+        dropDown.selectedIndex = 0;
+        $("#sincefilterdispatch").val('');
+        GetDataForDispatch($('#DocumentTypeIdHdn').val());
+        }
+
+    $("#sincefilterdispatch").change(function () {
+        var sinceparam = $(this).val();
+        $("#sincefilterdispatch").val(sinceparam);
+        var type = $('#DocumentTypeDIdHdn').val();
+        GetDataForDispatch(type);
+    });
+
+    function getofcrDataAgency() {
+        $("#loader-wrapper").show();
+        var DocumentType = $("#maintype").val();
+        var Office = $("#Office").val();
+        var Office = $("#Office option:selected").val();
+        var DocumentType = $("#maintype").val();
+        var pathurl = '/References/FilteredMLADiaryListForAgencyDispatch'
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            data: {
+                Office: Office,
+                DocumentType: DocumentType
+            },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Dispatchlistdiv").html('');
+                $("#Dispatchlistdiv").html(data);
+            }
+        });
+    }
+
+    function setvalueDispatch(type) {
+        $("#Dispatchlistdiv").html('');
+        $('#maintype').val(type);
+        GetDataForDispatch(type);
+        GetAgendaDateD();
+        }
+
+    function GetAgendaDateD() {
+            var type ="Dispatch"
+        var AgendaDate = $("#AgendaDateD");
+        AgendaDate.empty().append('<option selected="selected" value="">Please select</option>');
+        $('#AgendaDateD').empty().append('<option selected="selected" value="">Please select</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetAgendaDate", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type:type },
+                success: function (data) {
+                    AgendaDate.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(data, function () {
+
+                        AgendaDate.append($("<option></option>").val(this['id']).html(this['dropagenda']));
+                    });
+                    }
+                });
+    }
+
+    $("#favouriteMLA").change(function () {
+        getofcrData();
+    });
+
+    function GetActionStatusValueDispatch() {
+        var StatusVal = 10;
+        $.each($("input[name='group2MlaD']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+        }
+
+    function hideshowcheckboxD() {
+            var id = $('#AgendaDateD').val();
+            if (id != '') {
+                $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').show();
+            }
+            else {
+                $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+            }
+        }
+
+    function GetDataForDispatch(type) {
+        $('#DocumentTypeDIdHdn').val(type);
+         var status = 10;
+         var since = $("#sincefilterdispatch").val();
+        status = GetActionStatusValueDispatch();
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatch", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status:status, since:since },
+                success: function (response) {
+                    if (response.length > 0) {
+
+                 var DocumentTypename = response[0].DocumentTypeName;
+                 if (DocumentTypename != "" || DocumentTypename != null) {
+                      $('#DocumentTypename').empty();
+                      $('#DocumentTypename').append(DocumentTypename);
+                 }
+                else {
+                     $('#DocumentTypename').empty();
+                     }
+                        $("#DispatchCount").empty();
+                        var count = response.length;
+                        $("#DispatchCount").append(count);
+                        getTableListDispatch(response);
+                        $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+
+                        $("#DispatchTableDiv").css("display", "block");
+                        $("#DispatchTable").show();
+                        $("#Dispatchlistdiv").hide();
+                        $("#loader-wrapper").hide();
+                        $("#noDataFoundD").hide();
+                        $("#noDataFoundD").css("display", "none");
+                    }
+                    else {
+                        $("#noDataFoundD").show();
+                        $("#noDataFoundD").css("display", "block");
+                        $("#DispatchTable").hide();
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+        });
+     }
+
+    function getTableListDispatch(tableData) {
+            $("#DispatchTable").DataTable().destroy();
+
+        $("#DispatchTable tbody").html('');
+        $.each(tableData, function (index, response) {
+            if (response.ReferencePriorityType == 1) {
+                //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                var img = 'High';
+            }
+            else if (response.ReferencePriorityType == 2) {
+                var img = 'Medium';
+            }
+            else if (response.ReferencePriorityType == 3) {
+                var img = 'Low';
+            }
+            if (response.ReferenceTerm == 1) {
+                var Term = 'Short';
+            }
+            else if (response.ReferenceTerm == 2) {
+                var Term = 'Medium';
+            }
+            else if (response.ReferenceTerm == 3) {
+                var Term = 'Long';
+
+            }
+
+            var editclass = ""
+            var edit = response.Editpermission;
+            if (edit == "1") {
+                editclass = "edit";
+            }
+            else {
+                editclass = "nonedit";
+            }
+
+            if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                response.ActionTakenDate = response.ActionTakenDate;
+            }
+            else {
+                response.ActionTakenDate = "";
+            }
+
+            if (response.ActionTakenFile != "") {
+                var Actionpath1 = "http://10.44.250.80" + response.ActionTakenFile;
+                var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+            }
+            else {
+                var link = '';
+            }
+
+                $("#DispatchTable tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td class= 'hideshow' style = 'font-size: 12px; text-align:center; width: 3%;' > <input type='checkbox' id='" + response.RefId + "' onclick=checkInAgendaD(this) ></td > " +
+                    "<td style='font-size: 12px; text-align:center; width: 25%;'>" + response.Subject + "</td>" +
+                    "<td style='font-size: 12px; text-align:center; width: 6%;'><span >" + response.LetterDate + "</span></td>" +
+                    "<td class='center' style='padding: 15px; font-size: 12px;'><span>" + response.ToDept + "-" + response.ToOffice + "</span></td>" +
+                    "<td style='font-size: 12px; text-align:center; width: 25%;'>" + response.ad + "</td>" +
+                    "<td style='font-size: 12px; text-align:center; width: 10%;'>" + response.ActionTakenDate + "<br/>" + response.StatusName + "<br/>" + link + "</td>" +
+                    "<td style='font-size: 12px; text-align:center; width: 6%;'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                    "<td style='font-size: 12px; text-align:center; width: 6%;'>" + img + "</td>" +
+                    "<td style='font-size: 12px; text-align:center; width: 6%;'>" + Term + "</td>" +
+                    "<td class='" + editclass +"'  style='font-size: 12px;'><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDispatch(this) ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>"
+                    + "</tr>"
+
+               );
+        });
+
+
+        $('#DispatchTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i style="font-size: 27px; color:green;" class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i style="font-size: 27px;color:red; background:white;" class="fa fa-file-pdf-o "></i>',
+                    titleAttr: 'PDF'
+                }
+            ]
+        });
+
+
+
+    }
+
+    function CreateNewDispatch() {
+        $('#loginModalDispatchbody').html('');
+        $("#loader-wrapper").show();
+        $.ajax({
+            //url: "/References/NewMlaDispatchEntryForm",
+            url: '@Url.Action("NewMlaDispatchEntryForm", "References")',
+            type: 'GET',
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModalDispatch").css("display","block");
+                    $('#loginModalDispatchbody').html(data);
+                }
+                else {
+                    alert("error");
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    $('#submitButton').click(function (e) {
+
+        $("#loader-wrapper").show();
+        var District = $("#District  option:selected").val();
+        var Constituency = $("#Constituency  option:selected").val();
+        var Agency = $("#Agency option:selected").val();
+        var Office = $("#Office option:selected").val();
+        var Status = $("#favouriteMLA option:selected").val();
+
+        var SubType = document.getElementById("Pendency");
+        var Pendency = SubType.options[SubType.selectedIndex].value;
+        var DocumentType = $("#maintype").val();
+        var pathurl = '/References/FilteredMLADiaryListForAgency'
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            data: {
+                District: District,
+                Constituency: Constituency,
+                Agency: Agency,
+                Office: Office,
+                Status: Status,
+                Pendency: Pendency,
+                DocumentType: DocumentType
+            },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Dispatchlistdiv").html('');
+                $("#Dispatchlistdiv").html(data);
+
+            }
+        });
+
+        filterCount();
+        if (!$(e.target).is('.panel-body')) {
+            $('.collapse').collapse('hide');
+        }
+    });
+
+    function Status() {
+
+        $("#loader-wrapper").show();
+        var Status = $("#favouriteMLA option:selected").val();
+        var Office = $("#Office option:selected").val();
+        if (Status == 10) {
+            // alert(Status);
+            $("#loader-wrapper").hide();
+            return false;
+        }
+        else {
+        }
+
+        var pathurl = '/References/Filtered_MLADiaryListForAll'
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            data: { Status: Status, Office: Office },
+            // data:{ params },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Dispatchlistdiv").html('');
+                $("#Dispatchlistdiv").html(data);
+            }
+        });
+    }
+
+    function filterCount() {
+
+        $("#spnCount").text("");
+        var counter = 0;
+        var Office = $("#Office option:selected").val();
+
+        if (Office != 0 && typeof Office != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Agency = $("#Agency option:selected").val();
+        if (Agency != 0 && typeof Agency != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var District = $("#District option:selected").val();
+        if (District != 0 && typeof District != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Constituency = $("#Constituency option:selected").val();
+        if (Constituency != 0 && typeof Constituency != 'undefined') {
+            counter = counter + 1;
+        }
+        //alert(counter);
+        if (counter > 0) {
+
+            $("#spnCount").text(counter);
+            $("#spnCount").show();
+        }
+        else {
+            $("#spnCount").hide();
+            counter = 0;
+        }
+        counter = 0;
+    }
+
+    function ActionStatusCheckDispatch() {
+        var type = $('#DocumentTypeDIdHdn').val();
+        GetDataForDispatch(type);
+    }
+
+    function BindActionStatusMladispatch() {
+        var since = $("#sincefilter").val();
+        var pathurl = '/References/BindActionStatusMlaD';
+        $("#StatusListMlaD").empty();
+        var T = "T";
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { since: since },
+
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    html = html + "<input type='radio' onclick='ActionStatusCheckDispatch()'  id='chk' value='10' name='group2MlaD' style='font-size:18px; margin-top:15px; margin-left:3px;' checked='checked'>";
+                    html = html + "<span style='cursor:pointer;font-size:18px;margin-top:15px; margin-left:2px; color:white; margin-right:3px;'>All</span>";
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+                        html = html + "<input type='radio' onclick='ActionStatusCheckDispatch()' id='chk'" + item.Text + "' value='" + item.Value + "' style='margin-left:3px;margin-top:10px;font-size:18px;' name='group2MlaD'>";
+                        html = html + "<span style='margin-left:2px;margin-right:3px;margin-top:15px; color:white;font-size:18px;'>" + item.Text + "</span>";
+                    }
+                    $("#StatusListMlaD").html(html);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#StatusListMlaD").html("No Data Found");
+                    $("#loader-wrapper").hide();
+
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+    }
+
+    function SendToAgendaD(refid) {
+
+        var agendaid = $('#AgendaDateD').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+
+                    }
+                    if (response == "0") {
+                        alert("Term Updation Failed.");
+                    }
+                }
+            });
+    }
+
+    function checkInAgendaD(idd) {
+        var refid = idd.id;
+
+        var agendaid = $('#AgendaDateD').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckInAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Already Added in Agenda")
+                    }
+                    if (response == "0") {
+                        SendToAgendaD(refid)
+                    }
+                }
+            });
+        }
+
+    function EditMlaDispatch(IDD) {
+        var ID = IDD.id;
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var pathurl = '/References/EditMlaDispatchForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                $('#loginModalDispatchbody').html('');
+                //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModalDispatch").css("display", "block");
+                    $('#loginModalDispatchbody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+        }
+
+    function closedispatch() {
+            $("#loginModalDispatch").css("display", "none");
+            $('#loginModalDispatchbody').html('');
+             window.location.reload();
+        }
+
+    function closedispatchEdit() {
+            $("#loginModalDispatchEdit").css("display", "none");
+            $('#loginModalDispatchbodyEdit').html('');
+            window.location.reload();
+
+        }
+
+    </script>
+
+    <style>
+        .edit {
+            display: block;
+        }
+
+        .nonedit {
+            display: none;
+        }
+        .accordion-toggle:hover {
+            text-decoration: none;
+        }
+
+        .hideshow {
+            /*display:none;*/
+        }
+
+        .hshow {
+            display: block;
+        }
+
+        .btn-sq-lg {
+            width: 150px !important;
+            height: 150px !important;
+        }
+
+        .btn-sq {
+            width: 100px !important;
+            height: 100px !important;
+            font-size: 8px;
+            margin-left: 20px;
+        }
+
+        .btn-sq-sm {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 10px;
+        }
+
+        .btn-sq-xs {
+            width: 25px !important;
+            height: 25px !important;
+            padding: 2px;
+        }
+        /*
+        .sblFullScreen select, input, textarea {
+            width: 10%;
+        }*/
+
+        .active1 {
+            width: 120px !important;
+            height: 120px !important;
+            font-size: 18px;
+            margin-left: 50px;
+        }
+
+        .dark-font .breadcrumb-item + .breadcrumb-item::before {
+            color: #000;
+            font-size: x-large;
+        }
+
+        .dark-font .breadcrumb-item.active {
+            color: #455a64;
+        }
+
+        .small-box {
+            position: relative;
+            display: block;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 8px;
+            /*margin-bottom: 15px;*/
+            text-decoration: none;
+            color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .badge-notify {
+            background: red !important;
+            background-color: red !important;
+            position: relative;
+            top: -12px;
+            left: -13px;
+            font-weight: bold;
+        }
+
+        .small-box h3 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            padding: 0;
+            white-space: nowrap;
+            font-family: "Proxima Nova Regular","Segoe UI",Roboto,"Droid Sans","Helvetica Neue",Arial,sans-serif;
+        }
+
+        .small-box p {
+            font-size: 14px;
+            font-weight: 600;
+            margin: -4px;
+        }
+
+        .small-box > .inner {
+            padding: 10px;
+            max-height: 90px;
+        }
+
+        .small-box .icon {
+            position: absolute;
+            top: 0px;
+            bottom: 5px;
+            right: 5px;
+            z-index: 0;
+            font-size: 50px;
+            color: rgba(0,0,0,.15);
+        }
+
+        .small-box:hover > .icon > .fa {
+            font-size: 1.2em;
+            transition-duration: 0.5s;
+            transition-timing-function: linear;
+        }
+
+        .collapse.in {
+            display: inline-block !important;
+            width: 100%;
+        }
+
+
+        .small-box > .small-box-footer {
+            position: relative;
+            text-align: center;
+            padding: 3px 0;
+            color: #fff;
+            color: rgba(255,255,255,.8);
+            display: block;
+            z-index: 10;
+            background: rgba(0,0,0,.1);
+            text-decoration: none;
+        }
+
+        @@media (min-width: 800px) {
+            .col-md-2 {
+                width: 183px !important;
+            }
+
+            .marg129 {
+                margin-top: 203px !important;
+            }
+        }
+
+        @@media (max-width: 564px) {
+            .footer {
+                padding-top: 100px !important;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    
+
+    <div class="main-content">
+        <div class="widget-box" id="divAction">
+            <div class="widget-header widget-header-flat">
+                <h4>  <span id="selectednew" class=""></span></h4>
+                <div class="widget-toolbar no-border">
+
+                    <button class="btn btn-xs btn-primary bigger" id="btnNewD" style="display:none;" onclick="CreateNewDispatch()">
+                        <i class="ace-icon fa fa-pencil-square-o"></i>
+                        New
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 content-pad-0" id="MainDispatchBox">
+            @Html.Hidden("maintype", "0")
+            <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
+
+            <div class="row w">
+
+                @foreach (var mdl in Model._LstDashboard)
+                {
+                    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 p-2" title="Click to See Detail List"  >
+                        <div class="small-box @mdl.CssClass" id="@mdl.DocumentTypeId" onclick="setvalueDispatch(this.id);">
+                            <div class="inner">
+                                <h3 class="">@mdl.Count</h3>
+                                <p style="color:white;">@mdl.DocumentTypeName <br /></p>
+                            </div>
+                            @*<div class="icon">
+                                    <i class="fa fa-road"></i>
+                                </div>*@
+                            <div class="icon">
+                                <div class="dash_coman @mdl.documentId">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <div class="row" id="DispatchTableDiv" style="display: none;">
+
+            <div class="col-md-12 col-lg-12 col-xl-12 row" style="background: #175d91; margin-top: 10px; margin-left: 5px; height: 57px; ">
+
+                <div class="col-md-3 col-lg-3 col-xl-3" style="margin-top: 8px;">
+                    <span style="color: white; font-size: 25px;" id="DocumentTypename"></span>
+                </div>
+
+                <div class="col-md-4 col-lg-4 col-xl-4" id="StatusListMlaD" style="margin-top: 5px;">
+
+                </div>
+
+                <div class="col-md-3 col-lg-3 col-xl-3">
+                    <div class="tbl_sinc-ddl pull-right">
+                        <label class="form text-white"> <b>Agenda</b></label>
+                        <select style="margin-top:10px;" onchange="hideshowcheckboxD();" id="AgendaDateD" name="AgendaDateD"></select>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-lg-2">
+                    <div class="tbl_sinc-ddl " style="margin-top:10px;">
+                        <label class="form text-white"> <b>Last Action Since</b></label>
+                        <select name="since" id="sincefilterdispatch">
+                            <option value="" selected onclick="ResetSinceDispatch();">Select</option>
+                            <option value="1week">1 Week</option>
+                            <option value="2week">2 Week</option>
+                            <option value="1month">1 Months</option>
+                            <option value="3month">3 Months</option>
+                            <option value="6month">6 Months</option>
+                            <option value="year">1 Year</option>
+                            <option value="morethanyear">1 Year +</option>
+                        </select>
+                    </div>
+                    <span class="badge badge-danger pull-right" style="margin-top:15px;">Count  <span class="badge badge-danger" id="DispatchCount"></span></span>
+                </div>
+            </div>
+
+            <h2 id="noDataFoundD" style="display: none;">No Data Found</h2>
+
+            <div class="table-responsive" style="margin-top: 10px;">
+                <table class="table table-bordered" id="DispatchTable">
+                    <thead>
+                        <tr>
+                           
+                            <th class="hideshow" style="text-align: center; width:3%;"><span class="font-weight-bold"></span></th>
+                            <th style="text-align: center; width:25%;"><span class="font-weight-bold">Subject</span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold ">Release Date </span></th>
+                            <th style="text-align: center; width: 15%;"><span class="font-weight-bold">Department </span></th>
+                            <th style="text-align: center; width: 25%;"><span class="font-weight-bold">Brief of Last Action Taken</span></th>
+                            <th style="text-align: center; width: 10%;"><span class="font-weight-bold">Status</span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold">Ref.Id /<br />Date </span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold">Priority </span></th>
+                            <th style="text-align: center; width: 6%;"><span class="font-weight-bold">Term </span></th>
+                            <th style="text-align: center;"><span class="font-weight-bold">...more</span></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatch"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" onclick="closedispatch()" class="close close_btn" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="widget-title modal_heading"> Dispatch </h4>
+                </div>
+                <div class="modal-body" id="loginModalDispatchbody">
+
+
+
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatchEdit"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" onclick="closedispatchEdit()" class="close close_btn" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="widget-title modal_heading">Dispatch</h4>
+                </div>
+                <div class="modal-body" id="loginModalDispatchbodyEdit">
+
+
+
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
+
+
+
+

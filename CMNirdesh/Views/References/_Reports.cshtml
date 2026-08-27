@@ -1,0 +1,314 @@
+﻿@using CMNirdesh.Models;
+
+
+
+<head>
+
+
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+
+    <script>
+    $(document).ready(function ()
+    {
+        GetReportData();
+    });
+
+        function GetReportData() {
+            $.ajax({
+            type: "GET",
+              url: '@Url.Action("DairyDispatchReportNew", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: {},
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableList(response)
+                        $("#ReportTableDiv").css("display", "block");
+                        $("#loader-wrapper").hide();
+                    }
+                    else {
+                        $("#ReportTableDiv").css("display", "none");
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+              });
+        }
+
+        function EditDispatch(ID) {
+            $('#loginModaldiarybody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+
+            //$('#resize-right').width(50 + '%');
+            //$('#resize-left').width(50 + '%')
+            //$('#resize-right').show();
+            // alert(ID);
+            var pathurl = '/References/EditMlaDispatchForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+
+                data: { ID: ID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    $('#loginModalDispatchbody').html('');
+                    //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+                    //$('#divAction').show();
+                    //$('.widget-box').show();
+                    if (data) {
+                        $("#loginModalDispatch").modal('show');
+                        $('#loginModalDispatchbody').html(data);
+                        //$('#myModalContent').html(data);
+                        //  $('#loginModalDispatch').modal(options);
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                    //setTimeout(function () {
+                    //    $('#divMsg').slideUp("slow");
+                    //}, 6000);
+                }
+            });
+        }
+
+        function EditMlaDairy(ID) {
+            $('#loginModaldiarybody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+
+            var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { ID: ID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    // //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#loginModaldiary").modal('show');
+                        $('#loginModaldiarybody').html(data);
+
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+        }
+
+        function getTableList(tableData) {
+            $("ReportTable").html('');
+            $.each(tableData, function (index, response) {
+                $("#ReportTable tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td class='center' onclick='EditMlaDairy(" + response.RefId + ")' style='cursor:pointer;'>" +
+                    response.RefId + "</td>" +
+                    "<td class='center'>" + response.Date + "</td>" +
+                    "<td class='center'>" + response.FromDepartment + "</td>" +
+                    "<td class='center'>" + response.FromOffice + "</td>" +
+                    "<td class='center'>" + response.Subject + "</td>" +
+                    "<td class='center'>" + response.ActionStatus + "</td>" +
+                    "<td class='center' onclick='EditDispatch(" + response.DispatchRefId +")' style='cursor:pointer;'>" + response.DispatchRefId + "</td>" +
+                    "<td class='center'>" + response.DispatchDate + "</td>" +
+                    "<td class='center'>" + response.ToDepartment + "</td>" +
+                    "<td class='center'>" + response.ToOffice + "</td>" +
+                    "<td class='center'>" + response.sActionStatus + "</td>"
+                    + "</tr>");
+            });
+
+            $("#ReportTable").DataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                paging: false,
+                bFilter: false,
+                "bSort": false,
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i style="font-size: 27px; color:green;" class="fa fa-file-excel-o"></i>',
+                        title: 'Diary/Dispatch Linked Report',
+                        className: 'pull-right',
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i style="font-size: 27px;color:red;" class="fa fa-file-pdf-o "></i>',
+                        title: 'Diary/Dispatch Linked Report ',
+                    }
+                ]
+            });
+
+        }
+
+
+        function printDiv() {
+
+
+            var printWindow = window.open('', '', 'height=900,width=900');
+            printWindow.document.write('<html><head><title></title>');
+
+            //Print the Table CSS.
+            var table_style = document.getElementById("table_style").innerHTML;
+            printWindow.document.write('<style type = "text/css">');
+            printWindow.document.write(table_style);
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head>');
+
+            //Print the DIV contents i.e. the HTML Table.
+            printWindow.document.write('<body>');
+            var divContents = document.getElementById("ReportTableDiv").innerHTML;
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body>');
+
+            printWindow.document.write('</html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+
+        function downloadDairyDispatchReportData() {
+            var url = '@Url.Action("downloadDairyDispatchReportData", "References")';
+            window.location = url;
+        }
+
+
+    </script>
+
+    <style id="table_style" type="text/css">
+        body {
+            font-family: Arial;
+            font-size: 10pt;
+        }
+
+        table {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        center {
+            text-align: center;
+        }
+
+        table th {
+            background-color: #F7F7F7;
+            color: #333;
+            font-weight: bold;
+        }
+
+        table th, table td {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="container container_fluid">
+
+        <div class="round_box_house">
+
+
+            <!-- Tab panes -->
+            <div class="row contact_details" id="ReportTableDiv">
+                <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    </div>
+
+                    <div class="col-lg-5 col-md-5 col-sm-11 col-xs-11 center">
+                        <span style="font-weight:bold; font-size:18px;">
+                            Report Name  &nbsp;: &nbsp;
+                            <span style="color:dodgerblue">Diary/Dispatch Linked Report</span>
+                        </span><br />
+                        <span style="font-weight:bold; font-size:18px;">
+                            Office Name : &nbsp;
+                            <span style="color:dodgerblue">@CurrentSession.OfficeName</span>
+                        </span>
+                        <br />
+                        <br />
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    </div>
+                    <!--<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">-->
+                        @* <button class="green tooltip-success" style="border:0" onclick="downloadDairyDispatchReportData()"><i class="ace-icon fa fa-print bigger-120"></i> </button>*@
+                        <!--<button class="red tooltip-danger" style="border: 0; font-size: 27px;" onclick="printDiv()"><i class="ace-icon fa fa-file-pdf-o"></i> </button>
+                    </div>-->
+                </div><br />
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="background-color: white;">
+                    <table class="table table-bordered" id="ReportTable">
+                        <thead>
+
+                            <tr style="font-size: 12px; font-weight: bold; ">
+
+                                <td colspan="6" class="center" style="color: black; background-color: powderblue;">
+                                    Dairy
+                                </td>
+                                <td colspan="6" class="center" style="color: black; background-color: mediumpurple;">
+                                    Dispatch
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th><span class="font-weight-bold" style="color:black;">Ref.Id </span></th>
+                                <th><span class="font-weight-bold primary" style="color:black;">Date </span></th>
+                                <th><span class="font-weight-bold success" style="color:black;">From </span></th>
+                                <th><span class="font-weight-bold danger" style="color:black;">Office Name</span></th>
+                                <th><span class="font-weight-bold info" style="color:black;">Subject </span></th>
+                                <th><span class="font-weight-bold" style="color:black;">Action Status</span></th>
+                                <th><span class="font-weight-bold" style="color:black;">Ref.Id</span></th>
+                                <th><span class="font-weight-bold" style="color:black;">Date</span></th>
+                                <th><span class="font-weight-bold" style="color:black;">Sent To</span></th>
+                                <th><span class="font-weight-bold" style="color:black;">To Office </span></th>
+                                <th><span class="font-weight-bold" style="color:black;">Action Status</span></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>

@@ -1,0 +1,34 @@
+﻿@{
+        ViewBag.Title = "Esign Item List";
+    }
+
+    <!DOCTYPE html>
+
+    <html xmlns="https://www.w3.org/1999/xhtml">
+    <head>
+        <title>Esign Item List</title>
+        <script type="text/javascript">
+            function myfunc() {
+                try {
+                    var frm = document.getElementById("XmlForm");
+                    frm.submit();
+                }
+                catch (err) {
+                    document.getElementById("demo").innerHTML = err.message;
+                }
+            }
+            window.onload = myfunc;
+        </script>
+    </head>
+    <body>
+        <form id="XmlForm" name="XmlForm" method="post" action="https://esignservice.cdac.in/esign2.1/2.1/form/signdoc">
+
+            <div>
+                @Html.Raw(ViewBag.EsignItemList)
+            </div>
+            <div id="demo"></div>
+        </form>
+    </body>
+    </html>
+
+

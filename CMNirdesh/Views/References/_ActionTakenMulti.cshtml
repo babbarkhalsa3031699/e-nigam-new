@@ -1,0 +1,3161 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+
+@using CMNirdesh.Models
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/TempFile/";
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+
+}
+<input type="hidden" id="subjectold" name="subjectold" value="" />
+<input type="hidden" id="subjectdetailold" name="subjectdetailold" value="" />
+
+
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+@*<script src="~/Content/Layout/jquery.slider.js"></script>*@
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+<link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+<link href="~/Content/Layout/style.css" rel="stylesheet" />
+
+
+
+
+
+<style>
+    a:focus, a:not([href]):not([tabindex]):hover, a:not([href]):not([tabindex]):focus {
+        cursor: pointer;
+        text-decoration: none !important;
+    }
+    .slider.round {
+        display: none;
+    }
+
+    #myTab .nav-item .active {
+        padding: 8px 16px;
+        border-top-left-radius: 6px !important;
+        border-top-right-radius: 6px !important;
+    }
+
+    input#enablefund {
+        height: 14px;
+    }
+
+    th {
+        background-color: grey;
+    }
+
+    input[type="file" i] {
+        color: #fff;
+    }
+
+    .ui-datepicker {
+        width: 25em;
+        /*padding: .2em .2em 0;*/
+        display: none;
+        border: 1px solid;
+        font-weight: bolder;
+    }
+
+
+    .Mytextarea {
+        font-size: 10px;
+        height: 14px !important;
+        color: #333 !important;
+        font-family: inherit;
+    }
+
+    .profile-info-name {
+        width: 1% !important;
+    }
+
+    .width {
+        width: 76% !important;
+    }
+
+    .fund {
+        width: 11px !important;
+        padding-right: 100px;
+        padding-left: 3px;
+    }
+
+    .tfund {
+        float: left
+    }
+
+    .fundval {
+        padding-right: 20px;
+        font-weight: bold;
+    }
+
+    .tfund {
+        width: 50%;
+    }
+
+    .mar {
+        padding-top: 12px !important;
+    }
+
+    .fundtd {
+        padding: 1px !important;
+        border: 1px solid #ddd;
+        text-align: center;
+        color: green;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .nodelete {
+        display: none;
+    }
+
+    .hand {
+        cursor: pointer;
+    }
+
+    .refhide {
+        display: none;
+    }
+
+    .refshow {
+        display: block;
+    }
+
+    .ColorAdd {
+        background-color: #fdeefd !important;
+    }
+
+    .table-bordered > :not(caption) > * > * {
+        border-width: 1px !important;
+    }
+
+    .SDHide {
+        display: none;
+    }
+
+    .far.fa-comment-dots {
+        font-size: 21px;
+        cursor: pointer;
+    }
+
+    .ActionBy {
+        display: block;
+        justify-content: end;
+        text-align: right;
+        margin-top: 10px;
+    }
+
+    .left {
+        float: right;
+    }
+
+    .dotted {
+        border-top: 2px dashed;
+        @*margin-top: -12px;*@
+        margin-bottom: 8px;
+    }
+
+    .ActionBySize {
+        font-size: 14px;
+    }
+    .dt{
+        margin-top:10px;
+    }
+    .dataTables_wrapper .row:last-child{
+       background-color:transparent !important;
+    }
+
+    .SDHide .tox-edit-area__iframe {
+        background-color:transparent;
+    }
+    .SDHide .tox-editor-header {
+        display:none;
+    }
+    .SDHide .tox-statusbar {
+        display: none;
+    }
+
+    .lbltxt {
+        display: ruby-base;
+    }
+
+    .checkbox {
+        margin-left: 3px;
+        display: block ruby;
+    }
+    .tox.tox-tinymce {
+        height: 250px !important;
+    }
+
+    .ms-drop.bottom {
+        height: 135px;
+        overflow-y: auto;
+    }
+</style>
+
+<script>
+
+   $(document).ready(function () {
+       $.noConflict();
+
+
+
+
+
+
+       //$("#ddlfromUser").multipleSelect({
+       //    columns: 1,
+       //    filter: true,
+       //    maxHeight: 350,
+       //    placeholder: 'Select User',
+       //});
+
+       //$("#ddlToUser").multipleSelect({
+       //    columns: 1,
+       //    filter: true,
+       //    maxHeight: 350,
+       //    placeholder: 'Select User',
+       //});
+
+
+       //GetIncludedRef();
+       var refid = '@Model.RefId';
+       $("#subjectboxold_"+ refid).css("display", "block");
+
+       $("#DocumentTypeNameChange").prop("disabled", true);
+       $("#ddlOfficeChange").prop("disabled", true);
+       $("#Term").prop("disabled", true);
+       $("#PriorityType").prop("disabled", true);
+
+       $("#subjectdetailboxold_"+refid).css("display", "block");
+       //ShowButton();
+       $('[type="date"]').prop('max', function () {
+           return new Date().toJSON().split('T')[0];
+       });
+
+
+         var deptid = '@CurrentSession.DeptID';
+          if (deptid == 'LG00001') {
+
+              $('#ddlToOffice option:eq(14)').prop('selected', true);
+              GetToUser();
+          }
+
+           if (deptid == 'UDD0001') {
+     //$('#rbMLA').click();
+     $("#rbMLA").prop("checked", true);
+     var filetype = '@Model.filetype';
+     if (filetype != "2") {
+         $("#rbTo").hide();
+         $("#lblTo").hide();
+     }
+
+     $("#ddlfromOffice").hide();
+     $("#ddlToOffice").hide();
+
+
+     $('#ddlfromUser').multipleSelect('destroy');
+     $("#ddlfromUser").hide();
+
+     $('#ddlToUser').multipleSelect('destroy');
+     $("#ddlToUser").hide();
+
+     $('#ddlMlaUser').multipleSelect('destroy');
+     $("#ddlMlaUser").hide();
+
+     $("#ddlmlaOffice").show();
+     GetMlaUser();
+     $("#ddlMlaUser").show();
+     $("#ddlMlaUser").multipleSelect({
+         columns: 1,
+         filter: true,
+         maxHeight: 350,
+         placeholder: 'Select User',
+     });
+
+ }
+
+        $('#TxtActionTakenDate').attr('readonly', true);
+
+        var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+        //  var ForwardedFiletxt = $("#ForwardedFiletxt").text();
+        var ActionFile = $("#Actionfile").text();
+        if (EnclosureFiletxt == "Yes") {
+            $("#IsEnclosureFile").val("Y");
+        }
+        else {
+            $("#IsEnclosureFile").val("N");
+        }
+
+        if (ActionFile == "Yes") {
+            $("#IsFile").val("Y");
+        }
+        else {
+            $("#IsFile").val("N");
+       }
+
+       tinyMCE.init({
+           selector: "#ActionDescription",
+           branding: false,
+           menubar: true,
+           content_style:
+               "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+
+       });
+       tinyMCE.init({
+           selector: "#ActionDescription_Multi",
+           branding: false,
+           menubar: false,
+           toolbar: 'undo redo |  bold italic | alignleft aligncenter alignright alignjustify',
+           content_style:
+               "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+           height: 200
+       });
+
+       tinyMCE.init({
+           selector: "#subjectdetailforedit",
+           branding: false,
+           content_style:
+               "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+       });
+
+       if ($('#DdlActionType').val() == '2') {
+           $('#SanctionModal').show();
+       }
+
+       if ($('#DdlActionType').val() == '6') {
+           $('#SanctionAmountModal').show();
+       }
+
+
+       var switchStatus = false;
+       $("#switchbutton").click( function () {
+           if ($(this).is(':checked')) {
+               switchStatus = $(this).is(':checked');
+               $("#DocumentTypeNameChange").prop("disabled", false);
+               $("#ddlOfficeChange").prop("disabled", false);
+               $("#Term").prop("disabled", false);
+               $("#PriorityType").prop("disabled", false);
+               $("#subjectbox").css("display", "block");
+               $("#subjectdetailbox").css("display", "block");
+                var refid = '@Model.RefId';
+                $("#subjectboxold_"+ refid).css("display", "none");
+
+               $("#subjectdetailboxold_" + refid).css("display", "none");
+           }
+           else {
+               switchStatus = $(this).is(':checked');
+               $("#DocumentTypeNameChange").prop("disabled", true);
+               $("#ddlOfficeChange").prop("disabled", true);
+               $("#Term").prop("disabled", true);
+               $("#PriorityType").prop("disabled", true);
+               $("#subjectbox").css("display", "none");
+               $("#subjectdetailbox").css("display", "none");
+                var refid = '@Model.RefId';
+                $("#subjectboxold_"+ refid).css("display", "none");
+               $("#subjectdetailboxold_" + refid).css("display", "block");
+
+           }
+       });
+
+
+       var isfile = '@Model.isLetter';
+
+        if (isfile == 'Letter') {
+            $(".one").css("width", "100%");
+            $(".two").css("width", "2%");
+        }
+   });
+
+             function GetMlaUser() {
+             var deptid = 'UDD0001';
+             //alert(1);
+         var officeid = $('#ddlmlaOffice').val();
+             $('#ddlMlaUser').html("");//.multipleSelect('refresh');
+
+
+    if (deptid != "0" && officeid != "") {
+        $('#ddlMlaUser').append('<option value="">-Select-</option>');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetUserbyOfficeIdForSend", "User")',
+            datatype: "Json",
+            data: { deptid: deptid, officeid: officeid },
+            success: function (data) {
+                $.each(data, function (index, value) {
+                    $('#ddlMlaUser').append('<option value="' + value.id + '">' + value.name + '</option>').multipleSelect('refresh');
+                    //.multipleSelect('refresh');
+                });
+
+
+            }
+        });
+    } else {
+
+
+    }
+}
+
+    function GetIncludedRef() {
+        $("#loader-wrapper").show();
+             var mainRefid = $("#RefId").val();
+
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetIncludedRef", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { refid: mainRefid },
+                success: function (response) {
+                    if (response.length > 0) {
+                        BindInclueRef(response);
+                        $("#loader-wrapper").hide();
+                       // showdepartment();
+                    }
+                    else {
+                        BindInclueRef(response);
+                        $("#loader-wrapper").hide();
+                    }
+                    console.log(response);
+                },
+                error: function (error) {
+                }
+        });
+    }
+
+     function Delete (id){
+
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+                   if (id != "") {
+
+            //var pathurl = '/Agenda/DeleteAgendaDetail';
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteIncludeRef", "References")',
+
+                async: true,
+                data: { Lrid: id },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#tr_"+id).hide();
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
+        }
+
+
+    }
+
+    var Flarr = new Array();
+    var code = "";
+    function StatusFilter1(chk) {
+        $("#hdnactionid").val('');
+
+        var fltext = $(chk).next('label').text().trim();
+        fltext = fltext.slice(0, fltext.indexOf('('));
+        console.log(fltext);
+
+        if ($(chk).prop("checked") == true) {
+            Flarr.push(fltext.trim().toUpperCase());
+            code = $(chk).val() + ',' + code;
+            //$("#MultiUpdate").val(val + RefId.id + ',');
+        }
+        else if ($(chk).prop("checked") == false) {
+            Flarr = jQuery.grep(Flarr, function (value) {
+                return value != fltext.trim().toUpperCase();
+            });
+            var action = $(chk).val()+',';
+            code = code.replace(new RegExp(action, 'g'), '0');
+        }
+
+        $("#hdnactionid").val(code.slice(0, -1));
+
+
+        console.log(Flarr);
+        var input, filter, table, tr, td, i;
+        input = Flarr.length;
+        if (input != "0") {
+            //filter = val.toUpperCase();
+            table = document.getElementById("IncludeRefTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 1; i < tr.length; i++) {
+                tr[i].style.display = "none";
+                td = tr[i].getElementsByTagName("td")[4];
+                if (td) {
+                    for (j = 0; j < Flarr.length; j++) {
+                        if (td.innerHTML.toUpperCase().indexOf(Flarr[j]) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            //tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+        } else {
+            filter = '';
+            table = document.getElementById("IncludeRefTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[4];
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "";
+                    }
+                }
+            }
+        }
+    }
+
+    function StatusFilter() {
+
+        var input, filter, table, tr, td, i;
+        input = $('#ddlStatusFilter').val();
+        if (input != "") {
+            filter = $('#ddlStatusFilter').find("option:selected").text().toUpperCase();
+            table = document.getElementById("IncludeRefTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[4];
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        } else {
+            filter = $('#ddlStatusFilter').find("option:selected").text().toUpperCase();
+            table = document.getElementById("IncludeRefTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[4];
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "";
+                    }
+                }
+            }
+        }
+    }
+
+    function ActFilter() {
+
+        var input, filter, table, tr, td, i;
+        input = $('#ddlact').val();
+        if (input != "") {
+            filter = $('#ddlact').find("option:selected").text().toUpperCase();
+            table = document.getElementById("IncludeRefTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[5];
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        } else {
+            filter = $('#ddlact').find("option:selected").text().toUpperCase();
+            table = document.getElementById("IncludeRefTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[5];
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "";
+                    }
+                }
+            }
+        }
+    }
+
+    function decode(value) {
+        return String(value)
+            .replace(/&amp;quot;/g, '"')
+            .replace(/&amp;#39;/g, "'")
+            .replace(/&amp;lt;/g, '<')
+            .replace(/&amp;gt;/g, '>')
+            .replace(/&amp;/g, '&');
+    }
+    if (typeof str !== 'undefined' && str && $('#code').length) {
+        $('#code').text(decode(str));
+    }
+
+
+    function BindInclueRef(tableData) {
+        $("#IncludeRefTable").DataTable().destroy();
+        $("#IncludeRefTable tbody").html('');
+        var a = 1;
+        var actioncode = '@Model.HideUpdate';
+
+        if (actioncode == "Yes") {
+            hideclass = "nodelete";
+
+        } else {
+            hideclass = "yesdelete";
+
+        }
+
+        //LG Comments
+
+         var doctype1 = '@Model.DocmentType';
+        $.each(tableData, function (index, response) {
+            if (doctype1 == '25') { res = response.ResolutionNo } else { res = response.ResolutionNo };
+
+            var LGarray = response.LGComments.split("~");
+            var LgString = '';
+
+
+            var j = 1;
+            for (i = 0; i < LGarray.length; i++) {
+                if (LGarray[i] != "") {
+                    var ActionBy = LGarray[i].split("::");
+                    console.log(LGarray[i])
+                    var Desg = ActionBy[1].split(",");
+
+                    if (i == LGarray.length-1) {
+                        LgString = LgString + "<div id='LGShow' Class='LGShow LG_" + response.lrid + "'>"
+                        LgString = LgString + "<div class='row'><p class='col-12'>" + (j) + ". " + ActionBy[2] + "</p> <b class='dt col-6'> " + ActionBy[0] + "</b> <b class='ActionBy col-6'> " + Desg[0] + "</br>" + Desg[1] + "," + Desg[2] + "</b></br > <hr class='dotted'> </div>";
+                        LgString = LgString + "</div>"
+
+                    }
+                        LgString = LgString + "<div id='LGComments' Class='SDHide LG_" + response.lrid +"'>"
+                    LgString = LgString + "<div class='row'><p class='col-12'>" + (j) + ". " + ActionBy[2] + "</p> <b class='col-6 dt'> " + ActionBy[0] + "</b> <b class='ActionBy col-6'> " + Desg[0] + "</br>" + Desg[1] + "," + Desg[2] + "</b></br > <hr class='dotted'> </div>";
+                        LgString = LgString + "</div>"
+
+
+                }
+
+                j++;
+            }
+
+            LgString = LgString + "<i class='ace-icon fa fa-pencil bigger-120 hand left " + hideclass + "'  style='color: green' id=" + response.RefId + " onclick='OpenSingleEdit(this)'></i>"
+
+            var rowcolor = '';
+            if (response.StatusName == "LG Comments") {
+                rowcolor = "";
+
+            } else {
+                rowcolor = "";
+
+            }
+
+
+            $("#IncludeRefTable tbody").append(
+                "<tr role='row' class='odd " + rowcolor +" ' id='tr_" + response.lrid + "'>" +
+                "<td style='' > <input class='RefCheckBox " + hideclass + "' onclick=UpdateRefStatus(this) type='checkbox' name='chk_" + response.RefId + "' id='" + response.RefId + "' value='" + response.RefId + "' >  <i class='fa fa-plus-square' id='Icon_" + response.lrid + "' onclick=ShowSD(" + response.lrid + ")></i></td > " +
+                "<td style=''>" + res + "</br> " + response.AgendaDate + "</td>" +
+                "<td style=''> <b>" + response.Subject + "</b> </br>" +
+                "<div class= 'SDHide' id = 'SD_" + response.lrid + "'> <textarea type='text' id='IncludeSB_" + response.lrid + "' name='IncludeSB'></textarea> <br/> <b> House Decision </b> : <p> " + response.HouseDecision +
+                "</p></br> <b> Specify Under Which Point of Instruction Dated 10.10.2022 this Resolution is covered: - </b><p>" + response.ActName +
+                "</p></br> \n <b>  Comments of Commissioner : </b><p>" + response.commissioner +
+                "</p></div></td>" +
+                "<td style=''>" + LgString+"</td>" +
+                "<td style=''>" + response.StatusName + "</br> " + response.ActionTakenDate + "</td>" +
+                "<td style=''>" + response.ActName + "</td>" +
+                "<td><i class='ace-icon fa fa-eye bigger-120 hand " + hideclass + "'  style='color: green' id=" + response.RefId + " onclick='ViewSingleEdit(this)'></i> </td>"
+                + "</tr>"
+
+            );
+            a++;
+
+
+            tinymce.remove("#IncludeSB_" + response.lrid);
+
+            tinyMCE.init({
+                selector: "#IncludeSB_" + response.lrid,
+                mode: "textarea",
+                branding: false,
+                menubar: true,
+                readonly: true,
+                toolbar: '',
+                menubar: '',
+                plugins: 'autoresize',
+                content_style:
+                    "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+                init_instance_callback(editor) {
+                    editor.setContent(response.SubjectDetails);
+                }
+            });
+
+           // $("#IncludeSB_" + response.lrid + "_ifr").css('backgroundColor','#bcfdca!important');
+        });
+        var table=$('#IncludeRefTable').DataTable({
+            rowReorder: true,
+            paging: true,
+            searching: false,
+
+            pageLength: 100,
+            "dom": "lrtip",
+            "bLengthChange": false,
+            buttons: [
+                'excel', 'pdf'
+            ],
+            columnDefs: [{ orderable: false, targets: [0,1, 2,3,4,5] }, { visible: false, targets: [] }]
+
+        });
+
+        //$('#SearchBox').keyup(function () {
+        //    table.column(1).search($(this).val()).draw();   // this  is for customized searchbox with datatable search feature.
+        //})
+
+        //$("#filter p").each(function (i) {
+        //    var dt = "";
+        //    if (i == 0) {
+        //        i = 4;
+        //        dt = '--All--';
+        //    } else {
+        //        i = 5;
+        //        dt = '--All--';
+        //    }
+
+        //    var select = $('<select class="form-control"><option value="">' + dt + '</option></select>')
+        //        .appendTo($(this).empty())
+        //        .on('change', function () {
+
+        //            table.column(i)
+        //                .search($(this).val())
+        //                .draw();
+
+        //        });
+
+        //    table.column(i).data().unique().sort().each(function (d, j) {
+        //        if (i == 4) {
+        //            d = d.replace('<br>', '');
+        //            select.append('<option value="' + d + '">' + d + '</option>')
+        //        } else {
+        //            var arr = d.split('::');
+
+        //            select.append('<option value="' + arr[0] + '">' + arr[1] + '</option>')
+        //        }
+        //    });
+
+
+        //});
+        var lgcom = $("#hdnlgcom").val();
+
+        if (lgcom > 0) {
+            $('input:checkbox[value=14]').click();
+        }
+
+
+    }
+
+
+    function ShowSD(id) {
+        $("#SD_" + id).toggle();
+        $(".LG_" + id).toggle();
+        var IC = $("#Icon_" + id).attr('class');
+
+        if (IC == 'fa fa-plus-square') {
+            $("#Icon_" + id).removeClass("fa fa-plus-square");
+            $("#Icon_" + id).addClass("fa fa-minus-square");
+        } else {
+            $("#Icon_" + id).removeClass("fa fa-minus-square");
+            $("#Icon_" + id).addClass("fa fa-plus-square");
+        }
+
+
+    }
+
+
+    function ShowAllSD() {
+
+
+        var IC = $("#IconShowAll").attr('class');
+        if (IC == 'fa fa-plus-square bigger-120 hand') {
+            $("#IconShowAll").removeClass("fa fa-plus-square bigger-120 hand");
+            $("#IconShowAll").addClass("fa fa-minus-square bigger-120 hand");
+
+            $('[id^=Icon_]').removeClass("fa fa-plus-square");
+            $('[id^=Icon_]').addClass("fa fa-minus-square");
+            $(".SDHide").show();
+            $(".LGShow").hide();
+
+        } else {
+            $("#IconShowAll").removeClass("fa fa-minus-square bigger-120 hand");
+            $("#IconShowAll").addClass("fa fa-plus-square bigger-120 hand");
+            $('[id^=Icon_]').removeClass("fa fa-minus-square");
+            $('[id^=Icon_]').addClass("fa fa-plus-square");
+            $(".SDHide").hide();
+            $(".LGShow").show();
+
+        }
+
+    }
+
+
+    var mlarr = new Array();
+    function UpdateRefStatus(RefId) {
+
+        if ($(RefId).prop("checked") == true) {
+            mlarr.push(RefId.id);
+
+
+            //var val = $("#MultiUpdate").val();
+            //$("#MultiUpdate").val(val + RefId.id + ',');
+        }
+        else if ($(RefId).prop("checked") == false) {
+            //console.log("Checkbox is unchecked.");
+            mlarr = jQuery.grep(mlarr, function (value) {
+                return value != RefId.id;
+            });
+        }
+
+
+        $("#MultiUpdate").val(mlarr);
+        console.log($("#MultiUpdate").val());
+
+        var val = $("#MultiUpdate").val();
+        if (val == "") {
+            $("#floatButton").hide();
+           // $('[id^="UpdateRef_"]').show();
+        } else {
+            $("#floatButton").show();
+           // $('#UpdateTab li:eq(2) a').tab('show');
+            //$('#UpdateTab li:eq(2) a').click();
+           // SelectTab(2);
+            //ShowInitialTabContent();
+
+        }
+    }
+
+    function SelectTab(tabindex) {
+        $('#UpdateTab  li ').removeClass('active');
+        $('#UpdateTab li').eq(tabindex).addClass('active');
+        //tabindex start at 0
+    }
+    function FindActiveDiv() {
+        var DivName = $('#UpdateTab .active a').attr('data-bs-target');
+        return DivName;
+    }
+    function RemoveFocusNonActive() {
+        $('#UpdateTab a').not('.active').blur();
+        $('#myUpdateContent  div').removeClass('active');
+        $('#myUpdateContent  div').removeClass('show');
+        //to >  remove  :hover :focus;
+    }
+
+    function ShowInitialTabContent() {
+        RemoveFocusNonActive();
+        var DivName = FindActiveDiv();
+       // alert(DivName);
+        if (DivName) {
+            $(DivName).addClass('active');
+            $(DivName).addClass('show');
+        }
+    }
+
+
+    function closeMultiEdit() {
+        $("#MultiModalEdit").css("display", "none");
+        $('#MultiModalEditbody').html('');
+        //window.location.reload();
+        // var type = $('#DocumentTypeIdHdn').val();
+        //  GetDataForDiary();
+       // mlarr = [];
+       // $("#MultiUpdate").val('');
+
+
+    }
+
+    function UpdateMultiStatus() {
+        var val = $("#MultiUpdate").val();
+        if (val == "") {
+            alert("Please Select Check box for update multiple Status");
+            return false;
+        } else {
+            OpenMultiEdit();
+        }
+    }
+
+
+
+
+
+    function ViewSingleEdit(IDD) {
+
+            var mainRefid= $('#RefId').val();
+            var ID = IDD.id;
+        $('#SingleModelEditbody').html('');
+         var pathurl = '@Url.Action("EditSingleEntry", "References")';
+          //  var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { ID: ID, MainRefId: mainRefid },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    // //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#SingleModelEdit").css("display", "block");
+                        $('#SingleModelEditbody').html(data);
+                        $(".yellow-list").animate({ scrollTop: $('ul.yellow-list li:last').offset().top + 30 });
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+            //$('#InboxModelbody').html('');
+
+        //closeInboxEdit();
+
+
+
+
+
+    }
+
+
+    function closeSingleEdit() {
+
+        var mainrefid = $('#MainRefId').val();
+        $("#SingleModelEdit").css("display", "none");
+        $('#SingleModelEditbody').html('');
+        //$('#' + mainrefid).click();
+        setTimeout(function () {
+
+            //$('#myTab li:eq(1) a').tab('show');
+           // $('#myTab li:eq(1) a').click();
+        }, 1000);
+
+    }
+
+     function OpenMultiEdit() {
+         var MultiId = $("#MultiUpdate").val();
+
+        $('#MultiModalEditbody').html('');
+         var pathurl = '@Url.Action("EditMultiForm", "References")';
+          //  var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                async: true,
+                data: { MultiId: MultiId },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    // //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#MultiModalEdit").css("display", "block");
+                        $('#MultiModalEditbody').html(data);
+
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+
+
+        }
+
+    function LinkedReferences(refid) {
+        $("#loader-wrapper").show();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("LinkedReferences", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { refid: refid },
+            success: function (response) {
+                if (response.LinkRefID != "" & response.LinkRefID != null) {
+                    /*$("#switchbuttondiv").css("display", "block");*/
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+   }
+
+
+   function ShowButton() {
+        var type = 2034;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowButton", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {type:type},
+            success: function (response) {
+                if (response[0].isupdate == 1) {
+
+                    $("#switchbuttondiv").css("display", "block");
+                    getsubjectandsubjectDetails();
+                    $("#loader-wrapper").hide();
+
+                }
+                else {
+                    $("#switchbuttondiv").css("display", "none");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    function getsubjectandsubjectDetails() {
+        var refid = @Model.RefId;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getsubjectandsubjectDetails", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {refid:refid},
+            success: function (response) {
+                if (response != null) {
+                    $("#subjectforedit").val(response[0].subject);
+                     $("#subjectold").val(response[0].subject);
+                    $("#subjectdetailforedit").val(response[0].SubjectDetails);
+                    $("#subjectdetailold").val(response[0].SubjectDetails);
+
+                }
+                else {
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    $('#DdlActionType').change(function () {
+
+
+        var selected = $('option:selected', $(this)).val();
+        var isfund = $('#hdnisfund').val()
+
+       $('#SanctionModal input[type=text]').each(function () {
+           $(this).val('0');
+       });
+       $('#SanctionModal input[type=text]').each(function () {
+           $(this).val('0');
+       });
+
+
+        if (selected == '1' && isfund=="1") {
+            $('#SanctionModal').show();
+
+            var html = "Approved Amount (in Rs.): "
+
+            tinymce.get("ActionDescription").setContent(html);
+        } else {
+            $('#txtSantionAmount').val('');
+            $('#txtSanctionDate').val('');
+            $('#txtRemarks').val('');
+            $('#SanctionModal').hide();
+
+
+
+       }
+
+
+
+
+
+        if (selected == '3' && isfund == "1") {
+           $('#SanctionAmountModal').show();
+            var html = "Sanctioned Amount (in Rs.): "
+            tinymce.get("ActionDescription").setContent(html);
+       } else {
+           $('#txtSantionAmount').val('');
+           $('#txtSanctionDate').val('');
+           $('#txtRemarks').val('');
+           $('#SanctionAmountModal').hide();
+
+       }
+   });
+
+    $('#DocumentTypeNameChange').change(function () {
+
+        UpdatedocumentType()
+
+    });
+
+    $('#ddlOfficeChange').change(function () {
+
+        UpdateOffice()
+
+    });
+
+
+    function UpdateOffice() {
+        var refid = @Model.RefId;
+         var officeId = $('#ddlOfficeChange').val();
+
+        if (officeId == null || officeId == "" || officeId == undefined) {
+            alert("Please select Office.");
+            return false;
+        }
+        if (refid == null || refid == "" || refid == undefined) {
+            alert("Some Error Occured Try Again");
+            return false;
+        }
+
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("ToOfficeId", officeId);
+        if (confirm("Are you sure you want to update?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateToOffice", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Office Updated Successfully. ")
+                       // $("#DocumentTypeName").text($("#doctype option:selected").text());
+                        $("#editDoctypebox").css("display", "none");
+
+                    }
+                    if (response == "0") {
+                        alert("Data Updation Failed.");
+                                   $('#ddlOfficeChange').val( @Model.ToOfficeId);
+
+                    }
+                }
+            });
+        }
+        else {
+           $('#ddlOfficeChange').val( @Model.ToOfficeId);
+        }
+    }
+
+
+   function sanction() {
+        var validate = true;
+
+        var sanamt = $('#txtSantionAmount').val();
+        var sandate = $('#txtSanctionDate').val();
+        var rem = $('#txtRemarks').val();
+        if (sanamt == '') {
+            alert('Enter Santion Amount.');
+            validate = false;
+        }
+        if (sandate == '') {
+            alert('Enter Santion Date');
+            validate = false;
+        }
+        if (rem == '') {
+            alert('Enter Santion Remarks.');
+            validate = false;
+        }
+
+        if (validate) {
+            $('#SanctionModal').modal('hide');
+        }
+    }
+
+   function SearchRefNo(RefId) {
+                //debugger;
+                $('#linkModalRefSearchbody').html('');
+
+                if (RefId == 0 || RefId == "") {
+
+                    //  alert('Please enter the the Ref No');
+                }
+                else {
+
+                   // var pathurl = '/References/LinkSearchRefLink';
+                    $.ajax({
+                        type: "GET",
+                        async: true,
+                        url: '@Url.Action("LinkSearchRefLink", "References")',
+                        data: { RefId: RefId },
+                        beforeSend: function () {
+                            $('#loader-wrapper').show();
+                        },
+                        success: function (data) {
+                           //debugger;
+
+                           //debugger;
+                            $("#loader-wrapper").hide();
+
+                            if (data) {
+                                // //debugger;
+                                $("#linkModalSearchRef").css("display","block");
+
+
+                                $('#linkModalRefSearchbody').html(data);
+
+
+
+                            }
+                            else {
+
+                            }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+
+                            alert(xhr.responseText);
+                            alert(thrownError);
+                        },
+                        complete: function (results) {
+                            $('#loader-wrapper').hide();
+                            //setTimeout(function () {
+                            //    $('#divMsg').slideUp("slow");
+                            //}, 6000);
+                        }
+                    });
+                }
+
+            }
+
+   function get() {
+        //alert('a');
+        var selected = $("#DdlCctype option:selected");
+        var message = "";
+        selected.each(function () {
+            message += $(this).val() + ",";
+            $("#hdnOfficeIdCC").val(message)
+        });
+       // alert($("#hdnOfficeIdCC").val());
+    }
+
+    $('#TxtForwardDate').attr('readonly', true);
+    $('#TxtActionTakenDate').attr('readonly', true);
+    $('#TxtEnclosureTakenDate').attr('readonly', true);
+
+    function bindOfficeDrpList(DeptID) {
+        $.ajaxSetup({ cache: false });
+        $.ajax({
+            // url: '@Url.Action("ToOfficeDrpList", "References")',
+             url: '@Url.Action("OfficeDrpList", "References")',
+            type: 'GET',
+            async: true,
+            data: {
+                deptid: DeptID
+            },
+            success: function (data) {
+                if (data) {
+
+                    $("#divOfficeList").html(data);
+                    var office = $("#OfficeId").val();
+                    if (office != "") {
+                        $("#ddlFromOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlFromOffice option[value=" + office + "]").prop("selected", "selected");
+                        var utype = $('#DdlUserType').val();
+                        if (utype == 4) {
+                            $('#ddlFromOffice option:not(:selected)').attr('disabled', true);
+                        }
+
+                    }
+                    else {
+                        $("#ddlFromOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlFromOffice option[value=0]").prop("selected", "selected");
+                    }
+                }
+                else {
+
+                }            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    function bindToOfficeDrpList(DeptID) {
+        $.ajaxSetup({ cache: false });
+
+        $.ajax({
+            // url: '@Url.Action("ToOfficeDrpList", "References")',
+             url: '@Url.Action("ToOfficeDrpList", "References")',
+            type: 'GET',
+            async: true,
+            data: {
+                deptid: DeptID
+            },
+            success: function (data) {
+                if (data) {
+
+                    $("#divToOfficeList").html(data);
+                    var office = $("#OfficeId").val();
+                    if (office != "") {
+                        $("#ddlToOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlToOffice option[value=" + office + "]").prop("selected", "selected");
+                        var utype = $('#DdlUserType').val();
+                        if (utype == 4) {
+                            $('#ddlToOffice option:not(:selected)').attr('disabled', true);
+                        }
+
+                    }
+                    else {
+                        $("#ddlToOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlToOffice option[value=0]").prop("selected", "selected");
+                    }
+                }
+                else {
+
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    $("textarea#TxtTitle").focus(function () {
+        $("textarea#TxtTitle").animate({ height: "130px" }, 100)
+    })
+
+    $("textarea#TxtSubject").blur(function () {
+        $("textarea#TxtSubject").animate({ height: "55px" }, 100)
+    })
+
+    $("textarea#TxtActionRemarks").blur(function () {
+        $("textarea#TxtActionRemarks").animate({ height: "55px" }, 90)
+
+    })
+
+    $("textarea#TxtletterDescription").blur(function () {
+        $("textarea#TxtletterDescription").animate({ height: "55px" }, 100)
+    })
+
+    $("textarea#TxtItemDescription").blur(function () {
+        $("textarea#TxtItemDescription ").animate({ height: "55px" }, 90)
+    })
+
+    $("textarea#TxtRecieveFrom").blur(function () {
+        $("textarea#TxtRecieveFrom").animate({ height: "55px" }, 100)
+    })
+
+    $("textarea#TxtDocumentCC").blur(function () {
+        $("textarea#TxtDocumentCC").animate({ height: "55px" }, 100)
+    })
+
+    function Save() {
+        if ($("#DdlActionType").val() == "" || $("#DdlActionType").val() == null) {
+            alert("Please Select Action Type ?");
+            return false;
+        }
+
+        var radiovalue = document.querySelector('input[name="SentType"]:checked').value;
+        var sentto = "";
+        if (radiovalue == "FromOffice") {
+            sentto = $("#ddlfromUser").val();
+       }
+        else if (radiovalue == "ToOffice") {
+            sentto = $("#ddlToUser").val();
+       }
+
+        try {
+            if (typeof window.tinymce != 'undefined' && $(window.tinymce.editors).length > 0) {
+                $(window.tinymce.editors).each(function (idx) {
+                    try {
+                        tinymce.remove(idx);
+                    } catch (e) { }
+                });
+            }
+            tinyMCE.triggerSave(true, true); // very importent for get data of editior
+
+            if (sentto == "" ) {
+                alert("Please Select User");
+                return false;
+            }
+
+            if ($("#TxtActionTakenDate").val() == "") {
+                alert("Please Enter Action Taken Date ?");
+                return false;
+            }
+            else if ($("#DdlActionType").val() == "" || $("#DdlActionType").val() == null) {
+                alert("Please Select Action Type ?");
+                return false;
+            }
+
+            else if ($("#hdnisfund").val() == "1" && $("#txtSanctionDate").val() == "" && $("#DdlActionType").val()=="6") {
+                alert("Please enter Sanction date");
+                return false;
+            }
+            else if ($("#hdnisfund").val() == "1" && $("#txtApproveDate").val() == "" && $("#DdlActionType").val() == "2") {
+                alert("Please enter Approve date");
+                return false;
+            }
+            else {
+                if (confirm("Are you sure to save ?")) {
+                    $("#loader-wrapper").show();
+                    var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+                    var ActionFile = $("#Actionfile").text();
+                    if (EnclosureFiletxt == "Yes") {
+                        $("#IsEnclosureFile").val("Y");
+                    }
+                    else {
+                        $("#IsEnclosureFile").val("N");
+                    }
+                    if (ActionFile == "Yes") {
+                        $("#IsFile").val("Y");
+                    }
+                    else {
+                        $("#IsFile").val("N");
+                    }
+                    var TxtEnclosureTakenDate = $("#fileupload1").val();
+                    var file_nameEn = $("#file_nameEn").html();
+                    var ActionTaken_name = $("#file_name1").html();
+                    var actionlink = $("#actionlink").text();
+                    var action = $("#formActionDiary").attr("action");
+                    if ($("#formActionDiary").attr("enctype") == "multipart/form-data") {
+                        var dataString = new FormData($("#formActionDiary").get(0));
+                        processData = false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: action,
+                        async: true,
+                        data: dataString,
+                        dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+                            $('#MultiActionTakenFile').val("");
+                            if (data == "U" && data != "E") {
+                                var refid = $('#RefId').val();
+                                //BindDiaryAction(refid);
+                                alert("Action taken has been updated successfully");
+                                $("#loginModaldiaryEdit").css("display", "none");
+                                $("#loginModaldiary").css("display", "none");
+                                window.location.reload(true);
+                            }
+                            else if (data != "U" && data != "E") {
+                               // debugger;
+                                //$("#sprefno").text(data);
+                                var refid = $('#RefId').val();
+                                //BindDiaryAction(refid);
+                                alert("Action taken has been updated successfully");
+                                $("#loginModaldiaryEdit").css("display", "none");
+                                $("#loginModaldiary").css("display", "none");
+                                window.location.reload(true);
+                            }
+                            else {
+                                alert("Some error occurred,please try again");
+                                window.location.reload(true);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $("#loader-wrapper").hide();
+                            alert("Some error occurred,please try again");
+                            window.location.reload(true);
+                        },
+                    });
+
+                }
+            }
+        }
+        catch(ex)
+        {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+        }
+
+
+    function SaveMulti() {
+        //var myContent = tinymce.activeEditor.getContent();
+        //$('#ActionDescription').html(myContent);
+        tinymce.activeEditor.save();
+        //$("#Remarks").val(myContent);
+        //var radiovalue = document.querySelector('input[name="SentType"]:checked').value;
+        //var SentTo = "";
+        //if (radiovalue == "FromOffice") {
+        //    SentTo = $("#ddlfromUser").val();
+        //}
+        //else if (radiovalue == "ToOffice") {
+        //    SentTo = $("#ddlToUser").val();
+        //}
+        var SwipeId = $("#PannelId").val();
+
+
+        try {
+
+            if (typeof window.tinymce != 'undefined' && $(window.tinymce.editors).length > 0) {
+                $(window.tinymce.editors).each(function (idx) {
+                    try {
+                        tinymce.remove(idx);
+                    } catch (e) { }
+                });
+            }
+
+            tinyMCE.triggerSave(true, true); // very importent for get data of editior
+
+            if ($("#TxtActionTakenDate").val() == "") {
+                alert("Please Enter Action Taken Date ?");
+                return false;
+            }
+            else if ($("#DdlActionType_Multi").val() == "") {
+                alert("Please Select Action Type .");
+                return false;
+            }
+
+            var val = $("#MultiUpdate").val();
+            if (val == "") {
+                alert("Please Select Check Box of References.");
+                return false;
+            }
+
+            else {
+                if (true) {
+                    $("#loader-wrapper").show();
+                    var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+                    var ActionFile = $("#Actionfile").text();
+                    if (EnclosureFiletxt == "Yes") {
+                        $("#IsEnclosureFile").val("Y");
+                    }
+                    else {
+                        $("#IsEnclosureFile").val("N");
+                    }
+                    if (ActionFile == "Yes") {
+                        $("#IsFile").val("Y");
+                    }
+                    else {
+                        $("#IsFile").val("N");
+                    }
+                    var TxtEnclosureTakenDate = $("#fileupload12").val();
+                    var file_nameEn = $("#file_nameEn").html();
+                    var ActionTaken_name = $("#file_name12").html();
+                    var actionlink = $("#actionlink").text();
+
+                    var action = '/References/SaveUpdateMultiAction';
+
+                    if ($("#formActionDiary").attr("enctype") == "multipart/form-data") {
+                        var dataString = new FormData($("#formActionDiary").get(0));
+                        processData = false;
+                    }
+                    console.log(dataString);
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("SaveUpdateMultiAction", "References")',
+                        async: true,
+                        data: dataString,
+                        dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+
+                            $("#loader-wrapper").hide();
+                            if (data == "U" && data != "E") {
+                                var refid = $('#RefId').val();
+                                //BindDiaryAction(refid);
+                                GetIncludedRef();
+                                closeCheckEdit();
+                                //closeInboxEdit();
+                                //$('#' + refid).click();
+                                //alert("Action taken has been updated successfully");
+                              //  Swipe(SwipeId);
+                                $("#PannelId").val(SwipeId);
+                                $("#loginModaldiaryEdit").css("display", "none");
+                                $("#loginModaldiary").css("display", "none");
+                               // window.location.reload(true);
+                            }
+                            else if (data != "U" && data != "E") {
+                                //This Id working
+                                // debugger;
+                                //$("#sprefno").text(data);
+                                var refid = $('#RefId').val();
+                               // BindDiaryAction(refid);
+                                GetIncludedRef();
+
+                                closeCheckEdit();
+                                //$('#' + refid).click();
+                               // alert("Action taken has been updated successfully");
+                                //alert(SwipeId);
+                               // Swipe(SwipeId);
+                                $("#PannelId").val(SwipeId);
+
+                                $("#loginModaldiaryEdit").css("display", "none");
+                                $("#loginModaldiary").css("display", "none");
+                                //window.location.reload(true);
+                            }
+                            else {
+
+                                alert("Some error occurred,please try again");
+                                window.location.reload(true);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+
+                            $("#loader-wrapper").hide();
+                            alert("Some error occurred,please try again");
+                            window.location.reload(true);
+                        },
+                    });
+
+                }
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+
+
+
+    function Send() {
+        //var myContent = tinymce.activeEditor.getContent();
+        //$('#ActionDescription').html(myContent);
+        tinymce.activeEditor.save();
+        //$("#Remarks").val(myContent);
+        //var radiovalue = document.querySelector('input[name="SentType"]:checked').value;
+        //var SentTo = "";
+        //if (radiovalue == "FromOffice") {
+        //    SentTo = $("#ddlfromUser").val();
+        //}
+        //else if (radiovalue == "ToOffice") {
+        //    SentTo = $("#ddlToUser").val();
+        //}
+
+        try {
+
+            if (typeof window.tinymce != 'undefined' && $(window.tinymce.editors).length > 0) {
+                $(window.tinymce.editors).each(function (idx) {
+                    try {
+                        tinymce.remove(idx);
+                    } catch (e) { }
+                });
+            }
+
+            tinyMCE.triggerSave(true, true); // very importent for get data of editior
+
+            if (confirm("Are you sure to Send ?")) {
+                    $("#loader-wrapper").show();
+                    var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+                    var ActionFile = $("#Actionfile").text();
+                    if (EnclosureFiletxt == "Yes") {
+                        $("#IsEnclosureFile").val("Y");
+                    }
+                    else {
+                        $("#IsEnclosureFile").val("N");
+                    }
+                    if (ActionFile == "Yes") {
+                        $("#IsFile").val("Y");
+                    }
+                    else {
+                        $("#IsFile").val("N");
+                    }
+                    var TxtEnclosureTakenDate = $("#fileupload12").val();
+                    var file_nameEn = $("#file_nameEn").html();
+                    var ActionTaken_name = $("#file_name12").html();
+                    var actionlink = $("#actionlink").text();
+
+
+
+                    if ($("#formActionDiary").attr("enctype") == "multipart/form-data") {
+                        var dataString = new FormData($("#formActionDiary").get(0));
+                        processData = false;
+                    }
+
+
+                    $.ajax({
+                        type: "POST",
+                        url:  '@Url.Action("SaveUpdateSend", "References")',
+                        async: true,
+                        data: dataString,
+                        dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+                            if (data == "U" && data != "E") {
+                                var refid = $('#RefId').val();
+                               // BindDiaryAction(refid);
+                                alert("Send successfully");
+                                $("#loginModaldiaryEdit").css("display", "none");
+                                $("#loginModaldiary").css("display", "none");
+                                window.location.reload(true);
+                            }
+                            else if (data != "U" && data != "E") {
+                                // debugger;
+                                //$("#sprefno").text(data);
+                                var refid = $('#RefId').val();
+                                //BindDiaryAction(refid);
+                                alert("Send successfully");
+                                $("#loginModaldiaryEdit").css("display", "none");
+                                $("#loginModaldiary").css("display", "none");
+                                window.location.reload(true);
+                            }
+                            else {
+                                alert("Some error occurred,please try again");
+                                window.location.reload(true);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $("#loader-wrapper").hide();
+                            alert("Some error occurred,please try again");
+                            window.location.reload(true);
+                        },
+                    });
+
+                }
+
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+
+    function BindDiaryAction(ID) {
+        var moveid = $('#MoveId').val();
+
+            $('#loginModaldiarybody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+
+        //var pathurl = '/References/EditMlaDairyForm';
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditMlaDairyForm", "References")',
+                async: true,
+                data: { ID: ID, MoveId:moveid },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    // //debugger;
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#loginModaldiary").css("display","block");
+                        $('#loginModaldiarybody').html(data);
+
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+
+        }
+
+    function MinistryChanged() {
+        //var cl = new CanvasLoader('canvasloader-container1');
+        var ministryID = $('#DdlEntryMinister').val();
+
+        if (ministryID == "0") {
+            $('#MinistryId').val(ministryID);
+            var select = $("#DdlDept");
+            select.empty();
+            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { MinistryId: ministryID },
+                success: function (data) {
+                    var opt = document.createElement("option");
+
+                    document.getElementById("DdlDept").options.add(opt);
+
+                    opt.text = 'Select Department';
+                    opt.value = 0;
+                }, error: function (data) {
+                    alert("Something wrong...")
+                }
+            })
+        }
+
+        if (ministryID != "" && ministryID != null) {
+            //cl.show();
+            $('#MinistryId').val(ministryID);
+            var select = $("#DdlDept");
+            select.empty();
+            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                async: true,
+                data: { MinistryId: ministryID },
+                success: function (data) {
+                    $.each(data, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.DepartmentId,
+                            text: itemData.DepartmentName
+                        }));
+                    });
+                    //cl.hide();
+                }, error: function (data) {
+                    alert("Something wrong...")
+                }
+            })
+        }
+    }
+    function FileNotingUpload() {
+
+         $('#Actionfile').text('No');
+        $('#IsFile').val("N");
+        $('#fileupload1').fileupload({
+            dataType: 'json',
+            async: true,
+             url: '@Url.Action("UploadMlaActionFiles", "eFile")',
+          //  url: "/eFile/UploadMlaActionFiles",
+            autoUpload: true,
+
+            done: function (e, data) {
+
+                var sim = setTimeout("hidevalueAction()", 1000);
+                $('.file_name1').html(data.result.pdfname);
+                $('#afile_nameEn1').attr("href","@path" + data.result.name)
+                $('.file_size1').html(data.result.size);
+                $("#removefileupload1").css("display", "inline-block");
+                $('#MultiActionTakenFile').val(data.result.name);
+            }
+        }).on('fileuploadprogressall', function (e, data) {
+
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('.progress12 .progress-bar').css('width', progress + '%');
+            $('#removefileupload1').css('display', 'none');
+        });
+
+    }
+
+
+    function hidevalueForwd() {
+        $('.progress1 .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueForwd()", 3000);
+    }
+
+    function hidevalueAction() {
+        $('.progress12 .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueAction()", 3000);
+    }
+
+    function hidevalueActionEnclosure() {
+        $('.progressEnclosure .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+    }
+
+    function RemoveActionEnclosureFiles() {
+
+        $('.file_nameEn1').html('');
+        $('.file_size1').html('');
+        $('.progressEnclosure .progress-bar').css('width', '0%');
+        $("#removeUploadEnclosure").hide();
+        $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
+        $('#MultiActionTakenFile').val("");
+        $.post("/eFile/RemoveActionEnclosureFiles",
+           {
+           },
+           function (data) {
+           });
+
+    }
+
+    function removefileupload() { //ActionFile
+
+        $('.file_name1').html('');
+        $('.file_size1').html('');
+        $('.progress12 .progress-bar').css('width', '0%');
+        $("#removefileupload1").hide();
+        $('#fileuploadcontant1').css('border', '0px solid rgb(244, 239, 239)');
+        $("#removefileupload1").css("display", "none");
+
+        $.post("/eFile/RemoveMlaForwardFiles",
+           {
+           },
+           function (data) {
+           });
+
+    }
+
+    function allowOnlyNumber(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            alert('Please Enter Numeric Value.');
+            return false;
+        }
+        return true;
+    }
+
+    function Disablecontrols() {
+
+        //  $("#TxtDocumentTo").prop("readonly", true);   --- For kapoor
+        // $("#TxtSubject").prop("readonly", true);
+        $("#TxtGrantAmount").prop("readonly", true);
+        $("#TxtApplicantName").prop("readonly", true);
+        $("#TxtApplicantAddress").prop("readonly", true);
+        $("#TxtApplicantMobile").prop("readonly", true);
+        $("#TxtPresentAddress").prop("readonly", true);
+        $("#TxtProposedPlace").prop("readonly", true);
+        $("#TxtRecieveFrom").prop("readonly", true);
+        $("#TxtMobileNo").prop("readonly", true);
+        $("#TxtEnclosureTakenDate").prop("readonly", true);
+        $("#TxtForwardDate").prop("readonly", true);
+        $('#DdlDoctype option:not(:selected)').attr('disabled', true);
+        $('#DdlOffice option:not(:selected)').attr('disabled', true); // --- For kapoor
+        $('#ddFinancialYear option:not(:selected)').attr('disabled', true);
+        $('#DdlMappedMember option:not(:selected)').attr('disabled', true);
+
+        $("#TxtLetterNo").prop("readonly", true);
+        // $('#DdlCctype option:not(:selected)').attr('disabled', true);
+
+    }
+
+    function MainView() {
+        //alert('lo g');
+        $.ajaxSetup({ cache: false });
+        var pathurl = '@Url.Action("MlaDiarySearchPage", "References")';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            success: function (data) {
+
+                $("#MainDiv").html("");
+                $("#MainDiv").html(data);
+
+
+                // $("#outerDiv").html("");
+                // $("#outerDiv").html(data);
+                $("#loader-wrapper").hide();
+            }
+            //ClearControls();
+
+        });
+
+
+    }
+
+    function MainView1() {
+        $('#listdiv').html('');
+        $('#MainDiv').html('');
+       ////debugger;
+        //alert('lo g');
+        $.ajaxSetup({ cache: false });
+        var pathurl = '@Url.Action("MLADiaryReport", "References")';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            async: true,
+            success: function (data) {
+               ////debugger;
+                $('#MainDiv').empty();
+                $('#MainDiv').html(data);
+                $("#MainDiv").css("display", "block");
+
+                //  ClearControls();
+               /// $("#loader-wrapper").hide();
+            }
+            //ClearControls();
+
+        });
+
+
+    }
+
+    function changedocumentType() {
+
+         var doctype = $("#doctype");
+         doctype.empty().append('<option selected="selected" value="">Please select</option>');
+        $('#doctype').empty().append('<option selected="selected" value="">Please select</option>');
+                    $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetDocumentType", "References")',
+                    datatype: "Json",
+                        data: {  },
+                success: function (data) {
+                    doctype.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(data, function () {
+
+                        doctype.append($("<option></option>").val(this['id']).html(this['name']));
+
+                        $("#editDoctypebox").css("display", "block");
+                    });
+
+
+                    }
+                });
+        }
+
+    function UpdatedocumentType() {
+        var refid = @Model.RefId;
+         var documentid = $('#DocumentTypeNameChange').val();
+
+        if (documentid == null || documentid == "" || documentid == undefined) {
+            alert("Please select Document Type First");
+            return false;
+        }
+        if (refid == null || refid == "" || refid == undefined) {
+            alert("Some Error Occured Try Again");
+            return false;
+        }
+
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("documentid", documentid);
+        if (confirm("Are you sure you want to update?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateDiaryDocument", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        $("#DocumentTypeName").text($("#doctype option:selected").text());
+                        $("#editDoctypebox").css("display", "none");
+
+                    }
+                    if (response == "0") {
+                        alert("Data Updation Failed.");
+                                   $('#DocumentTypeNameChange').val( @Model.DocmentType);
+
+                    }
+                }
+            });
+        }
+        else {
+           $('#DocumentTypeNameChange').val(@Model.DocmentType);
+        }
+    }
+
+
+    var val = 0;
+    function seteditorvalue(fundname) {
+
+        var max = parseInt($('#txt_' + fundname).attr("max"));
+        var amt = parseInt($('#txt_' + fundname).val());
+
+        if (amt > max) {
+            $('#txt_' + fundname).val('0');
+            alert("Approve Amount is greater than Fund Available.");
+            return false;
+        }
+
+        var rf = $('#txt_CMFundsRelief').val();
+        var sf = $('#txt_CMFundsSmallSavings').val();
+        var uf = $('#txt_CMFundsUnited').val();
+        var vf = $('#txt_CMFundsViveki').val();
+        var cf = $('#txt_CMFundsCattleFair').val();
+        html="Approve Amount (in Rs.): </br>"
+        if (rf > 0) {
+            html = html + rf + " (Relief Funds)  </br>";
+        }
+        if (sf > 0) {
+            html = html +sf+ " (Small Saving Funds) </br>";
+        }
+        if (uf > 0) {
+            html = html + uf + " (Untied Funds)  </br>";
+        }
+        if (vf > 0) {
+            html = html + vf + " (Viveki Funds)  </br>";
+        }
+        if (cf > 0) {
+            html = html + cf + " (Cattle Fair Funds) </br>";
+        }
+        tinymce.get("ActionDescription").setContent(html);
+
+    }
+
+    function seteditorSanctionvalue(id) {
+
+
+        var max = parseInt( $('#txt_' + id).attr("max"));
+        var amt = parseInt($('#txt_' + id).val());
+        if (amt > max) {
+            $('#txt_' + id).val('0');
+            alert("Santion Amount is greater than Approved Amount");
+            return false;
+        }
+
+
+
+        var html = "";
+
+        var rf = $('.San_CMFundsRelief').val();
+        var sf = $('.San_CMFundsSmallSavings').val();
+        var uf = $('.San_CMFundsUnited').val();
+        var vf = $('.San_CMFundsViveki').val();
+        var cf = $('.San_CMFundsCattleFair').val();
+        html = "Sanctioned Amount (in Rs.): </br>"
+        if (rf > 0) {
+            html = html + rf + " (Relief Funds)  </br>";
+        }
+        if (sf > 0) {
+            html = html + sf + " (Small Saving Funds) </br>";
+        }
+        if (uf > 0) {
+            html = html + uf + " (Untied Funds)  </br>";
+        }
+        if (vf > 0) {
+            html = html + vf + " (Viveki Funds)  </br>";
+        }
+        if (cf > 0) {
+            html = html + cf + " (Cattle Fair Funds) </br>";
+        }
+
+        tinymce.get("ActionDescription").setContent(html);
+    }
+
+    function seteditSanctionvalue(id,type) {
+
+        var html = tinymce.activeEditor.getContent();
+        var rf = $('#txt_' + id).val();
+        if (rf > 0) {
+            html = html + rf + " (" + type +")  </br>";
+        }
+
+        tinymce.get("ActionDescription").setContent(html);
+    }
+
+
+
+    $('#enablefund').click(function () {
+        if ($(this).is(':checked')) {
+            $('.nonfund').show();
+        }
+        else {
+            $('#SanctionModal input[type=text]').each(function () {
+                $(this).val('0');
+            });
+            $('.nonfund').hide();
+        }
+
+    });
+
+    function ChangePriority(Refid) {
+        var refid = Refid;
+        var PriorityType = $("#PriorityType").val();
+        if (PriorityType == 0) {
+            alert("Some Error Occured Try Again");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("PriorityType", PriorityType);
+        if (confirm("Are you sure you want to change Priority?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdatePriorityType", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Priority Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Priority Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+                   document.getElementById("PriorityType").selectedIndex = @Model.ReferencePriorityType;
+        }
+    }
+
+
+
+    function ChangeTerm(Refid) {
+        var refid = Refid;
+        var Term = $("#Term").val();
+        if (Term == 0) {
+            alert("Some Error Occured Try Again");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("Term", Term);
+        if (confirm("Are you sure you want to change Term?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateTerm", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Term Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Term Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+            document.getElementById("Term").selectedIndex = @Model.ReferenceTerm;
+        }
+    }
+
+    function updatesubject() {
+        var refid = @Model.RefId;
+        var subject = $("#subjectforedit").val();
+        var subjectold = $("#subjectold").val();
+        if (subject == "") {
+            alert("Kindly fill the subject first");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("subject", subject);
+        formData.append("subjectold", subjectold);
+        if (confirm("Are you sure you want to change Subject?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("updatesubject", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Subject Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Subject Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+
+        }
+    }
+
+    function updatesubjectdetail() {
+                var refid = @Model.RefId;
+        var subjectdetail = $("#subjectdetailforedit").val();
+        var subjectdetailold = $("#subjectdetailold").val();
+        if (subjectdetail == "" || subjectdetail == null) {
+            alert("Kindly fill the subject detail first");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("subjectdetail", subjectdetail);
+        formData.append("subjectdetailold", subjectdetailold);
+        if (confirm("Are you sure you want to change Subject Details?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("updatesubjectdetails", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Subject Detail Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Subject Detail Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+
+        }
+    }
+
+    function lisfunction() {
+
+        var radiovalue = document.querySelector('input[name="SentType"]:checked').value;  var radiovalue = document.querySelector('input[name="SentType"]:checked').value;
+
+        if (radiovalue == "FromOffice") {
+            $("#ddlfromOffice").show();
+            $("#ddlToOffice").hide();
+            $("#ddlfromUser").show();
+            $("#ddlmlaOffice").hide();
+
+            $('#ddlMlaUser').multipleSelect('destroy');
+            $("#ddlMlaUser").hide();
+
+            $("#ddlfromUser").multipleSelect({
+                columns: 1,
+                filter: true,
+                maxHeight: 200,
+                placeholder: 'Select User',
+            });
+            //$('#ddldep').multipleSelect('refresh');
+            $('#ddlToUser').multipleSelect('destroy');
+            $("#ddlToUser").hide();
+        }
+        else if (radiovalue == "ToOffice") {
+            $("#ddlfromOffice").hide();
+            $("#ddlToOffice").show();
+
+            $('#ddlfromUser').multipleSelect('destroy');
+            $("#ddlfromUser").hide();
+
+            $("#ddlmlaOffice").hide();
+            $('#ddlMlaUser').multipleSelect('destroy');
+            $("#ddlMlaUser").hide();
+
+            $("#ddlToUser").show();
+            $("#ddlToUser").multipleSelect({
+                columns: 1,
+                filter: true,
+                maxHeight: 200,
+
+                placeholder: 'Select User',
+            });
+        }
+        else if (radiovalue == "MLAOffice") {
+            $("#ddlfromOffice").hide();
+            $("#ddlToOffice").hide();
+            $('#ddlfromUser').multipleSelect('destroy');
+            $("#ddlfromUser").hide();
+
+           $("#ddlmlaOffice").show();
+            GetMlaUser();
+            $("#ddlMlaUser").show();
+            $("#ddlMlaUser").multipleSelect({
+                columns: 1,
+                filter: true,
+                maxHeight: 350,
+                placeholder: 'Select User',
+            });
+
+            $("#divcopy").hide();
+            $('#chkcopy').prop('checked', false);
+        }
+    }
+
+
+
+    function GetUserOffice() {
+
+        var UserId = $('#ddlfromUser').val();
+
+     $('#ddlUserOffice').empty().append('<option value="">-Assigned Office-</option>');
+
+        if (UserId != "") {
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetUserOffices", "User")',
+            datatype: "Json",
+            data: { UserId: UserId },
+            success: function (data) {
+                $.each(data, function (index, value) {
+                    if (data.length > 1) {
+                        $('#ddlUserOffice').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        $('#ddlUserOffice').show();
+                    } else {
+                        $('#ddlUserOffice').hide();
+                    }
+
+                    //.multipleSelect('refresh');
+                });
+
+
+            }
+        });
+    } else {
+
+
+    }
+}
+     function fileupload() {
+
+       // $('#Actionfile').text('No');
+       // $('#IsFile').val("N");
+        $('#fileupload12').fileupload({
+            dataType: 'json',
+            async: true,
+             url: '@Url.Action("UploadMlaActionFiles", "eFile")',
+          //  url: "/eFile/UploadMlaActionFiles",
+            autoUpload: true,
+
+            done: function (e, data) {
+
+                var sim = setTimeout("hidevalueAction()", 1000);
+                $('.file_name12').html(data.result.pdfname);
+                $('#afile_nameEn12').attr("href","@path" + data.result.name)
+                $('.file_size12').html(data.result.size);
+                $("#removefileupload12").css("display", "inline-block");
+
+            }
+        }).on('fileuploadprogressall', function (e, data) {
+
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('.progress12 .progress-bar').css('width', progress + '%');
+            $('#removefileupload12').css('display', 'none');
+        });
+    }
+
+    function removefileupload2() { //ActionFile
+
+        $('.file_name12').html('');
+        $('.file_size12').html('');
+        $('.progress12 .progress-bar').css('width', '0%');
+        $("#removefileupload12").hide();
+        $('#fileuploadcontant12').css('border', '0px solid rgb(244, 239, 239)');
+        $("#removefileupload12").css("display", "none");
+
+        $.post("/eFile/RemoveMlaForwardFiles",
+            {
+            },
+            function (data) {
+            });
+
+    }
+
+    function ShowRefTab(val) {
+
+
+
+        if (val == 1) {
+            $('#NotingTab').addClass("refhide");
+            $('#SendTab').addClass("refhide");
+            $('#ViewTab').addClass("refhide");
+            $('#NotingTab').removeClass("refshow");
+            $('#SendTab').removeClass("refshow");
+            $('#ViewTab').removeClass("refshow");
+
+            $('#RefTab').removeClass("refhide");
+            $('#RefTab').addClass("refshow");
+
+            $('#UpdateTab li:eq(2) a').tab('show');
+            $('#UpdateTab li:eq(2) a').click();
+        } else {
+            $('#NotingTab').removeClass("refhide");
+            $('#SendTab').removeClass("refhide");
+            $('#ViewTab').removeClass("refhide");
+            $('#NotingTab').addClass("refshow");
+            $('#SendTab').addClass("refshow");
+            $('#ViewTab').addClass("refshow");
+
+            $('#RefTab').removeClass("refshow");
+            $('#RefTab').addClass("refhide");
+            $('#UpdateTab li:eq(0) a').tab('show');
+            $('#UpdateTab li:eq(0) a').click();
+        }
+    }
+
+
+    function SaveContent() {
+        var myContent = tinymce.get("ActionDescription").getContent();
+        var actionId = $('#DdlActionType').val();
+        if (actionId == "") {
+            actionId = 0;
+        }
+        var refid = $('#RefId').val();
+          var formData = new FormData();
+        formData.append("ActionDescription", myContent);
+        formData.append("ActionCode", actionId);
+        formData.append("refid", refid);
+        if (confirm("Are you sure you want to Save?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveContent", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                         alert("Saved Successfully.");
+
+                    }
+                    if (response == "0") {
+                      alert("Updation Failed.");
+                    }
+                }
+            });
+        }
+
+    }
+    function openpdf() {
+        $('#btngetpdf').click();
+    }
+    function openproceedingpdf() {
+        $('#btngetProceedingpdf').click();
+    }
+
+    function GetToUser() {
+        var deptid = '@Model.ToDeptId';
+
+        var officeid = $('#ddlToOffice').val();
+        $('#ddlToUser').empty().append('<option value="">-Select-</option>');
+
+        if (deptid != "0" && officeid != "") {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUserbyOfficeIdForSend", "User")',
+                datatype: "Json",
+                data: { deptid: deptid, officeid: officeid },
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $('#ddlToUser').append('<option value="' + value.id + '">' + value.name + '</option>').multipleSelect('refresh');;
+                        //.multipleSelect('refresh');
+                    });
+
+
+                }
+            });
+        } else {
+
+
+        }
+    }
+
+    function GetFromUser() {
+        var deptid = '@Model.FromDeptId';
+
+        var officeid = $('#ddlfromOffice').val();
+        $('#ddlfromUser').empty().append('<option value="">-Select-</option>');
+            //.multipleSelect('refresh');
+
+        if (deptid != "0" && officeid != "") {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUserbyOfficeIdForSend", "User")',
+                datatype: "Json",
+                data: { deptid: deptid, officeid: officeid },
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $('#ddlfromUser').append('<option value="' + value.id + '">' + value.name + '</option>').multipleSelect('refresh');
+                            //.multipleSelect('refresh');
+                    });
+
+
+                }
+            });
+
+
+
+        } else {
+
+
+        }
+
+    }
+        $('#downloadreply').click(function (e) {
+
+    e.preventDefault();
+    window.open('@Url.Action("LGProceddings", "Agenda", new { RefId = Model.RefId })', '_blank');
+});
+
+    function Swipe(val) {
+        if (val == 1) {
+            $(".one").css("width", "0%");
+            $(".two").css("width", "100%");
+            $(".one").hide();
+            $("#floatButton").css("left", "2%");
+
+        } else {
+            $(".one").css("width", "35%");
+            $(".two").css("width", "65%");
+            $(".one").show();
+            $("#floatButton").css("left", "35%");
+        }
+        $("#PannelId").val(val);
+    }
+
+
+    function OpenCheckPopUp() {
+
+        var val = $("#MultiUpdate").val();
+        if (val == "") {
+            alert("Please Select Checkbox.")
+        } else {
+            $("#EditHeading").html("Update Action");
+            $("#CheckBoxModal").css("display", "block");
+        }
+
+
+
+    }
+
+
+    function OpenSingleEdit(IDD) {
+
+            var mainRefid= $('#RefId').val();
+        var ID = IDD.id;
+        $("#MultiUpdate").val(ID);
+        $("#EditHeading").html("Update Action");
+        $("#CheckBoxModal").css("display", "block");
+        var length = $('#DdlActionType_Multi').children('option').length;
+        if (length == 2) {
+            $('#DdlActionType_Multi option:eq(2)').attr('selected', 'selected');
+        }
+    }
+
+    function closeCheckEdit() {
+        $("#CheckBoxModal").css("display", "none");
+        $("#MultiUpdate").val("");
+        $('input:checkbox').prop('checked', false);
+        mlarr = [];
+        $("#floatButton").hide();
+        tinyMCE.get('ActionDescription_Multi').setContent('');
+
+    }
+
+    function CheckAll(val) {
+
+        if ($("#checkall").prop("checked") == true) {
+            $('.RefCheckBox').prop('checked', true);
+            $('input:checkbox.RefCheckBox').each(function () {
+                var sThisVal = (this.checked ? $(this).val() : "");
+                mlarr.push(sThisVal);
+            });
+            $("#MultiUpdate").val(mlarr);
+            $("#floatButton").show();
+        }
+        else if ($("#checkall").prop("checked") == false) {
+            $('.RefCheckBox').prop('checked', false);
+            mlarr = [];
+            $("#MultiUpdate").val("");
+            $("#floatButton").hide();
+        }
+
+    }
+</script>
+
+
+
+@using (Html.BeginForm("SaveUpdateMultiInboxAction", "References", FormMethod.Post, new { @id = "formActionDiary", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    DateTime crdt = Convert.ToDateTime(Model.CreatedDate);
+    string dt = crdt.ToString("dd/MM/yyyy");
+    string sec = crdt.ToString("hh:mm tt");
+
+
+    <div class="row modal_row">
+        <div class="col-md-12 col-lg-12 col-xl-12 ">
+            <div class="row px-lg-3 align-items-center mb-3">
+                <div class="col-md-1 col-sm-2 col-12 ">
+                    <label class="switch" style="display:none;" id="switchbuttondiv">
+                        <input type="checkbox" id="switchbutton">
+                        <span class="slider round">
+
+                        </span>
+
+                    </label>
+                </div>
+
+                <div class="col-md-11 col-sm-10 col-12 ">
+                    <div class="top-tools ">
+                        <h4 class="widget-title form_heading mb-0">
+                            ID: #@Model.ActionDescriptionMulti 
+
+                        </h4>
+                        
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+      
+            
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <ul class="nav tabtop-space nav-tabs" id="UpdateTab" role="tablist">
+                            <li id="NotingTab" class="nav-item hand" role="presentation">
+                                <a class="nav-link active" id="noting-tab" data-bs-toggle="tab" data-bs-target="#noting_@Model.RefId" role="tab" aria-controls="profile" aria-selected="false">Add Action</a>
+                            </li>
+                    </ul>
+                    <div class="tab-content" id="myUpdateContent">
+                        <div class="tab-pane fade show active" id="noting_@Model.RefId" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="border_none bg_light right_col taken_col">
+
+                                <div class="updat_box " style="padding-top:12px;">
+                                    <div class="row">
+                                        <div id="divactkndate" class="col-md-6">
+                                            <div class="fotm_lbl">Action Date:</div>
+
+                                            @Html.TextBoxFor(m => m.CurrentDate, new { @id = "TxtActionTakenDate", @tabindex = "1", @class = "DdlClass" })
+
+                                        </div>
+                                        <div id="divActiontkn" class="col-md-6">
+                                            <div class="fotm_lbl">Action Type:</div>
+
+                                            @Html.DropDownListFor(m => m.ActionCode, Model.ActionTypeList,  new { @id = "DdlActionType", @tabindex = "2", @class = "DdlClass" })
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    @if (Model.isfund == 1)
+                                    {
+
+                                        <div id="SanctionModal" style="display:none">
+                                            <input type="hidden" id="hdnisfund" name="isfund" value="@Model.isfund" />
+                                            <div id="" class="amount_tab">
+                                                <div class="row">
+
+                                                    <div class="fotm_lbl col-7" style="margin-left: 16px;"> Amount Approved(in Rs.):</div>
+                                                    <div class="col-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="enablefund">
+                                                            <label class="form-check-label" for="flexCheckDefault">
+                                                                Enable Other Funds
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                                </div>
+
+                                                <div class="amount_tab_1 table-responsive">
+                                                    <table class="table table-bordered" id="fundname">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="td-heading">Fund Type</th>
+                                                                <th class="td-heading">Fund Available</th>
+                                                                <th class="td-heading">Amount Approved By CM</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var fund in Model._LstFundReport)
+                                                            {
+
+                                                                if (@Model.DocumentTypeName == @fund.FundType)
+                                                                {
+                                                                    <tr>
+                                                                        <td class="td-data">@fund.FundType</td>
+                                                                        <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
+                                                                        <td class="td-data"><input class="form-control tfund" type="text" value="0" max="@fund.FundAvaiable" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
+                                                                    </tr>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <tr>
+                                                                        <td class="td-data">@fund.FundType</td>
+                                                                        <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
+                                                                        <td class="td-data"><input class="form-control nonfund" type="text" max="@fund.FundAvaiable" value="0" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+                                            <div id="" class="row">
+                                                <div class="col-md-4 col-lg-4">
+                                                    <div class="fotm_lbl">Approved Date:</div>
+                                                    <div class="">
+                                                        <input type="date" class="form-control txt_value" id="txtApproveDate" name="ApproveDate" required="">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        if (@Model._LstFundSactioned.ToList().Count > 0)
+                                        {
+                                            <div id="SanctionAmountModal" style="display:none">
+                                                <input type="hidden" id="hdnisfund" name="isfund" value="@Model.isfund" />
+                                                <div id="" class="amount_tab">
+                                                    <div class="fotm_lbl">Amount Approved (in Rs.):</div>
+                                                    <div class="amount_tab_1 table-responsive">
+                                                        <table class="table" id="fundname">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th class="td-heading">Fund Type</th>
+                                                                    <th class="td-heading">Fund Approved</th>
+                                                                    <th class="td-heading">Sanctioned Amount</th>
+                                                                </tr>
+                                                                @foreach (var fund in Model._LstFundSactioned)
+                                                                {
+                                                                    <tr>
+                                                                        <td class="fundtd td-data mar">@fund.FundType</td>
+                                                                        <td class="fundtd td-data mar " style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundApproved).Replace(".00",""))</td>
+                                                                        <td class="fundtd td-data"><input class="form-control  tfund San_@fund.FundType.Replace(" ", "")" type="text" value="@fund.FundSanctioned" id="txt_@fund.FundSanctionId" name="San_@fund.FundSanctionId" onfocusout="return seteditorSanctionvalue(@fund.FundSanctionId);" max="@fund.FundApproved" @fund.DisableClass /> </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div id="" class="row">
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class="fotm_lbl">Sanctioned Date:</div>
+                                                        <div class="">
+                                                            <input type="date" class="form-control txt_value" id="txtSanctionDate" name="SanctionDate" required="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    }
+
+
+                                    <div class="col-md-12 col-lg-12 col-xl-12 mb-2 row" style="margin-top:5px;">
+                                        <div class="col-md-12 col-lg-12 col-xl-12">
+                                            <div class="fotm_lbl div_inline">Action Attachment:</div>
+
+                                        </div>
+                                        <div class="input-group col-md-2 col-lg-2 col-xl-2 pull-left">
+                                            <label class="lbl_file">
+                                                <span>
+                                                    <input id="fileupload1" type="file" tittle=" " name="fileupload1" accept=".pdf" onclick="FileNotingUpload()">
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-6 col-xl-6">
+                                            <div class="d-flex align-items-center gap-5">
+                                                <div>
+                                                    <a href="#" id="afile_nameEn1" target="_blank">
+                                                        <span id="file_name1" class="file_name1"></span>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <span id="removefileupload1" class="remove-btn" style="display: none; color: red; width:28px;" onclick="removefileupload()"><i class="far fa-times"></i></span>
+                                                </div>
+                                            </div>
+
+                                            <span class="file_size1"></span> &nbsp;
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div id="divRemrks" class="remark_desig" style="">
+                                        <div class="fotm_lbl">Action Remark: </div>
+
+                                        @{ var editorclass = "";}
+                                        @if (Model.isLetter == "Letter")
+                                        {
+                                            editorclass = "Yellow-editor";
+                                        }
+                                        else
+                                        {
+                                            editorclass = "Green-editor";
+                                        }
+                                        <div class="txt_editor">
+                                            <div class="remark_2 @editorclass">
+                                                @Html.TextAreaFor(m => m.ActionDescription, new { @tabindex = "4", @Class = "form-control" })
+                                            </div>
+                                        </div>
+
+                                        @*<div class="profile-info-row">
+                                            <input type="button" id="btnActionSave" class="btn btn-primary mt-3" value="Save" onclick="SaveContent()">
+                                        </div>*@
+
+                                    </div>
+
+                                    <div id="divRemrks" class="remark_1">
+                                        <div class="remark_2">
+                                            <div class="fotm_lbl">Send :</div>
+                                            @{
+                                                bool fromchk, tochk = false, uddshow = true;
+                                                if (Model.FromDeptId == CurrentSession.DeptID)
+                                                {
+                                                    fromchk = true;
+                                                    tochk = false;
+                                                }
+                                                else
+                                                {
+                                                    fromchk = false;
+                                                    tochk = true;
+                                                }
+                                            }
+
+                                            @*@Html.RadioButtonFor(m => m.SentType, "ToOffice", tochk ? (object)new { @id = "rbTo", @onclick = "lisfunction();", @checked = "Checked" } : (object)new { @id = "rbTo", @onclick = "lisfunction();" })
+        <label for="lblFrom">
+            <b>
+                @if (Model.ToDeptId == Model.FromDeptId)
+                {@Model.ToOffice}
+            else
+            { @Model.ToDept}
+            </b>
+        </label>&nbsp;&nbsp;
+        <br />*@
+
+                                            @if (CurrentSession.DeptID == Model.FromDeptId)
+                                            {
+                                                @Html.RadioButtonFor(m => m.SentType, "FromOffice", fromchk ? (object)new { @id = "rbFrom", @onclick = "lisfunction();", @checked = "Checked" } : (object)new { @id = "rbFrom", @onclick = "lisfunction();" })
+                                                <label for="lblTo"> <b> @Model.FromDept</b> </label>
+                                            }
+                                            &nbsp; &nbsp;
+
+                                            <div class="row">
+
+                                                @if (CurrentSession.DeptID == "LG00001" || (CurrentSession.officeType == "1" && Model.ToDeptId== "LG00001"))
+                                                {
+                                                    <div class="col-10">
+                                                        @Html.RadioButtonFor(m => m.SentType, "ToOffice", tochk ? (object)new { @id = "rbTo", @onclick = "lisfunction();", @checked = "Checked" } : (object)new { @id = "rbTo", @onclick = "lisfunction();" })
+                                                        <label for="lblFrom">
+                                                            <b>
+                                                                @if (Model.ToDeptId == Model.FromDeptId)
+                                                                {@Model.ToOffice}
+                                                            else
+                                                            { @Model.ToDept}
+                                                            </b>
+                                                        </label>&nbsp;&nbsp;
+                                                        <br />
+                                                    </div>
+                                                    uddshow = false;
+                                                }
+
+
+
+
+                                                @if (uddshow && (CurrentSession.officeType == "2" || CurrentSession.officeType == "3"))
+                                                {
+                                                    <div class="col-10">
+                                                        @Html.RadioButtonFor(m => m.SentType, "MLAOffice", new { @id = "rbMLA", @onclick = "lisfunction();" })
+                                                        <label for="lblFrom">
+                                                            <b>
+                                                                UDD
+                                                            </b>
+
+                                                        </label>&nbsp;&nbsp;
+                                                    </div>
+                                                }
+
+                                                @*<div id="divcopy" class="col-2 copycheck hide">
+                @Html.CheckBoxFor(m => m.CopyTo, new { @id = "chkcopy", @class = "" })
+                <label for="lblcopy">Copy</label>
+            </div>*@
+
+
+                                            </div>
+                                            @if (Model.ToDeptId == Model.FromDeptId)
+                                            {
+                                                @Html.DropDownListFor(m => m.SentFromOffice, Model.FromOfficeList, "--Select Office--", new { @id = "ddlfromOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetFromUser()" })
+                                                @Html.DropDownListFor(m => m.SentMLAOffice, Model.MLAOfficeList, new { @id = "ddlmlaOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetMlaUser()" })
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(m => m.SentFromOffice, Model.FromOfficeList, "--Select Office--", new { @id = "ddlfromOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetFromUser()" })
+                                                @Html.DropDownListFor(m => m.SentToOffice, Model.ToOfficeList, "--Select Office--", new { @id = "ddlToOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetToUser()" })
+                                                @Html.DropDownListFor(m => m.SentMLAOffice, Model.MLAOfficeList, new { @id = "ddlmlaOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetMlaUser()" })
+                                            }
+
+
+                                            @Html.DropDownListFor(m => m.SentFromUserId, Model.FromUserList, "--Select User--", new { @id = "ddlfromUser", @tabindex = "2", @class = "DdlClass", @onchange = "GetUserOffice()" })
+                                            @Html.DropDownListFor(m => m.SentToUserId, Model.ToUserList, "--Select User--", new { @id = "ddlToUser", @tabindex = "2", @class = "DdlClass", @onchange = "GetUserOffice()" })
+                                            @Html.DropDownListFor(m => m.SentMlaUserId, Model.MlaUserList, "--Select User--", new { @id = "ddlMlaUser", @tabindex = "2", @class = "DdlClass" })
+                                        </div>
+                                        @*<div class="row">
+                                            <div class="remark_2">
+                                                @Html.DropDownListFor(m => m.AssinedOfficeId, Enumerable.Empty<SelectListItem>(), "--Assigned Office--", new { @id = "ddlUserOffice", @tabindex = "3", @class = "DdlClass hide" })
+                                            </div>
+
+                                        </div>*@
+
+                                    </div>
+
+                                    <div class="profile-info-row">
+
+
+                                        <button class="btn btn-primary" type="button" id="btnSave" title="Send" onclick="Save()" tabindex="4">
+                                            <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                                            Send
+                                        </button>
+                                        @Html.HiddenFor(m => m.MoveId)
+                                        @Html.HiddenFor(m => m.MultiUpdate)
+                                        @Html.HiddenFor(m => m.BtnCaption)
+                                        @Html.HiddenFor(m => m.PaperEntryType)
+                                        @Html.HiddenFor(m => m.IsEnclosureFile)
+                                        @Html.HiddenFor(m => m.IsFile)
+                                        @Html.HiddenFor(m => m.ActionTakenFile, new { id = "MultiActionTakenFile" })
+                                        @Html.HiddenFor(m => m.RefId)
+                                        @Html.HiddenFor(m => m.MainRefId)
+                                        @Html.HiddenFor(m => m.DeptId, new { id = "spdeptid" })
+                                        @Html.HiddenFor(m => m.OfficeId, new { id = "spofcid" })
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            @*<div class="tab-pane fade show" id="Send_@Model.RefId" role="tabpanel" aria-labelledby="Send-tab">
+
+                                    <div class="border_none bg_light right_col taken_col">
+                                        <div class="col-md-12 col-lg-12 mb-2" style="margin-top:15px;">
+
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+
+
+                                        <button class="btn btn-primary mt-3" type="button" id="btnSave_Multi" title="Send" onclick="Send()" tabindex="4">
+                                            <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                                            Send
+                                        </button>
+
+                                        @Html.HiddenFor(m => m.BtnCaption)
+                                        @Html.HiddenFor(m => m.PaperEntryType)
+                                        @Html.HiddenFor(m => m.IsEnclosureFile)
+                                        @Html.HiddenFor(m => m.IsFile)
+                                        @Html.HiddenFor(m => m.MultiUpdate)
+                                        @Html.HiddenFor(m => m.Remarks);
+                                    </div>
+                                </div>*@
+
+                        </div>
+                    </div>
+                </div>
+          
+            
+     
+
+    </div>
+
+
+
+
+}
+<script>
+    // Assuming you're using jQuery
+    $(document).ready(function () {
+        $("#lnkFileActionsReport").click(function () {
+            var refId = "@Model.RefId";
+            var agendaId = "@Model.agendaId";
+            var actionCode = $("#hdnactionid").val();
+            var url = "@Url.Action("FileActionsReport", "References")" +
+                "?RefId=" + refId +
+                "&agendaId=" + agendaId +
+                "&actionCode=" + actionCode ;
+
+            // Redirect to the constructed URL
+            window.open(url, '_blank');
+        });
+        lisfunction();
+        //$("#ddlfromUser").hide();
+        //$("#ddlfromOffice").hide();
+
+        //$("#ddlToUser").multipleSelect({
+        //    columns: 1,
+        //    filter: true,
+        //    maxHeight: 350,
+        //    placeholder: 'Select User',
+        //});
+    });
+</script>

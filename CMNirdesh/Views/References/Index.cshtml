@@ -1,0 +1,664 @@
+﻿
+@model CMNirdesh.Models.PaperLaid.tPaperLaidV
+
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<head>
+
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+
+    @if (TempData["Message"] != null)
+    {
+        <script>
+        $(document).ready(function () {
+            var msg = '@TempData["Message"]';
+            alert(msg);
+        });
+        </script>
+
+    }
+    <script>
+
+        $(document).ready(function () {
+
+           // alert("1");
+            debugger;
+            var sess = '@Session["type"]';
+            alert(sess);
+      if (sess == "diary" && (sess !=null || sess !="") ) {
+		  GetActionView('1320', '0', '87');
+		}
+      else if (sess == "dispatch" && (sess != null || sess != "")) {
+		  GetActionView('1321', '0', '87');
+		}
+      else if (sess == "report" && (sess != null || sess != "")) {
+		  GetActionView('1323', '0', '87');
+	  }
+      else if (sess == "analytic" && (sess != null || sess != "")) {
+          GetActionView('1322', '0', '87');
+      }
+      else if (sess == "searchbyref" && (sess != null || sess != "")) {
+          GetActionView('1324', '0', '87');
+      }
+      else if (sess == "advance" && (sess != null || sess != "")) {
+          GetActionView('1325', '0', '87');
+      }
+      else if (sess == "typewise" && (sess != null || sess != "")) {
+          GetActionView('1326', '0', '87');
+      }
+      else if (sess == "DiaryWeekly" && (sess != null || sess != "")) {
+          GetActionView('1327', '0', '87');
+      }
+      else if (sess == "DispatchWeekly" && (sess != null || sess != "")) {
+          GetActionView('1328', '0', '87');
+      }
+		else {
+		  GetActionView('133', '0', '87');
+        }
+
+	});
+
+    //////////////////////FileUploadSection//////////////////////
+    function Initializefileupload() {
+
+        $("#removeUpload").hide();
+
+        $("#fileupload").click(function (event) {
+            //$('#pdffile').text('No')
+            //$('#pdffile1').text('No')
+            //$('#IsPdf').val("N");
+
+            $('#fileupload').fileupload({
+
+                dataType: 'json',
+				url: "/eFile/UploadFiles",
+                async: true,
+                autoUpload: true,
+                done: function (e, data) {
+                    //    var sim = setTimeout("hidevalue2()", 1000);
+
+                    $('.file_name1').html(data.result.name);
+
+                    $('.file_size1').html(data.result.size);
+
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.progress1 .progress-bar').css('width', progress + '%');
+                $('#removeUpload').css('display', 'block');
+            });
+        });
+    }
+
+    function removefileupload() {
+        $('#pdffile').text('No')
+        $('#pdffile1').text('No')
+        $('#IsPdf').val("N");
+        $('.file_name1').html('');
+        $('.file_size1').html('');
+        $('.progress1 .progress-bar').css('width', '0%');
+        $("#removeUpload").hide();
+        $('#fileuploadcontant').css('border', '0px solid rgb(244, 239, 239)');
+        $.post("/eFile/RemovePDFFiles",
+           {
+           },
+           function (data) {
+           });
+
+    }
+
+    function InitializefileuploadWord() {
+        $("#removeUploadWord").hide();
+        $("#fileuploadWord").click(function (event) {
+            $('#fileuploadWord').fileupload({
+
+                dataType: 'json',
+                url: "/eFile/UploadFilesWord",
+				autoUpload: true,
+                async: true,
+                done: function (e, data) {
+                    //    var sim = setTimeout("hidevalue2()", 1000);
+
+                    $('.file_name1Word').html(data.result.name);
+
+                    $('.file_size1Word').html(data.result.size);
+
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.progress1Word .progress-bar').css('width', progress + '%');
+                $('#removeUploadWord').css('display', 'block');
+            });
+        });
+    }
+
+	function removefileuploadWord() {
+        //$('#docfile1').text('No')
+        //$('#IsWord').val("N");
+        //$('#docfile').val("N");
+        $('.file_name1Word').html('');
+        $('.file_size1Word').html('');
+        $('.progress1Word .progress-bar').css('width', '0%');
+        $("#removeUploadWord").hide();
+        $('#fileuploadcontantWord').css('border', '0px solid rgb(244, 239, 239)');
+        $.post("/eFile/RemovePDFFilesWord",
+           {
+           },
+           function (data) {
+           });
+
+    }
+    //////////////////////FileUploadSection//////////////////////
+
+	function GetSubMenu(Id) {
+		$.ajaxSetup({ cache: false });
+		var pathurl = '@Url.Action("GetSubMenu", "OnlineMemberQuestions")';
+		$.ajax({
+			url: pathurl,
+			type: 'GET',
+            async: true,
+			data: {
+				ModuleId: Id
+			},
+			success: function (data) {
+				$("#List").html(data);
+
+			}
+		});
+	}
+
+
+
+	$("#sizeDown").click(function () {
+		if ($("body").hasClass('sizeLarge')) {
+			$("body").css("font-size", "13px");
+			$("body").removeClass('sizeLarge');
+		} else {
+			$("body").css("font-size", "10px");
+			$("body").addClass('sizeSmall');
+		}
+	});
+
+	$("#sizeUp").click(function () {
+		if ($("body").hasClass('sizeSmall')) {
+			$("body").css("font-size", "13px");
+			$("body").removeClass('sizeSmall');
+		} else {
+			$("body").css("font-size", "18px");
+			$("body").addClass('sizeLarge');
+		}
+	});
+
+	$('#sidebar-collapse').on('click', function () {
+		var parentWidth = $('#resize-left').parent().width();
+		if ($('#sidebar').hasClass('menu-min')) {
+			parentWidth = parentWidth - 130;
+		} else { parentWidth = parentWidth + 110; }
+
+		var remainingSpace = parentWidth - $('#resize-left').outerWidth();
+		var divTwo = $('#resize-left').next();
+		var divTwoWidth = remainingSpace - (divTwo.outerWidth() - divTwo.width());
+		divTwo.css('width', divTwoWidth + 'px');
+
+		//alert("ds");
+		setTimeout(function () {
+			$("#CommonGrid").setGridWidth($('#resize-left .col-xs-12').width());
+		}, 50);
+	});
+
+	//$("#resize-left").resizable({
+	//	handles: 'e',
+	//	minWidth: '400',
+	//	maxWidth: '850',
+	//	/*    grid: [ 20, 10 ], */
+	//	resize: function () {
+	//		var remainingSpace = $(this).parent().width() - $(this).outerWidth();
+	//		var divTwo = $(this).next();
+	//		var divTwoWidth = remainingSpace - (divTwo.outerWidth() - divTwo.width());
+	//		divTwo.css('width', (divTwoWidth - 20) + 'px');
+
+	//		$("#CommonGrid").setGridWidth($('#resize-left .col-xs-12').width());
+	//	}
+
+	//});
+
+
+
+	function RemoveClass() {
+		$("#li_" + '@ViewBag.MenuId').removeClass("active");
+	}
+
+	function GetActionView(SubMenuID, Cnt, MainMenuID) {
+        //debugger;
+		try {
+
+			if (SubMenuID == "1320") {
+				$("#thirdLinkMenu").html('References >> Diary');
+                $("#diaryDashboard").hide();
+			}
+			if (SubMenuID == "1321") {
+				$("#thirdLinkMenu").html('References >> Dispatch');
+                $("#diaryDashboard").hide();
+			}
+
+			else if (SubMenuID == "1322") {
+				$("#thirdLinkMenu").html('References >> Analytics');
+                $("#diaryDashboard").hide();
+			 }
+
+			else if (SubMenuID == "1323") {
+				$("#thirdLinkMenu").html('References >> Reports');
+                $("#diaryDashboard").hide();
+            }
+            else if (SubMenuID == "1324") {
+                $("#thirdLinkMenu").html('References >> Seach By Reference Id');
+                $("#diaryDashboard").hide();
+            }
+            else if (SubMenuID == "1325") {
+                $("#thirdLinkMenu").html('References >> Advance Search');
+                $("#diaryDashboard").hide();
+            }
+            else if (SubMenuID == "1326") {
+                $("#diaryDashboard").hide();
+            }
+            else if (SubMenuID == "1327") {
+                $("#thirdLinkMenu").html('References >> Weekly Updations Diary');
+                $("#diaryDashboard").hide();
+            }
+            else if (SubMenuID == "1328") {
+                $("#thirdLinkMenu").html('References >> Weekly Updations Dispatch');
+                $("#diaryDashboard").hide();
+            }
+
+			else {
+				$("#thirdLinkMenu").html('References >> Dashboard');
+			}
+
+            GetDivData(SubMenuID, Cnt,MainMenuID);
+
+			$('.widget-box').hide();
+			$("#loader-wrapper").show();
+		}
+
+		catch (ex) {
+			alert(ex.message);
+        }
+	}
+
+        function GetDivData(SubMenuID, Cnt, MainMenuID) {
+		try {
+			$.ajaxSetup({ cache: false });
+			var pathurl = '@Url.Action("GetDivData", "References")';
+			$.ajax({
+				url: pathurl,
+				type: 'GET',
+                async: true,
+				success: function (data) {
+					$("#MainDiv").html(data);
+                    BindSubMenu(SubMenuID, Cnt, MainMenuID);
+				}
+			});
+		}
+
+		catch (ex) {
+			alert(ex.message);
+        }
+	}
+
+    function BindSubMenu(SubMenuID, Cnt, MainMenuID) {
+            //$("#MainDiv").html("");
+
+		try {
+            $("#loader-wrapper").show();
+			$.ajaxSetup({ cache: false });
+			var pathurl = '@Url.Action("GetActionView", "References")';
+			$.ajax({
+				url: pathurl,
+				type: 'GET',
+                async: true,
+				data: {
+					SubMenuID: SubMenuID,
+					AssemId: '0',
+					SessId: '0',
+					MainMenuID: MainMenuID,
+					Count: Cnt
+				},
+				success: function (data) {
+                    $("#loader-wrapper").hide();
+					if (SubMenuID == "215") {
+                        $("#MainDiv").html(data);
+                        $("#loader-wrapper").hide();
+					}
+					else {
+						$("#outerDiv").html("");
+                        $("#outerDiv").html(data);
+                        $("#loader-wrapper").hide();
+					}
+					ClearControls();
+				}
+			});
+		}
+
+		catch (ex) {
+			alert(ex.message);
+        }
+
+	}
+
+    function ClearControls() {
+        $("#RightSidebar").html("");
+    }
+
+	function HideMessageDiv() {
+		document.getElementById("SuccessDiv").style.color = "#3c763d"
+		document.getElementById("SuccessDiv").style.display = "none"
+
+	}
+
+	function resizeClick(isLeft) {
+		var parentWidth = $('#resize-left').parent().outerWidth();
+		if (isLeft) { // click on left rezise button
+			if ($('#resize-left').width() > (parentWidth * 0.52)) { resizeLeftPanel(50); }
+			else { resizeLeftPanel(0); }
+		} else {
+			if ($('#resize-right').width() > (parentWidth * 0.52)) { resizeLeftPanel(50); }
+			else { resizeLeftPanel(100); }
+		}
+	}
+
+	function resizeLeftPanel(sizeRatio) {
+
+		var parentWidth = $('#resize-left').parent().width();
+		$('#resize-left').animate({ width: +(sizeRatio) + '%' }, 500);
+		$('#resize-right').animate({ width: +(100 - sizeRatio) + '%' }, 500);
+	}
+
+	function openDilog() {
+		var dlg = bootbox.alert("Update Successfully", function (e) {
+
+			$(dlg).modal('hide');
+
+		});
+
+	}
+
+	//Added code venkat for Dynamic Menu
+	function SaveModuleIdActionId(MId) {
+		// alert(Id);
+		$.ajax({
+			url: "/Home/CaptureModuleIdActionId",
+			type: 'GET',
+            async: true,
+			data: {
+				ModuleId: MId
+			},
+			success: function (data) {
+			}
+		})
+	}
+
+
+
+
+
+
+
+
+    </script>
+</head>
+
+<body class="home_page">
+
+    <style>
+        .ShowModal {
+            top: 10%;
+            left: 24%;
+            z-index: 1000;
+            position: absolute;
+            background-color: White;
+            display: block;
+        }
+
+        .HideModal {
+            display: none;
+        }
+
+        .OverlayEffect {
+            /*background-color: white;*/
+            filter: alpha(opacity=40);
+            opacity: 0.7;
+            width: 100%;
+            height: 100%;
+            z-index: 400;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .ui-datepicker {
+            width: 12em;
+            padding: .2em .2em 0;
+            display: none;
+        }
+
+        .roundicon {
+            padding: 0px 6px 1px 5px;
+            line-height: 19px;
+            font-size: 16px;
+            border-radius: 100%;
+            border: 1px solid;
+            background-color: #1BAA4E;
+            color: white;
+        }
+    </style>
+
+    @*@{Html.RenderPartial("~/Views/References/_LeftNavigationMenu.cshtml");}*@
+
+    <div id="main-content">
+        <div class="main-content">
+            @*@Html.Partial("_BreadcrumbsPartial")*@
+            <div class="d_dashboard" id="diaryDashboard">
+                @{Html.RenderPartial("~/Views/References/_dashboard.cshtml");}
+            </div>
+
+            <div id="canvasloader-container1" class="canvasloader" style="text-align: center"></div>
+            <div class="page-content" id="MainDiv">
+                <div class="row">
+                    <div class="alert alert-block alert-success" id="SuccessDiv" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <i class="ace-icon fa fa-times"></i>
+                        </button>
+                        <p>
+                            <strong>
+                                <i class="ace-icon fa fa-check"></i>
+                            </strong>
+
+                        </p>
+                    </div>
+
+                    <div id="outerDiv">
+                    </div>
+
+                    
+
+                    <div class="two-column" id="MainDiveThreeTire" style="display:none;">
+                        <div id="resize-left">
+                            <div id="divLeftContainer" style="position: absolute; top: 0; height: 20px; width: 100%; display: none;">
+                                <div style="border-bottom: 1px solid #e3e3e3; height: 1px; width: 80%; left: 10%; position: absolute; top: 50%;"></div>
+                                <div style="position: absolute; top: 0px; height: 22px; display: block; width: 20px; left: 50%; background-color: white;">
+                                    <i onclick="resizeClick(1)" class="ace-icon fa fa-angle-double-left roundicon"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div id="divDataContainer" style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="resize-right">
+                            <div id="divRightContainer" style="position: absolute; top: 0; height: 21px; width: 100%; display: none;">
+                                <div style="border-bottom: 1px solid #e3e3e3; height: 1px; width: 80%; left: 10%; position: absolute; top: 50%;"></div>
+                                <div style="position: absolute; top: 0px; height: 22px; display: block; width: 20px; left: 50%; background-color: white;">
+                                    <i data-icon2="ace-icon fa fa-angle-double-right" onclick="resizeClick(0)" data-icon1="ace-icon fa fa-angle-double-left" class="ace-icon fa fa-angle-double-right roundicon"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div id="canvasloader-container2" class="canvasloader" style="text-align: center"></div>
+                                <div id="RightSidebar" style="width: 100%;">
+                                </div>
+                                <div id="FormPart" style="width: 100%; height: 100%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="MainDiveTwoTire" style="display: none">
+                        <div class="col-xs-12">
+                            <div id="canvasloader-container3" class="canvasloader" style="text-align: center"></div>
+                            <div id="divDataContainerTwoTire" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*For Notice*@
+    @*<div id="dialogPri-confirm" class="hide">
+            <p>Are you sure ?</p>
+        </div>
+
+        <div id="dialogPri-alert" class="hide">
+            <p>Priority not Assigned !</p>
+        </div>
+
+        <div id="ReturnPri-alert" class="hide">
+            <p id="ReturnPriMsg"></p>
+        </div>*@
+
+    <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModaldiary"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-xl modal_design" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close close_btn" onclick="closediary()" data-dismiss="modal">x</button>
+                    <h4 class="widget-title modal_heading">Diary</h4>
+                </div>
+                <div class="modal-body" id="loginModaldiarybody">
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal diary_Modal coman_modal" tabindex="-1" id="loginModal"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close close_btn" onclick="closeDiaryEntry()" data-dismiss="modal">x</button>
+                    <h4 class="widget-title"></h4>
+                </div>
+                <div class="modal-body" id="loginModalBody">
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatch"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" onclick="closedispatch()" class="close close_btn" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="widget-title modal_heading"> Dispatch </h4>
+                </div>
+                <div class="modal-body" id="loginModalDispatchbody">
+
+
+
+
+                </div>
+                <div class="modal-footer">
+                    @* <button type="submit" class="btn btn-primary button button4">Sign</button>
+                        <button type="button" id="btnHideModal" class="btn btn-primary button button4">
+                            Hide
+                        </button> *@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="modal" tabindex="-1" id="linkModalRef" style="width:50%;margin-left:50%"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="widget-title">Linked Ref No.</h4>
+                </div>
+                <div class="modal-body" id="linkModalRefbody">
+
+
+
+
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+    <div class="modal" tabindex="-1" id="linkModalSearchRef"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #307ecc; color: #fff;">
+                    <button type="button" class="close" style="color: white; opacity: 2.2;" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="widget-title">Linked Ref No.</h4>
+                </div>
+                <div class="modal-body" id="linkModalRefSearchbody">
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>

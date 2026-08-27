@@ -1,0 +1,509 @@
+﻿@model CMNirdesh.Models.LGApproval
+
+@{
+    ViewBag.Title = "LG Approval Dashboard";
+}
+
+<head>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+     <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+
+
+
+    <script>
+
+        $(document).ready(function () {
+
+            // Expand Collapse MC Wise
+
+            $(".toggleBtn").click(function () {
+
+                var target = $(this).data("target");
+
+                $("." + target).slideToggle(250);
+
+                var icon = $(this).find("i");
+
+                if (icon.hasClass("fa-plus")) {
+
+                    icon.removeClass("fa-plus")
+                        .addClass("fa-minus");
+
+                }
+                else {
+
+                    icon.removeClass("fa-minus")
+                        .addClass("fa-plus");
+
+                }
+
+            });
+
+        });
+
+        // Approval Modal
+
+        function SeeApproval(agendaId) {
+
+            if (!agendaId) {
+
+                alert("Agenda ID is missing.");
+                return;
+
+            }
+
+            var url = '@Url.Action("FileApprovals", "LGApproval")';
+
+            $("#ShowApproval").html(
+
+                '<div class="text-center p-5">' +
+                '<div class="spinner-border text-primary"></div>' +
+                '<div class="mt-3 fw-semibold">Loading Approval Details...</div>' +
+                '</div>'
+
+            );
+
+            $.ajax({
+
+                url: url,
+                type: 'GET',
+                data: { AgendaID: agendaId },
+
+                success: function (data) {
+
+                    $("#ShowApproval").html(data);
+
+                    var myModal = new bootstrap.Modal(
+                        document.getElementById('ApprovalModal')
+                    );
+
+                    myModal.show();
+
+                },
+
+                error: function () {
+
+                    $("#ShowApproval").html(
+
+                        '<div class="alert alert-danger">' +
+                        '<i class="fa fa-circle-exclamation me-2"></i>' +
+                        'Unable to load approval details.' +
+                        '</div>'
+
+                    );
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+    <style>
+
+        body {
+            background: #f4f7fb;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Main Card */
+
+        .dashboard-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px;
+            margin-top: 20px;
+            border: 1px solid #dbe3ec;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+        }
+
+        /* Title */
+
+        .dashboard-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+            .dashboard-title span {
+                color: #2563eb;
+            }
+
+        /* Table Wrapper */
+
+        .table-wrapper {
+            border: 1px solid #cfd8e3;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+        }
+
+        /* MC Header */
+
+        .mc-header {
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
+            color: white;
+            border-top: 8px solid #f4f7fb;
+            transition: 0.3s;
+        }
+
+            .mc-header:hover {
+                background: linear-gradient(90deg, #1d4ed8, #2563eb);
+            }
+
+            .mc-header td {
+                padding: 16px;
+                border-bottom: 1px solid rgba(255,255,255,0.15);
+            }
+
+        /* MC Name */
+
+        .mc-name {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* Meeting Rows */
+
+        .meeting-row {
+            background: #ffffff;
+            transition: 0.2s ease-in-out;
+        }
+
+            .meeting-row:hover {
+                background: #f8fbff;
+            }
+
+            .meeting-row td {
+                padding: 18px 16px;
+                border: 1px solid #e8edf3;
+                vertical-align: middle;
+            }
+
+        /* Toggle Button */
+
+        .toggleBtn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: #2563eb;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+            .toggleBtn:hover {
+                transform: scale(1.08);
+                background: #eff6ff;
+            }
+
+        /* Date Badge */
+
+        .meeting-date {
+            display: inline-block;
+            background: #eef4ff;
+            color: #2563eb;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            border: 1px solid #d7e6ff;
+            font-size: 14px;
+        }
+
+        /* Title */
+
+        .meeting-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* Approval Box */
+
+        .approval-box {
+            border: 1px solid #dfe7ef;
+            border-radius: 12px;
+            padding: 10px 14px;
+            background: #fafcff;
+            min-height: 55px;
+        }
+
+            .approval-box a {
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .approval-box a:hover {
+                    text-decoration: underline;
+                }
+
+        /* Modal */
+
+        .modal-content {
+            border-radius: 18px;
+            overflow: hidden;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
+            color: white;
+            border: none;
+        }
+
+        /* Empty Data */
+
+        .empty-data {
+            padding: 60px 20px;
+            text-align: center;
+            font-size: 20px;
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Left Border */
+
+        .section-border {
+            border-left: 5px solid #2563eb;
+            padding-left: 15px;
+        }
+    </style>
+
+</head>
+<div id="main-content">
+    <div class="container-fluid">
+
+        <div class="dashboard-card">
+
+            <!-- Header -->
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div class="section-border">
+
+                    <div class="dashboard-title">
+
+                        <i class="fa-solid fa-file-signature me-2"></i>
+
+                        <span>Orders</span> >> @Model.RefMenuName
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Table -->
+
+            <div class="table-responsive table-wrapper">
+
+                <table class="table mb-0">
+
+                    <tbody>
+
+                        @if (Model.LGApprovalList != null && Model.LGApprovalList.Count > 0)
+                        {
+
+                            var groupedData = Model.LGApprovalList
+
+                                .OrderBy(x => x.MCName)
+                                .ThenByDescending(x => x.MeetingDate)
+
+                                .GroupBy(x => x.MCName);
+
+                            foreach (var mc in groupedData)
+                            {
+
+                                string mcId = "mc_" + Guid.NewGuid().ToString("N");
+
+                                <!-- MC Header -->
+
+                                <tr class="mc-header">
+
+                                    <td colspan="4">
+
+                                        <div class="d-flex align-items-center justify-content-between">
+
+                                            <div class="d-flex align-items-center">
+
+                                                <button type="button"
+                                                        class="toggleBtn me-3"
+                                                        data-target="@mcId">
+
+                                                    <i class="fa-solid fa-plus"></i>
+
+                                                </button>
+
+                                                <div class="mc-name">
+
+                                                    <i class="fa-solid fa-building-columns me-2"></i>
+
+                                                    @mc.Key
+
+                                                </div>
+
+                                            </div>
+
+                                            <div>
+
+                                                <span class="badge bg-light text-primary fs-6">
+
+                                                    @mc.Count() Approvals
+
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                                <!-- Meeting Rows -->
+
+                                foreach (var item in mc)
+                                {
+
+                                    <tr class="@mcId meeting-row"
+                                        style="display:none;">
+
+                                        <!-- ULB -->
+
+                                        @*<td width="22%">
+
+                                            <div class="fw-semibold text-dark">
+
+                                                <i class="fa-solid fa-city text-primary me-2"></i>
+
+                                                @item.MCName
+
+                                            </div>
+
+                                        </td>*@
+
+                                        <!-- Date -->
+
+                                        <td width="16%">
+
+                                            <span class="meeting-date">
+
+                                                <i class="fa-regular fa-calendar-days me-1"></i>
+
+                                               Meeting Date: @Convert.ToDateTime(item.MeetingDate).ToString("dd/MM/yyyy")
+
+                                            </span>
+
+                                        </td>
+
+                                        <!-- Title -->
+
+                                        <td width="32%">
+
+                                            <div class="meeting-title">
+
+                                                @item.MeetingTitle
+
+                                            </div>
+
+                                        </td>
+
+                                        <!-- Approval -->
+
+                                        <td width="30%">
+
+                                            <div class="approval-box">
+
+                                             Approval Date:  @Html.Raw(item.ApprovedDate)
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+
+                            <tr>
+
+                                <td colspan="4">
+
+                                    <div class="empty-data">
+
+                                        <i class="fa-solid fa-circle-exclamation me-2"></i>
+
+                                        No Record Found
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Approval Modal -->
+
+    <div class="modal fade"
+         id="ApprovalModal"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+
+                        <i class="fa-solid fa-circle-info me-2"></i>
+
+                        Approval Details
+
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body"
+                     id="ShowApproval">
+
+                    Loading...
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div> </div>

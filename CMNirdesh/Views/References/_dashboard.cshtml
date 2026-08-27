@@ -1,0 +1,1549 @@
+﻿@model CMNirdesh.Models.PaperLaid.tPaperLaidV
+
+@{
+
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+}
+@using CMNirdesh.Models;
+
+<input type="hidden" id="sincefilterhdn" name="sincefilterhdn" value="" />
+<input type="hidden" id="diarydispatchval" name="diarydispatchval" value="" />
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/datatables/jszip.min.js"></script>
+<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+<script src="~/Scripts/datatables/vfs-fonts.js"></script>
+<script src="~/Scripts/datatables/buttons.print.min.js"></script>
+<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+<style>
+    /* Base style for the div */
+
+    /* Base style for the div */
+    .info-container {
+        border: 3px lightgrey;
+        padding: 10px;
+        background-color: #f9f9f9;
+        margin-bottom: 10px;
+        float: right; /* Shift the container to the right */
+        width: 500px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; /* Set a maximum width to avoid taking the entire screen */
+    }
+
+    .bd-highlight p {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+        /* Style for the p tags inside the div */
+        .info-container p {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        /* Style for the displayed model values */
+        .info-container span {
+            display: inline; /* Change from inline-block to block */
+            margin-bottom: 5px;
+            font-size: 15px;
+            font-weight: lighter;
+            text-align: right;
+        }
+
+
+    @@media screen and (max-width: 768px) {
+        .info-container {
+            float: none; /* Reset the float for small screens */
+        }
+
+            .info-container p {
+                font-size: 14px;
+            }
+
+            .info-container span {
+                font-size: 14px;
+            }
+    }
+</style>
+
+
+<div id="main-content">
+    <div class="main-content">
+        <form id="form1" runat="server">
+            <div class="col-md-12 col-lg-12" style="display:none;">
+                <span style="font-size: 16px; color: blue;" id="deptNamehdn"> </span> <span id="arrownn" style="display:none;"> >></span>   <span style="font-size:16px; color:blue;" id="offNamehdn"></span>
+            </div>
+
+            @*<div>
+                @foreach (var items in Model._LstTPaperLaid)
+
+                {
+                    <div class="info-container">
+                        <p>Name:&nbsp;&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => items.Name)</span></p>
+                        <br />
+                        <p>Email:&nbsp;&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => items.Email)</span></p>
+                        <br />
+                        <p>MobileNo:&nbsp;&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => items.MobileNo)</span></p>
+                        <br />
+                        <p>Last Login Time:&nbsp;&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => items.LoginTime)</span></p>
+                        <br />
+                        <p>Last LogOutTime:&nbsp;&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => items.LogOutTime)</span> </p>
+                    </div>
+                }
+            </div>*@
+
+            @*<div>
+            <div class="table-responsive">
+                <table class="table table-bordered dataTable" id="myConstituency" aria-describedby="sample-table-3_info" style="width: 100%; overflow: scroll;">
+
+                    <thead>
+                        <tr>
+                            <th colspan="8" class="ofic_left">
+
+                                <ul class="txb_left_head ps-0">
+                                    <li>
+                                        <label class="lbl_ofict">My Office:</label>
+                                        <select class="form-control" id="deptt" name="deptt" required></select>
+                                    </li>
+                                    <li>
+                                        <label class="lbl_ofict">Office Detail:</label>
+                                        <select class="form-control" name="offId" id="offId" >
+
+                                        </select>
+                                    </li>
+                                </ul>
+                            </th>
+
+                        </tr>
+                        <tr style="display:none">
+                            <th colspan="17">
+                                <div class="tabl_hdr_diry">
+                                    <div class="tabl_diry">
+                                        <input type="radio" id="chkDiary" value="Diary" name="group1" checked="checked">
+                                        <span>Diary</span>
+                                        <span id="diarycounttr" style="display: none;">(<span style="cursor: pointer; color: darkred" onclick="DiaryCountClick('T');" id="TotalDiary"></span>)</span>
+
+                                        <input type="radio" id="chkDispatch" value="Dispatch" name="group1">
+                                        <span>Dispatch</span>
+                                        <span id="dispatchcounttr" style="display:none;">(<span style="cursor: pointer;color:darkred" onclick="DispatchCountClick('T');" id="TotalDispatch"></span>)</span>
+                                    </div>
+                                    <div id="StatusList" class="int_rdo">
+
+                                    </div>
+
+                                    <div class="tbl_sinc-ddl">
+                                        <label class="form"> <b>Since</b></label>
+                                        <select name="since" id="sincefilter">
+                                            <option value="" selected onclick="ResetSince();">Select</option>
+                                            <option value="1week">1 Week</option>
+                                            <option value="2week">2 Week</option>
+                                            <option value="1month">1 Months</option>
+                                            <option value="3month">3 Months</option>
+                                            <option value="6month">6 Months</option>
+                                            <option value="year">1 Year</option>
+                                            <option value="morethanyear">1 Year +</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyDaschboard" style="display:none">
+                    </tbody>
+
+                </table>
+                <br />
+            </div>
+
+
+        </div>
+        <br />*@
+        <div class="row">
+        
+           
+            @*<p class="welcome">Welcome to CM-Nirdesh</p>*@
+
+
+        </div>
+
+            <div class="row">
+
+                <div class="col-lg-12 col-md-12" style="width: 98%; margin-left: 1%">
+                    <div id="listdiv" class="marg129"></div>
+                </div>
+
+            </div>
+            <div>
+                <table>
+                    <thead></thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="secondtablediv">
+                    </tbody>
+                </table>
+
+            </div>
+
+
+
+
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+    $(document).ready(function ()
+    {
+        var offNamenew = '@Session["offNamenew"]';
+
+        $("#thirdLinkMenu").html('References >> Dashboard');
+        //GetAllDiaryCount();
+        //BindActionStatus();
+        //DashboardBind();
+        GetDepartment();
+
+        //$("#chkDiary").click(function () {
+        //    var diarydispatchvalue = "diary";
+        //    $("#diarydispatchval").val(diarydispatchvalue);
+        //    GetAllDiaryCount();
+        //    DashboardBind();
+        //    BindActionStatus();
+
+        //});
+
+        //$("#chkDispatch").click(function () {
+        //    var diarydispatchvalue = "dispatch";
+        //    $("#diarydispatchval").val(diarydispatchvalue);
+        //    GetAllDispatchCount();
+        //    DashDispatchboardBind();
+        //    BindActionStatusDispatch();
+
+        //});
+
+        //$("#btnSearch").click(function () {
+        //    if ($("#chkDiary").prop("checked")) {
+        //        GetAllDiaryCount();
+        //        DashboardBind();
+        //        BindActionStatus();
+
+        //    }
+        //    else {
+        //        GetAllDispatchCount();
+        //        DashDispatchboardBind();
+        //        BindActionStatusDispatch();
+
+        //    }
+        //});
+
+
+    });
+
+
+
+
+    function GetAllDiaryCount() {
+        var diarydispatchvalue = "diary";
+        $("#diarydispatchval").val(diarydispatchvalue);
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+        $("#loader-wrapper").show();
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenecFrom - ReferenceTo  or since filter!!");
+            $("#loader-wrapper").hide();
+            return false;
+        }
+           $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetAllDiaryCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+               data: { startDt: startDt, endDt: endDt, since: since },
+                success: function (response) {
+                    if (response != null) {
+                        TotalDiary = new Intl.NumberFormat('en-IN').format(response[0].TotalDiary);
+                        TotalDiarynew = new Intl.NumberFormat('en-IN').format(response[0].TotalDiary);
+                        TotalDiaryR = new Intl.NumberFormat('en-IN').format(response[0].TotalDiary);
+                        $("#TotalDiary").append().html(TotalDiary);
+                        $("#TotalDiarynew").append().html(TotalDiarynew);
+                        $("#TotalDiarynewR").append().html(TotalDiaryR);
+
+                        $("#loader-wrapper").hide();
+                        $("#dispatchcounttr").hide();
+                        $("#diarycounttr").show();
+                    }
+                    else {
+                        $("#dispatchcounttr").hide();
+                        $("#diarycounttr").hide();
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+              });
+
+
+
+    }
+
+    function GetAllDispatchCount() {
+
+        var diarydispatchvalue = "dispatch";
+        $("#diarydispatchval").val(diarydispatchvalue);
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+        $("#loader-wrapper").show();
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenecFrom - ReferenceTo  or since filter!!");
+            $("#loader-wrapper").hide();
+            return false;
+        }
+           $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetAllDispatchCount", "References")',
+              datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+               data: { startDt: startDt, endDt: endDt, since: since },
+                success: function (response) {
+                    if (response != null) {
+                        TotalDispatch = new Intl.NumberFormat('en-IN').format(response[0].TotalDispatch);
+                        TotalDispatchnew = new Intl.NumberFormat('en-IN').format(response[0].TotalDispatch);
+                         TotalDispatchR = new Intl.NumberFormat('en-IN').format(response[0].TotalDispatch);
+                        $("#TotalDispatch").append().html(TotalDispatch);
+                        $("#TotalDispatchnew").append().html(TotalDispatchnew);
+                        $("#TotalDispatchnewR").append().html(TotalDispatchR);
+
+                        $("#loader-wrapper").hide();
+                        $("#dispatchcounttr").show();
+                        $("#diarycounttr").hide();
+                    }
+                    else {
+                        $("#dispatchcounttr").hide();
+                        $("#diarycounttr").hide();
+                        $("#loader-wrapper").hide();
+                    }
+               },
+                error: function (error) {
+                }
+              });
+
+
+
+    }
+
+    function DiaryCountClick(dd) {
+        var param = dd;
+        var since = $("#sincefilter").val();
+        GetAllDiaryCount();
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+
+        $.ajax({
+            url: '@Url.Action("GetAllDiaryDataByStatus", "References")',
+            type: 'GET',
+            data: {
+                status: param,
+                startDt: startDt,
+                endDt: endDt,
+                since: since
+            },
+            success: function (data) {
+                var pos = $("#listdiv").offset().top;
+                $('body, html').animate({ scrollTop: pos });
+                $("#listdiv").html(data);
+                $("#loader-wrapper").hide();
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function DispatchCountClick(dd) {
+        var param = dd;
+        var since = $("#sincefilter").val();
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        GetAllDispatchCount();
+        $.ajax({
+            url: '@Url.Action("GetAllDispatchDataByStatus", "References")',
+            type: 'GET',
+            data: {
+                status: param,
+                startDt: startDt,
+                endDt: endDt,
+                since: since
+            },
+            success: function (data) {
+                var pos = $("#listdiv").offset().top;
+                $('body, html').animate({ scrollTop: pos });
+                $("#listdiv").html(data);
+                $("#loader-wrapper").hide();
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    $("#sincefilter").change(function () {
+        var sinceparam = $(this).val();
+        $("#sincefilterhdn").val(sinceparam);
+        var diarydispatchvalue = $("#diarydispatchval").val();
+
+        if ($("#chkDiary").prop("checked")) {
+            var diarydispatchvalue = "diary";
+            $("#diarydispatchval").val(diarydispatchvalue);
+            DashboardBind();
+            GetAllDiaryCount();
+            BindActionStatus();
+        }
+        else {
+            var diarydispatchvalue = "dispatch";
+            $("#diarydispatchval").val(diarydispatchvalue);
+            DashDispatchboardBind();
+            GetAllDispatchCount();
+            BindActionStatusDispatch();
+
+        }
+    });
+
+    function ActionStatusCheck(obj) {
+        if ($("#chkDiary").prop("checked")) {
+            var diarydispatchvalue = "diary";
+            $("#diarydispatchval").val(diarydispatchvalue);
+
+            GetAllDiaryCount();
+            DashboardBind();
+        }
+        else {
+            var diarydispatchvalue = "dispatch";
+            $("#diarydispatchval").val(diarydispatchvalue);
+            DashDispatchboardBind();
+            GetAllDispatchCount();
+        }
+    }
+
+    function expand(obj) {
+        var tdid = $(obj).attr("id");
+        var className = $(obj).attr('class');
+
+        if (className == 'plus') {
+            $("#" + tdid).removeClass("plus");
+            $("#" + tdid).addClass("minus");
+        } else {
+            $("#" + tdid).removeClass("minus");
+            $("#" + tdid).addClass("plus");
+            var expid = '.trofc' + tdid;
+            $(expid).remove();
+            return false;
+        }
+
+        GetDiaryDataByDept($("#" + tdid).attr('deptid'), tdid);
+
+    }
+
+    function expandD(obj) {
+        var tdid = $(obj).attr("id");
+        var className = $(obj).attr('class');
+
+        if (className == 'plus') {
+            $("#" + tdid).removeClass("plus");
+            $("#" + tdid).addClass("minus");
+        } else {
+            $("#" + tdid).removeClass("minus");
+            $("#" + tdid).addClass("plus");
+            var expid = '.trDofc' + tdid;
+            $(expid).remove();
+            return false;
+        }
+        GetDispatchDataByDept($("#" + tdid).attr('deptid'), tdid);
+
+    }
+
+
+
+
+    function GetDiaryDataByDept(deptId, tdid) {
+        alert(deptId);
+        alert(tdid);
+        var since = $("#sincefilter").val();
+        var html = "";
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var pathurl = '/References/GetDiaryDataByDepartment';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+          //  data: { deptId: deptId, status: status, startDt: startDt, endDt: endDt, since: since },
+            data: { tdid: tdid },
+            success: function (result) {
+                alert(result.length);
+                if (result.length > 0) {
+                    $("#secondtablediv").html(result);
+
+                    var expid = '#expand' + tdid;
+                    $(expid).remove();
+                    $(html).insertAfter($('#tr' + tdid));
+
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+
+
+    @*function GetDiaryDataByDept(deptId, tdid) {
+        var since = $("#sincefilter").val();
+        var html = "";
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var pathurl = '/References/GetDiaryDataByDepartment';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+          //  data: { deptId: deptId, status: status, startDt: startDt, endDt: endDt, since: since },
+            data: { tdid: tdid },
+            success: function (result) {
+                if (result.length > 0) {
+                    if (@CurrentSession.isApex == 1) {
+                        for (var i = 0; i < result.length; i++) {
+                            var depp = "";
+
+                            if (result[i].CMFundsCattleFair == null || result[i].CMFundsCattleFair == "null" || result[i].CMFundsCattleFair == "") {
+                                result[i].CMFundsCattleFair = 0;
+                            }
+                            if (result[i].CMFundsViveki == null || result[i].CMFundsViveki == "null" || result[i].CMFundsViveki == "") {
+                                result[i].CMFundsViveki = 0;
+                            }
+                            if (result[i].CMFundsUntied == null || result[i].CMFundsUntied == "null" || result[i].CMFundsUntied == "") {
+                                result[i].CMFundsUntied = 0;
+                            }
+                            if (result[i].CMFundsSmallSavings == null || result[i].CMFundsSmallSavings == "null" || result[i].CMFundsSmallSavings == "") {
+                                result[i].CMFundsSmallSavings = 0;
+                            }
+                            if (result[i].CMFundsRelief == null || result[i].CMFundsRelief == "null" || result[i].CMFundsRelief == "") {
+                                result[i].CMFundsRelief = 0;
+                            }
+
+                            if (result[i].Demands == null || result[i].Demands == "null" || result[i].Demands == "") {
+                                result[i].Demands = 0;
+                            }
+
+                            if (result[i].Transfers == null || result[i].Transfers == "null" || result[i].Transfers == "") {
+                                result[i].Transfers = 0;
+                            }
+                            if (result[i].Development == null || result[i].Development == "null" || result[i].Development == "") {
+                                result[i].Development = 0;
+                            }
+
+                            var totaldept = "0";
+
+                            var Total = result[i].Transfers + result[i].Development + result[i].Demands + result[i].CMFundsRelief
+                                + result[i].CMFundsSmallSavings + result[i].CMFundsUntied + result[i].CMFundsViveki + result[i].CMFundsCattleFair;
+
+                            html = html + "<tr class='trofc" + tdid + "'>";
+                            html = html + "<td class='center'>  </td> ";
+                            html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='15'>" + result[i].CMFundsCattleFair + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='3'>" + result[i].CMFundsRelief + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='4'>" + result[i].CMFundsSmallSavings + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='13'>" + result[i].CMFundsUntied + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='14'>" + result[i].CMFundsViveki + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='6'>" + result[i].Demands + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='1'>" + result[i].Development + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='2'>" + result[i].Transfers + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='0'>" + Total + "</a> </td> ";
+                            "</tr>";
+                        }
+                    }
+
+                    else {
+                        for (var i = 0; i < result.length; i++) {
+                            var depp = "";
+                            if (result[i].CMPriorityProjects == null || result[i].CMPriorityProjects == "null" || result[i].CMPriorityProjects == "") {
+                                result[i].CMPriorityProjects = 0;
+                            }
+                            if (result[i].CMMeetingsMinutes == null || result[i].CMMeetingsMinutes == "null" || result[i].CMMeetingsMinutes == "") {
+                                result[i].CMMeetingsMinutes = 0;
+                            }
+                            if (result[i].CMAnnouncements == null || result[i].CMAnnouncements == "null" || result[i].CMAnnouncements == "") {
+                                result[i].CMAnnouncements = 0;
+                            }
+                            if (result[i].CMFundsCattleFair == null || result[i].CMFundsCattleFair == "null" || result[i].CMFundsCattleFair == "") {
+                                result[i].CMFundsCattleFair = 0;
+                            }
+                            if (result[i].CMFundsViveki == null || result[i].CMFundsViveki == "null" || result[i].CMFundsViveki == "") {
+                                result[i].CMFundsViveki = 0;
+                            }
+                            if (result[i].CMFundsUntied == null || result[i].CMFundsUntied == "null" || result[i].CMFundsUntied == "") {
+                                result[i].CMFundsUntied = 0;
+                            }
+                            if (result[i].CMFundsSmallSavings == null || result[i].CMFundsSmallSavings == "null" || result[i].CMFundsSmallSavings == "") {
+                                result[i].CMFundsSmallSavings = 0;
+                            }
+                            if (result[i].CMFundsRelief == null || result[i].CMFundsRelief == "null" || result[i].CMFundsRelief == "") {
+                                result[i].CMFundsRelief = 0;
+                            }
+                            if (result[i].CMSeekSuggestions == null || result[i].CMSeekSuggestions == "null" || result[i].CMSeekSuggestions == "") {
+                                result[i].CMSeekSuggestions = 0;
+                            }
+                            if (result[i].Demands == null || result[i].Demands == "null" || result[i].Demands == "") {
+                                result[i].Demands = 0;
+                            }
+                            if (result[i].Grievances == null || result[i].Grievances == "null" || result[i].Grievances == "") {
+                                result[i].Grievances = 0;
+                            }
+                            if (result[i].Transfers == null || result[i].Transfers == "null" || result[i].Transfers == "") {
+                                result[i].Transfers = 0;
+                            }
+                            if (result[i].Development == null || result[i].Development == "null" || result[i].Development == "") {
+                                result[i].Development = 0;
+                            }
+                            if (result[i].CMMeetingAgenda == null || result[i].CMMeetingAgenda == "null" || result[i].CMMeetingAgenda == "") {
+                                result[i].CMMeetingAgenda = 0;
+                            }
+
+                            var totaldept = "0";
+
+                            var Total = result[i].Transfers + result[i].Development + result[i].Grievances + result[i].Demands + result[i].CMSeekSuggestions + result[i].CMFundsRelief + result[i].CMPriorityProjects
+                                + result[i].CMFundsSmallSavings + result[i].CMFundsUntied + result[i].CMFundsViveki + result[i].CMFundsCattleFair + result[i].CMAnnouncements + result[i].CMMeetingsMinutes + result[i].CMMeetingAgenda;
+
+                            html = html + "<tr class='trofc" + tdid + "'>";
+                            html = html + "<td class='center'>  </td> ";
+                            html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='15'>" + result[i].CMFundsCattleFair + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='3'>" + result[i].CMFundsRelief + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='4'>" + result[i].CMFundsSmallSavings + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='13'>" + result[i].CMFundsUntied + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='14'>" + result[i].CMFundsViveki + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='8'>" + result[i].CMAnnouncements + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='9'>" + result[i].CMMeetingAgenda + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='11'>" + result[i].CMMeetingsMinutes + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='12'>" + result[i].CMPriorityProjects + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='10'>" + result[i].CMSeekSuggestions + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='6'>" + result[i].Demands + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='1'>" + result[i].Development + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='5'>" + result[i].Grievances + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='2'>" + result[i].Transfers + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDataByOffice(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='0'>" + Total + "</a> </td> ";
+                            "</tr>";
+                        }
+                    }
+                    var expid = '#expand' + tdid;
+                    $(expid).remove();
+                    $(html).insertAfter($('#tr' + tdid));
+
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }*@
+
+    function GetDispatchDataByDept(deptId, tdid) {
+        var since = $("#sincefilter").val();
+        var html = "";
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var pathurl = '/References/GetDispatchDataByDept';
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { deptId: deptId, status: status, startDt: startDt, endDt: endDt, since:since },
+            success: function (result) {
+                //debugger;
+                if (result.length > 0) {
+                    if (@CurrentSession.isApex == 1) {
+                        for (var i = 0; i < result.length; i++) {
+                            var depp = "";
+                            if (result[i].CMPriorityProjects == null || result[i].CMPriorityProjects == "null" || result[i].CMPriorityProjects == "") {
+                                result[i].CMPriorityProjects = 0;
+                            }
+                            if (result[i].CMMeetingsMinutes == null || result[i].CMMeetingsMinutes == "null" || result[i].CMMeetingsMinutes == "") {
+                                result[i].CMMeetingsMinutes = 0;
+                            }
+                            if (result[i].CMAnnouncements == null || result[i].CMAnnouncements == "null" || result[i].CMAnnouncements == "") {
+                                result[i].CMAnnouncements = 0;
+                            }
+                            if (result[i].CMFundsCattleFair == null || result[i].CMFundsCattleFair == "null" || result[i].CMFundsCattleFair == "") {
+                                result[i].CMFundsCattleFair = 0;
+                            }
+                            if (result[i].CMFundsViveki == null || result[i].CMFundsViveki == "null" || result[i].CMFundsViveki == "") {
+                                result[i].CMFundsViveki = 0;
+                            }
+                            if (result[i].CMFundsUntied == null || result[i].CMFundsUntied == "null" || result[i].CMFundsUntied == "") {
+                                result[i].CMFundsUntied = 0;
+                            }
+                            if (result[i].CMFundsSmallSavings == null || result[i].CMFundsSmallSavings == "null" || result[i].CMFundsSmallSavings == "") {
+                                result[i].CMFundsSmallSavings = 0;
+                            }
+                            if (result[i].CMFundsRelief == null || result[i].CMFundsRelief == "null" || result[i].CMFundsRelief == "") {
+                                result[i].CMFundsRelief = 0;
+                            }
+                            if (result[i].CMSeekSuggestions == null || result[i].CMSeekSuggestions == "null" || result[i].CMSeekSuggestions == "") {
+                                result[i].CMSeekSuggestions = 0;
+                            }
+                            if (result[i].Demands == null || result[i].Demands == "null" || result[i].Demands == "") {
+                                result[i].Demands = 0;
+                            }
+                            if (result[i].Grievances == null || result[i].Grievances == "null" || result[i].Grievances == "") {
+                                result[i].Grievances = 0;
+                            }
+                            if (result[i].Transfers == null || result[i].Transfers == "null" || result[i].Transfers == "") {
+                                result[i].Transfers = 0;
+                            }
+                            if (result[i].Development == null || result[i].Development == "null" || result[i].Development == "") {
+                                result[i].Development = 0;
+                            }
+                            if (result[i].CMMeetingAgenda == null || result[i].CMMeetingAgenda == "null" || result[i].CMMeetingAgenda == "") {
+                                result[i].CMMeetingAgenda = 0;
+                            }
+
+                            var totaldept = "0";
+
+                            var Total = result[i].Transfers + result[i].Development + result[i].Grievances + result[i].Demands + result[i].CMSeekSuggestions + result[i].CMFundsRelief + result[i].CMPriorityProjects
+                                + result[i].CMFundsSmallSavings + result[i].CMFundsUntied + result[i].CMFundsViveki + result[i].CMFundsCattleFair + result[i].CMAnnouncements + result[i].CMMeetingsMinutes + result[i].CMMeetingAgenda;
+
+                            html = html + "<tr class='trDofc" + tdid + "'>";
+                            html = html + "<td class='center'>  </td> ";
+                            html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='15'>" + result[i].CMFundsCattleFair + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='3'>" + result[i].CMFundsRelief + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='4'>" + result[i].CMFundsSmallSavings + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='13'>" + result[i].CMFundsUntied + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='14'>" + result[i].CMFundsViveki + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='8'>" + result[i].CMAnnouncements + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='9'>" + result[i].CMMeetingAgenda + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='11'>" + result[i].CMMeetingsMinutes + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='12'>" + result[i].CMPriorityProjects + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='10'>" + result[i].CMSeekSuggestions + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='6'>" + result[i].Demands + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='1'>" + result[i].Development + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='5'>" + result[i].Grievances + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='2'>" + result[i].Transfers + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='0'>" + Total + "</a> </td> ";
+                            "</tr>";
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < result.length; i++) {
+                            var depp = "";
+
+                            if (result[i].CMFundsCattleFair == null || result[i].CMFundsCattleFair == "null" || result[i].CMFundsCattleFair == "") {
+                                result[i].CMFundsCattleFair = 0;
+                            }
+                            if (result[i].CMFundsViveki == null || result[i].CMFundsViveki == "null" || result[i].CMFundsViveki == "") {
+                                result[i].CMFundsViveki = 0;
+                            }
+                            if (result[i].CMFundsUntied == null || result[i].CMFundsUntied == "null" || result[i].CMFundsUntied == "") {
+                                result[i].CMFundsUntied = 0;
+                            }
+                            if (result[i].CMFundsSmallSavings == null || result[i].CMFundsSmallSavings == "null" || result[i].CMFundsSmallSavings == "") {
+                                result[i].CMFundsSmallSavings = 0;
+                            }
+                            if (result[i].CMFundsRelief == null || result[i].CMFundsRelief == "null" || result[i].CMFundsRelief == "") {
+                                result[i].CMFundsRelief = 0;
+                            }
+
+                            if (result[i].Demands == null || result[i].Demands == "null" || result[i].Demands == "") {
+                                result[i].Demands = 0;
+                            }
+
+                            if (result[i].Transfers == null || result[i].Transfers == "null" || result[i].Transfers == "") {
+                                result[i].Transfers = 0;
+                            }
+                            if (result[i].Development == null || result[i].Development == "null" || result[i].Development == "") {
+                                result[i].Development = 0;
+                            }
+
+                            var totaldept = "0";
+
+                            var Total = result[i].Transfers + result[i].Development + result[i].Demands + result[i].CMFundsRelief
+                                + result[i].CMFundsSmallSavings + result[i].CMFundsUntied + result[i].CMFundsViveki + result[i].CMFundsCattleFair;
+
+                            html = html + "<tr class='trDofc" + tdid + "'>";
+                            html = html + "<td class='center'>  </td> ";
+                            html = html + "<td  class='center'>" + result[i].officename + "</td > ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='15'>" + result[i].CMFundsCattleFair + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='3'>" + result[i].CMFundsRelief + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='4'>" + result[i].CMFundsSmallSavings + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='13'>" + result[i].CMFundsUntied + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='14'>" + result[i].CMFundsViveki + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='6'>" + result[i].Demands + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='1'>" + result[i].Development + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='2'>" + result[i].Transfers + "</a> </td> ";
+                            html = html + "<td class='center'> <a onclick='GetDasdhboardDispatchDataByOfc(this)' DeptId='" + deptId + "' OfcId='" + result[i].officeid + "' DocTypeId='0'>" + Total + "</a> </td> ";
+                            "</tr>";
+                        }
+                    }
+                    var expid = '#expandD' + tdid;
+                    $(expid).remove();
+                    $(html).insertAfter($('#tr' + tdid));
+
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetActionStatusValue() {
+        var StatusVal = 10;
+        $.each($("input[name='group2']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+    }
+
+    function DashboardBind() {
+        var diarydispatchvalue = "diary";
+        $("#diarydispatchval").val(diarydispatchvalue);
+
+        $("#tdFrom").html("From");
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var since = $("#sincefilter").val();
+
+        $("#loader-wrapper").show();
+        $("#listdiv").html('');
+
+        if (since != "" && (startDt != "" || endDt !=="")) {
+            alert("Please select either ReferenecFrom - ReferenceTo  or since filter!!");
+            return false;
+            $("#loader-wrapper").hide();
+        }
+
+        var pathurl = '/References/DashboardBind';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+            data: { status: status, startDt: startDt, endDt: endDt, since:since },
+            success: function (result) {
+
+                //debugger;
+                if (result.length > 0) {
+
+                    $("#tbodyDaschboard").html(result);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#tbodyDaschboard").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function DashboardBindByDeptAndOfficeId(nameoff, deptnameee) {
+        var OfficeId = $("#offId").val();
+        $("#tdFrom").html("From");
+        var status = 0;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var since = $("#sincefilter").val();
+
+        $("#loader-wrapper").show();
+        $("#listdiv").html('');
+
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenecFrom - ReferenceTo  or since filter!!");
+            return false;
+            $("#loader-wrapper").hide();
+        }
+
+        var pathurl = '/References/DashboardBindByDeptAndOfficeId';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+            data: { status: status, startDt: startDt, endDt: endDt, since: since, officeid: OfficeId, offName: nameoff, deptnameee: deptnameee },
+            success: function (result) {
+
+                //debugger;
+                if (result.length > 0) {
+                    GetAllDiaryCount();
+                    $("#tbodyDaschboard").html(result);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+
+                    $("#tbodyDaschboard").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function BindActionStatus() {
+        var diarydispatchvalue = "diary";
+        $("#diarydispatchval").val(diarydispatchvalue);
+
+        $("#tdFrom").html("From");
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+
+        var pathurl = '/References/BindActionStatus';
+        $("#StatusList").empty();
+        var T = "T";
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { startDt: startDt, endDt: endDt, since: since },
+
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk' value='10' name='group2' checked='checked' style='width:3%;'>";
+                    html = html + "<span style='width:5% cursor:pointer;'>All(</span><span  style='cursor:pointer;' id='TotalDiarynew'></span>)";
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+                        //if (item.Text == "Pending") {
+                        //    html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='group2' checked='checked'>";
+                        //}
+                        //else {
+                            html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='group2'>";
+                       // }
+                        html = html + "<span style=''>" + item.Text + "</span>";
+                        html = html + "<span onclick='DiaryCountClick( " + item.Value +")' style='cursor:pointer;" + item.background + "; '>" + '(' + item.count + ')'+ "</span>";
+                    }
+
+                    $("#StatusList").html(html);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#StatusList").html("No Data Found");
+                    $("#loader-wrapper").hide();
+
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+    }
+
+    function BindActionStatusDispatch() {
+        var diarydispatchvalue = "diary";
+        $("#diarydispatchval").val(diarydispatchvalue);
+
+        $("#tdFrom").html("From");
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+
+        var pathurl = '/References/BindActionStatusDispatch';
+        $("#StatusList").empty();
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { startDt: startDt, endDt: endDt, since: since },
+
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk' value='10' name='group2' checked='checked' style='width:3%;'>";
+                    html = html + "<span style='width:5% cursor:pointer;'>All(</span><span  style='cursor:pointer;' id='TotalDispatchnewR'></span>)";
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+                        //if (item.Text == "Pending") {
+                        //    html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='group2'   style='width:3%;'>";
+                        //}
+                        //else {
+                            html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='group2'style='width:3%;'>";
+                       // }
+                        html = html + "<span style='width:5%'>" + item.Text + "</span>";
+                        html = html + "<span  onclick='DispatchCountClick(" + item.Value +")'    style='width:5%; cursor:pointer; margin-left:5px;'>" +'('+item.count+')'+ "</span>";
+                    }
+
+
+                    $("#StatusList").html(html);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#StatusList").html("No Data Found");
+                    $("#loader-wrapper").hide();
+
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+    }
+
+    function BindActionStatusByDeptAndOfficeId() {
+
+        var diarydispatchvalue = "diary";
+        $("#diarydispatchval").val(diarydispatchvalue);
+        var OfficeId = $("#offId").val();
+        $("#tdFrom").html("From");
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+
+        var pathurl = '/References/BindActionStatusByDeptAndOfficeId';
+        $("#StatusList").empty();
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { startDt: startDt, endDt: endDt, since: since, OfficeId: OfficeId },
+
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk' value='10' name='group2' checked='checked' style='width:3%;'>";
+                    html = html + "<span style='width:5% cursor:pointer;'>All(</span><span  style='cursor:pointer;' id='TotalDiarynewR'></span>)";
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+
+                            html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='group2' style='width:3%;'>";
+
+                        html = html + "<span style='width:5%'>" + item.Text + "</span>";
+                        html = html + "<span onclick='DiaryCountClick( " + item.Value + ")' style='width:5%; cursor:pointer; margin-left:5px; " + item.background + "; '>" + '(' + item.count + ')' + "</span>";
+                    }
+
+
+                    $("#StatusList").html(html);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#StatusList").html("No Data Found");
+                    $("#loader-wrapper").hide();
+
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+    }
+
+    function BindActionStatusDispatchByDeptAndOfficeId() {
+
+        var OfficeId = $("#offId").val();
+        $("#tdFrom").html("From");
+        var status = 0;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+
+        var pathurl = '/References/BindActionStatusDispatchByDeptAndOfficeId';
+        $("#StatusList").empty();
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { startDt: startDt, endDt: endDt, since: since, OfficeId: OfficeId },
+
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk' value='10' name='group2' checked='checked' style='width:3%;'>";
+                    html = html + "<span style='width:5% cursor:pointer;'>All(</span><span style='cursor:pointer;' id='TotalDispatchnew'></span>)";
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+                        //if (item.Text == "Pending") {
+                        //    html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='group2'   style='width:3%;'>";
+                        //}
+                        //else {
+                            html = html + "<input type='radio' onclick='ActionStatusCheck(this)' id='chk'" + item.Text + "' value='" + item.Value + "' name='group2'style='width:3%;'>";
+                       // }
+                        html = html + "<span style='width:5%'>" + item.Text + "</span>";
+                        html = html + "<span  onclick='DispatchCountClick(" + item.Value + ")'    style='width:5%; cursor:pointer; margin-left:5px;" + item.background + "; '>" + '(' + item.count + ')' + "</span>";
+                    }
+
+                    $("#StatusList").html(html);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#StatusList").html("No Data Found");
+                    $("#loader-wrapper").hide();
+
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+    }
+
+    function DashDispatchboardBind() {
+        var diarydispatchvalue = "dispatch";
+        $("#diarydispatchval").val(diarydispatchvalue);
+        $("#tdFrom").html("To");
+        ////debugger;
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var since = $("#sincefilter").val();
+        $("#listdiv").html('');
+        $("#loader-wrapper").show();
+
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenceFrom - ReferenceTo  or since filter!!");
+            $("#loader-wrapper").hide();
+            return false;
+        }
+
+        var pathurl = '/References/DashDispatchboardBind';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+           data: { status: status, startDt: startDt, endDt: endDt, since:since },
+            success: function (result) {
+                //debugger;
+                var html = "";
+
+                if (result.length > 0) {
+                    $("#tbodyDaschboard").html(result);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#tbodyDaschboard").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function DashDispatchboardBindDeptAndOfficeId(nameoff) {
+        var diarydispatchvalue = "dispatch";
+        $("#diarydispatchval").val(diarydispatchvalue);
+        var OfficeId = $("#offId").val();
+        $("#tdFrom").html("To");
+        ////debugger;
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var since = $("#sincefilter").val();
+        $("#listdiv").html('');
+        $("#loader-wrapper").show();
+
+        if (since != "" && (startDt != "" || endDt !== "")) {
+            alert("Please select either ReferenceFrom - ReferenceTo  or since filter!!");
+            $("#loader-wrapper").hide();
+            return false;
+        }
+
+        var pathurl = '/References/DashDispatchboardBindByDeptAndOfficeId';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { status: status, startDt: startDt, endDt: endDt, since: since, officeid: OfficeId, offName: nameoff },
+            success: function (result) {
+                //debugger;
+                var html = "";
+
+                if (result.length > 0) {
+                    $("#tbodyDaschboard").html(result);
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $("#tbodyDaschboard").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function DiaryDashboardBind() {
+        $("#loader-wrapper").show();
+        $("#listdiv").html('');
+        var pathurl = '/References/DashboardBind';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { status: 10 },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyDaschboard").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyDaschboard").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDasdhboardData(obj) {
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var since = $("#sincefilter").val();
+
+        $("#loader-wrapper").show();
+        $("#listdiv").html('');
+        $("#listdiv").html('');
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var Agency = 0;
+        var DocumentType = $(obj).attr('doctypeid');
+        var deptId = $(obj).attr('deptid');
+        var pathurl = '/References/FilteredMLADiaryListForDept'
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { deptId: deptId, DocumentType: DocumentType,status: status,startDt: startDt,
+                    endDt: endDt ,since:since },
+            success: function (data) {
+            var pos = $("#listdiv").offset().top;
+                // animated top scrolling
+             $('body, html').animate({ scrollTop: pos });
+             $("#loader-wrapper").hide();
+             $("#listdiv").html(data);
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDasdhboardDataByOffice(obj) {
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+
+        status = GetActionStatusValue();
+
+        $("#loader-wrapper").show();
+        $("#listdiv").html('');
+        $("#listdiv").html('');
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var Agency = 0;
+        var DocumentType = $(obj).attr('doctypeid');
+        var officeId = $(obj).attr('OfcId');
+        var DeptId = $(obj).attr('DeptId');
+        var pathurl = '/References/FilteredMLADiaryListForOfc'
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: {
+                DeptId: DeptId,
+                officeId: officeId,
+                DocumentType: DocumentType,
+                status: status,
+                startDt: startDt,
+                endDt: endDt,
+                since:since
+            },
+            // data:{ params },
+            success: function (data) {
+                var pos = $("#listdiv").offset().top;
+                // animated top scrolling
+                $('body, html').animate({ scrollTop: pos });
+                $("#loader-wrapper").hide();
+
+                $("#listdiv").html(data);
+                // $("#loader-wrapper").hide();
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDasdhboardDispatchData(obj) {
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        status = GetActionStatusValue();
+        var since = $("#sincefilter").val();
+
+        $("#loader-wrapper").show();
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var Agency = 0;
+        var DocumentType = $(obj).attr('doctypeid');
+        var deptId = $(obj).attr('deptid');
+        var pathurl = '/References/FilteredMLADispatchListForDept'
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: {
+                deptId: deptId,
+                DocumentType: DocumentType,
+                status: status,
+                startDt: startDt,
+                endDt: endDt
+            },
+            success: function (data) {
+                var pos = $("#listdiv").offset().top;
+                // animated top scrolling
+                $('body, html').animate({ scrollTop: pos });
+                $("#loader-wrapper").hide();
+                $("#listdiv").show('');
+                $("#listdiv").html('');
+                $("#listdiv").html(data);
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDasdhboardDispatchDataByOfc(obj) {
+        var status = 10;
+        var startDt = $("#txtFrom").val();
+        var endDt = $("#txtTo").val();
+        var since = $("#sincefilter").val();
+        status = GetActionStatusValue();
+        $("#loader-wrapper").show();
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var Agency = 0;
+        var DocumentType = $(obj).attr('doctypeid');
+        var deptId = $(obj).attr('DeptId');
+        var OfcId = $(obj).attr('OfcId');
+        var pathurl = '/References/FilteredMLADispatchListForDeptByOfc'
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: {
+                deptId: deptId,
+                OfficeId: OfcId,
+                DocumentType: DocumentType,
+                status: status,
+                startDt: startDt,
+                endDt: endDt,
+                since:since
+            },
+            success: function (data) {
+                var pos = $("#listdiv").offset().top;
+                // animated top scrolling
+                $('body, html').animate({ scrollTop: pos });
+                $("#loader-wrapper").hide();
+                $("#listdiv").show('');
+                $("#listdiv").html('');
+                $("#listdiv").html(data);
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDepartment() {
+
+        var deptt = $("#deptt");
+        var id = $("#deptt").val();
+       // deptt.empty().append('<option  value="">Please select</option>');
+       // $('#deptt').empty().append('<option  value="">Please select</option>');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDepartmentsNav", "References")',
+            datatype: "Json",
+            data: {},
+            success: function (data) {
+                var deptnameee = '@Session["deptnameee"]';
+                if (deptnameee != "") {
+                    deptt.append($("<option></option>").val(id).html(deptnameee));
+                }
+                else {
+                   // deptt.empty().append('<option value=""> -- select --</option>');
+                }
+                $.each(data, function () {
+                    deptt.append($("<option></option>").val(this['id']).html(this['name']));
+                });
+                $("#deptt").val('@CurrentSession.DeptID');//OfficeName
+               
+                GetOffice('@CurrentSession.DeptID','@CurrentSession.OfficeId');
+
+
+
+            }
+        });
+    }
+
+
+
+    function GetOffice(deptttid, officeid) {
+       
+        //$('#offId').empty().append('<option value="">Please select</option>');
+        $('#offId').empty();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetOfficebyDepartmentIdNav", "References")',
+            datatype: "Json",
+            data: { deptid: deptttid },
+            success: function (data) {
+                $.each(data, function (index, value) {
+                    var selected = '';
+                    if (value.id == officeid) {
+                        selected = 'selected';
+
+                    } else {
+                        selected = '';
+                    }
+                    $('#offId').append('<option value="' + value.id + '" ' + selected +'>' + value.name + '</option>');
+                    $("#deptNameShow").hide();
+                    $("#OfficeNameShow").hide();
+                });
+
+            }
+
+        });
+
+    }
+
+    $("#deptt").change(function () {
+        var depid = $("#deptt").val();
+        GetOffice(depid,'');
+    })
+
+    $("#offId").change(function () {
+        var depid = $("#deptt").val();
+        var officeid = $("#offId").val();
+          $.ajax({
+            type: "GET",
+            url: '@Url.Action("SetOffice", "References")',
+            datatype: "Json",
+              data: { deptid:depid,officeid: officeid },
+            success: function (data) {
+                window.location.reload();
+            }
+
+        });
+    })
+
+    function ResetSince() {
+
+        var dropDown = document.getElementById("sincefilter");
+        dropDown.selectedIndex = 0;
+        $("#sincefilter").val('');
+
+        if ($("#chkDiary").prop("checked")) {
+            var diarydispatchvalue = "diary";
+            $("#diarydispatchval").val(diarydispatchvalue);
+            DashboardBind();
+            GetAllDiaryCount();
+            BindActionStatus();
+        }
+        else {
+            var diarydispatchvalue = "dispatch";
+            $("#diarydispatchval").val(diarydispatchvalue);
+            DashDispatchboardBind();
+            GetAllDispatchCount();
+            BindActionStatusDispatch();
+
+        }
+    }
+
+
+
+</script>
+

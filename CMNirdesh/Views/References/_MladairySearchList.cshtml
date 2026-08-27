@@ -1,0 +1,427 @@
+﻿@model CMNirdesh.Models.DiaryViewModel
+@using CMNirdesh.Models;
+
+
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+
+    int count = 0;
+    if (ViewBag.CurrentPage > 1)
+    {
+
+        count = (ViewBag.PageSize * (ViewBag.CurrentPage - 1));
+    }
+}
+
+<div class="widget-box widget-color-blue row col-md-12 col-lg-12">
+
+    <div class="col-md-4 widget-header widget-header-flat">
+        <span style="color:white; font-size:18px; margin-left:20px;" id="DocumentTypename"></span> &nbsp;
+    </div>
+    @*//id="StatusListMla"*@
+    <div class="widget-header widget-header-flat col-md-6">
+
+    </div>
+    <div class="widget-header widget-header-flat Red col-md-2 pull-right" style="text-align:right;">
+        <span class="badge badge-danger">Count @Model.lstDiaryViewModel.Count() </span>
+    </div>
+
+    <div class="widget-body">
+        <div class="pass-table">
+            @if (Model.lstDiaryViewModel != null)
+            {
+                if (Model.lstDiaryViewModel.Count() > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered  dataTable" id="diarySearch" aria-describedby="sample-table-3_info" style="width: 100%; overflow: scroll;">
+                            <thead>
+                                <tr role="row">
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" style="width: 4%;">Priority</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" style="width: 8%;">Ref.Id /<br />Date</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" style="width: 8%;">Letter# /<br />Date</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" aria-label="" style="text-align: center; width: 6%;">Reference Type</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" style="width: 10%;">From</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" style="width: 12%;">Subject</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" style="width: 6%;">Brief of Last Action Taken</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" aria-label="" style="text-align: center; width: 10%;">Current Status</th>
+                                    <th class="center" role="columnheader" rowspan="1" colspan="1" aria-label="" style="text-align: center; width: 3%;"></th>
+                                </tr>
+                            </thead>
+                            <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                @foreach (var item in Model.lstDiaryViewModel)
+                                {
+                                    count = count + 1;
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            @if (item.ReferencePriorityType == 1)
+                                            {
+                                                <span>
+                                                    <img data-rel="tooltip" title="High Priority/Short Term" src="~/Assets/Home_Images/highPriority.png" width="70" height="45" />
+                                                </span>
+                                            }
+                                            @if (item.ReferencePriorityType == 2)
+                                            {
+                                                <span>
+                                                    <img data-rel="tooltip" title="Normal Priority/Medium Term" src="~/Assets/Home_Images/mediumPriority.png" width="70" height="45" />
+                                                </span>
+                                            }
+                                            @if (item.ReferencePriorityType == 3)
+                                            {
+                                                <span>
+                                                    <img data-rel="tooltip" title="Low Priority/Long Term" src="~/Assets/Home_Images/lowPriority.png" width="70" height="45" />
+                                                </span>
+                                            }
+
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @item.RefId  <br />  @Convert.ToDateTime(item.CreatedDate).ToString("dd/MM/yyyy")
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @item.LetterNo <br /> @Convert.ToDateTime(item.LetterDate).ToString("dd/MM/yyyy")
+                                        </td>
+
+                                        <td style="text-align: center;">
+                                            @item.DocumentTypeName
+                                        </td>
+
+                                        <td style="text-align: center;">
+                                            @("["+item.FromDept+"] - " + item.FromOffice)
+                                        </td>
+
+                                        <td style="text-align: center;">
+                                            @item.Subject
+                                        </td>
+
+                                        <td style="text-align: center;">
+
+                                            @item.SubjectDetails
+                                            @*@{
+                                                    //string Enpath1 = "https://cmnirdesh.punjab.gov.in/MlaDiary/ActionFile/" + @CurrentSession.AssemblyId + "/" + @CurrentSession.MemberCode + "/" + item.DocmentType + "/" + item.EnclosureFile; }
+                                                    string Enpath1 = "https://cmnirdesh.punjab.gov.in" + item.EnclosureFile; }
+                                                @if (!string.IsNullOrEmpty(item.EnclosureFile))
+                                                {
+                                                    //item.EnclosureDate
+                                                    <a href="@Enpath1" target="_blank">
+                                                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="27" height="27" />
+                                                    </a>
+                                                }
+                                                else
+                                                {
+
+                                                }*@
+
+                                        </td>
+
+
+                                        <td style="text-align: center;">
+                                            @if (item.StatusName != null)
+                                            {
+                                                @("Status: " + Convert.ToString(item.StatusName))
+
+                                            }
+                                            @if (item.ActionTakenDate != null && item.ActionTakenDate != Convert.ToDateTime("01/01/1900"))
+                                            {
+                                                <br />
+                                                @("ActionDate: " + Convert.ToDateTime(item.ActionTakenDate).ToString("dd/MM/yyyy"))
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.ActionTakenFile))
+                                            {
+                                                string Actionpath1 = "https://cmnirdesh.punjab.gov.in" + item.ActionTakenFile;
+
+
+                                                <a href="@Actionpath1" target="_blank">
+                                                    <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" />
+                                                </a>
+                                            }
+                                            @*@if (item.ActionBy != null && item.StatusName != "Pending")
+                                                {<br />
+                                                    @("ActionBy: " + Convert.ToString(item.ActionBy))
+
+                                                }*@
+                                            else
+                                            {
+
+                                            }
+                                        </td>
+
+                                        <td>
+                                            <a data-rel="tooltip" class="green tooltip-success" title="Edit" href="#" onclick="EditMlaDairy('@item.RefId')">
+                                                <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                            </a>
+                                            <a data-rel="tooltip" class="primary tooltip-primary" title="SendToEOffice" href="#" onclick="SendToEOffice('@item.RefId')">
+                                                <img src="~/Assets/Home_Images/e_ofic.png" class="e_ofic" />
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+
+                                <strong>No Data Found !!!</strong><br />
+
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        var DocumentTypename = '@Session["DocumentTypeName"]';
+        if (DocumentTypename != "" || DocumentTypename != null) {
+            $('#DocumentTypename').empty();
+            $('#DocumentTypename').append(DocumentTypename);
+        }
+        else {
+            $('#DocumentTypename').empty();
+        }
+        var table = $('#diarySearch').DataTable({
+            searching: false, paging: false, info: true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i style="font-size: 27px; color:green;" class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i style="font-size: 27px;color:red; background:white;" class="fa fa-file-pdf-o "></i>',
+                    titleAttr: 'PDF'
+                }
+            ]
+
+
+        });
+
+       //BindActionStatusMladiary();
+    });
+
+    function GetActionStatusValueMla() {
+        var StatusVal = 10;
+        $.each($("input[name='group2Mla']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+    }
+
+    function BindActionStatusMladiary() {       
+        var since = $("#sincefilter").val();
+        var pathurl = '/References/BindActionStatusMla';
+        $("#StatusListMla").empty();
+        var T = "T";
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { since: since },
+
+            async: true,
+            success: function (result) {
+                var html = "";
+                if (result.length > 0) {
+                    html = html + "<input type='radio'  id='chk' value='10' name='group2Mla' style='font-size:14px; margin-left:2px;' checked='checked'>";
+                    html = html + "<span style='cursor:pointer;font-size:14px; margin-left:2px; margin-right:3px;'>All</span>";
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+                        html = html + "<input type='radio' id='chk'" + item.Text + "' value='" + item.Value + "' style='margin-left:2px;font-size:14px;' name='group2Mla'>";
+                        html = html + "<span style='margin-left:2px;margin-right:3px;font-size:14px;'>" + item.Text + "</span>";
+                    }
+                    $("#StatusListMla").html(html);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#StatusListMla").html("No Data Found");
+                    $("#loader-wrapper").hide();
+
+                }
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+    }
+
+    function EditMlaDairy(ID) {
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+        var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+        type: "GET",
+        url: pathurl,
+        async: true,
+        data: { ID: ID },
+        beforeSend: function () {
+        $('#loader-wrapper').show();
+        },
+        success: function (data) {
+        // //debugger;
+        var options = {
+        "backdrop": "static",
+        keyboard: true
+        };
+        $("#loader-wrapper").hide();
+
+        if (data) {
+        $("#loginModaldiary").css("display","block");
+        $('#loginModaldiarybody').html(data);
+
+
+        } else { alert("error"); }
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.responseText);
+        alert(thrownError);
+        },
+        complete: function (results) {
+        $('#loader-wrapper').hide();
+
+        }
+        });
+     }
+
+    function GeneratePdfByOfficeid(type) {
+        bootbox.prompt({
+            title: "Generate Pdf of MLA Diary Status Report.",
+            value: [''],
+            inputType: 'checkbox',
+            inputOptions: [{
+                text: 'With Details',
+                value: '1',
+            }],
+            callback: function (result) {
+                var WithDetails = false;
+                if (result == null) {
+
+                }
+
+                else if (result == "1") {
+                    //with Details Column
+                    $("#loader-wrapper").show();
+
+                    WithDetails = true;
+                    var DocumenttypeSelected = $("#maintype").val();
+                    var Constituency = $("#Constituency  option:selected").val();
+                    var ddOfficeId = $("#Office option:selected").val();
+                    var OfficeName = $("#Office option:selected").text();
+                    var actioncode = $("#favouriteMLA option:selected").val();
+                    if (actioncode == 10) {
+                        actioncode = "";
+                    }
+                    if (ddOfficeId == 0) {
+                        ddOfficeId = "";
+                        OfficeName = "";
+                    }
+
+                    $.ajax({
+                        url: "/Notices/OnlineMemberQuestions/GeneratePdfByOfficeid",
+                        type: 'GET',
+                        data: {
+                            ActionTypeCode: actioncode,
+                            Officeid: ddOfficeId,
+                            OfficeName: OfficeName,
+                            DocumenttypeSelected: DocumenttypeSelected,
+                            ConstituencyId: Constituency,
+                            WithDetails: WithDetails
+                        },
+                        success: function (data) {
+                            if (data) {
+                                var value = "PdfbyOfficeId.pdf";
+                                window.open("/Notices/OnlineMemberQuestions/DownloadPDF?parameter=" + value, "_blank");
+                                $("#loader-wrapper").hide();
+                            } else { alert("error"); }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr.responseText);
+                            alert(thrownError);
+                        }
+                    });
+
+                }
+                else {
+                    //Without Details Column
+                    $("#loader-wrapper").show();
+                    var DocumenttypeSelected = $("#maintype").val();
+                    var Constituency = $("#Constituency  option:selected").val();
+                    var ddOfficeId = $("#Office option:selected").val();
+                    var OfficeName = $("#Office option:selected").text();
+                    var actioncode = $("#favouriteMLA option:selected").val();
+                    if (actioncode == 10) {
+                        actioncode = "";
+                    }
+                    if (ddOfficeId == 0) {
+                        ddOfficeId = "";
+                        OfficeName = "";
+                    }
+
+                    $.ajax({
+                        url: "/Notices/OnlineMemberQuestions/GeneratePdfByOfficeid",
+                        type: 'GET',
+                        data: {
+                            ActionTypeCode: actioncode,
+                            Officeid: ddOfficeId,
+                            OfficeName: OfficeName,
+                            DocumenttypeSelected: DocumenttypeSelected,
+                            ConstituencyId: Constituency,
+                            WithDetails: WithDetails
+                        },
+                        success: function (data) {
+                            if (data) {
+                                var value = "PdfbyOfficeId.pdf";
+                                window.open("/Notices/OnlineMemberQuestions/DownloadPDF?parameter=" + value, "_blank");
+                                $("#loader-wrapper").hide();
+                            } else { alert("error"); }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr.responseText);
+                            alert(thrownError);
+                        }
+                    });
+                }
+
+            }
+        });
+    }
+
+    function SendToEOffice(ID) {
+        if (confirm("Are you sure you want to send to eOffice?")) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("SendToEOffice", "References")',
+                datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: { dairyid: ID },
+                success: function (response) {
+                    if (response.length > 0) {
+
+                    }
+                    else {
+                        $("#ReportTableDiv").css("display", "block");
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        }
+    }
+
+</script>

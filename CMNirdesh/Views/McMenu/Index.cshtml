@@ -1,0 +1,680 @@
+﻿@model CMNirdesh.Models.MCHouse.LstMCHomeMenuModel
+
+@{
+    ViewBag.Title = "Index";
+    var roleid = CMNirdesh.Models.CurrentSession.RoleID;
+}
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<div id="main-content">
+    <div class="main-content">
+
+
+        <section class="form_dsign">
+            <div class="container-fluid">
+                <div class="inr_frm_dsgn">
+                    <div class="Tab_hdr p-2 d-flex flex-wrap align-items-center">
+                        <div class="col-md-6 col-sm-6 col-xs-12 p-2">
+                            <h2>Menu List</h2>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12 p-2 text-end txt_rit">
+                            <p>
+                                <button type="button" class="btn btn-xs btn-primary bigger float-right" data-bs-toggle="modal" data-bs-target="#myModal" style="font-size:14px;" onclick="clearTextBox();">
+                                    <i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add New Menu
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form_lyot">
+
+                        @if (Model != null)
+                        {
+                            if (Model._ListMCHomeMenuModel.Count() > 0)
+                            {
+                                <div class="tab_parent table-responsive table_rsponsv">
+                                    <table id="example" class="table table-hover table-bordered dataTable no-footer">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size:14px; width:20%"><span class="font-weight-bold">MC Name</span></th>
+                                                <th style="font-size:14px; width:20%"><span class="font-weight-bold">Menu Name</span></th>
+                                                <th style="font-size: 14px; width: 20%"><span class="font-weight-bold">Menu Name(Punjabi)</span></th>
+                                                @*<th style="font-size: 14px; width: 20%"><span class="font-weight-bold">icon</span></th>*@
+                                                <th style="font-size: 14px; width: 20%"><span class="font-weight-bold">URL</span></th>
+                                                <th style="font-size: 14px; width: 20%"><span class="font-weight-bold">Action</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                            @foreach (var items in Model._ListMCHomeMenuModel)
+                                            {
+                                                <tr>
+                                                    <td class="center" style="font-size:18px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MCName)</td>
+                                                    <td class="center" style="font-size:18px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MenuName)</td>
+                                                    <td class="center" style="font-size:18px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MenuName_local)</td>
+                                                    @*<td class="center" style="font-size:18px; padding: 14px 4px !important">
+                                                            @if (!string.IsNullOrWhiteSpace(items.icon))
+                                                            {
+                                                                <img src="@Url.Content(@Model.fileacessingUrl + "/" + items.icon)" height="25" width="25" />
+                                                            }
+                                                        </td>*@
+                                                    <td class="center" style="font-size:18px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Url)</td>
+                                                    <td class="center" style="font-size:13px; padding: 14px 4px !important">
+                                                        <div class="hidden-sm hidden-xs action-buttons">
+                                                            <a data-rel="tooltip" class="tooltip-primary" data-target="#myModal" onclick="getbyID('@items.Id')">
+                                                                <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                            </a>
+                                                            <a data-rel="tooltip" class="red tooltip-error" onclick="DeleteDepartmentRecord('@items.Id')">
+                                                                <i class="ace-icon fa fa-trash bigger-130"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="hidden-sm hidden-xs action-buttons">
+                                                            <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.Id')" value="@items.Id" />
+                                                        </div>
+                                                        @Html.HiddenFor(modelItem => items.SrNo, new { @Id = "hdnMenuOrder" })
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-info">
+                                            <strong>There are no record found</strong><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="background: rgb(54 55 56 / 63%);">
+                <div class="modal-dialog" style="width: 70%;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="widget-title modal_heading" id="myModalLabel">Add Menu Details</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <input type="hidden" id="selectedId" />
+                                <div class="form-group" id="Type">
+                                    <div class="profile-info-name fotm_lbl">Office Type:</div>
+                                    <select id="MenuOfcTypeDropDown">
+                                        <option value="0" class="form-control txt_design">Please select</option>
+                                        @if (CMNirdesh.Models.CurrentSession.RoleID == "18")
+                                        {
+                                            <option value="1" class="form-control txt_design">LG</option>
+                                        }
+                                        <option value="2" class="form-control txt_design">MC</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="Type">
+                                    <div class="profile-info-name fotm_lbl">Menu Type:</div>
+                                    <select id="MenuTypeDropDown">
+                                        <option value="0" class="form-control txt_design">Please select</option>
+                                        <option value="1" class="form-control txt_design">About Us</option>
+                                        <option value="2" class="form-control txt_design">Councillors</option>
+                                        <option value="3" class="form-control txt_design">Others</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Menu Name:</label>
+                                    <input type="text" class="form-control" id="MenuName" placeholder="Menu Name" />
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Menu Name(Punjabi):</label>
+                                    <input type="text" class="form-control" id="MenuLocalName" placeholder="Menu Name(Punjabi)" />
+                                </div>
+                                @*<div class="form-group" id="Type">
+                                        <div class="profile-info-name fotm_lbl">MC Type:</div>
+                                        <select id="MCTypeDropDown">
+                                            <option value="0" class="form-control txt_design" id="SelectId" placeholder="MC Type">Please select</option>
+                                            <option value="1" class="form-control txt_design" id="SelectId" placeholder="MC Type">1</option>
+                                            <option value="2" class="form-control txt_design" id="SelectId" placeholder="MC Type">2</option>
+                                        </select>
+                                    </div>*@
+                                @*<div class="form-group">
+                                        <label for="Url" class="profile-info-name fotm_lbl">Url:</label>
+                                        <input type="text" class="form-control" id="Url" placeholder="Url" />
+
+                                    </div>*@
+                                @*<div class="form-group" style="display:none">
+                                        <label for="MC Logo" class="profile-info-name fotm_lbl">Icon:</label>
+                                        <input type="file" name="file" class="form-control" id="McMenuIcon" placeholder="MCLogo Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                        <img src="https://placehold.jp/100x100.png" id="MCMenuIconPreview" class="form-control" style="width:100px; height:100px; border:1px solid red;" alt="Load Image" />
+                                        <input type="hidden" id="McMenuIconName" />
+                                    </div>*@
+                                <br />
+                                @if (CMNirdesh.Models.CurrentSession.RoleID == "18")
+                                {
+                                    <div class="form-group" id="MCId">
+                                        <div class="profile-info-name fotm_lbl">MC Name:</div>
+                                        <select id="MCIDDropDown" onchange="GetMaxSerial(this.value)">
+                                            <option value="0" class="form-control txt_design" id="SelectId" placeholder="MC Type">Please select</option>
+                                        </select>
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    <h5>Select Link or Page:</h5>
+                                    <input type="radio" id="isLink" name="linkOrPage" value="link" onchange="showInput()"> <label for="isLink">Link</label>
+                                    <input type="radio" id="isPage" name="linkOrPage" value="page" onchange="showInput()"> <label for="isPage">Page</label><br>
+
+
+                                    <div class="form-group" id="inputContainer" style="display: none;">
+                                        <label for="Url">Enter URL:</label><br>
+                                        <input type="text" class="form-control txt_design" id="Url" name="Url"><br>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="Order" class="profile-info-name fotm_lbl">Menu Order:</label>
+                                    <input type="text" class="form-control txt_design" max="20" id="MenuID" placeholder="Menu Order" />
+                                </div>
+
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="DeleteConfirmation">
+                <div class="modal-dialog" style="width:320px">
+                    <div class="modal-content">
+                        <div class="modal header">
+                            <a href="#" class="close" data-dismiss="modal">&times;</a>
+                        </div>
+                        <div class="modal-body">
+                            <h4 style="font-size:14pt">Are you sure? You want to Delete this record.</h4>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="CloseDeletePopup()">Cancel</a>
+                                <a href="#" class="btn btn-danger" id="Delete" onclick="ConfirmDelete()">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+<style>
+
+    .Tab_hdr {
+        background-color: var(--top-heading-bg);
+        padding: 1px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        color: #05264E;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+    .Tab_hdr h2 {
+        font-size: 23px;
+        font-weight: 500;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .modal-backdrop {
+        display: none;
+    }
+</style>
+<script>
+        function showInput() {
+            var inputContainer = document.getElementById("inputContainer");
+            var inputField = document.getElementById("Url");
+            var isLinkChecked = document.getElementById("isLink").checked;
+
+            if (isLinkChecked) {
+                inputContainer.style.display = "block";
+                inputField.placeholder = "Enter URL If Any";
+
+            } else {
+                inputContainer.style.display = "block";
+                inputField.placeholder = "Enter Page If Any  (Controller Name/Action Name)";
+                inputField.style.width = '100%';
+            }
+        }
+
+
+    $(document).ready(function () {
+        var s = $("#MCIDDropDown");
+        var url = '@Url.Action("MCDropDown", "McMenu")';
+        //debugger
+        s.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                s.empty().append('<option selected="selected" value="0">Please select</option>');
+                $.each(response, function () {
+                    s.append($("<option></option>").val(this['Value']).html(this['Text']));
+                });
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+        var menuorder = $('#hdnMenuOrder').val(); //alert(menuorder);
+
+    });
+
+    $('#example').DataTable({
+    });
+    //document.getElementById('McMenuIcon').onchange = function (e) {
+    //    const [file] = McMenuIcon.files;
+    //    if (file) {
+    //        $("#MCMenuIconPreview").attr('src', URL.createObjectURL(file));
+    //    }
+    //};
+    document.getElementById('MenuOfcTypeDropDown').onchange = function (e) {
+        $('#MCId').show();
+        if (e.target.value == 1) {
+            $('#MCId').hide();
+        }
+    };
+
+    function getbyID(EmpID) {
+       // debugger
+        clearTextBox();
+
+       // var url = "/McMenu/Edit?id=" + EmpID;
+        var url = '@Url.Action("Edit", "McMenu")' + '?id=' + EmpID;
+        $("#myModalLabel").html("Update Menu Details");
+        $("#btnUpdate").show();
+        $.ajax({
+            type: "GET",
+            url: url,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                var obj = JSON.parse(data);
+                var objdata = obj._ListMCHomeMenuModel[0];
+                $('#selectedId').val(objdata.Id);
+                $('#MCTypeDropDown').val(objdata.Type);
+                $('#MenuTypeDropDown').val(objdata.MenuType);
+                $('#MenuOfcTypeDropDown').val(objdata.MenuOfcType);
+                $('#MCIDDropDown').val(objdata.MCId);
+                $("#MenuName").val(objdata.MenuName);
+                $("#MenuLocalName").val(objdata.MenuName_local);
+                $("#Url").val(objdata.Url);
+                //$("#PageID").val(objdata.PageId);
+                //$("#MCMenuIconPreview").attr('src', '/' + objdata.icon);
+                $("#MenuID").val(objdata.SrNo);
+                $("#btnSave").hide();
+                $('#myModal').modal('show');
+
+                if (objdata.islink == 1) {
+                    $("#isLink").prop("checked", true);
+                    $('#inputContainer').css("display", "block");
+                }
+                if (objdata.islink == 2) {
+                    $("#isPage").prop("checked", true);
+                    $('#inputContainer').css("display", "block");
+                }
+                $('#MCId').show();
+                if (objdata.MenuOfcType == 1) {
+                    $('#MCId').hide();
+                }
+            }
+        });
+    }
+    //Function for clearing the textboxes
+    //Valdidation using jquery
+    function validate() {
+        //debugger
+        var isValid = true;
+        if ($('#MenuOfcTypeDropDown').val().trim() === "0") {
+            $('#MenuOfcTypeDropDown').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#MenuOfcTypeDropDown').css('background-color', 'white');
+        }
+        if ($('#MenuTypeDropDown').val().trim() === "0") {
+            $('#MenuTypeDropDown').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#MenuTypeDropDown').css('background-color', 'white');
+        }
+        if ($('#MenuLocalName').val().trim() === "") {
+            $('#MenuLocalName').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#MenuLocalName').css('background-color', 'white');
+        }
+        if ($('#MenuName').val().trim() === "") {
+            $('#MenuName').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#MenuName').css('background-color', 'white');
+        }
+        //if ($('#PageID').val().trim() === "") {
+        //    $('#PageID').css('background-color', '#ff56564d');
+        //    isValid = false;
+        //}
+        //else {
+        //    $('#PageID').css('background-color', 'white');
+        //}
+        //if ($('#MCIDDropDown').val().trim() === "0") {
+        //    $('#MCIDDropDown').css('background-color', '#ff56564d');
+        //    isValid = false;
+        //}
+        //else {
+        //    $('#MCIDDropDown').css('background-color', 'white');
+        //}
+        if ($('#MenuID').val().trim() === '') {
+            $('#MenuID').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#MenuID').css('background-color', 'white');
+        }
+
+
+        return isValid;
+    }
+
+
+        function clearTextBox() {
+        //debugger
+        $('#MCTypeDropDown').css('background-color', 'white');
+            $('#MenuOfcTypeDropDown').css('background-color', 'white');
+            $('#MenuTypeDropDown').css('background-color', 'white');
+        $('#MenuLocalName').css('background-color', 'white');
+        $('#MCIDDropDown').css('background-color', 'white');
+        $('#MenuName').css('background-color', 'white');
+        //$('#PageID').css('background-color', 'white');
+        $('#MenuID').css('background-color', 'white');
+        $('#MenuName').val('');
+        $('#MenuLocalName').val('');
+        $('#Url').val('');
+        $('#MCIDDropDown').val(0);
+        //$('#PageID').val('');
+        //$('#McMenuIcon').val('');
+        $('#MCTypeDropDown').val(0);
+            $('#MenuOfcTypeDropDown').val(0);
+            $('#MenuTypeDropDown').val(0);
+        $('#MenuID').val('');
+        $('#btnSave').show('');
+        //$("#MCMenuIconPreview").attr('src', 'https://placehold.jp/100x100.png');
+        $('#btnUpdate').hide();
+            var menuorder = $('#hdnMenuOrder').val();
+            if (menuorder === undefined || menuorder === null || menuorder === '') {
+                menuorder = 1;
+            }
+            $('#MenuID').val(menuorder);
+            //alert(@roleid);
+            if (@roleid == "18") {
+                $('#MenuID').prop("disabled", false);
+            }
+            else {
+                $('#MenuID').prop("disabled", true);
+            }
+    }
+
+    function closepopup() {
+        $('#myModal').hide();
+    }
+
+    function Add() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+           if (window.FormData !== undefined) {
+
+            //var fileUpload = $("#McMenuIcon").get(0);
+
+            //var files = fileUpload.files;
+            //// Create FormData object
+            var fileData = new FormData();
+
+            //// Looping over all files and add it to FormData object
+            //for (var i = 0; i < files.length; i++) {
+            //    fileData.append(files.name, files[i]);
+
+
+            //}
+            var s = getSelectedValue();
+            var islink;
+            if (s == 'link') {
+                islink = 1;
+            }
+            else {
+                islink = 0;
+            }
+
+            debugger
+            const courseDto = {
+
+
+                MenuName: $('#MenuName').val(),
+                MenuName_local: $('#MenuLocalName').val(),
+                Url: $('#Url').val(),
+                MCId: $('#MCIDDropDown').val(),
+               // PageId: $('#PageID').val(),
+                //icon: $('#McMenuIcon').val(),
+                Type: $('#MCTypeDropDown').val(),
+                MenuType: $('#MenuTypeDropDown').val(),
+                MenuOfcType: $('#MenuOfcTypeDropDown').val(),
+                SrNo: $('#MenuID').val(),
+                islink: islink,
+
+
+
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+
+                 url:'@Url.Action("Create", "MCMenu")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result)
+                {
+                    {
+                        alert(result);
+                        $('#myModal').hide();
+                        location.reload();
+                        var menuorder = $('#hdnMenuOrder').val();
+                        $('#MenuID').val(menuorder);
+                    }
+
+                },
+                error: function (req, status, error) {
+                    var err = req.responseJSON.value;
+                    console.log(err);
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+        }
+
+    function getSelectedValue() {
+            var selectedValue;
+            var radios = document.getElementsByName('linkOrPage');
+
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    selectedValue = radios[i].value;
+                    break;
+                }
+            }
+
+            return selectedValue;
+        }
+
+    function Update() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            //var fileUpload = $("#McMenuIcon").get(0);
+
+            //var files = fileUpload.files;
+
+            var fileData = new FormData();
+
+
+
+
+            //for (var i = 0; i < files.length; i++) {
+
+            //    fileData.append(files.name, files[i]);
+
+            //}
+
+            var s = getSelectedValue();
+            var islink;
+            if (s == 'link') {
+                islink = 1;
+            }
+            else {
+                islink = 0;
+            }
+
+            const courseDto = {
+
+                Id: $('#selectedId').val(),
+                MenuName: $('#MenuName').val(),
+                MenuName_local: $('#MenuLocalName').val(),
+                Url: $('#Url').val(),
+                //PageId: $('#PageID').val(),
+                SrNo:$('#MenuID').val(),
+                //icon: $('#McMenuIcon').val(),
+                Type: $('#MCTypeDropDown').val(),
+                MenuType: $('#MenuTypeDropDown').val(),
+                MenuOfcType: $('#MenuOfcTypeDropDown').val(),
+                MCId: $('#MCIDDropDown').val(),
+                islink: islink,
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url: '@Url.Action("Update", "MCMenu")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result != 0) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+
+                        else {
+                        alert("Not Updated Menu Order On the Page Already Existing");
+                }
+
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+    var MyApp = {};
+    function DeleteDepartmentRecord(xyz) {
+        $('#DeleteConfirmation').modal("show");
+        MyApp = xyz;
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+    function CloseDeletePopup() {
+        $('#DeleteConfirmation').modal("hide");
+    }
+    function DeleteID() {
+        var i = MyApp;
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("Delete", "MCMenu")',
+            data: {id: i},
+            //url: "/MCMenu/Delete?id=" + i,
+            success: function (result) {
+                $("#DeleteConfirmation").modal("hide");
+                alert("Deleted Successfully");
+                location.reload();
+
+            }
+        });
+    }
+    function GetMaxSerial(menu_id) {
+    var url = '@Url.Action("Max", "MCMenu")' + '?Id=' + menu_id;
+   // debugger
+    $.ajax({
+        type: "GET",
+        url: url,
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            var obj = JSON.parse(data);
+            data = obj._LstMenu[0]; console.log(data);
+            $("#MenuID").val(data.SrNo);
+        }
+    });
+}
+</script>
