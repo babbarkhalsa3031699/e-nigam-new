@@ -263,15 +263,17 @@
 
                 // ✅ SAVE content before paging / redraw
                 preDrawCallback: function () {
-                    $('.tiny-editor').each(function () {
+                    $('#MeetingTable .tiny-editor').each(function () {
                         var refIds = $(this).data('refid');
                         if (!refIds) return;
 
                         var safeId = refIds.toString().replace(/,/g, '_');
-                        var editor = tinymce.get('txt_' + safeId);
+                        var $editorElement = $('#MeetingTable')
+                            .find('#MeetingTable_txt_' + safeId);
+                        var editor = tinymce.get($editorElement.attr('id'));
                         if (editor && editor.getContent()) {
                             
-                            var status = $('select[data-refid="' + refIds + '"]').val();
+                            var status = $('#MeetingTable select[data-refid="' + refIds + '"]').val();
                             var resolutionNo = $(this).data('resolution');
                             tinyMceDataStore[safeId] = {
                                 RefId: safeId,
@@ -285,16 +287,16 @@
 
                 // ✅ RELOAD + RESTORE after paging
                 drawCallback: function () {
-                    $('.tiny-editor').each(function () {
+                    $('#MeetingTable .tiny-editor').each(function () {
                         var refIds = $(this).data('refid');
                         if (!refIds) return;
 
                         var safeId = refIds.toString().replace(/,/g, '_');
-                        var selector = '#txt_' + safeId;
+                        var selector = '#MeetingTable_txt_' + safeId;
 
                         // 🔥 Destroy old instance if exists
-                        if (tinymce.get('txt_' + safeId)) {
-                            tinymce.get('txt_' + safeId).remove();
+                        if (tinymce.get('MeetingTable_txt_' + safeId)) {
+                            tinymce.get('MeetingTable_txt_' + safeId).remove();
                         }
 
                         // 🔥 Re-init TinyMCE for current page rows
@@ -339,17 +341,30 @@
                                 });
 
                                 editor.on('init', async function () {
-                                    var refIds = $('#' + editor.id).data('refid');
+                                    var refIds = $('#MeetingTable #' + editor.id).data('refid');
                                     var firstId = refIds.toString().replace(/,/g, '_');
 
                                     // 🔥 MOVE Branch Comments Dropdown & Save Button into TinyMCE Header Toolbar
                                     var $container = $(editor.getContainer());
                                     var $toolbar = $container.find('.tox-toolbar__primary, .tox-toolbar');
-                                    var $drpdwn = $('#drpdwn_' + firstId);
+                                    var $drpdwn = $('#MeetingTable #drpdwn_' + firstId);
 
                                     if ($toolbar.length && $drpdwn.length) {
+
+                                        // Remove an existing custom group for this editor
+                                        $toolbar.find('.custom-header-group').remove();
+
+                                        // Clone instead of moving the original
                                         var $group = $('<div class="tox-toolbar__group custom-header-group"></div>');
-                                        $group.append($drpdwn.show());
+
+                                        var $clone = $drpdwn.clone(true, true)
+                                            .removeAttr('id')
+                                            .css('display', '');
+
+                                        // Keep the original inside the DataTables row
+                                        // and put only the clone inside TinyMCE
+                                        $group.append($clone);
+
                                         $toolbar.prepend($group);
                                     }
 
@@ -395,7 +410,7 @@
                             <i class="fa fa-compress"></i>
                         </button>
                         <button type="button" class="btn btn-success btn-sm ml-2" onclick="return saveAllData(event);">
-                            Submit All
+                            Submit
                         </button>
                         <button type="button" class="btn btn-danger btn-sm ml-2 btnCloseActionSection">
                             Close
@@ -451,7 +466,7 @@
 
             if (!refIds) return;
 
-            var status = $('select[data-refid="' + refIds + '"]').val();
+            var status = $('#MeetingTable select[data-refid="' + refIds + '"]').val();
             var comments = editor.getContent();
             var refId = refIds.toString().replace(/,/g, '_');
 
@@ -522,15 +537,15 @@
 
             let hasError = false;
 
-            $('.tiny-editor').each(function () {
+            $('#MeetingTable .tiny-editor').each(function () {
                 var refIds = $(this).data('refid');
                 var resolutionNos = $(this).data('resolution');
                 if (!refIds) return;
 
                 var safeId = refIds.toString().replace(/,/g, '_');
-                var editor = tinymce.get('txt_' + safeId);
+                var editor = tinymce.get('MeetingTable_txt_' + safeId);
                 var comments = editor ? editor.getContent() : '';
-                var status = $('select[data-refid="' + refIds + '"]').val();
+                var status = $('#MeetingTable select[data-refid="' + refIds + '"]').val();
                 
                 var editorCheckbox = $(this).closest('td').find('#actionSubmitCheckbox');
                 var isChecked = $(editorCheckbox).is(':checked');
@@ -561,7 +576,7 @@
                     }
                 });
 
-                if (isChecked && $('.tiny-editor').length > 1) {                  
+                if (isChecked && $('#MeetingTable .tiny-editor').length > 1) {                  
 
                     refIdArray.forEach(function (id) {
 
@@ -580,7 +595,7 @@
             if (hasError) {
                 if (btn) {
                     btn.disabled = false;
-                    btn.innerText = "Save All";
+                    btn.innerText = "Submit";
                 }
                 return;
             }
@@ -595,17 +610,11 @@
 
                 success: function () {
                     // ✅ success UI
-                    $('.tiny-editor').closest('tr').css('background', '#d4edda');
+                    $('#MeetingTable .tiny-editor').closest('tr').css('background', '#d4edda');
                     alert("All data saved successfully");
                    CloseActionSection();
                     OpenNotingSection();
-                    if (dataList.length > 0) {
-                        InsertSelectedRemarksToActionDescription(dataList.map(el => el.RefId).join(","));
-                    }
-                    else {
-                        InsertRemarksToActionDescription();
-                    }
-                    return false;
+                    InsertSelectedRemarksToActionDescription((dataList.length > 0 ? dataList : dataListAll).map(el => el.RefId).join(","));
                 },
                 error: function () {
                     alert("Error saving data");
@@ -614,7 +623,7 @@
                     $('#loader-wrapper').hide();
                     if (btn) {
                         btn.disabled = false;
-                        btn.innerText = "Save All";
+                        btn.innerText = "Submit";
                     }
                 }
             });
@@ -698,9 +707,9 @@
         function saveRowDraft(btn, refIds) {
             var row = $(btn).closest('tr');
             var safeId = refIds.toString().replace(/,/g, '_');
-            var editor = tinymce.get('txt_' + safeId);
+            var editor = tinymce.get('MeetingTable_txt_' + safeId);
             var comments = editor ? editor.getContent() : '';
-            var status = $('select[data-refid="' + refIds + '"]').val();
+            var status = $('#MeetingTable select[data-refid="' + refIds + '"]').val();
             
             if (!status || status === "") {
                 alert("Please select status");
@@ -870,7 +879,7 @@
                                     </div>
                                 }
                                 <textarea class="tiny-editor"
-                                          id="txt_@items.RefId.Replace(",", "_")"
+                                          id="MeetingTable_txt_@items.RefId.Replace(",", "_")"
                                           data-refid="@items.RefId"
                                           data-resolution="@items.ResolutionNo">@(string.IsNullOrEmpty(items.LGComments) ? items.ActionDescription : items.LGComments)</textarea>
                             </td>
@@ -882,7 +891,7 @@
                 <button type="button"
                         class="btn btn-success"
                         onclick="return saveAllData(event);">
-                    Submit All
+                    Submit
                 </button>
             </div>
         </div>
