@@ -1,0 +1,171 @@
+﻿@model CMNirdesh.Models.AgendaModel
+@{
+    Layout = null;
+}
+<style>
+    .hand{
+        cursor:pointer;
+    }
+</style>
+<div class="form_lyot">
+    @if (Model.Agendadecionlist.Count > 0)
+    {
+        <div class="table-responsive">
+            <table id="example" class="table table-hover table-bordered" style="font-size:20px;">
+                <thead>
+                    <tr class="table-heading">
+                        <th>Meeting Date</th>
+                        <th>Meeting Title</th>
+                        <th>Memorandums</th>
+                        <th>Agenda (PDF)</th>
+                        <th>Proceedings (PDF)</th>
+                        <th>Cabinet Decsions</th>
+                        <th>Decsions To Be Generated</th>
+                     
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var items in Model.Agendadecionlist)
+                    {
+                        <tr>
+                            <td>@items.AgendaDateDisplay</td>
+                            <td>@items.AgendaName</td>
+                            <td>@items.RecordCount</td>
+                            <td>
+                                <a class="" href="../SecureFileStructure/@items.AgendaPdf" target="_blank">
+                                    <img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" />
+                                </a>
+                           </td>
+                            <td>
+                                <a class="" href="../SecureFileStructure/@items.ProceedingPdf" target="_blank">
+                                    <img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" />
+                                </a>
+                            </td>
+                            <td class="hand" onclick="GetDecisionList(@items.AgendaId,1)">@items.CabinetDecsions</td>
+                            <td class="hand" onclick="GetDecisionList(@items.AgendaId,0)">@items.DecsionsToBeGenerated</td>
+                            @*<td>
+
+                                <a class="" onclick="return PreviewGenerateDeptProceedingPdff('@items.FromDeptId', '@items.AgendaId');">
+                                    <img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" />
+                                </a>
+                            </td>
+
+
+
+
+                            <td>
+
+
+                                <a class="" onclick="return ApprovedGenerateDeptProceedingPdff('@items.FromDeptId', '@items.AgendaId');">
+                                    <img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" />
+                                </a>
+                            </td>*@
+
+
+
+
+                        </tr>
+                        //Sr = @Sr + 1;
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div id="DecisionDiv" class="row table-responsive mt-5" style="display:none">
+            <br />  <br />
+            <h4 style="text-align:center" id="MeetingTittle">Meeting Date : Meeting Tittle: </h4>
+
+            <table id="DecisionList" class="table table-hover table-bordered" style="font-size:20px;" width="100%">
+                <thead>
+                    <tr class="table-heading">
+                        <th>Department</th>
+                        <th>Office</th>
+                        <th>Item No.</th>
+                        <th id="DHead">Decision(PDF)</th>
+                        <th>Generate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<script>
+
+    function GetDecisionList(AgendaId, val) {
+        $("#DecisionList tbody").html('');
+        $("#DecisionList").DataTable().clear().draw();
+        $("#DecisionList").DataTable().destroy();
+           $.ajax({
+                type: "GET",
+                  url: '@Url.Action("GetDecisionList", "Agenda")',
+                datatype: "Json",
+                    contentType: "application/json; charset=utf-8",
+               data: { agendaId: AgendaId, viewtype: val},
+               success: function (result) {
+                   $.each(result, function (index, response) {
+                       $('#MeetingTittle').html("Meeting Date : " + response.AgendaDate + "  Meeting Tittle: " + response.AgendaName);
+                       var srno = "";
+                       if (response.SrNo == null) {
+                           srno = "";
+                       } else {
+                           srno = response.SrNo;
+                       }
+                       if (val == 1) {
+                           $('#DHead').html("Decision(PDF)");
+                           var str = "<tr role='row' class='odd' id='tr_" + response.id + "'>" +
+                               "<td style=''>" + response.deptname + "</td>" +
+                               "<td style=''>" + response.officename + "</td>" +
+                               "<td style=''>" + srno + "</td>" +
+                               "<td style=''> <a target='_blank' href='../SecureFileStructure/" + response.DecisionPath +"' target='_blank'> <img src='/Assets/Home_Images/PDF.png' alt='Download' title='Download Pdf' width='24' height='24' /> </a></td>" +
+                               "<td style=''></td>" +
+                               "</tr>";
+                           $("#DecisionList tbody").append(str);
+                           //$('#DecisionList').DataTable();
+                           $('#DecisionList').DataTable();
+                           $('#DecisionList').DataTable().column(4).visible(false);
+                           $('#DecisionDiv').show();
+                       } else {
+                           $('#DHead').html("Decision(Preview)");
+                           var str = "<tr role='row' class='odd' id='tr_" + response.id + "'>" +
+                               "<td style=''>" + response.deptname + "</td>" +
+                               "<td style=''>" + response.officename + "</td>" +
+                               "<td style=''>" + srno + "</td>" +
+                               "<td style=''> <i class='ace-icon fa fa-eye bigger-150 hand' onclick='return PreviewGenerateDeptProceedingPdff(" + response.FromDeptId + "," + response.AgendaId + "," + response.id + ");'> </i></td>" +
+                               "<td style=''> <i class='ace-icon fa fa-pencil bigger-150 hand' onclick='return ApprovedGenerateDeptProceedingPdff(" + response.FromDeptId + "," + response.AgendaId + "," + response.id +");'> </i></td>" +
+                               "</tr>";
+                           $("#DecisionList tbody").append(str);
+                           $('#DecisionList').DataTable();
+                           $('#DecisionDiv').show();
+                       }
+
+
+                   });
+                },
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+
+            });
+    }
+
+    function ApprovedGenerateDeptProceedingPdff(fromDeptId, agendaId, adid)
+    {
+
+       // Example: Open a URL with these parameters (this part can be modified as per your logic)
+        var url = "/Agenda/ApproveProceedingDeptDecision?DeptId=" + fromDeptId + "&agendaid=" + agendaId + "&adid=" + adid;
+
+
+       window.open(url, '_blank'); // Opens the URL in a new tab
+   }
+
+
+    function PreviewGenerateDeptProceedingPdff(fromDeptId, agendaId, adid) {
+
+            // Example: Open a URL with these parameters (this part can be modified as per your logic)
+            var url = "/Agenda/ApproveProceedingDeptDecisionHtmlNew?DeptId=" + fromDeptId + "&agendaid=" + agendaId;
+
+            window.open(url, '_blank'); // Opens the URL in a new tab
+        }
+</script>

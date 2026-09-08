@@ -1,0 +1,454 @@
+﻿@model CMNirdesh.Models.NevaStarredQuestion
+
+
+@*@model CMNirdesh.Models.Diaries.MlaDiaryData*@
+
+
+@{
+    ViewBag.Title = "StarredQuestionandReply";
+}
+<head>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/popper.min.js"></script>
+    <script src="~/assets/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/owl_item.carousel.min.js"></script>
+</head>
+
+<div id="main-content">
+    <div class="main-content">
+        <section class="honbl_sec h3_heading">
+            <div class="container-fluid">
+
+
+                <div class="asembly_box shadow_box">
+                    <h3 class="asembly_box_header">Starred Questions and Reply</h3>
+                    <div class="row members-list">
+
+
+                        <div class="col-md-4 col-sm-6 col-xs-12 col-12">
+                            <label for="inputState" class=" fotm_lbl ">Assembly:</label>
+                            @Html.DropDownListFor(m => m.AssemblyCode, Model.AssemblyList, "Select", new { @onchange = "changeAssembly()", @id = "Assembly" })
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-6 col-xs-12 col-12">
+                            <label for="inputState" class=" fotm_lbl ">Session:</label>
+                            @Html.DropDownListFor(m => m.SessionCode, Model.SessionList, "Select", new { @onchange = "changeSession()", @id = "Session" })
+
+                        </div>
+
+
+
+                        <div class="col-md-4 col-sm-6 col-xs-12 col-12">
+                            <label for="inputState" class="fotm_lbl">Session Date:</label>
+                            @Html.DropDownListFor(m => m.Id, Model.SessDatelist, "Select", new { @id = "Date" })
+                        </div>
+
+
+
+
+
+
+                        @*<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                            <select class="form-control" id="Assembly" name="Assembly" onchange="changeAssembly()">
+                                <option>Select Assembly</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                            <select class="form-control" id="Session" name="Session" onchange="changeSession()">
+                                <option>Select Session</option>
+
+                            </select>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                            <select class="form-control" id="Date" name="Date">
+                                <option>Select Date</option>
+
+                            </select>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                            <div class="row">
+                                <div class="col-md-8 d-flex align-items-center">
+
+                                    <img href="javascript:void(0);" src="@Url.Action("GetCaptchaImage", "Account", new { area = "" })" id="captchaImg" />      <a id="refresh1" class="pull-left" href="javascript:void(0);"><span class="fa fa-refresh" style="font-size: 17px;"></span></a>
+
+                                </div>
+                                <div class="col-md-4"> <input type="text" class="form-control" name="CaptchaText" id="CaptchaText" value="" placeholder="Captcha Value" maxlength="6" /></div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                            <input type="button" id="btnDetail" class="btn btn-success" value="Get Detail" onclick="changeSessionDate()" />
+                        </div>*@
+                        <div class="col-12">
+
+
+
+
+                            @if (Model.mQuestiionList != null)
+                            {
+                                int i = 1;
+                                <div class=" table-responsive">
+                                    <table class="table table-bordered display" id="introbillstbl">
+                                        <thead>
+                                            <tr>
+                                                <th class="txtSrNo">
+                                                    Sr. No
+                                                </th>
+                                                <th class="txtQuestionNo">
+                                                    Question No
+                                                </th>
+                                                <th class="txtSubject">
+                                                    Subject
+                                                </th>
+                                                <th class="txtAskedBy">
+                                                    AskedBy
+                                                </th>
+                                                <th class="txtQuestionDtl">
+                                                    Question Details
+                                                </th>
+                                                <th class="txtDate">
+                                                    Date
+                                                </th>
+
+                                                <th class="txtReply">
+                                                    Reply
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.mQuestiionList)
+                                            {
+
+                                                <tr>
+                                                    <td>
+                                                        @i
+                                                    </td>
+                                                    <td>
+                                                        @item.QuestionNumber
+                                                    </td>
+                                                    <td>
+                                                        @Html.Raw(item.Subject)
+                                                    </td>
+                                                    <td>
+                                                        @item.AskedBy
+                                                    </td>
+                                                    <td>
+                                                        @Html.Raw(item.MainQuestion)
+                                                    </td>
+                                                    <td>
+                                                        @item.SessionDate
+                                                    </td>
+                                                    <td>
+                                                        <a href="@Url.Content(item.ReplyPDF)" target="_blank" class="btn btn-success">Reply</a>
+
+
+                                                    </td>
+
+                                                </tr>
+
+                                                i = i + 1;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="p-3">
+                                    <p>No Records Found</p>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </section>
+
+    </div>
+</div>
+
+
+
+<link rel="stylesheet" href="~/assets/css/jquery.dataTables.min.css" />
+<script src="~/assets/js/jquery-3.7.0.js"></script>
+<script src="~/assets/js/jquery.dataTables.min.js"></script>
+<!--<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>-->
+@if (ViewBag.ErrorMessage != null)
+{
+    <script>
+                    $(document).ready(function () {
+                        alert('@Html.Raw(ViewBag.ErrorMessage)')
+
+                    });
+    </script>
+}
+<script>
+        $("#refresh1").click(function () {
+          img = $("#captchaImg");
+          img.attr('src', '@Url.Action("GetCaptchaImage", "Account")');
+
+      });
+    $('#introbillstbl').DataTable({
+        paging: true,
+        searching: true,
+        bInfo: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'excel', 'pdf'
+        ]
+    });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        LoadAssemblyData();
+        LoadSessionData();
+       // LoadSessionDatesData();
+
+        var selctdlang = localStorage.getItem("SelectedLang");
+            var dfltLang = '@System.Configuration.ConfigurationManager.AppSettings["DefaultLanguage"]';
+if (selctdlang == null) { selctdlang = dfltLang; localStorage.setItem("SelectedLang", selctdlang); }
+$('#drpLang').val(selctdlang);
+        if (selctdlang == "1") {
+    document.getElementsByClassName('asembly_box_header')[0].innerHTML = "Starred Questions and Reply";
+    document.getElementsByClassName('txtSrNo')[0].innerHTML = "Sr No.";
+    document.getElementsByClassName('txtQuestionNo')[0].innerHTML = "Question No";
+    document.getElementsByClassName('txtSubject')[0].innerHTML = "Subject";
+    document.getElementsByClassName('txtAskedBy')[0].innerHTML = "AskedBy";
+    document.getElementsByClassName('txtQuestionDtl')[0].innerHTML = "Question Details";
+    document.getElementsByClassName('txtDate')[0].innerHTML = "Date";
+            document.getElementsByClassName('txtReply')[0].innerHTML = "Reply";
+            $('#btnDetail').val('Get Detail');
+}
+else {
+            document.getElementsByClassName('asembly_box_header')[0].innerHTML = "ਨਿਸ਼ਾਨ ਵਾਲੇ ਪ੍ਰਸ਼ਨਾਂ ਦੇ ਜਵਾਬ";
+            document.getElementsByClassName('txtSrNo')[0].innerHTML = "ਲੜੀ ਨੰ.";
+            document.getElementsByClassName('txtQuestionNo')[0].innerHTML = "ਸਵਾਲ ਨੰ";
+            document.getElementsByClassName('txtSubject')[0].innerHTML = "ਵਿਸ਼ਾ";
+            document.getElementsByClassName('txtAskedBy')[0].innerHTML = "ਵੱਲੋਂ ਪੁੱਛਿਆ ਗਿਆ";
+            document.getElementsByClassName('txtQuestionDtl')[0].innerHTML = "ਪ੍ਰਸ਼ਨ ਵੇਰਵੇ";
+            document.getElementsByClassName('txtDate')[0].innerHTML = "ਤਾਰੀਖ਼";
+            document.getElementsByClassName('txtReply')[0].innerHTML = "ਜਵਾਬ";
+            $('#btnDetail').val('ਵੇਰਵੇ ਪ੍ਰਾਪਤ ਕਰੋ');
+        }
+
+    });
+    $("#drpLang").change(function () {
+        var selectedLang = document.getElementById('drpLang').value;
+        localStorage.setItem("SelectedLang", selectedLang);
+        $('#drpLang').val(selectedLang);
+        if (selectedLang == "1") {
+            document.getElementsByClassName('asembly_box_header')[0].innerHTML = "Starred Questions and Reply";
+            document.getElementsByClassName('txtSrNo')[0].innerHTML = "Sr No.";
+            document.getElementsByClassName('txtQuestionNo')[0].innerHTML = "Question No";
+            document.getElementsByClassName('txtSubject')[0].innerHTML = "Subject";
+            document.getElementsByClassName('txtAskedBy')[0].innerHTML = "AskedBy";
+            document.getElementsByClassName('txtQuestionDtl')[0].innerHTML = "Question Details";
+            document.getElementsByClassName('txtDate')[0].innerHTML = "Date";
+            document.getElementsByClassName('txtReply')[0].innerHTML = "Reply";
+            $('#btnDetail').val('Get Detail');
+        }
+        else {
+            document.getElementsByClassName('asembly_box_header')[0].innerHTML = "ਨਿਸ਼ਾਨ ਵਾਲੇ ਪ੍ਰਸ਼ਨਾਂ ਦੇ ਜਵਾਬ";
+            document.getElementsByClassName('txtSrNo')[0].innerHTML = "ਲੜੀ ਨੰ.";
+            document.getElementsByClassName('txtQuestionNo')[0].innerHTML = "ਸਵਾਲ ਨੰ";
+            document.getElementsByClassName('txtSubject')[0].innerHTML = "ਵਿਸ਼ਾ";
+            document.getElementsByClassName('txtAskedBy')[0].innerHTML = "ਵੱਲੋਂ ਪੁੱਛਿਆ ਗਿਆ";
+            document.getElementsByClassName('txtQuestionDtl')[0].innerHTML = "ਪ੍ਰਸ਼ਨ ਵੇਰਵੇ";
+            document.getElementsByClassName('txtDate')[0].innerHTML = "ਤਾਰੀਖ਼";
+            document.getElementsByClassName('txtReply')[0].innerHTML = "ਜਵਾਬ";
+            $('#btnDetail').val('ਵੇਰਵੇ ਪ੍ਰਾਪਤ ਕਰੋ');
+        }
+        gotoHomePage(selectedLang)
+    });
+
+    function gotoHomePage(lang) {
+        window.location.href = "/Questions/StarredQuestionandReply?SelectedLang=" + lang;
+    }
+    function LoadAssemblyData() {
+
+        $('#Assembly').empty();
+        $.ajax({
+            type: 'GET',
+
+            url: "@Url.Action("GetAssembly", "NevaQuestion")",
+           // url: '/NevaQuestion/GetAssembly',
+            dataType: 'json',
+            /*   data: { id: '' },*/
+            success: function (data) {
+                var items = '';
+                $.each(data, function (i, item) {
+                    var rows = "<option value='" + item.AssemblyCode + "'>" + item.AssemblyName + "</option>";
+                    $('#Assembly').append(rows);
+                });
+            },
+            error: function (ex) {
+
+            }
+        });
+        return false;
+    }
+
+    function LoadSessionData() {
+        //var assmblycode = $('#Assembly :selected').val();
+        $('#Session').empty();
+        $.ajax({
+            type: 'GET',
+            url: "@Url.Action("GetSession", "NevaQuestion")",
+            //url: '/NevaQuestion/GetSession',
+            dataType: 'json',
+            //data: { AssemblyCode: assmblycode },
+            success: function (data) {
+
+                var items = '';
+                $.each(data, function (i, item) {
+                    var rows = "<option value='" + item.SessionCode + "'>" + item.SessionName + "</option>";
+                    $('#Session').append(rows);
+                });
+            },
+            error: function (ex) {
+
+            }
+        });
+        return false;
+    }
+
+    function LoadSessionDatesData() {
+        $('#Date').empty();
+        $.ajax({
+            type: 'GET',
+             url: "@Url.Action("GetSessionDates", "NevaQuestion")",
+           // url: '/NevaQuestion/GetSessionDates',
+            dataType: 'json',
+            //data: { AssemblyCode: assmblycode, SessionCode: sessioncode },
+            success: function (data) {
+                var items = '';
+                $.each(data, function (i, item) {
+                    var rows = "<option value='" + item.ID + "'>" + item.SessionDate + "</option>";
+                    $('#Date').append(rows);
+                });
+            },
+            error: function (ex) {
+
+            }
+        });
+        return false;
+    }
+    function changeAssembly() {
+        $('#Session').empty();
+        $('#Date').empty();
+        var assmblycode = $('#Assembly :selected').val();
+        $.ajax({
+            type: 'GET',
+            url: "@Url.Action("GetSessionByAssemblyId", "NevaQuestion")",
+            //url: '/Questions/GetSessionByAssemblyId',
+            dataType: 'json',
+            data: { AssemblyCode: assmblycode },
+            success: function (data) {
+                var items = '';
+                $.each(data, function (i, item) {
+                    var rows = "<option value='" + item.SessionCode + "'>" + item.SessionName + "</option>";
+                    $('#Session').append(rows);
+                });
+            },
+            error: function (ex) {
+
+            }
+        });
+        return false;
+    }
+
+    function changeSession() {
+        $('#Date').empty();
+        var assmblycode = $('#Assembly :selected').val();
+        var sessioncode = $('#Session :selected').val();
+     
+        $.ajax({
+            type: 'GET',
+             url: "@Url.Action("GetSessionDateByAssemblyId", "NevaQuestion")",
+        
+            dataType: 'json',
+            data: { AssemblyCode: assmblycode, SessionCode: sessioncode },
+            success: function (data) {
+                var items = '';
+                $.each(data, function (i, item) {
+                    var rows = "<option value='" + item.ID + "'>" + item.SessionDate + "</option>";
+                    $('#Date').append(rows);
+                });
+            },
+            error: function (ex) {
+
+            }
+        });
+        return false;
+    }
+
+    function changeSessionDate() {
+        $('#introbillstbl tbody').empty();
+        var assmblycode = $('#Assembly :selected').val();
+        var sessionid = $('#Session :selected').val();
+        var sessionDateId = $('#Date :selected').val();
+        var captcha = $('#CaptchaText').val();
+        if (captcha == "") {
+
+            alert("Please Enter Captcha.");
+            return false;
+        }
+        $.ajax({
+            type: 'GET',
+            url: '/Questions/GetStarredQuestionsdetailsByAssemblyId',
+            dataType: 'json',
+            data: { AssemblyCode: assmblycode, Sessioncode: sessionid, sessionDateID: sessionDateId, Captcha: captcha },
+            success: function (data) {
+                var items = '';
+                if (data.length != 0) {
+                    $.each(data, function (i, item) {
+                        i = i + 1;
+                        if (item.Errormsg != "" && item.Errormsg != null)
+                        {
+                            alert(item.Errormsg);
+                            var rows = "<tr><td> No records found1...</td></tr>";
+                            $('#introbillstbl').append(rows);
+                        }
+                        else {
+                            var rows = "<tr>"
+                                + "<td>" + i + "</td>"
+                                + "<td>" + item.QuestionNumber + "</td>"
+                                + "<td>" + item.Subject + "</td>"
+                                + "<td>" + item.AskedBy + "</td>"
+                                + "<td>" + item.MainQuestion + "</td>"
+                                + "<td>" + item.SessionDate + "</td>"
+                                + "<td><a href='" + item.AnswerAttachLocation + "' target='_blank' class='btn btn-success'>Reply</a></td>"
+                                + "</tr>";
+                            $("#introbillstbl").append(rows);
+                        }
+                    });
+                }
+                else {
+                    var rows = "<tr><td> No records found2...</td></tr>";
+                    $('#introbillstbl').append(rows);
+                }
+            },
+            error: function (ex) {
+
+            }
+        });
+        return false;
+    }
+
+
+
+
+
+
+
+</script>

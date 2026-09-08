@@ -1,0 +1,290 @@
+﻿@model  CMNirdesh.Models.LstFundsReceipt
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+
+}
+<style>
+    input[type="file"] {
+        display: none !important;
+    }
+</style>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        var table = $('#fundreport').DataTable({
+            "bLengthChange": false,
+            "pageLength": 50,
+            "searching": true,
+            order: [[0, 'desc']],
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+
+                {
+                    extend: 'pdfHtml5',
+                    customize: function (doc) {
+                        /* here I am aligning text in a column to the right */
+                        rowCount = table.rows({ search: 'applied' }).count() + 1;
+
+                        for (i = 0; i < rowCount; i++) {
+
+                            //doc.content[1].table.body[i][3].alignment = 'right';
+                            doc.content[1].table.body[i][3].alignment = 'right';
+                        };
+                        doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+                    },
+
+                    exportOptions: {
+                        columns: [1, 2, 3, 4, 5]
+                    }
+                }
+            ]
+            //bFilter: false,
+
+        });
+        //rowCount = table.rows().count() + 1;
+
+
+
+        $("#filter p").each(function (i) {
+            var dt = "";
+
+            if (i == 0) {
+                dt = 'Select';
+            } else if (i == 1) {
+                dt = 'Select';
+            }
+            var select = $('<select class="form-control"><option value="">' + dt + '</option></select>')
+                .appendTo($(this).empty())
+                .on('change', function () {
+                    var totalamount = 0;
+
+                    table.column(1)
+                        .search($(this).val())
+                        .draw();
+
+                    arowCount = table.rows({ search: 'applied' }).count();
+                    for (i = 0; i < arowCount; i++) {
+                        //alert((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replace("₹ ", ""));
+                        totalamount = parseInt(totalamount) + parseInt((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replaceAll("₹ ", ""));
+
+                    };
+                    $('#ttlamt').html(totalamount);
+                });
+
+            table.column(1).data().unique().sort().each(function (d, j) {
+
+                select.append('<option value="' + d + '">' + d + '</option>')
+            });
+        });
+
+    });
+
+
+    function getsanction(docid) {
+        $("#loader-wrapper").show();
+        var html = "";
+        var pathurl = '/Fund/GetSanctionDetails';
+
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+            data: { docId: docid },
+            success: function (result) {
+                //debugger;
+
+                console.log(result);
+                if (result.length > 0) {
+                    //debugger;
+
+                    for (var i = 0; i < result.length; i++) {
+                        ////debugger;
+                        var item = result[i];
+
+                        html = html + "<tr >";
+                        html = html + "<td  class='center'>" + result[i].SanctionDate + "</td > ";
+                        html = html + "<td  class='right'>" + result[i].AmountSanctioned + "</td > ";
+                        html = html + "<td  class='center'>" + result[i].Subject + "</td > ";
+                        html = html + '<td  onclick="EditMlaDairy(' + result[i].RefId + ')" class="center click">' + result[i].RefId + '</td > ';
+                        html = html + "</tr>";
+
+
+                    }
+                    //debugger;
+                    var heading = "Sanction Details -" + result[0].DocumentTypeName + '(' + result[0].Dept + ')';
+                    $('#sanctionheading').html(heading)
+                    $('#sanctionDetail').show();
+                    $('#sanctiondata').html(html);
+                    $("#row_" + docid).addClass('marked');
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $('#sanctionDetail').hide();
+                    $('#sanctiondata').html('');
+                    $('#sanctionheading').html('')
+                    $("#loader-wrapper").hide();
+                    $(".marked").removeClass('marked');
+
+
+                }
+
+
+
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+
+    }
+
+
+    function EditMlaDairy(ID) {
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+
+        var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+            async: true,
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#loginModaldiary").modal('show');
+                    $('#loginModaldiarybody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+
+
+    function bindgrid() {
+        var year = $('#ddlyear').val();
+        window.location.href = "/Fund/FundReceipt?year=" + year;
+    }
+</script>
+
+
+ 
+    <div class="col-lg-12">
+        <!-- BAR CHART -->
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title">CM Fund Allocation List</h3>
+            </div>
+            <div class="card-body">
+                <div class="row" id="filter">
+                    <div class="col-sm-6 col-md-3 col-lg-3 mb-3">
+                        <label class="txt_label">Financial Year:</label>
+                        @Html.DropDownListFor(m => m.FilterFinYear, Model.FinYearList, new { @id = "ddlyear", @tabindex = "2", @class = "form-control txt_design", @onchange = "bindgrid();" })
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-3 mb-3">
+                        <label class="txt_label">Fund Type:</label>
+                            <p class="pera_txt_design">
+                            </p>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6 mb-3 total_col">
+                        <span class="total_amount"> Total Amount : <b id="ttlamt">₹ @(String.Format(Indian, "{0:N}", @Model.TotalAmount).Replace(".00","")) </b></span>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="fundreport" class="table table-bordered  dataTable">
+                        <thead>
+                            <tr>
+                                <th class="center td-heading " style=" display:none;">Id</th>
+                                <th class="center td-heading" >Fund Type</th>
+                                <th class="center td-heading" >Financial Year</th>
+                                <th class="center td-heading" >Allocation Date</th>
+                                <th class="center td-heading" >Fund Allocated (In Rs.)</th>
+                                <th class="center td-heading" >Remarks</th>
+                                <th class="center td-heading" >Attached File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var mdl in Model._LstFundsReceipt)
+                            {
+                                <tr id="row_@mdl.DocTypeId">
+                                    <td style="display:none" class="td-data"> @mdl.id</td>
+                                    <td class="td-data"> @mdl.FundName</td>
+                                    <td class="right td-data"> @mdl.FinYear - @(mdl.FinYear+1)</td>
+                                    <td class="right td-data"> @mdl.AllocationDate</td>
+                                    <td class="td-data right">₹ @(String.Format(Indian, "{0:N}", @mdl.FundsReceipt).Replace(".00",""))</td>
+                                    <td class="right td-data"> @mdl.Remarks</td>
+                                    <td class="right td-data">
+
+                                        @{
+                                            string Enpath1 = System.Web.Configuration.WebConfigurationManager.AppSettings["Site"] + @mdl.attachedfile;
+                                            //string Enpath1 = "https://cmnirdesh.punjab.gov.in/MlaDiary/" + @mdl.attachedfile;
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(@mdl.attachedfile))
+                                        {
+                                            <a href="@Enpath1" target="_blank">
+                                                <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                            </a>
+                                        }
+                                        else
+                                        {
+
+                                        }
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </div>
+
+
+
+
+
+
+
+
+
+

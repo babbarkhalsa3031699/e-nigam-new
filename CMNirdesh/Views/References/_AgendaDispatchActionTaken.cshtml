@@ -1,0 +1,1610 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@using CMNirdesh.Models
+
+
+<style>
+    .ui-datepicker {
+        width: 25em;
+        /*padding: .2em .2em 0;*/
+        display: none;
+        border: 1px solid;
+        font-weight: bolder;
+    }
+
+
+    .Mytextarea {
+        font-size: 10px;
+        height: 14px !important;
+        color: #333 !important;
+        font-family: inherit;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .samename {
+        display: none;
+    }
+
+    .differentname {
+        display: initial;
+    }
+</style>
+
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/TempFile/";
+}
+
+<style>
+    input[type="file" i] {
+        color: #fff;
+    }
+</style>
+
+@using (Html.BeginForm("SaveUpdateMlaDispatchAction", "References", FormMethod.Post, new { @id = "formActionDispatch", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    DateTime crdt = Convert.ToDateTime(Model.CreatedDate);
+    string dt = crdt.ToString("dd/MM/yyyy");
+    string sec = crdt.ToString("hh:mm tt");
+
+    <div style="overflow-y:scroll;">
+
+        <div class="row modal_row">
+            <div class="col-md-12 col-lg-12 col-xl-12">
+                <div class="row px-lg-3">
+                    <div class="col-md-1 col-sm-2 col-12 p-2">
+                        <label class="switch" style="display:none;" id="switchbuttondivD">
+                            <input type="checkbox" id="switchbuttonD">
+                            <span class="slider round"> </span>
+                        </label>
+                    </div>
+                    <div class="col-md-11 col-sm-10 col-12 p-2">
+                        <h4 class="widget-title form_heading">
+                            @Html.HiddenFor(m => m.EditType)
+                            Ref. Id:@Model.RefId
+                            | Date: @dt&nbsp;@sec
+                            | Priority:  <select style="width:auto;" name="PriorityType" id="PriorityType" onchange="ChangePriorityDispatch(@Model.RefId);">
+                                <option value="0" disabled selected>--Select--</option>
+                                <option value="1">High</option>
+                                <option value="2">Normal</option>
+                                <option value="3">Low</option>
+                            </select>
+
+                            | Term:  <select style="width:auto;" name="PriorityTerm" id="PriorityTerm" onchange="ChangeTermDispatch(@Model.RefId);">
+                                <option value="0" disabled selected>--Select--</option>
+                                <option value="1">Short</option>
+                                <option value="2">Medium</option>
+                                <option value="3">Long</option>
+                            </select>
+                        </h4>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
+                <div class="act_lft_fst bg_light">
+                    <div class="widget-header widget-header-flat bg_light">
+                        @if (Model.PaperEntryType == "NewEntry")
+                        {
+                            <h4 class="widget-title">Dispatch Detail</h4>
+                        }
+
+
+
+
+
+                        @if (!(Model.LinkRefID == 0))
+                        {
+                            <h5 class="widget-title">
+                                Linked Ref.Id:
+                                <span type="button" class="ref-link" data-bs-toggle="modal" data-bs-target="#exampleModal" id="linkedrefidlist"></span>
+
+                            </h5>
+                        }
+
+
+
+                        <div class="widget-main no-padding-right no-padding-left">
+                            <div class="ref_box box_shadow mb-3">
+                                <div class="row">
+
+                                    <div id="divMember" class="col-md-6 col-lg-6 mb-2">
+                                        <div class="fotm_lbl">From Office:</div>
+                                        <div class="txt_value">
+                                            @Model.FromDept
+                                            @Html.HiddenFor(m => m.FromDeptId)
+                                        </div>
+                                    </div>
+                                    <div id="divofc" class="col-md-6 col-lg-6 mb-2">
+                                        <div class="fotm_lbl">Office Detail:</div>
+                                        <div class="txt_value">
+                                            <div class="" id="divOfficeList">
+                                                @Model.FromOffice
+                                            </div>
+                                            @Html.HiddenFor(m => m.FromOfficeId)
+                                        </div>
+                                    </div>
+                                    <div id="divMember" class="col-md-6 col-lg-6 mb-2">
+                                        <div class="fotm_lbl">To Office:</div>
+                                        <div class="txt_value">
+                                            <span id="" class="">
+                                                @Model.ToDept
+                                                @Html.HiddenFor(m => m.ToDeptId)
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div id="divofc" class="col-md-6 col-lg-6 mb-2">
+                                        <div class="fotm_lbl">Office Detail:</div>
+                                        <div class="txt_value">
+                                            @Model.ToOffice
+                                            @Html.HiddenFor(m => m.ToOfficeId)
+
+                                        </div>
+                                    </div>
+
+                                    @*<div id="divdoc" class="col-md-6 col-lg-6 mb-2">
+                                            <div class="fotm_lbl">Reference Type:</div>
+                                            <div class="txt_value">
+                                                <span id="spnEventId" class="">
+                                                    @Model.DocumentTypeName
+                                                    @Html.HiddenFor(m => m.DocmentType)
+                                                </span>
+                                            </div>
+                                            <div class="" id="editDoctypeD">
+                                                <div class="green tooltip-success">
+                                                    <span onclick="changedocumentTypeD();">
+                                                        <a> <i class="ace-icon fa fa-pencil bigger-120"></i></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>*@
+
+
+
+
+
+                                    <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
+                                        <div class="fotm_lbl">Reference Type:</div>
+                                        <div>
+                                            <span>
+
+                                                @*@Html.Label(@Model.DocumentTypeName, new { @id = "DocumentTypeNameD" })
+                                                    @Html.HiddenFor(m => m.DocmentType)*@
+                                                @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameD", @tabindex = "29", })
+
+                                            </span>
+
+                                        </div>
+                                    </div>
+
+                                    @*<div class="col-md-6 col-lg-6 mb-2 two_col" id="editDoctypeboxD" style="display:none;">
+                                            <div class="green tooltip-success">
+                                                <select class="form-control " id="doctypeD" name="doctypeD" required></select>
+                                                <span class="btn btn-small btn-success act_sucess" onclick="UpdatedocumentTypeD(@Model.RefId);">Update</span>
+                                            </div>
+                                        </div>*@
+
+
+
+                                    <div class="col-md-6 col-lg-6 mb-2 mb-2">
+                                        <div class="fotm_lbl">Reference Nature:</div>
+                                        <div class="txt_value">
+                                            <span class="">
+                                                @Model.isLetter
+                                                @Html.HiddenFor(m => m.isLetter)
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div id="divLetterNo" class="col-md-6 col-lg-6 mb-2">
+                                        <div class="fotm_lbl"> Letter/File No.:</div>
+                                        <div class="txt_value">
+                                            @Model.LetterNo
+                                            @Html.HiddenFor(m => m.LetterNo)
+                                        </div>
+                                    </div>
+
+                                    <div id="divLetterNo" class="col-md-6 col-lg-6 mb-2">
+                                        <div class="fotm_lbl">Letter/File Date:</div>
+                                        <div class="txt_value">
+                                            @Model.LetterDateNew
+                                            @Html.HiddenFor(m => m.LetterDate)
+                                        </div>
+                                    </div>
+
+                                    @*<div id="divsubject" class="col-md-12 col-lg-12 mb-2">
+                                            <div class="fotm_lbl">Subject:</div>
+                                            <div class="txt_value text_area_scroll area_height">
+                                                <span id="spnTitle" class="">
+                                                    @Model.Subject
+                                                    @Html.HiddenFor(m => m.Subject)
+
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div id="divitem" class="col-md-12 col-lg-12 mb-2">
+                                            <div class="fotm_lbl">Details:</div>
+                                            <div class="txt_value text_area_scroll area_height">
+                                                @Html.Raw(Model.SubjectDetails)
+                                                @Html.HiddenFor(m => m.SubjectDetails)
+                                            </div>
+                                        </div>*@
+
+
+                                    <div class="col-md-12 col-lg-12 mb-2" id="subjectboxoldD" style="display:none;">
+                                        <div class="fotm_lbl">Subject:</div>
+                                        <div class="txt_value in_txt_area">
+
+                                            @Model.Subject
+                                            @Html.HiddenFor(m => m.Subject)
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-lg-12 mb-2" id="subjectdetailboxoldD" style="display:none;">
+                                        <div class="fotm_lbl">Details:</div>
+                                        <div class="txt_value in_txt_area">
+                                            @Html.Raw(Model.SubjectDetails)
+                                            @Html.HiddenFor(m => m.SubjectDetails)
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-lg-12" id="subjectboxD" style="display:none;">
+                                        <div class="fotm_lbl">Subject:</div>
+                                        <div class="">
+                                            <input type="text" id="subjectforeditD" name="subjectforeditD" onchange="updatesubjectD();" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-lg-12" id="subjectdetailboxD" style="display:none;">
+                                        <div class="fotm_lbl">Details:</div>
+                                        <div>
+                                            <textarea type="text" id="subjectdetailforeditD" name="subjectdetailforeditD" omchange="updatesubjectdetailD();">   </textarea>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="divitem" class="col-md-6 col-lg-6 mb-2">
+                                        <div class="fotm_lbl">
+                                            Attached Enclosure (File): &nbsp;
+                                            @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                                            {
+
+                                                <a href="@Model.EnclosureFile" target="_blank" id="wreqeqwe">
+                                                    <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="27" height="27" />
+                                                </a>
+
+
+                                            }
+                                            else
+                                            {
+                                                <span id="EnclosureFiletxt" style="display: none;">No</span>
+
+                                            }
+
+                                            @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
+                                        </div>
+                                    </div><br />
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantName))
+                                    {
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Name:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantName)
+                                                @Html.HiddenFor(m => m.ApplicantName)
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
+                                    {
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Address:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantAddress)
+                                                @Html.HiddenFor(m => m.ApplicantAddress)
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
+                                    {
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Mobile:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantMobile)
+                                                @Html.HiddenFor(m => m.ApplicantMobile)
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
+                                    {
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Email:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantEmail)
+                                                @Html.HiddenFor(m => m.ApplicantEmail)
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                </div>
+
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.ActionDetailsList.ToList().Count > 0)
+                {
+                    <div id="divDetails">
+                        <div class="label action_design">Actions Details </div>
+                        @if (Model.PaperEntryType == "EditEntry")
+                        {
+                            <div class="profile_value">
+                                <table class="table table-bordered  dataTable ">
+                                    <thead>
+                                        <tr>
+                                            <th class="center sorting_disabled">Action Date</th>
+                                            <th class="center sorting_disabled">Action Description</th>
+                                            <th class="center sorting_disabled">Status</th>
+                                            <th class="center sorting_disabled">Action Enclosure</th>
+                                            <th class="center sorting_disabled">Action By</th>
+                                            <th class="center sorting_disabled">Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{int i = 1 , j=Model.ActionDetailsList.Count;}
+                                        @foreach (var item1 in Model.ActionDetailsList)
+                                        {
+
+                                            DateTime aDate = Convert.ToDateTime(item1.ActionDate);
+                                            string s1 = aDate.ToString("dd/MM/yyyy");
+                                            string s2 = aDate.ToString("hh:mm tt");
+                                            <tr>
+                                                <td class="center sorting_disabled">
+                                                    @s1 <br />
+                                                    @s2
+
+                                                </td>
+                                                <td class="center sorting_disabled" id="ActDes_@item1.Id">@Html.Raw(item1.ActionDescription)</td>
+
+                                                <td class="center sorting_disabled">@Html.Raw(item1.StatusName)</td>
+                                                @if (item1.Enclosure != null && item1.Enclosure != "")
+                                                {
+                                                    <td>
+                                                        <a href="@item1.Enclosure" target="_blank" id="actionlink">
+                                                            <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                                        </a>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+
+                                                }
+                                                <td>@item1.ActionBy</td>
+                                                @if (j == i)
+                                                {
+                                                    if (Model.EditType == "Agenda")
+                                                    {
+                                                        <td> <a data-rel='tooltip' class='green tooltip-success text-decoration-none' href='#' id='edit_@item1.Id' onclick=EditAction(@item1.Id)><i class='ace-icon fa fa-pencil bigger-120'></i> </a></td>
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                }
+
+
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="label action_design">Update Action Taken Details</div>
+                <div class="updat_box box_shadow" style="margin-top:36px;">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6 mb-2">
+                            <div id="divactkndate">
+                                <div class="fotm_lbl">Action Date:</div>
+                                <div class="profil_value">
+                                    @Html.TextBoxFor(m => m.CurrentDate, new { @id = "TxtActionTakenDate", @tabindex = "1", @class = "DdlClass" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-6 mb-2">
+                            <div id="divActiontkn">
+                                <div class="fotm_lbl">Action Type:</div>
+                                <div class="profil_value">
+                                    @Html.DropDownListFor(m => m.ActionCode, Model.ActionTypeList, "--Select Action--", new { @id = "DdlActionType", @tabindex = "2", @class = "DdlClass" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row col-md-12 col-lg-12 col-xl-12 mb-2" style="margin-top:5px;">
+                            <div class="col-md-12 col-lg-12 col-xl-12" style="margin-left: 10px;">
+                                <label class="fotm_lbl div_inline">Action Attachment:</label>
+                            </div>
+                            <div class="row gap-3">
+                                <div class="input-group col-lg-2 col-md-2 col-sm-12 col-12">
+                                    <label class="lbl_file">
+                                        <span>
+                                            <input style="font-size: 15px;" id="fileupload1" type="file" tittle=" " name="fileupload1" accept=".pdf">
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="col-lg-8 col-md-12 col-sm-12 col-12">
+                                    <div class="d-flex align-items-center gap-5">
+                                        <div>
+                                            <a href="#" id="afile_nameEn1" target="_blank">
+                                                <span id="file_name1" class="file_name1"></span>
+                                            </a>
+                                            <div class="file_size1"></div>
+                                        </div>
+                                        <div>
+                                            <span id="removefileupload1" class="remove-btn" onclick="removefileupload()"><i class="far fa-times"></i></span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                        <div class="col-md-12 col-lg-12 mb-2" style="margin-top:15px;">
+                            <div id="divRemrks" class="remark_1">
+                                <div class="fotm_lbl">Action Remark:</div>
+                                <div class="remark_2">
+                                    @Html.TextAreaFor(m => m.ActionDescription, new { @tabindex = "4" })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dispatch_save_btn mt-3">
+                    <button class="btn btn-primary" type="button" id="btnSave" title="Send" onclick="Save()" tabindex="4">
+                        <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                        Submit
+                    </button>
+                    @Html.HiddenFor(m => m.BtnCaption)
+                    @Html.HiddenFor(m => m.PaperEntryType)
+                    @Html.HiddenFor(m => m.IsEnclosureFile)
+                    @Html.HiddenFor(m => m.IsFile)
+
+                    @Html.HiddenFor(m => m.RefId)
+                    @Html.HiddenFor(m => m.DeptId, new { id = "spdeptid" })
+                    @Html.HiddenFor(m => m.OfficeId, new { id = "spofcid" })
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+
+<div class="modal " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Linked Ref No.</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="linkModalRefSearchbody">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal coman_modal EditModel" tabindex="-1" id="EditModel"
+     data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" id="Scroll2">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="widget-title modal_heading">Edit</h4>
+                <button type="button" class="btn-close" onclick="CloseEditModel()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="EditModelBody">
+                <input type="hidden" id="updateActionid" value="" />
+                <div id="divRemrks" class="remark_1">
+                    <div class="fotm_lbl">Action Remark:</div>
+                    <div class="remark_2">
+                        <textarea type="text" id="txtEditRemarks" name="txtEditRemarks" >   </textarea>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+               <input type="button" id="btnupdate" value="Update" class="btn btn-primary"  onclick="UpdateAction()"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function get() {
+        //alert('a');
+        var selected = $("#DdlCctype option:selected");
+        var message = "";
+        selected.each(function () {
+            message += $(this).val() + ",";
+            $("#hdnOfficeIdCC").val(message)
+        });
+       // alert($("#hdnOfficeIdCC").val());
+    }
+    function SearchRefNo(RefId) {
+        $('#linkModalRefSearchbody').html('');
+        if (RefId == 0 || RefId == "") {
+
+            //  alert('Please enter the the Ref No');
+        }
+        else {
+
+            var pathurl = '/References/LinkSearchRefLink';
+            $.ajax({
+                type: "GET",
+
+                url: pathurl,
+                data: { RefId: RefId },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    if (data) {
+                        $("#linkModalSearchRef").css("dispaly","block")
+                        $('#linkModalRefSearchbody').html(data);
+                    }
+                    else {
+
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
+
+    }
+
+    $(document).ready(function () {
+
+        $.noConflict();
+               $(`#PriorityType option[value="${@Model.ReferencePriorityType}"]`).attr("selected", "selected");
+               document.getElementById("PriorityTerm").selectedIndex = @Model.ReferenceTerm; //Option 10
+        ShowButtonD();
+        //GetLinkedReferenceId(@Model.RefId);
+        $("#DocumentTypeNameD").prop("disabled", true);
+        $("#PriorityTerm").prop("disabled", true);
+        $("#PriorityType").prop("disabled", true);
+        $("#subjectboxoldD").css("display", "block");
+        $("#subjectdetailboxoldD").css("display", "block");
+        $('#TxtActionTakenDate').attr('readonly', true);
+        var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+        var ActionFile = $("#Actionfile").text();
+        if (EnclosureFiletxt == "Yes") {
+            $("#IsEnclosureFile").val("Y");
+        }
+        else {
+            $("#IsEnclosureFile").val("N");
+        }
+         $("#IsForwardFile").val("N");
+        if (ActionFile == "Yes") {
+            $("#IsFile").val("Y");
+        }
+        else {
+            $("#IsFile").val("N");
+        }
+        tinyMCE.init({
+            selector: "#ActionDescription",
+            branding: false,
+            content_style:
+                "body {  font-size: 14px; font-family: inherit; }",
+        });
+        tinyMCE.init({
+            selector: "#subjectdetailforeditD",
+            branding: false,
+            content_style:
+                "body {  font-size: 14px; font-family: inherit; }",
+        });
+
+
+        tinyMCE.init({
+            selector: "#txtEditRemarks",
+            branding: false,
+            content_style:
+                "body {  font-size: 14px; font-family: inherit; }",
+        });
+
+
+
+
+        var switchStatus = false;
+        $("#switchbuttonD").click(function () {
+            if ($(this).is(':checked')) {
+                switchStatus = $(this).is(':checked');
+                $("#DocumentTypeNameD").prop("disabled", false);
+                $("#PriorityTerm").prop("disabled", false);
+                $("#PriorityType").prop("disabled", false);
+                $("#subjectboxD").css("display", "block");
+                $("#subjectdetailboxD").css("display", "block");
+                $("#subjectboxoldD").css("display", "none");
+                $("#subjectdetailboxoldD").css("display", "none");
+            }
+            else {
+                switchStatus = $(this).is(':checked');
+                $("#DocumentTypeNameD").prop("disabled", true);
+                $("#PriorityTerm").prop("disabled", true);
+                $("#PriorityType").prop("disabled", true);
+                $("#subjectboxD").css("display", "none");
+                $("#subjectdetailboxD").css("display", "none");
+                $("#subjectboxoldD").css("display", "block");
+                $("#subjectdetailboxoldD").css("display", "block");
+
+            }
+        });
+
+
+    })
+
+    $('#TxtForwardDate').attr('readonly', true);
+    $('#TxtActionTakenDate').attr('readonly', true);
+    $('#TxtEnclosureTakenDate').attr('readonly', true);
+
+
+    function GetLinkedReferenceId(param) {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetLinkedReferenceId", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {refid:param},
+            success: function (response) {
+                var html = "";
+                if (response.length > 0) {
+                    var classname = "";
+                    for (var i = 0; i < response.length; i++) {
+                        var item = response[i];
+                        if (item.linkedRefId == param) {
+                            classname = 'samename';
+                        }
+                        else {
+                            classname = 'differentname'
+                        }
+
+                        html = html + "<span class='refidbox "+ classname+" ' onclick='SearchRefNo(" + item.linkedRefId +")' >" + item.linkedRefId + "</span> &nbsp;";
+                    }
+                    $("#linkedrefidlist").html(html);
+
+                }
+                else {
+
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+    function ShowButtonD() {
+        var type = 3034;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowButton", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {type:type},
+            success: function (response) {
+                if (response[0].isupdate == 1) {
+
+                    $("#switchbuttondivD").css("display", "block");
+                    getsubjectandsubjectDetailsD();
+                    $("#loader-wrapper").hide();
+
+                }
+                else {
+                    $("#switchbuttondivD").css("display", "none");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    function getsubjectandsubjectDetailsD() {
+        var refid = @Model.RefId;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getsubjectandsubjectDetails", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {refid:refid},
+            success: function (response) {
+                if (response != null) {
+                    $("#subjectforeditD").val(response[0].subject);
+                     $("#subjectoldD").val(response[0].subject);
+                    $("#subjectdetailforeditD").val(response[0].SubjectDetails);
+                    $("#subjectdetailoldD").val(response[0].SubjectDetails);
+
+                }
+                else {
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    function bindOfficeDrpList(DeptID) {
+        //   alert(DeptID);
+        $.ajaxSetup({ cache: false });
+        $.ajax({
+            url: "/Grievances/OfficeDrpList",
+            type: 'GET',
+
+            data: {
+                deptid: DeptID
+            },
+            success: function (data) {
+                if (data) {
+
+                    $("#divOfficeList").html(data);
+                    var office = $("#OfficeId").val();
+                    if (office != "") {
+                        $("#ddlFromOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlFromOffice option[value=" + office + "]").prop("selected", "selected");
+                        var utype = $('#DdlUserType').val();
+                        if (utype == 4) {
+                            $('#ddlFromOffice option:not(:selected)').attr('disabled', true);
+                        }
+
+                    }
+                    else {
+                        $("#ddlFromOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlFromOffice option[value=0]").prop("selected", "selected");
+                    }
+                }
+                else {
+
+                }            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    function bindToOfficeDrpList(DeptID) {
+        //   alert(DeptID);
+        $.ajaxSetup({ cache: false });
+        $.ajax({
+            url: "/Grievances/ToOfficeDrpList",
+            type: 'GET',
+
+            data: {
+                deptid: DeptID
+            },
+            success: function (data) {
+                if (data) {
+
+                    $("#divToOfficeList").html(data);
+                    var office = $("#OfficeId").val();
+                    if (office != "") {
+                        $("#ddlToOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlToOffice option[value=" + office + "]").prop("selected", "selected");
+                        var utype = $('#DdlUserType').val();
+                        if (utype == 4) {
+                            $('#ddlToOffice option:not(:selected)').attr('disabled', true);
+                        }
+
+                    }
+                    else {
+                        $("#ddlToOffice").prepend("<option value='0'>Select</option>");
+                        $("#ddlToOffice option[value=0]").prop("selected", "selected");
+                    }
+                }
+                else {
+
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+
+    $('#DocumentTypeNameD').change(function () {
+
+        UpdatedocumentTypeD()
+
+    })
+
+     function changedocumentTypeD() {
+
+         var doctype = $("#doctypeD");
+         doctype.empty().append('<option selected="selected" value="">Please select</option>');
+        $('#doctypeD').empty().append('<option selected="selected" value="">Please select</option>');
+                    $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetDocumentTypeD", "References")',
+                    datatype: "Json",
+                        data: {  },
+                success: function (data) {
+                    doctype.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(data, function () {
+
+                        doctype.append($("<option></option>").val(this['id']).html(this['name']));
+
+                        $("#editDoctypeboxD").css("display", "block");
+                    });
+
+
+                    }
+                });
+        }
+
+    function UpdatedocumentTypeD() {
+        var refid = @Model.RefId;;
+        var documentid = $("#DocumentTypeNameD").val();
+
+        if (documentid == null || documentid == "" || documentid == undefined) {
+            alert("Please select Document Type First");
+            return false;
+        }
+        if (refid == null || refid == "" || refid == undefined) {
+            alert("Some Error Occured Try Again");
+            return false;
+        }
+
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("documentid", documentid);
+        if (confirm("Are you sure you want to update?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateDiaryDocument", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        //$("#DocumentTypeName").text($("#doctypeD option:selected").text());
+                        //$("#editDoctypeboxD").css("display", "none");
+                        alert("Reference Updated Successfully.");
+
+                    }
+                    if (response == "0") {
+                       $('#DocumentTypeNameD').val( @Model.DocmentType);
+                        alert("Reference Updation Failed.");
+                    }
+                }
+            });
+        }
+         else {
+           $('#DocumentTypeNameD').val(@Model.DocmentType);
+        }
+    }
+
+
+    $("textarea#TxtTitle").focus(function () {
+        $("textarea#TxtTitle").animate({ height: "130px" }, 100)
+    })
+    $("textarea#TxtSubject").blur(function () {
+        $("textarea#TxtSubject").animate({ height: "55px" }, 100)
+    })
+    $("textarea#TxtDispatchRemarks").blur(function () {
+        $("textarea#TxtDispatchRemarks").animate({ height: "55px" }, 90)
+
+    })
+    $("textarea#TxtletterDescription").blur(function () {
+        $("textarea#TxtletterDescription").animate({ height: "55px" }, 100)
+
+    })
+    $("textarea#TxtItemDescription").blur(function () {
+        $("textarea#TxtItemDescription ").animate({ height: "55px" }, 90)
+    })
+    $("textarea#TxtRecieveFrom").blur(function () {
+        $("textarea#TxtRecieveFrom").animate({ height: "55px" }, 100)
+    })
+
+    $("textarea#TxtDocumentCC").blur(function () {
+        $("textarea#TxtDocumentCC").animate({ height: "55px" }, 100)
+    })
+
+
+
+
+        function Save() {
+
+            if (typeof window.tinymce != 'undefined' && $(window.tinymce.editors).length > 0) {
+                $(window.tinymce.editors).each(function (idx) {
+                    try {
+                        tinymce.remove(idx);
+                    } catch (e) { }
+                });
+            }
+
+        try {
+
+            tinymce.triggerSave(true, true); // very importent for get data of editior
+
+            if ($("#TxtActionTakenDate").val() == "") {
+
+                alert("Please Enter Action Taken Date ?");
+                return false;
+
+            }
+            else if ($("#DdlActionType").val() == "") {
+                alert("Please Select Action Type ?");
+                return false;
+            }
+            else {
+
+                if (confirm("Are you sure to save ?")) {
+                    $("#loader-wrapper").show();
+                    var EnclosureFiletxt = $("#EnclosureFiletxt").text();
+                    var ActionFile = $("#Actionfile").text();
+                    if (EnclosureFiletxt == "Yes") {
+                        $("#IsEnclosureFile").val("Y");
+                    }
+                    else {
+                        $("#IsEnclosureFile").val("N");
+                    }
+                    if (ActionFile == "Yes") {
+                        $("#IsFile").val("Y");
+                    }
+                    else {
+                        $("#IsFile").val("N");
+                    }
+                    var TxtEnclosureTakenDate = $("#fileupload1").val();
+                    var file_nameEn = $("#file_nameEn").html();
+
+
+
+                    var ActionTaken_name = $("#file_name1").html();
+                    var actionlink = $("#actionlink").text();
+
+
+
+                    var action = $("#formActionDispatch").attr("action");
+                    if ($("#formActionDispatch").attr("enctype") == "multipart/form-data") {
+                        //this only works in some browsers.
+                        //purpose? to submit files over ajax. because screw iframes.
+                        //also, we need to call .get(0) on the jQuery element to turn it into a regular DOM element so that FormData can use it.
+                        var dataString = new FormData($("#formActionDispatch").get(0));
+                        //  contentType = false;
+                        processData = false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: action,
+                        data: dataString,
+
+                        dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+
+                            if (data == "U" && data != "E") {
+                                var refid = $('#RefId').val();
+                                //BindDispatchAction(refid);
+                                $("#loader-wrapper").hide();
+                                alert("Action taken has been updated successfully");
+                                closedispatch();
+                                $("#loginModalDispatch").css("display", "none");
+                                $('#loginModalDispatchbody').html('');
+                            }
+                            else if (data != "U" && data != "E") {
+                                var refid = $('#RefId').val();
+                                //BindDispatchAction(refid);
+                                $("#loader-wrapper").hide();
+                               // $("#loginModalDispatch").modal('hide');
+                                //$("#sprefno").text(data);
+                             //  alert("Dispatch has been successfully sent");
+                                alert("Action taken has been updated successfully");
+                                closedispatch();
+                                // window.location.reload(true);
+                                //$(".modal-backdrop").hide();
+                               // MainView1();
+                                //window.location.reload(true);
+                            }
+                            else {
+                                $("#loginModalDispatch").css("display", "none");
+                                $('#loginModalDispatchbody').html('');
+                                $("#loader-wrapper").hide();
+                                alert("Some error occurred,please try again");
+                                window.location.reload(true);
+
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            debugger;
+                            //do your own thing
+                            $("#loader-wrapper").hide();
+                            alert("Some error occurred,please try again");
+                            window.location.reload(true);
+                        },
+                    });
+
+                }
+
+            }
+        }
+
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+           // alert(ex.message);
+        }
+        }
+
+        function BindDispatchAction(ID) {
+            $('#loginModaldiarybody').html('');
+            $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+            var pathurl = '/References/EditMlaDispatchForm';
+            $.ajax({
+                type: "GET",
+                url: pathurl,
+                data: { ID: ID, EditType: "Agenda" },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    $('#loginModalDispatchbody').html('');
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+                    if (data) {
+                        $("#loginModalDispatch").css("display","block");
+                        $('#loginModalDispatchbody').html(data);
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
+
+        function MinistryChanged() {
+        //var cl = new CanvasLoader('canvasloader-container1');
+        var ministryID = $('#DdlEntryMinister').val();
+        if (ministryID == "0") {
+            $('#MinistryId').val(ministryID);
+            var select = $("#DdlDept");
+            select.empty();
+            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                data: { MinistryId: ministryID },
+                success: function (data) {
+                    var opt = document.createElement("option");
+
+                    document.getElementById("DdlDept").options.add(opt);
+
+                    opt.text = 'Select Department';
+                    opt.value = 0;
+                }, error: function (data) {
+                    alert("Something wrong...")
+                }
+            })
+        }
+
+        if (ministryID != "" && ministryID != null) {
+            $('#MinistryId').val(ministryID);
+            var select = $("#DdlDept");
+            select.empty();
+            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
+            $.ajax({
+                url: pathurl,
+                type: 'GET',
+                data: { MinistryId: ministryID },
+                success: function (data) {
+                    $.each(data, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.DepartmentId,
+                            text: itemData.DepartmentName
+                        }));
+                    });
+                }, error: function (data) {
+                    alert("Something wrong...")
+                }
+            })
+        }
+    }
+
+
+
+
+    $("#fileupload1").click(function (event) {
+
+        $('#Actionfile').text('No');
+        $('#IsFile').val("N");
+
+        $('#fileupload1').fileupload({
+            dataType: 'json',
+           // url: "/eFile/UploadMlaActionFiles",
+               url: '@Url.Action("UploadMlaActionFiles", "eFile")',
+            autoUpload: true,
+            done: function (e, data) {
+                alert(3);
+                var sim = setTimeout("hidevalueAction()", 1000);
+                $('.file_name1').html(data.result.pdfname);
+                  $('#afile_nameEn1').attr("href","@path" + data.result.name)
+                $('.file_size1').html(data.result.size);
+                $("#removefileupload1").css("display", "inline-block");
+
+            }
+        }).on('fileuploadprogressall', function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('.progress12 .progress-bar').css('width', progress + '%');
+            $('#removefileupload1').css('display', 'none');
+        });
+    });
+
+    $("#fileuploadEnclosure").click(function (event) {
+        $('#EnclosureFile').text('No');
+        $('#IsEnclosureFile').val("N");
+        $('#fileuploadEnclosure').fileupload({
+            dataType: 'json',
+             url: '@Url.Action("UploadMlaEnclosureFiles", "eFile")',
+
+            autoUpload: true,
+            done: function (e, data) {
+                var sim = setTimeout("hidevalueActionEnclosure()", 1000);
+                $('.file_nameEn').html(data.result.name);
+                $('#enclosure').val(data.result.name);
+                $('.file_sizeEn').html(data.result.size);
+            }
+        }).on('fileuploadprogressall', function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('.progressEnclosure .progress-bar').css('width', progress + '%');
+            $('#removeUploadEnclosure').css('display', 'none');
+        });
+    });
+
+    function hidevalueForwd() {
+        $('.progress1 .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueForwd()", 3000);
+    }
+
+    function hidevalueAction() {
+        $('.progress12 .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueAction()", 3000);
+    }
+
+    function hidevalueActionEnclosure() {
+        $('.progressEnclosure .progress-bar').fadeOut(500);
+        var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+    }
+
+    function RemoveActionEnclosureFiles() {
+        $('.file_nameEn').html('');
+        $('.file_sizeEn').html('');
+        $('.progressEnclosure .progress-bar').css('width', '0%');
+        $("#removeUploadEnclosure").hide();
+        $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
+        $.post("/eFile/RemoveActionEnclosureFiles",
+           {
+           },
+           function (data) {
+        });
+    }
+
+    function removefileupload() { //ActionFile
+
+        $('.file_name1').html('');
+        $('.file_size1').html('');
+        $('.progress12 .progress-bar').css('width', '0%');
+        $("#removefileupload1").hide();
+        $('#fileuploadcontant1').css('border', '0px solid rgb(244, 239, 239)');
+        $('#removefileupload1').css('display', 'none');
+
+        $.post("/eFile/RemoveMlaForwardFiles",
+           {
+           },
+           function (data) {
+           });
+
+    }
+    function allowOnlyNumber(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            alert('Please Enter Numeric Value.');
+            return false;
+        }
+        return true;
+    }
+    function Disablecontrols() {
+
+        //  $("#TxtDocumentTo").prop("readonly", true);   --- For kapoor
+        // $("#TxtSubject").prop("readonly", true);
+        $("#TxtGrantAmount").prop("readonly", true);
+        $("#TxtApplicantName").prop("readonly", true);
+        $("#TxtApplicantAddress").prop("readonly", true);
+        $("#TxtApplicantMobile").prop("readonly", true);
+        $("#TxtPresentAddress").prop("readonly", true);
+        $("#TxtProposedPlace").prop("readonly", true);
+        $("#TxtRecieveFrom").prop("readonly", true);
+        $("#TxtMobileNo").prop("readonly", true);
+        $("#TxtEnclosureTakenDate").prop("readonly", true);
+        $("#TxtForwardDate").prop("readonly", true);
+        $('#DdlDoctype option:not(:selected)').attr('disabled', true);
+        $('#DdlOffice option:not(:selected)').attr('disabled', true); // --- For kapoor
+        $('#ddFinancialYear option:not(:selected)').attr('disabled', true);
+        $('#DdlMappedMember option:not(:selected)').attr('disabled', true);
+
+        $("#TxtLetterNo").prop("readonly", true);
+        // $('#DdlCctype option:not(:selected)').attr('disabled', true);
+
+    }
+
+
+
+    function MainView() {
+        //alert('lo g');
+        $.ajaxSetup({ cache: false });
+        var pathurl = '@Url.Action("MlaDiarySearchPage", "References")';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+
+            success: function (data) {
+
+                $("#MainDiv").html("");
+                $("#MainDiv").html(data);
+
+
+                // $("#outerDiv").html("");
+                // $("#outerDiv").html(data);
+                $("#loader-wrapper").hide();
+            }
+            //ClearControls();
+
+        });
+
+
+    }
+
+
+    function MainView1() {
+       ////debugger;
+        //alert('lo g');
+        $.ajaxSetup({ cache: false });
+        var pathurl = '@Url.Action("MLADiaryReportDispatch", "References")';
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+            success: function (data) {
+
+                $('#listdiv').hide();
+
+                $('#MainDiv').empty();
+                $('#MainDiv').html(data);
+                $("#MainDiv").css("display", "block");
+
+                //  ClearControls();
+               /// $("#loader-wrapper").hide();
+            }
+            //ClearControls();
+
+        });
+    }
+
+    function ChangePriorityDispatch(Refid) {
+        var refid = Refid;
+        var PriorityType = $("#PriorityType").val();
+        if (PriorityType == 0) {
+            alert("Some Error Occured Try Again");
+            return false;
+        }
+
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("PriorityType", PriorityType);
+        if (confirm("Are you sure you want to change Priority?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdatePriorityType", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Priority Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Priority Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+                   document.getElementById("PriorityType").selectedIndex = @Model.ReferencePriorityType;
+        }
+    }
+
+    function ChangeTermDispatch(Refid) {
+        var refid = Refid;
+        var PriorityTerm = $("#PriorityTerm").val();
+        if (PriorityTerm == 0) {
+            alert("Some Error Occured Try Again");
+            return false;
+        }
+
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("Term", PriorityTerm);
+        if (confirm("Are you sure you want to change Term?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateTerm", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Term Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Term Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+                   document.getElementById("PriorityTerm").selectedIndex = @Model.ReferenceTerm;
+        }
+    }
+
+    function updatesubjectD() {
+        var refid = @Model.RefId;
+        var subject = $("#subjectforeditD").val();
+        var subjectold = $("#subjectoldD").val();
+        if (subject == "") {
+            alert("Kindly fill the subject first");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("subject", subject);
+        formData.append("subjectold", subjectold);
+
+        if (confirm("Are you sure you want to change Subject?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("updatesubject", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Subject Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Subject Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+
+        }
+    }
+
+    function updatesubjectdetailD() {
+                var refid = @Model.RefId;
+        var subjectdetail = $("#subjectdetailforeditD").val();
+        var subjectdetailold = $("#subjectdetailoldD").val();
+        if (subjectdetail == "" || subjectdetail == null) {
+            alert("Kindly fill the subject detail first");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("subjectdetail", subjectdetail);
+        formData.append("subjectdetailold", subjectdetailold);
+        if (confirm("Are you sure you want to change Subject Details?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("updatesubjectdetails", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Subject Detail Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Subject Detail Updation Failed.");
+                    }
+                }
+            });
+        }
+        else {
+
+        }
+    }
+
+
+
+    function EditAction(id) {
+        var actdes = $('#ActDes_' + id).html();
+        tinymce.get("txtEditRemarks").setContent(actdes);
+        $('#updateActionid').val(id);
+        $('#EditModel').modal('show');
+    }
+
+    function UpdateAction() {
+
+        var Refid = '@Model.RefId';
+        var actionid = $('#updateActionid').val();
+        var actiondes = tinymce.get("txtEditRemarks").getContent();
+
+
+        var dataToSend = JSON.stringify({ 'Refid': Refid, 'ActionId': actionid, 'ActionDes': actiondes });
+
+        if (confirm("Are you sure you want to change Action Details?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateActionDescription", "References")',
+                data: dataToSend,
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    alert("Action Detail Updated Succesfully");
+                    BindDispatchAction(Refid);
+
+                }
+            });
+        }
+        else {
+
+        }
+
+
+
+    }
+
+
+    function CloseEditModel() {
+        $('#EditModel').modal('hide');
+    }
+
+
+</script>
+
+
+
+

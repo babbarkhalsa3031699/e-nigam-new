@@ -1,0 +1,66 @@
+﻿
+<script type="text/javascript">
+    $(document).ready(function () {
+        var memcode = '@CMNirdesh.Models.CurrentSession.MemberCode';      
+        if (memcode == '162') {
+            $("#loader-wrapper").show();
+            $.ajax({
+                url: "/References/MlaDiarySearchPage",
+                type: 'GET',
+                async: true,
+                data: {
+                    //PageNumber: "1",
+                    //RowsPerPage: "20",
+                    //loopStart: "1",
+                    //loopEnd: "5"
+                },
+                success: function (data) {
+                       //debugger;
+                    $("#loader-wrapper").hide();
+                    //$('#divbindList').empty();
+                    //$('#divbindList').html(data);
+                    //$("#RightSidebar").html("");
+                    //$("#loader-wrapper").hide();
+                    $('#MainDiv').empty();
+                    $('#MainDiv').html(data);
+                    $("#MainDiv").css("display", "block");
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                }
+            })
+        }
+        else {
+            $("#loader-wrapper").show();
+            $.ajax({
+                url: "/References/MlaDiarySearchPage",
+                type: 'GET',
+                async: true,
+                data: {
+                    //PageNumber: "1",
+                    //RowsPerPage: "20",
+                    //loopStart: "1",
+                    //loopEnd: "5"
+                },
+                success: function (data) {
+                       //debugger;
+                    $("#loader-wrapper").hide();
+                    $('#MainDiv').empty();
+                    $('#MainDiv').html(data);
+                    $("#MainDiv").css("display", "block");            
+                    //$('#divbindList').empty();
+                    //$('#divbindList').html(data);
+                    //$("#RightSidebar").html("");
+                    //$("#loader-wrapper").hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                }
+            })
+        }
+    })
+</script>

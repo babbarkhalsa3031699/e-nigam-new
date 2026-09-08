@@ -1,0 +1,1122 @@
+﻿@*Header Start*@
+<header class="header-section fixed-top ">
+    <div class="upper_header">
+        <a href="#" class="GOV_text"> ਪੰਜਾਬ ਸਰਕਾਰ | Government of Punjab </a>
+        <ul class="mb-0 UH_menu">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#"><i class="fab fa-facebook"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fab fa-youtube"></i></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fab fa-twitter"></i></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fad fa-moon"></i></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">ਪੰਜਾਬੀ </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">Site Map </a>
+            </li>
+        </ul>
+    </div>
+    <div class="container-xxl py-2 px-lg-4">
+
+        <div class="w-100">
+            <nav class="navbar navbar-expand-lg py-0">
+                <div class="container-fluid p-0">
+                    <a class="navbar-brand p-0" href="#">
+                        <div class="d-flex align-items-center ">
+                            <div> <img class="me-2" src="~/Assets/Images/Govt-of-punjab.png" alt="MC-House logo">  </div>
+                            <div class="brand_logo">
+                                <h5 id="mcname" class="mb-0">Punjab</h5>
+                                <h2>Digital-MC House </h2>
+                                <h4 class="mb-0">Municipal Coporation - Sector 63</h4>
+                            </div>
+
+                        </div>
+
+
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse my_header" id="navbarSupportedContent">
+                        <div class="category_button w-100 justify-content-end">
+                            <div>
+                                <form class="d-flex the-search" role="search">
+                                    <input class="form-control rounded-start " id="search-input" type="search" placeholder="Search" aria-label="Search">
+                                    <button class="rounded" id="search-button" type="submit"><i class="far fa-search"></i></button>
+                                </form>
+                            </div>
+                            <div class="d-flex">
+                                <div class="px-2">
+                                    <button class="btn btn-primary" id="MC-button">Municipal Corporations <span class="badge bg-white text-dark">13</span></button>
+                                    <div class="MC-List_div">
+                                        <ul class="row MC_list">
+                                            @foreach (CMNirdesh.Models.MC mc in Model._MCList)
+                                            {
+                                                <li onclick="ChangeMC(@mc.MCId)" class="col-lg-3 col-md-6 col-sm-12 col-12 ">
+                                                    <div class="MC_name d-flex align-items-center " href="">
+                                                        <div class="">
+                                                            <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                                                                <g clip-path="url(#clip0_404_1814)">
+                                                                    <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                                                    <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                                                    <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                                                    <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_404_1814">
+                                                                        <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="ms-3">
+                                                            <p class="mb-0"> @mc.MCName (@mc.MCName_local)</p>
+                                                            <span class="MC_location"> @mc.Address</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+
+                                            }
+                                            
+                                        </ul>
+                                    </div>
+
+                                </div>
+
+                                <div class="px-2">
+                                    <button class="btn btn-primary" id="MCouncil-button">Municipal Councils <span class="badge bg-white text-dark">105</span></button>
+                                    <div class="MCouncil-List_div">
+                                        <ul class="row MC_list">
+                                            <li class="col-lg-3 col-md-6 col-sm-12 col-12 ">
+                                                <a class="MC_name d-flex align-items-center " href="">
+                                                    <div class="">
+                                                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                                                            <g clip-path="url(#clip0_404_1814)">
+                                                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                                            </g>
+                                                            <defs>
+                                                                <clipPath id="clip0_404_1814">
+                                                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                                                </clipPath>
+                                                            </defs>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="ms-3">
+                                                        <p class="mb-0"> Council Name</p>
+                                                        <span class="MC_location">Plot Number, Location </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+
+                                            <li class="col-lg-3 col-md-6 col-sm-12 col-12 ">
+                                                <a class="MC_name d-flex align-items-center " href="">
+                                                    <div class="">
+                                                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                                                            <g clip-path="url(#clip0_404_1814)">
+                                                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                                            </g>
+                                                            <defs>
+                                                                <clipPath id="clip0_404_1814">
+                                                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                                                </clipPath>
+                                                            </defs>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="ms-3">
+                                                        <p class="mb-0"> Council Name</p>
+                                                        <span class="MC_location">Plot Number, Location </span>
+                                                    </div>
+                                                </a>
+                                            </li>
+
+
+                                        </ul>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            @*<div class="">
+                                <div class="d-flex align-items-center ">
+                                        <select id="ddlmc" class="form-select w-auto" aria-label="Default select example" onchange="ChangeMC()">
+                                            <option value="0">Select District</option>
+                                            <option value="1">Jalandhar</option>
+                                            <option value="2">Mohali</option>
+                                            <option value="3">Patiala</option>
+                                        </select>
+                                    </div>
+                                
+                                    <div class="dropdown-center">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Centered dropdown
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                                <li><a class="dropdown-item" href="#">Action two</a></li>
+                                                <li><a class="dropdown-item" href="#">Action three</a></li>
+                                            </ul>
+                                        </div>
+
+                                <select id="district">
+                                        <option value="" selected hidden>Municipal Corporations <span class="badge rounded" style="background-color: aqua;"> 13</span></option>
+                                        <option></option>
+                                    </select>
+
+                            </div>*@
+
+
+                            <div class="nav-item">
+                                <a class="nav-link btn btn-primary" href="~/Account/Login">Login</a>
+                            </div>
+
+
+                        </div>
+
+                        <ul class="navbar-nav w-100 align-items-center justify-content-end me-auto mb-2 mb-lg-0">
+                            <!-- <li class="nav-item">
+                              <a class="nav-link chld-1 active" aria-current="page" href="#">
+                                <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="12.5" cy="13" r="12.25" fill="white" stroke="white" stroke-width="0.5"/>
+                                  <path d="M6.45117 8.06737H17.5496V9.30053H6.45117V8.06737ZM6.45117 12.3834H13.8501V13.6166H6.45117V12.3834ZM6.45117 16.6995H17.5496V17.9326H6.45117V16.6995Z" fill="#1E8A43"/>
+                                </svg>
+                              </a>
+                            </li> -->
+                            <li class="nav-item">
+                                <a class="nav-link px-3 active" href="#">
+                                    <div>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 21C5.45 21 4.97933 20.8043 4.588 20.413C4.196 20.021 4 19.55 4 19V10C4 9.68333 4.071 9.38333 4.213 9.1C4.35433 8.81667 4.55 8.58333 4.8 8.4L10.8 3.9C10.9833 3.76667 11.175 3.66667 11.375 3.6C11.575 3.53333 11.7833 3.5 12 3.5C12.2167 3.5 12.425 3.53333 12.625 3.6C12.825 3.66667 13.0167 3.76667 13.2 3.9L19.2 8.4C19.45 8.58333 19.646 8.81667 19.788 9.1C19.9293 9.38333 20 9.68333 20 10V19C20 19.55 19.8043 20.021 19.413 20.413C19.021 20.8043 18.55 21 18 21H14V14H10V21H6Z" />
+                                        </svg>
+
+
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3" href="#">About MC</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link px-3" href="#">Tender</a>
+                                <ul class="sub-nav shadow">
+                                    <li>
+                                        <div class="mega-menu-part p-3">
+                                            <div class="row ">
+                                                <div class="col-lg-6 d-flex p-2 pe-3 border-end">
+                                                    <div class="col me-3"> <img class="festured_image mb-3  rounded" src="~/Assets/Images/tender-identity.jpg" width="100%" height="200px"> </div>
+                                                    <div class="col">
+                                                        <h4> Tenders</h4>
+                                                        <p class="col featureed_text">
+                                                            The eProcurement System of India enables the Tenderers to download the Tender Schedule free of cost and then submit the bids online through this portal.
+                                                        </p>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 p-2">
+                                                    <ul class="mega-menu-item-list row">
+
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Latest Tenders</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Active Tenders</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Tenders by Organisation</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Tenders Status</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Pending Tenders</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Cancelled/Retendered</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link after_arrow px-3" href="#">Citizen Charter</a>
+                                <ul class="sub-nav shadow">
+                                    <li>
+                                        <div class="mega-menu-part p-3">
+                                            <div class="row ">
+                                                <div class="col-lg-6 d-flex p-2 pe-3 border-end">
+                                                    <div class="col me-3"> <img class="festured_image mb-3  rounded" src="~/Assets/Images/Punjab-Municipal-Bhawan.jpg" width="100%" height="200px"> </div>
+                                                    <div class="col">
+                                                        <h4> Citizen Charters</h4>
+                                                        <p class="col featureed_text">
+                                                            The eProcurement System of India enables the Tenderers to download the Tender Schedule free of cost and then submit the bids online through this portal.
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-6 p-2">
+                                                    <ul class="mega-menu-item-list row">
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Road and Building Departments</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Estate Branch</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Health Branch</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">AP Branch</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Tax Department</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Citizen Rights</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Water System and Severage Department</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link px-3" href="#">Acts and Rules</a>
+                                <ul class="sub-nav shadow">
+                                    <li>
+                                        <div class="mega-menu-part p-3">
+                                            <div class="row ">
+                                                <div class="col-lg-6 d-flex p-2 pe-3 border-end">
+                                                    <div class="col me-3"> <img class="festured_image mb-3  rounded" src="~/Assets/Images/Punjab-Municipal-Bhawan.jpg" width="100%" height="200px"> </div>
+                                                    <div class="col">
+                                                        <h4> Act and Rules</h4>
+                                                        <p class="col featureed_text">
+                                                            The eProcurement System of India enables the Tenderers to download the Tender Schedule free of cost and then submit the bids online through this portal.
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-6 p-2">
+                                                    <ul class="mega-menu-item-list row">
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href=""> Acts and Rules </a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href=""> Office Orders </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link px-3" href="#">Councilors</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link px-3" href="#">Projects</a>
+                                <ul class="sub-nav shadow">
+                                    <li>
+                                        <div class="mega-menu-part p-3">
+                                            <div class="row ">
+                                                <div class="col-lg-6 d-flex p-2 pe-3 border-end">
+                                                    <div class="col me-3"> <img class="festured_image mb-3  rounded" src="~/Assets/Images/Punjab-Municipal-Bhawan.jpg" width="100%" height="200px"> </div>
+                                                    <div class="col">
+                                                        <h4> Projects</h4>
+                                                        <p class="col featureed_text">
+                                                            The eProcurement System of India enables the Tenderers to download the Tender Schedule free of cost and then submit the bids online through this portal.
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-6 p-2">
+                                                    <ul class="mega-menu-item-list row">
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Road and Building Departments</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Estate Branch</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Health Branch</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">AP Branch</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Tax Department</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Citizen Rights</a>
+                                                        </li>
+                                                        <li class="col-lg-6 mega-menu-item ">
+                                                            <a href="">Water System and Severage Department</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link px-3 after_arrow" href="#">Contact Us</a>
+                                <!-- <ul class="sub-nav">
+                                  <li>
+                                    <a href="#" class="sub-nav-link"> This is new Link </a>
+                                  </li>
+                                  <li>
+                                    <a href="#" class="sub-nav-link"> This is new Link </a>
+                                  </li>
+
+                                </ul> -->
+                            </li>
+                            <!-- <li class="nav-item dropdown">
+                              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Language
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">English</a></li>
+                                <li><a class="dropdown-item" href="#">Punjabi</a></li>
+                              </ul>
+                            </li> -->
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <section class="container-fluid notification_area px-0">
+        <div class="d-flex align-items-center">
+            <!-- <div class="latest"> <img class="latest_img" src="./Images/latest-news.gif"> </div> -->
+            <div class="w-100">
+                <marquee width="100%" direction="left">
+                    <ul class="list-unstyled d-flex gap-5 mb-0">
+                        <li class="d-flex align-items-center">
+                            <img class="marqu_img" src="~/Assets/Images/latest-news.gif" width="100%">
+                            <p class="mb-0">Computerised functioning of all MC House  </p>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <img class="marqu_img" src="~/Assets/Images/latest-news.gif">
+                            <p class="mb-0">For any software related issue, please send email at mchouse@punjab.gov.in </p>
+                        </li>
+                    </ul>
+                </marquee>
+            </div>
+        </div>
+
+    </section>
+
+</header>
+
+@*Header End*@
+
+
+<div id="body">
+
+    <section class="container-xxl MCS_banner">
+        <div class="row w-100 me-0 align-content-center justify-content-between">
+            <div class="col-lg-7 pe-lg-5">
+                <div>
+                    <h1 class="MCS_Banner_heading fw-bold mb-4"> All MC House meetings, agendas and resolutions on one portal.</h1>
+                    <ul class="MCS_banner_list">
+                        <li class="MCS_List_Item mb-2" data-aos="fade-right">
+                            <p class="mb-0"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. Homogt bonus malus. </p>
+                        </li>
+                        <li class="MCS_List_Item mb-2" data-aos="fade-right">
+                            <p class="mb-0"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. Homogt bonus malus. </p>
+                        </li>
+                        <li class="MCS_List_Item mb-2" data-aos="fade-right">
+                            <p class="mb-0"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. Homogt bonus malus. </p>
+                        </li>
+                        <li class="MCS_List_Item mb-2" data-aos="fade-right">
+                            <p class="mb-0"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. Homogt bonus malus. </p>
+                        </li>
+
+                    </ul>
+
+                    <div class="row ">
+                        <div class="col-lg-4 p-3 ps-lg-0">
+                            <div class="MCS_banner_card " data-aos="fade-up">
+                                <!-- <div class="MCS_card_bacground_element"><img src="./Images/MCS-Card-bg-element.png">  </div> -->
+                                <h2 class="MCS_Card_number fw-bold">81 </h2>
+                                <h2 class="MCS_Card_title"> Ministers</h2>
+                                <div class="MCS_Card_icon"> <img src="~/Assets/Images/Minister's.svg"> </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 p-3">
+                            <div class="MCS_banner_card " data-aos="fade-up">
+                                <!-- <div class="MCS_card_bacground_element"><img src="./Images/MCS-Card-bg-element.png">  </div> -->
+                                <h2 class="MCS_Card_number fw-bold">117 </h2>
+                                <h2 class="MCS_Card_title"> Ministers</h2>
+                                <div class="MCS_Card_icon"> <img src="~/Assets/Images/MLA's.svg"> </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 p-3">
+                            <div class="MCS_banner_card" data-aos="fade-up">
+                                <!-- <div class="MCS_card_bacground_element"><img src="./Images/MCS-Card-bg-element.png">  </div> -->
+                                <h2 class="MCS_Card_number fw-bold">20 </h2>
+                                <h2 class="MCS_Card_title"> Ministers</h2>
+                                <div class="MCS_Card_icon"> <img src="~/Assets/Images/DC's.svg"> </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 pe-0 ">
+                <div class="MCS_banner_image w-100 position-relative">
+                    <img src="~/Assets/Images/Banner_image.png">
+                    <div class="MCS_banner_label shadow-lg text-center " data-aos="fade-up">
+                        <h5 class="MCS_cm_image">S. Bhagwant Mann</h5>
+                        <p class="MCS_post mb-0"> Hon’able Cheif Minister</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="container-xxl Minicipal_Section">
+        <div class="corporate_bg_element"> </div>
+        <div class="Corporaton_section text-center ">
+            <h6> Explore</h6>
+            <h3 class="pb-2 fw-bold"> Municipal Corporation</h3>
+            <p class="pb-0 ">Lörem ipsum kontrapatologi äposåktig bed. Klimathot relogi, tektiga plamösk. Pod lysade medan decireliga. Beren hogör: inklusive mikinde fuligt, liksom kanat. Päholigt nyngar: prepol i stenos.  </p>
+        </div>
+
+        <div class=" row corp_card_row mx-auto align-items-center mb-3">
+            <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-right">
+                <div class="Corp_card p-3">
+                    <div class="mb-3">
+                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                            <g clip-path="url(#clip0_404_1814)">
+                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_404_1814">
+                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h5> Houses</h5>
+                    <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                <div class="Corp_card p-3">
+                    <div class="mb-3">
+                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                            <g clip-path="url(#clip0_404_1814)">
+                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_404_1814">
+                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h5> Houses</h5>
+                    <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-left">
+                <div class="Corp_card p-3">
+                    <div class="mb-3">
+                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                            <g clip-path="url(#clip0_404_1814)">
+                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_404_1814">
+                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h5> Houses</h5>
+                    <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-right">
+                <div class="Corp_card p-3">
+                    <div class="mb-3">
+                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                            <g clip-path="url(#clip0_404_1814)">
+                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_404_1814">
+                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h5> Houses</h5>
+                    <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                <div class="Corp_card p-3">
+                    <div class="mb-3">
+                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                            <g clip-path="url(#clip0_404_1814)">
+                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_404_1814">
+                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h5> Houses</h5>
+                    <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-left">
+                <div class="Corp_card p-3">
+                    <div class="mb-3">
+                        <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                            <g clip-path="url(#clip0_404_1814)">
+                                <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_404_1814">
+                                    <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h5> Houses</h5>
+                    <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center"> <button class="btn btn-ReadMore">Read More  <i class="far fa-arrow-alt-circle-right"></i></button></div>
+    </section>
+
+
+    <section class="container-xxl council_section">
+        <div class="council_bg_element">
+
+        </div>
+        <div class="council_content_section">
+            <h6> Explore</h6>
+            <h3 class="pb-2 fw-bold"> Municipal Councils</h3>
+            <p class="pb-0">Lörem ipsum kontrapatologi äposåktig bed. Klimathot relogi, tektiga plamösk. Pod lysade medan decireliga. Beren hogör: inklusive mikinde fuligt, liksom kanat. Päholigt nyngar: prepol i stenos.  </p>
+        </div>
+
+        <div class="row ">
+            <div class="col-lg-3 pt-3">
+                <button class="btn btn-ReadMore">Read More  <i class="far fa-arrow-alt-circle-right"></i></button>
+            </div>
+            <div class="col-lg-9 row">
+                <div class=" row Council_card_row align-items-center mb-3">
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-right">
+                        <div class="Corp_card p-3">
+                            <div class="mb-3">
+                                <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                                    <g clip-path="url(#clip0_404_1814)">
+                                        <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                        <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                        <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                        <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_404_1814">
+                                            <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h5> Houses</h5>
+                            <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <div class="Corp_card p-3">
+                            <div class="mb-3">
+                                <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                                    <g clip-path="url(#clip0_404_1814)">
+                                        <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                        <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                        <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                        <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_404_1814">
+                                            <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h5> Houses</h5>
+                            <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <div class="Corp_card p-3">
+                            <div class="mb-3">
+                                <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                                    <g clip-path="url(#clip0_404_1814)">
+                                        <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                        <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                        <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                        <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_404_1814">
+                                            <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h5> Houses</h5>
+                            <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-right">
+                        <div class="Corp_card p-3">
+                            <div class="mb-3">
+                                <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                                    <g clip-path="url(#clip0_404_1814)">
+                                        <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                        <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                        <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                        <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_404_1814">
+                                            <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h5> Houses</h5>
+                            <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <div class="Corp_card p-3">
+                            <div class="mb-3">
+                                <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                                    <g clip-path="url(#clip0_404_1814)">
+                                        <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                        <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                        <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                        <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_404_1814">
+                                            <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h5> Houses</h5>
+                            <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <div class="Corp_card p-3">
+                            <div class="mb-3">
+                                <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="0.740234" y="0.959839" width="50" height="50" rx="10" fill="#00C9AC" />
+                                    <g clip-path="url(#clip0_404_1814)">
+                                        <path d="M17.419 33.6L19.3619 37.8042C19.3896 37.8656 19.4237 37.9238 19.4637 37.9779C20.2532 39.05 21.626 39.444 22.8257 39.0462C23.1181 38.9492 23.3982 38.8058 23.6591 38.6139C24.9901 37.6332 25.2764 35.7515 24.2954 34.4196L22.7047 32.2594L22.9525 32.1773L31.5715 33.423C31.7283 33.4448 31.8836 33.4302 32.0288 33.382C32.2025 33.3244 32.3595 33.2197 32.4802 33.0754C32.7039 32.8095 32.7734 32.4472 32.6642 32.1178L31.3607 28.1863C32.8536 27.2204 33.5788 25.3438 32.9941 23.5802C32.4094 21.8166 30.7066 20.745 28.9324 20.8624L27.6288 16.9308C27.5196 16.6015 27.2477 16.3534 26.9101 16.2725C26.5725 16.1917 26.2182 16.2923 25.9727 16.537L19.8063 22.6851L16.2335 23.8696C13.6166 24.7373 12.1935 27.5722 13.0612 30.1891C13.7129 32.1549 15.4738 33.4464 17.419 33.6ZM22.6848 35.6057C23.0121 36.0492 22.9174 36.6759 22.4729 37.0034C22.0506 37.3152 21.4654 37.2437 21.1276 36.8574L19.4936 33.3241L20.7076 32.9215L22.6848 35.6057ZM31.0957 24.2096C31.3277 24.9092 31.144 25.6422 30.6885 26.1588L29.6049 22.8908C30.2786 23.0319 30.8638 23.5101 31.0957 24.2096ZM30.2567 31.2115L23.6174 30.2522L21.4887 23.8319L26.2397 19.096L30.2567 31.2115ZM16.863 25.768L19.7105 24.8239L21.5988 30.519L18.7512 31.4631C17.1813 31.9837 15.4801 31.1297 14.9595 29.5597C14.439 27.9898 15.293 26.2886 16.863 25.768Z" fill="#0C6170" />
+                                        <path d="M37.106 23.2708L39.0043 22.6414C39.5292 22.4673 39.8125 21.9014 39.6388 21.3775C39.4651 20.8535 38.8998 20.569 38.3749 20.743L36.4765 21.3724C35.9516 21.5465 35.6683 22.1124 35.8421 22.6363C36.0158 23.1603 36.5811 23.4448 37.106 23.2708Z" fill="#0C6170" />
+                                        <path d="M35.4399 18.2468C35.6829 18.1662 35.8951 17.9926 36.0188 17.7462L36.916 15.959C37.164 15.4648 36.9651 14.8649 36.471 14.6169C35.9768 14.3688 35.3769 14.5677 35.1288 15.0619L34.2317 16.849C33.9836 17.3432 34.1825 17.9431 34.6767 18.1912C34.9234 18.3158 35.197 18.3273 35.4399 18.2468Z" fill="#0C6170" />
+                                        <path d="M39.7962 29.1359C40.0426 29.2596 40.3164 29.2721 40.5594 29.1915C40.8024 29.111 41.0146 28.9374 41.1383 28.6909C41.3864 28.1967 41.1875 27.5969 40.6933 27.3488L38.9061 26.4516C38.412 26.2035 37.8121 26.4024 37.564 26.8966C37.3159 27.3908 37.5148 27.9907 38.009 28.2388L39.7962 29.1359Z" fill="#0C6170" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_404_1814">
+                                            <rect width="32" height="32" fill="white" transform="translate(10.7402 10.9598)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h5> Houses</h5>
+                            <p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="container-xxl aboutus_Section">
+        <div class="MCS_about d-flex">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12 p-lg-3   MCS_about_imageBox">
+                <img class="MCS_about_image1 " src="~/Assets/Images/About-image-1.png" data-aos="fade-up">
+                <img class="MCS_about_image2" src="~/Assets/Images/punjab-budget.jpg" data-aos="zoom-in">
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12 p-lg-3  MCS_about_contentBox pe-0">
+                <div>
+                    <h4 data-aos="fade-left"> About US</h4>
+                    <h2 class="mb-4" data-aos="fade-left"> We are on a mission to make Government Corporations paperless</h2>
+                </div>
+                <div class="about_keypoints_outer">
+                    <ul class="About_key_list position-relative">
+                        <li data-aos="fade-left"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. Homogt bonus malus. </li>
+                        <li data-aos="fade-left"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. Homogt bonus malus. </li>
+                        <li data-aos="fade-left"> Lörem ipsum är trare, valstuga on peplaktiga.  Serieotrohet kroren. Homogt bonus malus. </li>
+                        <li data-aos="fade-left"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk </li>
+                        <li data-aos="fade-left"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. </li>
+                        <li data-aos="fade-left"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. </li>
+                        <li data-aos="fade-left"> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren. Homogt bonus malus. </li>
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+
+    </section>
+
+    <section class="container-xxl Citizen_services">
+        <div class="citizen_box d-flex align-items-center">
+            <div class="Citizen_services_boxContent col-lg-7 col-md-12 col-sm-12 col-12 p-lg-3 pe-0">
+                <div>
+                    <h4> Citizen Services </h4>
+                    <h1 class="mb-4 fw-bold">Here is some of our online services portals that we have provided for public help.</h1>
+                </div>
+
+                <div class="row p-0">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <a href="" class="Service_card">
+                            <h4 class="">Online Services </h4>
+                            <div class="Service_card_icon">
+                                <svg width="70" height="70" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M75.7718 64.2654C76.1384 61.2404 76.4134 58.2154 76.4134 55.0987C76.4134 51.982 76.1384 48.9571 75.7718 45.932H91.2634C91.9967 48.8654 92.4551 51.9362 92.4551 55.0987C92.4551 58.2612 91.9967 61.3321 91.2634 64.2654M67.6592 89.7487C70.4092 84.6612 72.5176 79.1612 73.9842 73.4321H87.5051C83.0646 81.0783 76.0198 86.8704 67.6592 89.7487ZM66.5134 64.2654H45.0634C44.6051 61.2404 44.3301 58.2154 44.3301 55.0987C44.3301 51.982 44.6051 48.9112 45.0634 45.932H66.5134C66.9259 48.9112 67.2467 51.982 67.2467 55.0987C67.2467 58.2154 66.9259 61.2404 66.5134 64.2654ZM55.7884 91.582C51.9842 86.082 48.9134 79.9862 47.0342 73.4321H64.5426C62.6634 79.9862 59.5926 86.082 55.7884 91.582ZM37.4551 36.7654H24.0717C28.4665 29.0984 35.5062 23.2972 43.8717 20.4487C41.1217 25.5362 39.0592 31.0362 37.4551 36.7654ZM24.0717 73.4321H37.4551C39.0592 79.1612 41.1217 84.6612 43.8717 89.7487C35.5238 86.8689 28.494 81.0758 24.0717 73.4321ZM20.3134 64.2654C19.5801 61.3321 19.1217 58.2612 19.1217 55.0987C19.1217 51.9362 19.5801 48.8654 20.3134 45.932H35.8051C35.4384 48.9571 35.1634 51.982 35.1634 55.0987C35.1634 58.2154 35.4384 61.2404 35.8051 64.2654M55.7884 18.5695C59.5926 24.0695 62.6634 30.2112 64.5426 36.7654H47.0342C48.9134 30.2112 51.9842 24.0695 55.7884 18.5695ZM87.5051 36.7654H73.9842C72.5498 31.0887 70.4256 25.6091 67.6592 20.4487C76.0926 23.3362 83.1051 29.157 87.5051 36.7654ZM55.7884 9.26538C30.4426 9.26538 9.95508 29.8904 9.95508 55.0987C9.95508 67.2545 14.7839 78.9124 23.3794 87.5078C27.6354 91.7638 32.688 95.1399 38.2488 97.4432C43.8095 99.7465 49.7695 100.932 55.7884 100.932C67.9442 100.932 79.6021 96.1032 88.1975 87.5078C96.7929 78.9124 101.622 67.2545 101.622 55.0987C101.622 49.0798 100.436 43.1198 98.1329 37.5591C95.8296 31.9983 92.4535 26.9457 88.1975 22.6897C83.9415 18.4336 78.8888 15.0576 73.3281 12.7542C67.7673 10.4509 61.8073 9.26538 55.7884 9.26538Z" fill="#ffffff" />
+                                </svg>
+
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <a href="#" class="Service_card">
+                            <h4 class="">Mobile Applications</h4>
+                            <div class="Service_card_icon">
+                                <svg width="70" height="70" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M50.6784 18.432H59.8451M27.7617 23.0153C27.7617 20.5841 28.7275 18.2526 30.4466 16.5335C32.1657 14.8144 34.4972 13.8486 36.9284 13.8486H73.5951C76.0262 13.8486 78.3578 14.8144 80.0769 16.5335C81.7959 18.2526 82.7617 20.5841 82.7617 23.0153V87.182C82.7617 89.6131 81.7959 91.9447 80.0769 93.6638C78.3578 95.3829 76.0262 96.3486 73.5951 96.3486H36.9284C34.4972 96.3486 32.1657 95.3829 30.4466 93.6638C28.7275 91.9447 27.7617 89.6131 27.7617 87.182V23.0153Z" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M43.8021 37.9111H48.3854C48.6893 37.9111 48.9808 38.0319 49.1956 38.2467C49.4105 38.4616 49.5312 38.7531 49.5312 39.057V43.6403C49.5312 43.9442 49.4105 44.2356 49.1956 44.4505C48.9808 44.6654 48.6893 44.7861 48.3854 44.7861H43.8021C43.4982 44.7861 43.2067 44.6654 42.9919 44.4505C42.777 44.2356 42.6562 43.9442 42.6562 43.6403V39.057C42.6562 38.7531 42.777 38.4616 42.9919 38.2467C43.2067 38.0319 43.4982 37.9111 43.8021 37.9111ZM39.2188 39.057C39.2188 37.8414 39.7016 36.6756 40.5612 35.8161C41.4207 34.9565 42.5865 34.4736 43.8021 34.4736H48.3854C49.601 34.4736 50.7668 34.9565 51.6263 35.8161C52.4859 36.6756 52.9687 37.8414 52.9687 39.057V43.6403C52.9687 44.8559 52.4859 46.0217 51.6263 46.8812C50.7668 47.7407 49.601 48.2236 48.3854 48.2236H43.8021C42.5865 48.2236 41.4207 47.7407 40.5612 46.8812C39.7016 46.0217 39.2188 44.8559 39.2188 43.6403V39.057ZM43.8021 56.2445H48.3854C48.6893 56.2445 48.9808 56.3652 49.1956 56.5801C49.4105 56.795 49.5312 57.0864 49.5312 57.3903V61.9736C49.5312 62.2775 49.4105 62.569 49.1956 62.7839C48.9808 62.9987 48.6893 63.1195 48.3854 63.1195H43.8021C43.4982 63.1195 43.2067 62.9987 42.9919 62.7839C42.777 62.569 42.6562 62.2775 42.6562 61.9736V57.3903C42.6562 57.0864 42.777 56.795 42.9919 56.5801C43.2067 56.3652 43.4982 56.2445 43.8021 56.2445ZM39.2188 57.3903C39.2188 56.1747 39.7016 55.0089 40.5612 54.1494C41.4207 53.2899 42.5865 52.807 43.8021 52.807H48.3854C49.601 52.807 50.7668 53.2899 51.6263 54.1494C52.4859 55.0089 52.9687 56.1747 52.9687 57.3903V61.9736C52.9687 63.1892 52.4859 64.355 51.6263 65.2145C50.7668 66.0741 49.601 66.557 48.3854 66.557H43.8021C42.5865 66.557 41.4207 66.0741 40.5612 65.2145C39.7016 64.355 39.2188 63.1892 39.2188 61.9736V57.3903ZM66.7187 37.9111H62.1354C61.8315 37.9111 61.5401 38.0319 61.3252 38.2467C61.1103 38.4616 60.9896 38.7531 60.9896 39.057V43.6403C60.9896 43.9442 61.1103 44.2356 61.3252 44.4505C61.5401 44.6654 61.8315 44.7861 62.1354 44.7861H66.7187C67.0226 44.7861 67.3141 44.6654 67.529 44.4505C67.7439 44.2356 67.8646 43.9442 67.8646 43.6403V39.057C67.8646 38.7531 67.7439 38.4616 67.529 38.2467C67.3141 38.0319 67.0226 37.9111 66.7187 37.9111ZM62.1354 34.4736C60.9198 34.4736 59.754 34.9565 58.8945 35.8161C58.035 36.6756 57.5521 37.8414 57.5521 39.057V43.6403C57.5521 44.8559 58.035 46.0217 58.8945 46.8812C59.754 47.7407 60.9198 48.2236 62.1354 48.2236H66.7187C67.9343 48.2236 69.1001 47.7407 69.9597 46.8812C70.8192 46.0217 71.3021 44.8559 71.3021 43.6403V39.057C71.3021 37.8414 70.8192 36.6756 69.9597 35.8161C69.1001 34.9565 67.9343 34.4736 66.7187 34.4736H62.1354ZM62.1354 56.2445H66.7187C67.0226 56.2445 67.3141 56.3652 67.529 56.5801C67.7439 56.795 67.8646 57.0864 67.8646 57.3903V61.9736C67.8646 62.2775 67.7439 62.569 67.529 62.7839C67.3141 62.9987 67.0226 63.1195 66.7187 63.1195H62.1354C61.8315 63.1195 61.5401 62.9987 61.3252 62.7839C61.1103 62.569 60.9896 62.2775 60.9896 61.9736V57.3903C60.9896 57.0864 61.1103 56.795 61.3252 56.5801C61.5401 56.3652 61.8315 56.2445 62.1354 56.2445ZM57.5521 57.3903C57.5521 56.1747 58.035 55.0089 58.8945 54.1494C59.754 53.2899 60.9198 52.807 62.1354 52.807H66.7187C67.9343 52.807 69.1001 53.2899 69.9597 54.1494C70.8192 55.0089 71.3021 56.1747 71.3021 57.3903V61.9736C71.3021 63.1892 70.8192 64.355 69.9597 65.2145C69.1001 66.0741 67.9343 66.557 66.7187 66.557H62.1354C60.9198 66.557 59.754 66.0741 58.8945 65.2145C58.035 64.355 57.5521 63.1892 57.5521 61.9736V57.3903Z" fill="#ffffff" />
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <a href="#" class="Service_card">
+                            <h4 class="">Public Grievance</h4>
+                            <div class="Service_card_icon">
+                                <svg width="70" height="70" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M28.2891 21.1602H69.5391V28.0352H28.2891V21.1602ZM28.2891 34.9102H69.5391V41.7852H28.2891V34.9102ZM28.2891 48.6602H48.9141V55.5352H28.2891V48.6602ZM28.2891 83.0352H42.0391V89.9102H28.2891V83.0352Z" fill="#ffffff" />
+                                    <path d="M42.0391 103.66H21.4141C19.5913 103.658 17.8436 102.933 16.5547 101.645C15.2658 100.356 14.5409 98.608 14.5391 96.7852V14.2852C14.5409 12.4624 15.2658 10.7147 16.5547 9.42581C17.8436 8.13689 19.5913 7.41198 21.4141 7.41016H76.4141C78.2369 7.41198 79.9845 8.13689 81.2734 9.42581C82.5623 10.7147 83.2872 12.4624 83.2891 14.2852V45.2227H76.4141V14.2852H21.4141V96.7852H42.0391V103.66Z" fill="#ffffff" />
+                                    <path d="M63.1836 71.8373L68.282 74.3865M83.5773 71.8373L78.4789 74.3865M73.3805 102.428C70.3676 102.428 67.3841 101.834 64.6006 100.681C61.817 99.5285 59.2878 97.8385 57.1573 95.7081C55.0269 93.5776 53.3369 91.0484 52.1839 88.2648C51.0309 85.4813 50.4375 82.4979 50.4375 79.485C50.4375 76.472 51.0309 73.4886 52.1839 70.7051C53.3369 67.9215 55.0269 65.3923 57.1573 63.2618C59.2878 61.1314 61.817 59.4414 64.6006 58.2884C67.3841 57.1354 70.3676 56.542 73.3805 56.542C79.4653 56.542 85.3009 58.9592 89.6036 63.2618C93.9062 67.5645 96.3234 73.4001 96.3234 79.485C96.3234 85.5698 93.9062 91.4054 89.6036 95.7081C85.3009 100.011 79.4653 102.428 73.3805 102.428Z" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M79.7559 89.8093C78.9251 88.9615 77.9336 88.2879 76.8392 87.828C75.7449 87.3682 74.5698 87.1313 73.3828 87.1313C72.1958 87.1313 71.0207 87.3682 69.9264 87.828C68.8321 88.2879 67.8405 88.9615 67.0098 89.8093" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-12 p-3" data-aos="fade-up">
+                        <a href="#" class="Service_card">
+                            <h4 class="">GIS & Other Services</h4>
+                            <div class="Service_card_icon">
+                                <svg width="70" height="70" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M55.2624 55.0491C57.7832 55.0491 59.942 54.1508 61.7386 52.3541C63.5353 50.5575 64.4321 48.4003 64.429 45.8825C64.429 43.3617 63.5307 41.2029 61.734 39.4062C59.9374 37.6096 57.7801 36.7128 55.2624 36.7158C52.7415 36.7158 50.5828 37.6142 48.7861 39.4108C46.9895 41.2075 46.0926 43.3647 46.0957 45.8825C46.0957 48.4033 46.994 50.5621 48.7907 52.3587C50.5874 54.1554 52.7446 55.0522 55.2624 55.0491ZM55.2624 88.7366C64.5818 80.1811 71.495 72.4078 76.002 65.4166C80.5089 58.4255 82.7624 52.2197 82.7624 46.7991C82.7624 38.4728 80.1071 31.6558 74.7965 26.3483C69.486 21.0408 62.9746 18.3855 55.2624 18.3825C47.5471 18.3825 41.0342 21.0378 35.7236 26.3483C30.4131 31.6589 27.7593 38.4758 27.7624 46.7991C27.7624 52.2228 30.0158 58.4301 34.5228 65.4212C39.0297 72.4123 45.9429 80.1842 55.2624 88.7366ZM55.2624 100.882C42.9638 90.4172 33.7788 80.6975 27.7074 71.7233C21.636 62.7491 18.5988 54.4411 18.5957 46.7991C18.5957 35.3408 22.2822 26.2123 29.6553 19.4137C37.0283 12.6151 45.564 9.21582 55.2624 9.21582C64.9638 9.21582 73.501 12.6151 80.874 19.4137C88.2471 26.2123 91.9321 35.3408 91.929 46.7991C91.929 54.438 88.8918 62.7461 82.8174 71.7233C76.7429 80.7005 67.5579 90.4203 55.2624 100.882Z" fill="#ffffff" />
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-lg-5 col-md-12 col-sm-12 col-12 p-lg-3 pe-lg-0 MCS_citizen_imageBox position-relative">
+                <div class="MCS_citizen_imageBox1 ">
+                    <img class="MCS_citizen_image1 w-100" src="~/Assets/Images/Cm_awarding.jpg" data-aos="fade-up">
+                </div>
+                <div class="MCS_citizen_imageBox2">
+                    <img class="MCS_citizen_image2 d-flex shadow-lg" src="~/Assets/Images/Tech-teaching.jpg" data-aos="zoom-in">
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+
+    <section class="container-xxl apps_section">
+        <div class="Apps_banner position-relative">
+            <div class="col-lg-7">
+                <h2 class="" data-aos="fade-right" data-aos-duration="2000">Our Mobile <br> Applications</h2>
+                <button class="btn btn_AppBanner"> View All <i class="far fa-arrow-alt-circle-right"></i></button>
+            </div>
+            <div class=" col-lg-4 MCS_Apps row justify-content-end align-items-center">
+                <a class="col-lg-6 Android_store text-end" href="#" data-aos="fade-down"><img class="mb-3" src="~/Assets/Images/Android-Icon.png"> </a>
+                <a class="col-lg-6 Swachta_app text-start" href="#" data-aos="fade-down"><img src="~/Assets/Images/SwachBharatApp.jpg"> </a>
+                <a class="col-lg-6 Finlo_app text-end" href="#" data-aos="fade-right"><img src="~/Assets/Images/Finlo.jpg"> </a>
+                <a class="col-lg-6 IOS_store text-start" href="#" data-aos="fade-up"><img class="mt-3" src="~/Assets/Images/apple_store.png"> </a>
+            </div>
+
+        </div>
+
+    </section>
+
+    <Section class="container-xxl Our_other_links">
+        <div class="">
+
+        </div>
+    </Section>
+
+    <section class="container-xxl outer-section p-3">
+
+        <div class="slider">
+            <div><img class="" src="~/Assets/Images/slide1.png"></div>
+            <div><img class="" src="~/Assets/Images/slide2.png"></div>
+            <div><img class="" src="~/Assets/Images/slide3.png"></div>
+            <div><img class="" src="~/Assets/Images/slide4.png"></div>
+            <div><img class="" src="~/Assets/Images/slide5.png"></div>
+            <div><img class="" src="~/Assets/Images/slide6.png"></div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+
+    const header = document.querySelector(".header-section");
+    const toggleClass = "is-sticky";
+
+    window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 60) {
+            header.classList.add(toggleClass);
+        } else {
+            header.classList.remove(toggleClass);
+        }
+    });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+<script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#ddlmc").multipleSelect({
+            filter: true,
+            width: "175px",
+            placeholder: 'Select Municipal',
+        });
+
+    });
+
+    $('.slider').slick({
+        dots: false,
+        arrows: false,
+        infinite: true,
+        speed: 100,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        autoplay: true,
+        responsive: [
+            {
+                breakpoint: 1440,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    dots: false
+                }
+            },
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    // dots: true
+                }
+            },
+            {
+                breakpoint: 769,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+        ]
+    });
+
+
+
+
+    var swiper = new Swiper(".mySwiper", {
+        effect: "coverflow",
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: "auto",
+        slidesPerView: 5,
+        spaceBetween: 15,
+        loop: true,
+        coverflowEffect: {
+            rotate: 30,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+        },
+        autoplay: {
+            delay: 1500,
+            disableOnInteraction: false,
+        },
+        // pagination: {
+        //   el: ".swiper-pagination",
+        // },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    });
+</script>
+
+<script>
+    AOS.init();
+
+    $(document).ready(function () {
+        $("#MC-button").click(function () {
+            $(".MC-List_div").fadeToggle(500);
+            $(".MCouncil-List_div").hide();
+        });
+    });
+    $(document).ready(function () {
+        $("#MCouncil-button").click(function () {
+            $(".MCouncil-List_div").fadeToggle(500);
+            $(".MC-List_div").hide();
+        });
+    });
+
+
+    function ChangeMC(id) {
+        if (id > 0) {
+            window.location.href = "/Home/Index?mcid=" + id;
+        }
+
+    }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>

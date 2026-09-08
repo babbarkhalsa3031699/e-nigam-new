@@ -1,0 +1,2642 @@
+﻿@model CMNirdesh.Models.LstDashboard
+
+@using CMNirdesh.Models
+
+@{
+    int Totaldispatch = Model._LstDashboard.Sum(x => x.Count);
+    string SiteName = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceName"];
+}
+
+<input type="hidden" id="intval" name="intval" value="" />
+<input type="hidden" id="diarydispatchValue" name="diarydispatchValue" value="" />
+<input type="hidden" id="DocumentTypeDIdHdn" name="DocumentTypeDIdHdn" value="" />
+<input type="hidden" id="sincefilterhdndispatch" name="sincefilterhdndispatch" value="" />
+<input type="hidden" id="radiovaluehdn" name="radiovaluehdn" value="" />
+<html>
+
+<body>
+
+    <div class="main-content" id="main-content">
+        <div class="widget-box" id="divAction">
+            <div class="widget-header widget-header-flat">
+                <h4>  <span id="selectednew" class=""></span></h4>
+                <div class="widget-toolbar no-border">
+
+                    <button class="btn btn-xs btn-primary bigger" id="btnNewD" style="display:none;" onclick="CreateNewDispatch()">
+                        <i class="ace-icon fa fa-pencil-square-o"></i>
+                        New
+                    </button>
+
+                </div>
+            </div>
+            @Html.Hidden("maintype", "0")
+            <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
+        </div>
+
+
+
+        <div class="col-md-12 col-xl-12 col-lg-12 row p-0 no-right-margin" id="DispatchTableDiv">
+
+            <div class="col-md-12 col-xl-12 col-lg-12 row p-3 no-right-margin filter-part position-relative " style="display:none">
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                    <div>
+                        <div class="form fc d-flex align-items-center gap-1">
+                            <span class="label-text"><b>Department </b></span>
+                            <div class="btn-group dropup">
+
+                                <button onclick="DepartmentCountD('Department');" type="button" class=" dropdown-toggle link-option icon-department" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-building"></i>
+
+                                </button>
+
+                                <div class="dropdown-menu popup-box p-0">
+
+                                    <div class="filter-popup" id="DispatchDepartmentCount">
+                                        <div class="table-responsive">
+                                            <table class="table " id="DispatchDepartmentTableCount" style="width:100%">
+                                                <thead>
+                                                    <tr class="table-heading ">
+                                                        <th class='td-heading'>Department</th>
+                                                        <th class='td-heading'></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*  <i class="fas fa-building red"
+                            onclick="DepartmentCountD('Department');"></i>*@
+                        </div>
+
+
+
+                        <select class="form-control" id="DispatchDepartment" name="DispatchDepartment"></select>
+                        <input type="hidden" id="hdndept" value="0" />
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                    <div>
+                        <div class="form fc d-flex align-items-center gap-1">
+                            <span class="label-text"><b> Office</b></span>
+                            <div class="btn-group dropup">
+                                <button onclick="OfficeCountD('Office');" type="button" class=" dropdown-toggle link-option icon-office" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-chair-office"></i>
+                                </button>
+                                <div class="dropdown-menu popup-box p-0">
+                                    <div class="filter-popup" id="DispatchOfficeCount">
+                                        <div class="table-responsive">
+                                            <table class="table " id="DispatchOfficeTableCount" style="width:100%">
+                                                <thead>
+                                                    <tr class="table-heading ">
+                                                        <th class='td-heading'>office</th>
+                                                        <th class='td-heading'></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                        <select style="min-width: 30%;" class="form-control" id="DispatchoffId" name="DispatchoffId"></select>
+                        <input type="hidden" id="hdndept" value="0" />
+                    </div>
+
+                    @*<div>
+                        <label class="form fc"> <b>Office</b> <i class="fal fa-building green" onclick="OfficeCountD('Office');"></i></label><br />
+                        <select style="min-width: 30%;" class="form-control" id="DispatchoffId" name="DispatchoffId"></select>
+                    </div>*@
+                </div>
+
+                @*<div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                    <div style="margin-top:25px;">
+                        <button class="btn btn-sm btn-primary" onclick="DataByDeptIdandOfficeIdD();"> Search</button>
+                        <button class="btn btn-sm btn-danger" onclick="ClearDeptFilterD();"> Clear</button>
+                    </div>
+                </div>*@
+
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                    <div>
+                        <div class="form fc d-flex align-items-center gap-1">
+                            <span class="label-text"><b>Reference Type </b></span>
+                            <div class="btn-group dropup">
+                                <button onclick="TypeCountD('Type');" type="button" class=" dropdown-toggle link-option icon-refrence" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-asterisk"></i>
+                                </button>
+                                <div class="dropdown-menu popup-box p-0">
+                                    <div class="filter-popup" id="DispatchTypeCount">
+                                        <div class="table-responsive">
+                                            <table class="table " id="DispatchTypeTableCount" style="width:100%">
+                                                <thead>
+                                                    <tr class="table-heading ">
+                                                        <th class='td-heading'>Reference Type</th>
+                                                        <th class='td-heading'></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                        <select class="form-control" id="DispatchDocument" name="DispatchDocument"></select>
+                        <input type="hidden" id="hdndept" value="0" />
+                    </div>
+
+                    @*<div>
+                        <label class="form fc"> <b>Reference Type</b> <i class="fad fa-vhs red" onclick="TypeCountD('Type');"></i></label>
+                        <select class="form-control" id="DispatchDocument" name="DispatchDocument"></select>
+                    </div>*@
+                </div>
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+
+                    <div>
+                        <div class="form fc d-flex align-items-center gap-1">
+                            <span class="label-text"><b>Status</b></span>
+                            <div class="btn-group dropup">
+                                <button onclick="StatusCountD('Status');" type="button" class=" dropdown-toggle link-option icon-status" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-chart-line"></i>
+                                </button>
+                                <div class="dropdown-menu popup-box p-0">
+                                    <div class="filter-popup" id="DispatchStatusCount">
+                                        <div class="table-responsive">
+                                            <table class="table " id="DispatchStatusTableCount" style="width:100%">
+                                                <thead>
+                                                    <tr class="table-heading ">
+                                                        <th class='td-heading'>Status</th>
+                                                        <th class='td-heading'></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                        <select class="form-control" id="StatusListMlaD" name="StatusListMlaD"></select>
+                        <input type="hidden" id="hdndept" value="0" />
+                    </div>
+
+                    @*<div>
+                        <label class="form fc"> <b>Status</b> <i class="fad fa-vhs blue" onclick="StatusCountD('Status');"></i></label>
+                        <select class="form-control" id="StatusListMlaD" name="StatusListMlaD"></select>
+                    </div>*@
+                </div>
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Priority</b></label>
+                        <select class="form-control" name="DispatchPriority" id="DispatchPriority">
+                            <option value="" selected>-- Select --</option>
+                            <option value="1">High</option>
+                            <option value="2">Normal</option>
+                            <option value="3">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc"> <b>Term</b></label>
+                        <select class="form-control" name="DispatchTerm" id="DispatchTerm">
+                            <option value="" selected>-- Select --</option>
+                            <option value="1">Short</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Long</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                    <div>
+                        <label class="form fc not-check">
+                            <b> Last Action Since </b>
+                            <span class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="notcheckD">
+                                <label class="form-check-label fw-bold " for="notcheckD">
+                                    NOT
+                                </label>
+                            </span>
+                        </label>
+                        <select class="form-control" name="sincefilterdispatch" id="sincefilterdispatch">
+                            <option value="" selected="selected" onclick="ResetSinceDiary();">-- select --</option>
+                            <option value="1week">1 Week</option>
+                            <option value="2week">2 Week</option>
+                            <option value="1month">1 Months</option>
+                            <option value="3month">3 Months</option>
+                            <option value="6month">6 Months</option>
+                            <option value="year">1 Year</option>
+                            <option value="morethanyear">1 Year +</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                    <div style="margin-top:29px;" class="text-start d-flex gap-3">
+                        <button class="btn btn-sm btn-primary" id="changebutton" onclick="changeD();"> Search</button>
+                        <button class="btn btn-sm btn-success" id="resetbutton" style="display:none;" onclick="ResetD();"> Reset</button>
+                        <button class="btn btn-sm btn-danger" id="clearbutton" style="display:none;" onclick="Clear();"> Clear</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12 col-xl-12 cl-lg-12  row" style="margin-top:20px;">
+
+                <div class="col-md-12 col-xl-12 col-lg-12 mt-3" style="display:none">
+                    <div class="table-switch">
+
+                        <div>
+                            <input type="radio" id="list" name="radio_list" value="List" checked="checked" onclick="lisfunction();">
+                            <label for="list"><b>List</b></label>
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-12 col-xl-12 col-lg-12 p-0 row" id="listdiv" style="display:none;">
+                <h2 id="noDataFoundD" style="display: none;">No Data Found</h2>
+                <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                    <table class="table table-bordered" id="DispatchTable" style="width: 100%; display:inline-table;">
+                        <thead>
+                            <tr>
+                                @*<th class="hideshow" style="text-align: center;"><span class="font-weight-bold"></span></th>*@
+                                <th class='td-heading subject-cell-width'><span>Sent By</span></th>
+                                <th class='td-heading subject-cell-width'><span>Subject</span></th>
+                                <th class='td-heading release-cell-width'><span>Release Date </span></th>
+                                <th class='td-heading department-cell-width'><span>Department </span></th>
+                                <th class='td-heading brief-cell-width'><span>Brief of Last Action Taken</span></th>
+                                <th class='td-heading ' style="max-width:max-content;"><span>Reference Type</span></th>
+                                <th class='td-heading' style="max-width:max-content;"><span>Status</span></th>
+                                <th class='td-heading refid-cell-width'><span>Ref.Id/Date </span></th>
+                                <th class='td-heading' style="max-width:max-content;"><span>Priority </span></th>
+                                <th class='td-heading' style="max-width:max-content;"><span>Term </span></th>
+                                <th class='td-heading' style="max-width:max-content;"><span>...more</span></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
+                <table class="table table-bordered " id="Type" aria-describedby="sample-table-3_info">
+                    <thead>
+
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="col-md-12 col-lg-12 col-xl-12 table-responsive p-0" id="officediv" style="margin-top: 15px;">
+                <table class="table table-bordered " id="office" aria-describedby="sample-table-3_info">
+                    <thead>
+
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyoffice">
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="typediv" style="margin-top: 15px;">
+                <table class="table table-bordered " id="Types" aria-describedby="sample-table-3_info">
+                    <thead>
+
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyTypediv">
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+
+        <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatchEdit"
+             data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg" id="Scroll2">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h4 class="widget-title modal_heading">Inbox</h4>
+                        <button type="button" class="btn-close" onclick="closedispatchEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+                    <div class="modal-body" id="loginModalDispatchbodyEdit">
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatchCount"
+             data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg" id="Scroll2">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h4 class="widget-title modal_heading">Inbox</h4>
+                        <button type="button" class="btn-close" onclick="closedispatchCount()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                            <table class="table table-bordered " id="DispatchTableCount" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class='td-heading subject-cell-width'><span>Subject</span></th>
+                                        <th class='td-heading release-cell-width'><span>Release Date </span></th>
+                                        <th class='td-heading department-cell-width'><span>Department </span></th>
+                                        <th class='td-heading brief-cell-width'><span>Brief of Last Action Taken</span></th>
+                                        <th class='td-heading' style="max-width:250px;"><span>Reference Type</span></th>
+                                        <th class='td-heading' style="max-width:max-content;"><span>Status</span></th>
+                                        <th class='td-heading'><span>Ref.Id/Date </span></th>
+                                        <th class='td-heading refid-cell-width'><span>Priority </span></th>
+                                        <th class='td-heading' style="max-width:max-content;"><span>Term </span></th>
+                                        <th class='td-heading' style="max-width:max-content;"><span>...more</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDispatch"
+             data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg" id="Scroll2">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h4 class="widget-title modal_heading">Inbox</h4>
+                        <button type="button" class="btn-close" onclick="closedispatch()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+                    <div class="modal-body" id="loginModalDispatchbody">
+
+
+
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal coman_modal dispatch_modal" tabindex="-1" id="loginModalDiaryCount"
+             data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg" id="Scroll2">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h4 class="widget-title modal_heading">Diary</h4>
+                        <button type="button" class="btn-close" onclick="closediaryCount()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                            <table class="table table-bordered" id="DiaryTableCount" style="width:100%">
+                                <thead>
+                                    <tr class="table-heading">
+                                        <th class='td-heading' style="width:250px !important;"><span class="font-weight-bold">Subject</span></th>
+                                        <th class='td-heading' style="width: 100px !important;"><span class="font-weight-bold ">Release Date </span></th>
+                                        <th class='td-heading' style="width: 250px !important;"><span class="font-weight-bold">Department </span></th>
+                                        <th class='td-heading' style="width: 250px !important; "><span class="font-weight-bold">Brief of Last Action Taken</span></th>
+                                        <th class='td-heading' style="max-width: 150px !important; "><span class="font-weight-bold">Reference Type</span></th>
+                                        <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">Status</span></th>
+                                        <th class='td-heading' style="width: 150px !important;"><span class="font-weight-bold">Ref.Id/Date </span></th>
+                                        <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">Priority </span></th>
+                                        <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">Term </span></th>
+                                        <th class='td-heading' style="max-width:max-content;"><span class="font-weight-bold">...more</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModaldiaryEdit"
+             data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg modal_design" id="Scroll2">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="widget-title modal_heading">Diary</h4>
+                        <button type="button" class="btn-close" onclick="closediaryEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+                    <div class="modal-body" id="loginModaldiaryEditbody">
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+</body>
+
+<head>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <style>
+        .pointer {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+
+        $(document).ready(function () {
+            $("#loader-wrapper").show();
+          var offNamenew = '@Session["offNamenew"]';
+        var deptnameee = '@Session["deptnameee"]';
+        $("#offNamehdndispatch").append(offNamenew);
+        $("#deptNamehdndispatch").append(deptnameee);
+        showdepartmentD();
+        ShowButtonDD();
+        DispatchDocument();
+        BindActionStatusMladiaryD();
+            lisfunction();
+            var Text = "Inbox";
+        $('#selectednew').text(Text);
+        $('#selected').text(Text);
+
+        $("#Pendency").hide();
+        $('#SinceLabel').hide();
+    });
+
+    function ShowButtonDD() {
+        var type = '3034';
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowButton", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: {type:type},
+            success: function (response) {
+                if (response[0].isupdate == 1) {
+                    $("#btnNewD").css("display", "block");
+                    //$("#loader-wrapper").hide();
+                }
+                else {
+                    $("#btnNewD").css("display", "none");
+                   // $("#loader-wrapper").hide();
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+
+
+
+
+
+    }
+
+// -------------Department-Status code ---------------------
+
+    function GetDataForDispatchStatus() {
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var since = '';
+        var notchecked = '0';
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchDashboardStatus", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid,since:since, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyType").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyType").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+
+    }
+
+    function GetDataForDispatchStatusN() {
+
+        var status = '10';
+        var deptid = $("#DispatchDepartment").val();
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+        var since = $("#sincefilterhdndispatch").val();
+        var notchecked = $("#notcheckD").val();
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchDashboardStatus", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyType").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyType").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        }
+
+    function GetDispatchDasdhboardDataStatusType(obj) {
+
+        var deptId = $(obj).attr('deptid');
+        var docid = $(obj).attr('DocTypeId');
+        //alert(docid);
+            var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = docid;
+        }
+        else {
+            statusnew = status;
+        }
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+        var since = $("#sincefilterhdndispatch").val();
+        var notchecked = $("#notcheckD").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+            $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDispatchStatusTypeCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { status: statusnew, since: since, deptid: deptId, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+        function getTableListDispatchCount(tableData) {
+
+            $("#DispatchTableCount").DataTable().destroy();
+            $("#DispatchTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+                if (response.ReferencePriorityType == 1) {
+                    //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                    var img = 'High';
+                }
+                else if (response.ReferencePriorityType == 2) {
+                    var img = 'Normal';
+                }
+                else if (response.ReferencePriorityType == 3) {
+                    var img = 'Low';
+                }
+                if (response.ReferenceTerm == 1) {
+                    var Term = 'Short';
+                }
+                else if (response.ReferenceTerm == 2) {
+                    var Term = 'Medium';
+                }
+                else if (response.ReferenceTerm == 3) {
+                    var Term = 'Long';
+
+                }
+
+                var editclass = ""
+                var edit = response.Editpermission;
+                if (edit == "1") {
+                    editclass = "edit";
+                }
+                else {
+                    editclass = "nonedit";
+                }
+
+                if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                    response.ActionTakenDate = response.ActionTakenDate;
+                }
+                else {
+                    response.ActionTakenDate = "";
+                }
+
+                if (response.ActionTakenFile != "") {
+                    var Actionpath1 = "https://cmnirdesh.punjab.gov.in" + response.ActionTakenFile;
+                    var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+                }
+                else {
+                    var link = '';
+                }
+
+                $("#DispatchTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td class='td-data'>" + response.Subject + "</td>" +
+                    "<td class='td-data'><span >" + response.LetterDate + "</span></td>" +
+                    "<td class='td-data'><span>" + response.ToDept + "-" + response.ToOffice + "</span></td>" +
+                    "<td class='td-data'>" + response.ad + "</td>" +
+                    "<td class='td-data'>" + response.DocumentTypeName + "</td>" +
+                    "<td class='td-data'>" + response.StatusName + "<br/>" + response.ActionTakenDate + "<br/>" + link + "</td>" +
+                    "<td class='td-data'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                    "<td class='td-data'>" + img + "</td>" +
+                    "<td class='td-data'>" + Term + "</td>" +
+                    "<td class='" + editclass + "' ><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDispatch(this,'','Diary') ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>"
+                    + "</tr>"
+
+                );
+            });
+
+            $('#DispatchTableCount').DataTable({
+                paging: true,
+                searching: true,
+                bInfo: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ]
+            });
+        }
+
+        function showdepartmentD() {
+
+
+            var Deptid = "";
+             var sitename = '@SiteName';
+        var isapex = "@Session["isApex"]";
+            $('#DispatchDepartment').empty().append('<option selected="selected" value="">-- select --</option>');
+            if (sitename == 'MC') {
+                 if (isapex == "1") {
+
+                 } else {
+                     $('#DispatchDepartment').empty();
+                     var sessdept = '@CurrentSession.DeptID';
+                     Deptid = sessdept;
+
+                     $("#DispatchDepartment").prop("disabled", true);
+                    setTimeout(() => {
+                        getoffices();
+                        GetDataForDispatchOfficeN();
+                       // $("#loader-wrapper").hide();
+                    }, 2000);
+
+                }
+            }
+
+
+        var type = 'Dispatch';
+            var DispatchDepartment = $("#DispatchDepartment");
+        //      DispatchDepartment.empty().append('<option selected="selected" value="">-- select --</option>');
+        //$('#DispatchDepartment').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetDairyDispatchDepartments", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type: type, deptid: Deptid },
+                        success: function (data) {
+
+                            //DispatchDepartment.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        DispatchDepartment.append($("<option></option>").val(this['deptId']).html(this['deptname']));
+                    });
+                        }
+
+                    });
+
+        }
+
+    function DispatchDocument() {
+            var DispatchDocument = $("#DispatchDocument");
+            DispatchDocument.empty().append('<option selected="selected" value="">-- select --</option>');
+        $('#DispatchDocument').empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetDispatchDocumentTypeList", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { },
+                        success: function (data) {
+
+                            DispatchDocument.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        DispatchDocument.append($("<option></option>").val(this['DocmentType']).html(this['DocumentTypeName']));
+                    });
+                        }
+
+                    });
+        }
+
+// --------------list Code--------------------------
+
+    function GetDataForDispatch() {
+        var since = '';
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var notchecked = '0';
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchInbox", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid, officeid: officeid, term: term, priority: priority, notchecked: notchecked, isLetter:"Letter" },
+            success: function (response) {
+                if (response.length > 0) {
+                    getTableListDispatch(response);
+                      //  $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+                        $("#DispatchTable").css("display", "block");
+                        $("#loader-wrapper").hide();
+                    }
+                else {
+                    $("#DispatchTable").DataTable().destroy();
+                    $("#DispatchTable tbody").html('');
+                    $("#DispatchTable").DataTable();
+                    $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+        });
+     }
+
+    function GetDataForDispatchN() {
+
+        var since = $("#sincefilterhdndispatch").val();
+        var status = '10';
+        var deptid = $("#DispatchDepartment").val();
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+        var notchecked = $("#notcheckD").val();
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDataForDispatchInbox", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, since: since, deptid: deptid, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatch(response);
+                      //  $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+                        $("#DispatchTable").css("display", "block");
+                    }
+                    else {
+                        $("#DispatchTable").DataTable().destroy();
+                        $("#DispatchTable tbody").html('');
+
+                        $("#DispatchTable").DataTable();
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+        });
+     }
+
+    function getTableListDispatch(tableData) {
+        $("#DispatchTable").DataTable().destroy();
+        $("#DispatchTable tbody").html('');
+        $.each(tableData, function (index, response) {
+            if (response.ReferencePriorityType == 1) {
+                //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
+                var img = 'High';
+            }
+            else if (response.ReferencePriorityType == 2) {
+                var img = 'Normal';
+            }
+            else if (response.ReferencePriorityType == 3) {
+                var img = 'Low';
+            }
+            if (response.ReferenceTerm == 1) {
+                var Term = 'Short';
+            }
+            else if (response.ReferenceTerm == 2) {
+                var Term = 'Medium';
+            }
+            else if (response.ReferenceTerm == 3) {
+                var Term = 'Long';
+
+            }
+
+            var editclass = ""
+            var edit = response.Editpermission;
+            if (edit == "1") {
+                editclass = "edit";
+            }
+            else {
+                editclass = "nonedit";
+            }
+
+            if (response.ActionTakenDate != "" || response.ActionTakenDate != null | response.ActionTakenDate != "null") {
+                response.ActionTakenDate = response.ActionTakenDate;
+            }
+            else {
+                response.ActionTakenDate = "";
+            }
+
+            if (response.ActionTakenFile != "") {
+                //var Actionpath1 = "https://cmnirdesh.punjab.gov.in" + response.ActionTakenFile;
+                var Actionpath1 = "" + response.ActionTakenFile;
+                var link = '<a href=' + Actionpath1 + ' target="_blank"><img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Pdf" width="24" height="24" /></a>'
+            }
+            else {
+                var link = '';
+            }
+
+            var click = ""
+            var isLetter = response.isLetter;
+            if (isLetter == "File") {
+                click = "<td class='" + editclass + "'><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = ViewFile(this," + response.AgendaId + ") ><i class='ace-icon fa fa-eye bigger-150'></i> </a ></td>";
+            }
+            else {
+                click = "<td class='" + editclass + "'><a data-rel='tooltip' class='green tooltip-success' href='#' id='" + response.RefId + "' onclick = EditMlaDispatch(this," + response.MoveId + ",'" + response.mtype + "') ><i class='ace-icon fa fa-pencil bigger-150'></i> </a ></td>";
+            }
+
+                $("#DispatchTable tbody").append(
+                    "<tr role='row' class='odd'>" +
+                   /* "<td class= 'hideshow' class='td-data' > <input type='checkbox' id='" + response.RefId + "' onclick=checkInAgendaD(this) ></td > " +*/
+                    "<td class='td-data'>" + response.SentBy + "</td>" +
+                    "<td class='td-data'>" + response.Subject + "</td>" +
+                    "<td class='td-data'><span >" + response.LetterDate + "</span></td>" +
+                    "<td class='td-data'><span>" + response.ToDept + "-" + response.ToOffice + "</span></td>" +
+                    "<td class='td-data'>" + response.ad + "</td>" +
+                    "<td class='td-data'>" + response.DocumentTypeName + "</td>" +
+                    "<td class='td-data'>" + response.StatusName + "<br/>" + response.ActionTakenDate + "<br/>" + link + "</td>" +
+                    "<td class='td-data'><span >" + response.RefId + "</br>" + response.CreatedDate + "</span></td>" +
+                    "<td class='td-data'>" + img + "</td>" +
+                    "<td class='td-data'>" + Term + "</td>" +
+                    click
+                    + "</tr>"
+
+               );
+        });
+
+
+        $('#DispatchTable').DataTable({
+            paging: true,
+            searching: true,
+            bInfo: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf'
+            ]
+        });
+
+
+
+    }
+
+
+// --------------Type-Status Code--------------------------
+
+    function GetDataForDispatchType() {
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var notchecked = '0';
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchDashboardType", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+
+    function GetDataForDispatchTypeN() {
+
+        var status = '10';
+        var deptid = $("#DispatchDepartment").val();
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+        var since = $("#sincefilterhdndispatch").val();
+        var notchecked = $("#notcheckD").val();
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchDashboardType" , "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+
+
+        function GetDataForDispatchOffice() {
+      //  $('#DocumentTypeDIdHdn').val(type);
+
+        var status = '10';
+        var deptid = '';
+        var officeid = '';
+        var term = '';
+        var priority = '';
+        var type = '';
+        var since = '';
+        var notchecked = '0';
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchDashboardOffice", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid,since:since, officeid: officeid, term: term, priority: priority },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyoffice").html(result);
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyoffice").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        showdepartment();
+        DiaryDocument();
+        }
+
+           function GetDataForDispatchOfficeN() {
+
+        var status = '10';
+        var deptid = $("#DispatchDepartment").val();
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+        var since = $("#sincefilterhdndispatch").val();
+        var notchecked = $("#notcheckD").val();
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchDashboardOffice", "References")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyoffice").html(result);
+                    $("officediv").show();
+
+                    $("#loader-wrapper").hide();
+                }
+                else {
+                    $("#tbodyoffice").html("No Data Found");
+                   // $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+        }
+
+         function GetDispatchDasdhboardDataOfficeCount(obj) {
+             var deptId = $(obj).attr('deptid');
+             var officeid = $(obj).attr('officeid');
+
+        var docid = $(obj).attr('DocTypeId');
+        //alert(docid);
+            //var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = docid;
+        }
+        else {
+            statusnew = status;
+        }
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+        var since = $("#sincefilterhdndispatch").val();
+        var notchecked = $("#notcheckD").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+            $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDispatchStatusTypeCount", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { status: statusnew, since: since, deptid: deptId, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+        function GetDispatchDasdhboardDataTotalOffice(obj) {
+
+             var deptid = $(obj).attr('deptid');
+             var officeid = $(obj).attr('officeid');
+        var actionCode = $(obj).attr('DocTypeId');
+            var status = $("#StatusListMlaD").val();
+            var statusnew = '';
+            if (status != '') {
+                statusnew = status
+            }
+            else {
+                statusnew = actionCode;
+            }
+        var deptidnew = '';
+        var deptidui = $("#DispatchDepartment").val();
+
+        if (deptidui != '') {
+                deptidnew = deptidui
+            }
+        else {
+                deptidnew = deptid;
+             }
+             var officeidnew = '';
+             var officeidui = $("#DispatchoffId").val();
+
+             if (deptidui != '') {
+                 officeidui = officeidui
+             }
+             else {
+                 officeidui = officeid;
+             }
+
+
+        var documenttypedispatch = $("#DispatchDocument").val();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+      var since = $("#sincefilterhdndispatch").val();
+      var notchecked = $("#notcheckD").val();
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDispatchStatusTotalCount", "References")',
+            datatype: "Json",
+                 contentType: "application/json; charset=utf-8",
+                 data: { deptid: deptidnew, officeid: officeid, documentype: documenttypedispatch, status: statusnew, priority: priority, term: term, since: since, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+
+
+    function GoToStatusType(deptid) {
+            $("#loader-wrapper").show();
+            $('#hdndept').val(deptid.trim());
+            $("input[name=radio_list][value='Type']").prop('checked', true);
+            GetDataForDispatchTypeNClick();
+            $("#DispatchDepartment [value='" + deptid.trim() + "']").prop('selected', true);
+            $("#typediv").css("display", "block");
+            $("#statusdiv").css("display", "none");
+            $("#listdiv").css("display", "none");
+            $("#loader-wrapper").hide();
+    }
+
+    function GetDataForDispatchTypeNClick() {
+
+        var status = '10';
+        var deptid = $("#hdndept").val();
+
+        var officeid = $("#DispatchoffId").val();
+        var status = statusvalueD();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+        var type = $("#DispatchDocument").val();
+        var since = $("#sincefilterhdndispatch").val();
+        $("#DispatchDepartment [value='" + deptid.trim() + "']").prop('selected', true);
+        $.ajax({
+            type: "GET",
+              url: '@Url.Action("GetDataForDispatchDashboardType" , "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+            data: { DocumentType: type, status: status, deptid: deptid,since:since, officeid: officeid, term: term, priority: priority },
+            success: function (result) {
+                if (result.length > 0) {
+                    $("#tbodyTypediv").html(result);
+                    $("#loader-wrapper").hide();
+
+                }
+                else {
+                    $("#tbodyTypediv").html("No Data Found");
+                    $("#loader-wrapper").hide();
+                }
+            },
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+
+// --------------------Radio Button Code -------------------------------------
+
+     function lisfunction() {
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+         if (radiovalue == "List") {
+
+             var deptid = $("#DispatchDepartment").val();
+             if (deptid != '') {
+                 GetDataForDispatchN();
+             } else {
+                 GetDataForDispatch();
+             }
+
+                $("#listdiv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+         else if (radiovalue == "Status") {
+             var deptid = $("#DispatchDepartment").val();
+             if (deptid != '') {
+                 GetDataForDispatchStatusN();
+             } else {
+                 GetDataForDispatchStatus();
+             }
+
+                $("#statusdiv").css("display", "block");
+                $("#listdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+            else if (radiovalue == "Office") {
+                var deptid = $("#DispatchDepartment").val();
+                if (deptid != '') {
+                    $("#statusdiv").css("display", "none");
+                    $("#listdiv").css("display", "none");
+                    $("#typediv").css("display", "none");
+                    $("#officediv").css("display", "block");
+                    GetDataForDispatchOfficeN();
+                } else {
+                    alert("Select Department.");
+                    $("input[name=radio_list][value='Status']").prop('checked', true);
+                }
+
+
+
+            }
+         else if (radiovalue == "Type") {
+             var deptid = $("#DispatchDepartment").val();
+             if (deptid != '') {
+                 GetDataForDispatchTypeN();
+             } else {
+                 GetDataForDispatchType();
+             }
+
+                $("#typediv").css("display", "block");
+                $("#statusdiv").css("display", "none");
+                $("#listdiv").css("display", "none");
+                $("#officediv").css("display", "none");
+         }
+
+         //ResetD();
+         //Clear();
+         //$("#DispatchDepartment [value='']").prop('selected', true);
+
+        }
+
+//----------------Filters---------------
+
+        function getoffices() {
+
+             var id = $("#DispatchDepartment").val();
+            var DispatchoffId = $("#DispatchoffId");
+            DispatchoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+            $('#DispatchoffId').empty().append('<option selected="selected" value="">-- select --</option>');
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetOfficebyDepartmentId", "References")',
+                datatype: "Json",
+                data: { deptid: id },
+                success: function (data) {
+                    DispatchoffId.empty().append('<option selected="selected" value="">-- select --</option>');
+
+                    $.each(data, function (index, value) {
+                        $('#DispatchoffId').append('<option value="' + value.id + '">' + value.name + '</option>');
+
+                    });
+                }
+            });
+        }
+
+    $("#DispatchDepartment").change(function () {
+            getoffices();
+        });
+
+    function statusvalueD() {
+            var status = '10';
+            var statusn = $("#StatusListMlaD").val();
+            if (statusn != '') {
+                status = statusn
+            }
+            else {
+                status = '10'
+            }
+
+            return status;
+
+        }
+
+    function changeD() {
+            $("#StatusListMlaD").prop("disabled", true);
+            $("#sincefilterdispatch").prop("disabled", true);
+            $("#DispatchDepartment").prop("disabled", true);
+            $("#DispatchoffId").prop("disabled", true);
+            $("#DispatchTerm").prop("disabled", true);
+            $("#DispatchPriority").prop("disabled", true);
+            $("#DispatchDocument").prop("disabled", true);
+            $("#changebutton").css("display", "none");
+            $("#resetbutton").css("display", "block");
+            $("#clearbutton").css("display", "block");
+
+            var since = $("#sincefilterhdndispatch").val();
+            var deptid = $("#DispatchDepartment").val();
+            var status = statusvalueD();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var type = $("#DispatchDocument").val();
+
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+        if (radiovalue == "List") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDispatchN();
+            }
+            else {
+                GetDataForDispatch();
+            }
+
+            $("#listdiv").css("display", "block");
+            $("#statusdiv").css("display", "none");
+        }
+
+        else if (radiovalue == "Status") {
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDispatchStatusN();
+            }
+            else {
+                GetDataForDispatchStatus();
+            }
+        }
+        else if (radiovalue == "Office") {
+
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+
+                GetDataForDispatchOfficeN();
+            }
+            else {
+
+                GetDataForDispatchOffice();
+            }
+        }
+
+        else if (radiovalue == "Type") {
+
+            if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                GetDataForDispatchTypeN();
+            }
+            else {
+                GetDataForDispatchType();
+            }
+        }
+     }
+
+        function ResetD() {
+
+             var sitename = '@SiteName';
+             var isapex = "@Session["isApex"]";
+
+            if (sitename == 'MC') {
+                if (isapex == "1") {
+                    $("#DispatchDepartment").prop("disabled", false);
+                } else {
+
+                }
+            } else {
+                $("#DispatchDepartment").prop("disabled", false);
+            }
+
+
+            $("#StatusListMlaD").prop("disabled", false);
+            $("#sincefilterdispatch").prop("disabled", false);
+
+            $("#DispatchoffId").prop("disabled", false);
+            $("#DispatchTerm").prop("disabled", false);
+            $("#DispatchPriority").prop("disabled", false);
+            $("#DispatchDocument").prop("disabled", false);
+            $("#changebutton").css("display", "block");
+            $("#resetbutton").css("display", "none");
+            $("#clearbutton").css("display", "none");
+            var since = $("#sincefilterhdndispatch").val();
+            var deptid = $("#DispatchDepartment").val();
+            var status = statusvalueD();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var type = $("#DispatchDocument").val();
+            var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+            if (radiovalue == "List") {
+
+                if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                    GetDataForDispatchN();
+                }
+                else {
+                    GetDataForDispatch();
+                }
+                $("#statusdiv").css("display", "none");
+                $("#listdiv").css("display", "block");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+            else if (radiovalue == "Status") {
+                if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                    GetDataForDispatchStatusN();
+                }
+                else {
+                    GetDataForDispatchStatus();
+                }
+                $("#statusdiv").css("display", "block");
+                $("#listdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "none");
+            }
+            else if (radiovalue == "Office") {
+                if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                    GetDataForDispatchOfficeN();
+                }
+                else {
+                    GetDataForDispatchOffice();
+                }
+                $("#statusdiv").css("display", "none");
+                $("#listdiv").css("display", "none");
+                $("#typediv").css("display", "none");
+                $("#officediv").css("display", "block");
+            }
+            else if (radiovalue == "type") {
+                if (since != "" || deptid != "" || status != "10" || term != "" || priority != "" || type != "") {
+                    GetDataForDispatchTypeN();
+                }
+                else {
+                    GetDataForDispatchType();
+                }
+                $("#statusdiv").css("display", "none");
+                $("#listdiv").css("display", "none");
+                $("#typediv").css("display", "block");
+                $("#officediv").css("display", "none");
+            }
+        }
+
+        function Clear() {
+
+             var sitename = '@SiteName';
+             var isapex = "@Session["isApex"]";
+
+            if (sitename == 'MC') {
+                if (isapex == "1") {
+                    $("#DispatchDepartment").prop("disabled", false);
+                } else {
+
+                }
+            } else {
+                $("#DispatchDepartment").prop("disabled", false);
+            }
+
+            $("#StatusListMlaD").prop("disabled", false);
+            $("#sincefilterdispatch").prop("disabled", false);
+
+            $("#DispatchoffId").prop("disabled", false);
+            $("#DispatchTerm").prop("disabled", false);
+            $("#DispatchPriority").prop("disabled", false);
+            $("#DispatchDocument").prop("disabled", false);
+
+            $("#changebutton").css("display", "block");
+            $("#resetbutton").css("display", "none");
+            $("#clearbutton").css("display", "none");
+        var radiovalue = document.querySelector('input[name="radio_list"]:checked').value;
+        if (radiovalue == "Status") {
+            GetDataForDispatchStatus();
+            $("#statusdiv").css("display", "block");
+            $("#listdiv").css("display", "none");
+            $("#typediv").css("display", "none");
+            $("#officediv").css("display", "none");
+        } else if (radiovalue == "Office") {
+            $("#listdiv").css("display", "none");
+            $("#statusdiv").css("display", "none");
+            $("#typediv").css("display", "none");
+            $("#officediv").css("display", "block");
+        }
+        else if (radiovalue == "List") {
+            $("#listdiv").css("display", "block");
+            $("#statusdiv").css("display", "none");
+            $("#typediv").css("display", "none");
+            $("#officediv").css("display", "none");
+        }
+        else if (radiovalue == "Type") {
+            $("#listdiv").css("display", "none");
+            $("#statusdiv").css("display", "none");
+            $("#typediv").css("display", "block");
+            $("#officediv").css("display", "none");
+        }
+        }
+
+ //------------------------Count click data --------------------------
+  function GetDispatchDasdhboardDataType(obj) {
+
+        var documentype = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+        var officeid = $("#DispatchoffId").val();
+
+         var status = statusvalueD();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = actionCode;
+        }
+        else {
+            statusnew = actionCode;
+         }
+
+         var documenttypedispatch = $("#DispatchDocument").val();
+         var documenttypenew = "";
+         if (documenttypedispatch != '') {
+             documenttypenew = documenttypedispatch
+         }
+         else {
+             documenttypenew = documentype
+         }
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+      var since = $("#sincefilterhdndispatch").val();
+      var notchecked = $("#notcheckD").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDispatchTypeCount", "References")',
+            datatype: "Json",
+                 contentType: "application/json; charset=utf-8",
+                 data: { status: statusnew, since: since, documentype: documenttypenew, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+  function GetDispatchDasdhboardDataTypeTotalCount(obj) {
+
+        var documentype = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+        var officeid = $("#DispatchoffId").val();
+
+         var status = statusvalueD();
+        var statusnew = "";
+        if (status == '10') {
+            statusnew = actionCode;
+        }
+        else {
+            statusnew = actionCode;
+         }
+
+         var documenttypedispatch = $("#DispatchDocument").val();
+         var documenttypenew = "";
+         if (documenttypedispatch != '') {
+             documenttypenew = documenttypedispatch
+         }
+         else {
+             documenttypenew = documentype
+         }
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+      var since = $("#sincefilterhdndispatch").val();
+      var notchecked = $("#notcheckD").val();
+            //$("#loginModalDispatchCount").css("display", "block");
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDispatchTypeTotalCount", "References")',
+            datatype: "Json",
+                 contentType: "application/json; charset=utf-8",
+                 data: { status: statusnew, since: since, documentype: documenttypenew, officeid: officeid, term: term, priority: priority, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+  function GetDispatchDasdhboardDataTotalStatus(obj) {
+     // alert(1);
+        var deptid = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+            var status = $("#StatusListMlaD").val();
+            var statusnew = '';
+            if (status != '') {
+                statusnew = status
+            }
+            else {
+                statusnew = actionCode;
+            }
+        var deptidnew = '';
+        var deptidui = $("#DispatchDepartment").val();
+
+        if (deptidui != '') {
+                deptidnew = deptidui
+            }
+        else {
+                deptidnew = deptid;
+            }
+
+        var officeid = $("#DispatchoffId").val();
+        var documenttypedispatch = $("#DispatchDocument").val();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+      var since = $("#sincefilterhdndispatch").val();
+      var notchecked = $("#notcheckD").val();
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDispatchStatusTotalCount", "References")',
+            datatype: "Json",
+                 contentType: "application/json; charset=utf-8",
+                 data: { deptid: deptidnew, officeid: officeid, documentype: documenttypedispatch, status: statusnew, priority: priority, term: term, since: since, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+  function GetDispatchDasdhboardDataTotalType(obj) {
+
+        var doctype = $(obj).attr('deptid');
+        var actionCode = $(obj).attr('DocTypeId');
+
+
+            var status = $("#StatusListMlaD").val();
+            var statusnew = '';
+            if (status != '') {
+                statusnew = status
+            }
+            else {
+                statusnew = actionCode;
+     }
+
+        var doctypenew = '';
+        var doctypeui = $("#DispatchDocument").val() ;
+
+        if (doctypeui != '') {
+                doctypenew = doctypeui
+            }
+        else {
+                doctypenew = doctype;
+     }
+
+        var officeid = $("#DispatchoffId").val();
+        var deptid = $("#DispatchDepartment").val();
+        var term = $("#DispatchTerm").val();
+        var priority = $("#DispatchPriority").val();
+      var since = $("#sincefilterhdndispatch").val();
+      var notchecked = $("#notcheckD").val();
+         $("#loader-wrapper").show();
+
+             $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDashboardDataForDispatchTypeTotalCount", "References")',
+            datatype: "Json",
+                 contentType: "application/json; charset=utf-8",
+                 data: { deptid: deptid, officeid: officeid, documentype: doctypenew, status: statusnew, priority: priority, term: term, since: since, notchecked: notchecked },
+                success: function (response) {
+                    if (response.length > 0) {
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+  //-------------------------------- filter icon click popup ---------------------------------
+
+   function DepartmentCountD(param) {
+            var status = '10';
+            var deptid = $("#DispatchDepartment").val();
+            var officeid = $("#DispatchoffId").val();
+            var status = statusvalueD();
+            var type = $("#DispatchDocument").val();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var since = $("#sincefilterhdndispatch").val();
+            var notchecked = $("#notcheckD").val();
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDispatch", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since , param:param  },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                getTableListDispatchdepartmentCount(response);
+                                $("#DispatchDepartmentCount").css("display", "block");
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DispatchDepartmentCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+   function getTableListDispatchdepartmentCount(tableData) {
+            $("#DispatchDepartmentTableCount").DataTable().destroy();
+            $("#DispatchDepartmentTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+                //alert(response.DepartmentName);
+                $("#DispatchDepartmentTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td  class='' style='font-size: 12px; width: 75%;'>" + response.DepartmentName + "</td>" +
+                    "<td  class='' style='font-size: 12px; width: 25%;'>" + response.DepartmentCount + "</td>"
+                    + "</tr>"
+                );
+            });
+
+
+        }
+
+   function OfficeCountD(param) {
+            var status = '10';
+            var deptid = $("#DispatchDepartment").val();
+            var officeid = $("#DispatchoffId").val();
+            var status = statusvalueD();
+            var type = $("#DispatchDocument").val();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var since = $("#sincefilterhdndispatch").val();
+            var notchecked = $("#notcheckD").val();
+
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDispatch", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since ,param:param  },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                getTableListDispatchOfficeCount(response);
+                                $("#DispatchOfficeCount").css("display", "block");
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DispatchOfficeCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+   function getTableListDispatchOfficeCount(tableData) {
+            $("#DispatchOfficeTableCount").DataTable().destroy();
+            $("#DispatchOfficeTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+
+                $("#DispatchOfficeTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td class='' style='font-size: 12px; width: 75%;'>" + response.OfficeName + "</td>" +
+                    "<td class='' style='font-size: 12px; width: 25%;'>" + response.OfficeCount + "</td>"
+                    + "</tr>"
+                );
+            });
+
+
+        }
+
+   function TypeCountD(param) {
+            var status = '10';
+            var deptid = $("#DispatchDepartment").val();
+            var officeid = $("#DispatchoffId").val();
+            var status = statusvalueD();
+            var type = $("#DispatchDocument").val();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var since = $("#sincefilterhdndispatch").val();
+            var notchecked = $("#notcheckD").val();
+
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDispatch", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since, param : param  },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                getTableListDispatchTypeCount(response);
+                                $("#DispatchTypeCount").css("display", "block");
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DispatchTypeCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+        function getTableListDispatchTypeCount(tableData) {
+
+            $("#DispatchTypeTableCount").DataTable().destroy();
+            $("#DispatchTypeTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+
+                $("#DispatchTypeTableCount tbody").append(
+                    "<tr role='row' class='odd'>" +
+                    "<td style='font-size: 12px; width: 75%;'>" + response.DocumentName + "</td>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.DocumentCount + "</td>"
+                    + "</tr>"
+                );
+            });
+
+
+        }
+
+   function StatusCountD(param) {
+            var status = '10';
+            var deptid = $("#DispatchDepartment").val();
+            var officeid = $("#DispatchoffId").val();
+            var status = statusvalueD();
+            var type = $("#DispatchDocument").val();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var since = $("#sincefilterhdndispatch").val();
+            var notchecked = $("#notcheckD").val();
+
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetIconCountDispatch", "References")', // GetDocumentType
+                    datatype: "Json",
+                        data: { deptid: deptid, officeid: officeid, type: type, status: status, term: term, priority: priority, since: since , param:param  },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                getTableListDispatchStatusCount(response);
+                                $("#DispatchStatusCount").css("display", "block");
+
+                                $("#loader-wrapper").hide();
+
+                            }
+                            else {
+                                $("#loader-wrapper").hide();
+                                $("#DispatchStatusCount").css("display", "none");
+
+                            }
+                        },
+                        error: function (error) {
+                        }
+
+                    });
+
+        }
+
+   function getTableListDispatchStatusCount(tableData) {
+            $("#DispatchStatusTableCount").DataTable().destroy();
+            $("#DispatchStatusTableCount tbody").html('');
+            $.each(tableData, function (index, response) {
+
+                $("#DispatchStatusTableCount tbody").append(
+                    "<tr role='row' class='odd table-heading'>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.StatusName + "</td>" +
+                    "<td style='font-size: 12px; width: 25%;'>" + response.StatusCount + "</td>"
+                    + "</tr>"
+                );
+            });
+
+
+        }
+ // ----------------------old code ----------------------------------------------
+    function BindActionStatusMladiaryD() {
+           // $("#loader-wrapper").show();
+        var since = '';
+         var StatusListMlaD = $("#StatusListMlaD");
+        StatusListMlaD.empty().append('<option selected="selected" value="">-- select --</option>');
+        $("#StatusListMlaD").empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("BindActionStatusMlaD", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { since: since },
+                        success: function (data) {
+                           // $("#loader-wrapper").hide();
+
+                            StatusListMlaD.empty().append('<option selected="selected" value="">-- select --</option>');
+                    $.each(data, function () {
+                        StatusListMlaD.append($("<option></option>").val(this['Value']).html(this['Text']));
+                    });
+                        }
+
+                    });
+
+        }
+
+    function ResetSinceDispatch() {
+        var dropDown = document.getElementById("sincefilterdispatch");
+        dropDown.selectedIndex = 0;
+        $("#sincefilterdispatch").val('');
+        GetDataForDispatch($('#DocumentTypeIdHdn').val());
+        }
+
+    function getofcrDataAgency() {
+        $("#loader-wrapper").show();
+        var DocumentType = $("#maintype").val();
+        var Office = $("#Office").val();
+        var Office = $("#Office option:selected").val();
+        var DocumentType = $("#maintype").val();
+        //var pathurl = '/References/FilteredMLADiaryListForAgencyDispatch'
+        $.ajax({
+            url: '@Url.Action("FilteredMLADiaryListForAgencyDispatch", "References")',
+            type: 'GET',
+            async: true,
+            data: {
+                Office: Office,
+                DocumentType: DocumentType
+            },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Dispatchlistdiv").html('');
+                $("#Dispatchlistdiv").html(data);
+            }
+        });
+    }
+
+    function setvalueDispatch(type) {
+        $("#Dispatchlistdiv").html('');
+        $('#maintype').val(type);
+        GetDataForDispatch(type);
+        GetAgendaDateD();
+        }
+
+    function typevalueD() {
+            var type = '99';
+            var typen = $("#DispatchDocument").val();
+            if (typen != '') {
+                type = typen
+            }
+            else {
+                type = '99'
+            }
+
+            return type;
+
+        }
+
+    function GetAgendaDateD() {
+            var type ="Dispatch"
+        var AgendaDate = $("#AgendaDateD");
+        AgendaDate.empty().append('<option selected="selected" value="">Please select</option>');
+        $('#AgendaDateD').empty().append('<option selected="selected" value="">Please select</option>');
+                    $.ajax({
+                    type: "GET",
+                        url: '@Url.Action("GetAgendaDate", "References")', //  GetDocumentType
+                    datatype: "Json",
+                        data: { type:type },
+                success: function (data) {
+                    AgendaDate.empty().append('<option selected="selected" value="">Please select</option>');
+                    $.each(data, function () {
+
+                        AgendaDate.append($("<option></option>").val(this['id']).html(this['dropagenda']));
+                    });
+                    }
+                });
+    }
+
+    $("#favouriteMLA").change(function () {
+        getofcrData();
+    });
+
+    function GetActionStatusValueDispatch() {
+        var StatusVal = 10;
+        $.each($("input[name='group2MlaD']:checked"), function () {
+            StatusVal = $(this).val();
+        });
+        return StatusVal;
+        }
+
+    function hideshowcheckboxD() {
+            var id = $('#AgendaDateD').val();
+            if (id != '') {
+                $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').show();
+            }
+            else {
+                $('table#DispatchTable th.hideshow,table#DispatchTable td.hideshow').hide();
+            }
+       }
+
+    function CreateNewDispatch() {
+        $('#loginModalDispatchbody').html('');
+        $("#loader-wrapper").show();
+        $.ajax({
+            //url: "/References/NewMlaDispatchEntryForm",
+            url: '@Url.Action("NewMlaDispatchEntryForm", "References")',
+            type: 'GET',
+            async: true,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModalDispatch").css("display","block");
+                    $('#loginModalDispatchbody').html(data);
+                }
+                else {
+                    alert("error");
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    }
+
+    $('#submitButton').click(function (e) {
+
+        $("#loader-wrapper").show();
+        var District = $("#District  option:selected").val();
+        var Constituency = $("#Constituency  option:selected").val();
+        var Agency = $("#Agency option:selected").val();
+        var Office = $("#Office option:selected").val();
+        var Status = $("#favouriteMLA option:selected").val();
+
+        var SubType = document.getElementById("Pendency");
+        var Pendency = SubType.options[SubType.selectedIndex].value;
+        var DocumentType = $("#maintype").val();
+        //var pathurl = '/References/FilteredMLADiaryListForAgency'
+        $.ajax({
+            url: '@Url.Action("FilteredMLADiaryListForAgency", "References")',
+            type: 'GET',
+            async: true,
+            data: {
+                District: District,
+                Constituency: Constituency,
+                Agency: Agency,
+                Office: Office,
+                Status: Status,
+                Pendency: Pendency,
+                DocumentType: DocumentType
+            },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                $("#Dispatchlistdiv").html('');
+                $("#Dispatchlistdiv").html(data);
+
+            }
+        });
+
+        filterCount();
+        if (!$(e.target).is('.panel-body')) {
+            $('.collapse').collapse('hide');
+        }
+    });
+
+    function filterCount() {
+
+        $("#spnCount").text("");
+        var counter = 0;
+        var Office = $("#Office option:selected").val();
+
+        if (Office != 0 && typeof Office != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Agency = $("#Agency option:selected").val();
+        if (Agency != 0 && typeof Agency != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var District = $("#District option:selected").val();
+        if (District != 0 && typeof District != 'undefined') {
+            counter = counter + 1;
+        }
+
+        var Constituency = $("#Constituency option:selected").val();
+        if (Constituency != 0 && typeof Constituency != 'undefined') {
+            counter = counter + 1;
+        }
+        //alert(counter);
+        if (counter > 0) {
+
+            $("#spnCount").text(counter);
+            $("#spnCount").show();
+        }
+        else {
+            $("#spnCount").hide();
+            counter = 0;
+        }
+        counter = 0;
+    }
+
+    function ActionStatusCheckDispatch() {
+        var type = $('#DocumentTypeDIdHdn').val();
+        GetDataForDispatch(type);
+    }
+
+    function SendToAgendaD(refid) {
+
+        var agendaid = $('#AgendaDateD').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+
+                    }
+                    if (response == "0") {
+                        alert("Term Updation Failed.");
+                    }
+                }
+            });
+    }
+
+    function checkInAgendaD(idd) {
+        var refid = idd.id;
+
+        var agendaid = $('#AgendaDateD').val();
+        if (agendaid == '') {
+            alert("Please select Agenda First..");
+            return false;
+        }
+        if (refid == '') {
+            alert("Some Error Occured .");
+            return false;
+
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("agendaid", agendaid);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckInAgenda", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Already Added in Agenda")
+                    }
+                    if (response == "0") {
+                        SendToAgendaD(refid)
+                    }
+                }
+            });
+        }
+
+        function EditMlaDispatch(IDD, moveid ,mtype) {
+        var ID = IDD.id;
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+            $('#loginModalDispatchbody').html('');
+            if (mtype == "Diary") {
+                var pathurl = '/References/EditMlaDairyForm';
+                 $.ajax({
+            type: "GET",
+            url: '@Url.Action("EditMlaDairyForm", "References")',
+
+            data: { ID: ID, MoveId: moveid },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                $('#loginModalDispatchbody').html('');
+                //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModalDispatch").css("display", "block");
+                    $('#loginModalDispatchbody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+            } else {
+                var pathurl = '/References/EditMlaDispatchFormOutbox';
+                 $.ajax({
+            type: "GET",
+            url: '@Url.Action("EditMlaDispatchFormOutbox", "References")',
+
+            data: { ID: ID, MoveId: moveid },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                $('#loginModalDispatchbody').html('');
+                //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+                if (data) {
+                    $("#loginModalDispatch").css("display", "block");
+                    $('#loginModalDispatchbody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+            }
+
+      
+
+
+
+        }
+
+
+        function ViewFile(IDD,AgendaId) {
+            var ID = IDD.id;
+
+              $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetInboxMeetingFiles", "References")',
+            datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                 data: { refid:ID,MeetingId:AgendaId },
+                success: function (response) {
+                    if (response.length > 0) {
+
+                        getTableListDispatchCount(response);
+                        $("#loginModalDispatchCount").css("display", "block");
+                        $("#loader-wrapper").hide();
+
+                    }
+                    else {
+                        $("#noDataFoundD").css("display", "block");
+                        $("#loader-wrapper").hide();
+                        $("#loginModalDispatchCount").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                }
+             });
+        }
+
+
+    function closedispatch() {
+            $("#loginModalDispatch").css("display", "none");
+            $('#loginModalDispatchbody').html('');
+            window.location.reload();
+        }
+
+    function closedispatchCount() {
+            $("#loginModalDispatchCount").css("display", "none");
+        }
+
+    function closedispatchEdit() {
+            $("#loginModalDispatchEdit").css("display", "none");
+            $('#loginModalDispatchbodyEdit').html('');
+
+        }
+
+
+    </script>
+
+    <style>
+        .edit {
+            display: block;
+        }
+
+        .nonedit {
+            display: none;
+        }
+
+        .accordion-toggle:hover {
+            text-decoration: none;
+        }
+
+        .hideshow {
+            /*display:none;*/
+        }
+
+        .hshow {
+            display: block;
+        }
+
+        .btn-sq-lg {
+            width: 150px !important;
+            height: 150px !important;
+        }
+
+        .btn-sq {
+            width: 100px !important;
+            height: 100px !important;
+            font-size: 8px;
+            margin-left: 20px;
+        }
+
+        .btn-sq-sm {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 10px;
+        }
+
+        .btn-sq-xs {
+            width: 25px !important;
+            height: 25px !important;
+            padding: 2px;
+        }
+        /*
+        .sblFullScreen select, input, textarea {
+            width: 10%;
+        }*/
+
+        .active1 {
+            width: 120px !important;
+            height: 120px !important;
+            font-size: 18px;
+            margin-left: 50px;
+        }
+
+        .dark-font .breadcrumb-item + .breadcrumb-item::before {
+            color: #000;
+            font-size: x-large;
+        }
+
+        .dark-font .breadcrumb-item.active {
+            color: #455a64;
+        }
+
+        .small-box {
+            position: relative;
+            display: block;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .badge-notify {
+            background: red !important;
+            background-color: red !important;
+            position: relative;
+            top: -12px;
+            left: -13px;
+            font-weight: bold;
+        }
+
+        .small-box h3 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            padding: 0;
+            white-space: nowrap;
+            font-family: "Proxima Nova Regular","Segoe UI",Roboto,"Droid Sans","Helvetica Neue",Arial,sans-serif;
+        }
+
+        .small-box p {
+            font-size: 14px;
+            font-weight: 600;
+            margin: -4px;
+        }
+
+        .small-box > .inner {
+            padding: 10px;
+            max-height: 90px;
+        }
+
+        .small-box .icon {
+            position: absolute;
+            top: 0px;
+            bottom: 5px;
+            right: 5px;
+            z-index: 0;
+            font-size: 50px;
+            color: rgba(0,0,0,.15);
+        }
+
+        .small-box:hover > .icon > .fa {
+            font-size: 1.2em;
+            transition-duration: 0.5s;
+            transition-timing-function: linear;
+        }
+
+        .collapse.in {
+            display: inline-block !important;
+            width: 100%;
+        }
+
+
+        .small-box > .small-box-footer {
+            position: relative;
+            text-align: center;
+            padding: 3px 0;
+            color: #fff;
+            color: rgba(255,255,255,.8);
+            display: block;
+            z-index: 10;
+            background: rgba(0,0,0,.1);
+            text-decoration: none;
+        }
+
+
+
+        @@media (min-width: 800px) {
+            .col-md-2 {
+                width: 183px !important;
+            }
+
+            .marg129 {
+                margin-top: 203px !important;
+            }
+        }
+
+        @@media (max-width: 564px) {
+            .footer {
+                padding-top: 100px !important;
+            }
+        }
+
+
+        .center.td-heading.total {
+            color: white;
+            font-weight: bold;
+            background-color: #b0bccc;
+        }
+    </style>
+</head>
+
+
+
+</html>

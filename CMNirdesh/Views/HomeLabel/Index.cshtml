@@ -1,0 +1,981 @@
+﻿@model CMNirdesh.Models.MCHouse.LstHomeLabelModel
+@using CMNirdesh;
+
+@{
+    ViewBag.Title = "Index";
+    int count = 0;
+}
+
+<head>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+@*    <link href="~/Content/style_ms.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />*@
+    <script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+</head>
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+<style>
+
+   
+    .inr_frm_dsgn {
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom:94px;
+    }
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+    .pencil-class{
+        font-size:15px;
+    }
+    .edit-1{
+        display:flex;
+        align-items: center;
+        gap: 10px;
+        border:none;
+    }
+
+</style>
+<div id="main-content">
+    <div class="main-content">
+
+
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                 <div class="inr_frm_dsgn">
+
+                             <div class="widget-box " id="divAction">
+                                 <div class="widget-header widget-header-flat rounded-top rounded-0">
+                                     <h4 class=""> HomeLabel List </h4>
+                                     <div class="widget-toolbar no-border">
+                                         <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i>Add New HomeLabel</button>
+                                     </div>
+                                 </div>
+                             </div>
+
+                            <div class="form_lyot">
+
+                                @if (Model != null)
+                                {
+                                    if (Model._LstHomeLabel.Count() > 0)
+                                    {
+                                        <div class=" table-responsive">
+                                            <table id="example" class="table table-hover table-bordered ">
+                                                <thead>
+                                                    <tr class="table-heading">
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Govt Title</span></th>
+                                                        <th class="td-heading" style="width:30%;"><span class="font-weight-bold">Govt Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Site Title</span></th>
+                                                        <th class="td-heading" style="width:30%;"><span class="font-weight-bold">Site Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Sub Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Sub Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">MC Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">MC Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Council Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Council Title(Punjabi) Name</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Login Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Login Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">SiteMap Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">SiteMap Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Notice Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Notice Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Houses Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Houses Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Councilors</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Councilors(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Meetings</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Meetings(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Departments</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Departments(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">FCC</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">FCC(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Employees</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Employees(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">StatusPanel</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">StatusPanel(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">MemberList Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">MemberList Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:40%;"><span class="font-weight-bold">MemberList Description</span></th>
+                                                        <th class="td-heading" style="width:40%;"><span class="font-weight-bold">MemberList Description(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">News Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">News Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:30%;"><span class="font-weight-bold">News Description</span></th>
+                                                        <th class="td-heading" style="width:30%;"><span class="font-weight-bold">News Description(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Gallery Title</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">Gallery Title(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">House business</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">House business(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">House Resolutions</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">House Resolutions(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">FCC Resolutions</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">FCC Resolutions(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">alert</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">alert(Punjabi)</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">State</span></th>
+                                                        <th class="td-heading" style="width:21%;"><span class="font-weight-bold">State(Punjabi)</span class="td-heading"></th>
+
+                                                        <th class="td-heading" style="width:6%;"><span class="font-weight-bold"></span></th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                                    @foreach (var items in Model._LstHomeLabel)
+                                                    {
+                                                        <tr>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.GovtTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.GovtTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SiteTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SiteTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MCTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MCTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.CounsilTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.CounsilTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.LoginTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.LoginTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SitemapTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SitemapTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NoticeTItle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NoticeTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HousesTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HousesTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Councilors)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Councilors_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Meetings)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Meetings_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Departments)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Departments_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.FCC)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.FCC_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Employees)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Employees_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.StatusPanel)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.StatusPanel_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MemberListTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MemberListTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MemberListDescription)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MemberListDescription_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsDescription)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.NewsDescription_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.GalleryTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.GalleryTitle_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HouseBusiness)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HouseBusiness_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HouseResolutions)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HouseResolutions_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.FCCResolutions)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.FCCResolutions_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.alert)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.alert_local)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.StateSubTitle)</td>
+                                                            <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.StateSubTitle_local)</td>
+
+
+                                                            <td class="center td-data" style="font-size:10px; padding:18px 4px !important">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="hidden-sm hidden-xs action-buttons">
+
+
+                                                                        <a data-rel="tooltip" class="tooltip-primary pencil-class" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.Id')">
+
+                                                                            <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                                        </a>
+                                                                        @*<a data-rel="tooltip" class="red tooltip-error" onclick="DeleteDepartmentRecord('@items.Id')">
+
+                                                                            <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                                        </a>*@
+                                                                    </div>
+                                                                    <div class="hidden-sm hidden-xs action-buttons">
+                                                                        <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.Id')" value="@items.Id" />
+
+                                                                        <label class="toggle mb-0">
+                                                                            <input type="checkbox" onclick="DeleteDepartmentRecord('@items.Id')" @(Convert.ToBoolean(items.IsActive) == true ? "checked='checked'" : string.Empty)>
+                                                                            <span class="slider"></span>
+                                                                            <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="alert alert-info">
+                                                    <strong>There are no record found</strong><br />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    
+
+                <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fs-5" id="myModalLabel">Add Home Label Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <input type="hidden" class="form-control" id="Id" placeholder="Govt Title" />
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">Govt Title</label>
+                                        <input type="text" class="form-control" id="GovtTitle" placeholder="Govt Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">Govt Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="GovtTitle_local" placeholder="Govt Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Site Title</label>
+                                        <input type="text" class="form-control" id="SiteTitle" placeholder="Site Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">Site Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="SiteTitle_local" placeholder="Site Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">SubTitle</label>
+                                        <input type="text" class="form-control" id="SubTitle" placeholder="SubTitle" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubTitle(Punjabi)</label>
+                                        <input type="text" class="form-control" id="SubTitle_local" placeholder="SubTitle(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">MC Title</label>
+                                        <input type="text" class="form-control" id="MCTitle" placeholder="MC Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">MC Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="MCTitle_local" placeholder="MC Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Council Title</label>
+                                        <input type="text" class="form-control" id="CounsilTitle" placeholder="Council Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">Council Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="CounsilTitle_local" placeholder="Council Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">Login TItle</label>
+                                        <input type="text" class="form-control" id="LoginTitle" placeholder="Login Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Login Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="LoginTitle_local" placeholder="Login Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">Sitemap Title</label>
+                                        <input type="text" class="form-control" id="Sitemap" placeholder="Sitemap" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">SitemapTitle(Punjabi)</label>
+                                        <input type="text" class="form-control" id="Sitemap_local" placeholder="Sitemap(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Notice Title</label>
+                                        <input type="text" class="form-control" id="NoticeTitle" placeholder="Notice Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">Notice Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="NoticeTitle_local" placeholder="Notice Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">Houses Title</label>
+                                        <input type="text" class="form-control" id="HousesTitle" placeholder="Houses Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Houses Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="HousesTitle_local" placeholder="Houses Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">Councilors</label>
+                                        <input type="text" class="form-control" id="Councilors" placeholder="Councilors" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">Councilors(Punjabi)</label>
+                                        <input type="text" class="form-control" id="Councilors_local" placeholder="Councilors(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Meetings</label>
+                                        <input type="text" class="form-control" id="Meetings" placeholder="Meetings" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">Meetings(Punjabi)</label>
+                                        <input type="text" class="form-control" id="Meetings_local" placeholder="Meetings(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">Departments</label>
+                                        <input type="text" class="form-control" id="Departments" placeholder="Departments" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Departments(Punjabi)</label>
+                                        <input type="text" class="form-control" id="Departments_local" placeholder="Departments(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Name" class="profile-info-name fotm_lbl">FCC</label>
+                                        <input type="text" class="form-control" id="FCC" placeholder="FCC" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Local Name" class="profile-info-name fotm_lbl">FCC(Punjabi)</label>
+                                        <input type="text" class="form-control" id="FCC_local" placeholder="FCC(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Employees</label>
+                                        <input type="text" class="form-control" id="Employees" placeholder="Employees" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Employees(Punjabi)</label>
+                                        <input type="text" class="form-control" id="Employees_local" placeholder="Employees(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Status Panel</label>
+                                        <input type="text" class="form-control" id="StatusPanel" placeholder="Status Panel" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Status Panel(Punjabi)</label>
+                                        <input type="text" class="form-control" id="StatusPanel_local" placeholder="Status Panel(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">MemberList Title</label>
+                                        <input type="text" class="form-control" id="MemberListTitle" placeholder="MemberList Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">MemberList Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="MemberListTitle_local" placeholder="MemberList Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">MemberList Description</label>
+                                        <input type="text" class="form-control" id="MemberListDescription" placeholder="MemberList Description" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">MemberList Description(Punjabi)</label>
+                                        <input type="text" class="form-control" id="MemberListDescription_local" placeholder="MemberList Description(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">News Title</label>
+                                        <input type="text" class="form-control" id="NewsTitle" placeholder="News Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">News Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="NewsTitle_local" placeholder="News Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">News Description</label>
+                                        <input type="text" class="form-control" id="NewsDescription" placeholder="News Description" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">News Description(Punjabi)</label>
+                                        <input type="text" class="form-control" id="NewsDescription_local" placeholder="News Description(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Gallery Title</label>
+                                        <input type="text" class="form-control" id="GalleryTitle" placeholder="Gallery Title" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Gallery Title(Punjabi)</label>
+                                        <input type="text" class="form-control" id="GalleryTitle_local" placeholder="Gallery Title(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">House Business</label>
+                                        <input type="text" class="form-control" id="HouseBusiness" placeholder="House Business" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">House Business(Punjabi)</label>
+                                        <input type="text" class="form-control" id="HouseBusiness_local" placeholder="House Business(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">House Resolutions</label>
+                                        <input type="text" class="form-control" id="HouseResolutions" placeholder="House Resolutions" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">House Resolutions(Punjabi)</label>
+                                        <input type="text" class="form-control" id="HouseResolutions_local" placeholder="House Resolutions(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">FCCResolutions</label>
+                                        <input type="text" class="form-control" id="FCCResolutions" placeholder="FCCResolutions" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">FCCResolutions(Punjabi)</label>
+                                        <input type="text" class="form-control" id="FCCResolutions_local" placeholder="FCCResolutions(Punjabi)" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Alert</label>
+                                        <input type="text" class="form-control" id="alert" placeholder="Alert" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Alert(Punjabi)</label>
+                                        <input type="text" class="form-control" id="alert_local" placeholder="Alert(Punjabi)" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">State SubTitle</label>
+                                        <input type="text" class="form-control" id="StateSubTitle" placeholder="State SubTitle" />
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Department Abbreviation" class="profile-info-name fotm_lbl">State SubTitle(Punjabi)</label>
+                                        <input type="text" class="form-control" id="StateSubTitle_local" placeholder="State SubTitle(Punjabi)" />
+
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer" style="background-color:white">
+                                <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                                <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </div>
+
+
+
+        @*<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+                <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+            </a>*@
+
+
+
+<script>
+            $(document).ready(function () {
+                $('#example').DataTable({
+                });
+                if ($(".checkbox").attr('checked=checked')) {
+                    debugger
+                    $('.slider').attr(this.checkboxValue, 'on');
+                }
+            });
+            function getbyID(EmpID) {
+                clearTextBox();
+                var url = '@Url.Action("Edit", "HomeLabel")' + '?id=' + EmpID;
+                $("#myModalLabel").html("Update HomeLabel Details");
+                $("#btnUpdate").show();
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        var obj = JSON.parse(data);
+                        var data = obj._LstHomeLabel[0];
+                        $('#myModal').modal();
+                        $("#Id").val(data.Id);
+                        $("#GovtTitle").val(data.GovtTitle);
+                        $("#GovtTitle_local").val(data.GovtTitle_local);
+                        $("#SiteTitle").val(data.SiteTitle);
+                        $("#SiteTitle_local").val(data.SiteTitle_local);
+                        $("#SubTitle").val(data.SubTitle);
+                        $("#SubTitle_local").val(data.SubTitle_local);
+                        $("#MCTitle").val(data.MCTitle);
+                        $("#MCTitle_local").val(data.MCTitle_local);
+                        $("#CounsilTitle").val(data.CounsilTitle);
+                        $("#CounsilTitle_local").val(data.CounsilTitle_local);
+                        $("#LoginTitle").val(data.LoginTitle);
+                        $("#LoginTitle_local").val(data.LoginTitle_local);
+                        $("#Sitemap").val(data.SitemapTitle);
+                        $("#Sitemap_local").val(data.SitemapTitle_local);
+                        $("#NoticeTitle").val(data.NoticeTitle);
+                        $("#NoticeTitle_local").val(data.NoticeTitle_local);
+                        $("#HousesTitle").val(data.HousesTitle);
+                        $("#HousesTitle_local").val(data.HousesTitle_local);
+                        $("#Councilors").val(data.Councilors);
+                        $("#Councilors_local").val(data.Councilors_local);
+                        $("#Meetings").val(data.Meetings);
+                        $("#Meetings_local").val(data.Meetings_local);
+                        $("#Departments").val(data.Departments);
+                        $("#Departments_local").val(data.Departments_local);
+                        $("#FCC").val(data.FCC);
+                        $("#FCC_local").val(data.FCC_local);
+                        $("#Employees").val(data.Employees);
+                        $("#Employees_local").val(data.Employees_local);
+                        $("#StatusPanel").val(data.StatusPanel);
+                        $("#StatusPanel_local").val(data.StatusPanel_local);
+                        $("#MemberListTitle").val(data.MemberListTitle);
+                        $("#MemberListTitle_local").val(data.MemberListTitle_local);
+                        $("#MemberListDescription").val(data.MemberListDescription);
+                        $("#MemberListDescription_local").val(data.MemberListDescription_local);
+                        $("#NewsTitle").val(data.NewsTitle);
+                        $("#NewsTitle_local").val(data.NewsTitle_local);
+                        $("#NewsDescription").val(data.NewsDescription);
+                        $("#NewsDescription_local").val(data.NewsDescription_local);
+                        $("#GalleryTitle").val(data.GalleryTitle);
+                        $("#GalleryTitle_local").val(data.GalleryTitle_local);
+                        $("#HouseBusiness").val(data.HouseBusiness);
+                        $("#HouseBusiness_local").val(data.HouseBusiness_local);
+                        $("#HouseResolutions").val(data.HouseResolutions);
+                        $("#HouseResolutions_local").val(data.HouseResolutions_local);
+                        $("#FCCResolutions").val(data.FCCResolutions);
+                        $("#FCCResolutions_local").val(data.FCCResolutions_local);
+                        $("#alert").val(data.alert);
+                        $("#alert_local").val(data.alert_local);
+                        $("#StateSubTitle").val(data.StateSubTitle);
+                        $("#StateSubTitle_local").val(data.StateSubTitle_local);
+
+                        $("#btnSave").hide();
+                    }
+                });
+            }
+            //Function for clearing the textboxes
+            //Valdidation using jquery
+            function validate() {
+
+                var isValid = true;
+                if ($('#GovtTitle').val().trim() === "") {
+                    $("#GovtTitle").css('background-color', '#ff56564d');
+                    isValid = false;
+                }
+                else {
+                    $('#GovtTitle').css('border-color', 'white');
+                }
+                if ($('#GovtTitle_local').val().trim() === "") {
+                    $('#GovtTitle_local').css('background-color', '#ff56564d');
+                    isValid = false;
+                }
+                else {
+                    $('#GovtTitle_local').css('background-color', 'white');
+                }
+                if ($('#SiteTitle').val().trim() === "") {
+                    $('#SiteTitle').css('background-color', '#ff56564d');
+                    isValid = false;
+                }
+                else {
+                    $('#SiteTitle').css('background-color', 'white');
+                }
+                if ($('#SiteTitle_local').val().trim() === "") {
+                    $('#SiteTitle_local').css('background-color', '#ff56564d');
+                    isValid = false;
+                }
+                else {
+                    $('#SiteTitle_local').css('background-color', 'white');
+                }
+                return isValid;
+            }
+
+
+            function clearTextBox() {
+                $('#myModal').data({ backdrop: 'static', keyboard: false });
+                $("#Id").val('');
+                $('#GovtTitle').val("");
+                $('#GovtTitle').css('background-color', 'white');
+                $('#GovtTitle_local').val("");
+                $('#GovtTitle_local').css('background-color', 'white');
+                $('#SiteTitle').val("");
+                $('#SiteTitle').css('background-color', 'white');
+                $('#SiteTitle_local').val("");
+                $('#SiteTitle_local').css('background-color', 'white');
+
+                $("#SubTitle").val('');
+                $("#SubTitle_local").val('');
+                $("#MCTitle").val('');
+                $("#MCTitle_local").val('');
+                $("#CounsilTitle").val('');
+                $("#CounsilTitle_local").val('');
+                $("#LoginTitle").val('');
+                $("#LoginTitle_local").val('');
+                $("#SitemapTitle").val('');
+                $("#SitemapTitle_local").val('');
+                $("#NoticeTitle").val('');
+                $("#NoticeTitle_local").val('');
+                $("#HousesTitle").val('');
+                $("#HousesTitle_local").val('');
+                $("#Councilors").val('');
+                $("#Councilors_local").val('');
+                $("#Meetings").val('');
+                $("#Meetings_local").val('');
+                $("#Departments").val('');
+                $("#Departments_local").val('');
+                $("#FCC").val('');
+                $("#FCC_local").val('');
+                $("#Employees").val('');
+                $("#Employees_local").val('');
+                $("#StatusPanel").val('');
+                $("#StatusPanel_local").val('');
+                $("#MemberListTitle").val('');
+                $("#MemberListTitle_local").val('');
+                $("#MemberListDescription").val('');
+                $("#MemberListDescription_local").val('');
+                $("#NewsTitle").val('');
+                $("#NewsTitle_local").val('');
+                $("#NewsDescription").val('');
+                $("#NewsDescription_local").val('');
+                $("#GalleryTitle").val('');
+                $("#GalleryTitle_local").val('');
+                $("#HouseBusiness").val('');
+                $("#HouseBusiness_local").val('');
+                $("#HouseResolutions").val('');
+                $("#HouseResolutions_local").val('');
+                $("#FCCResolutions").val('');
+                $("#FCCResolutions_local").val('');
+                $("#alert").val('');
+                $("#alert_local").val('');
+                $("#StateSubTitle").val('');
+                $("#StateSubTitle_local").val('');
+                $('#btnUpdate').hide();
+                //  $("#DepartmentId").removeAttr("disabled", "disabled");
+                $("#myModalLabel").html("Add Label Record");
+                $('#btnSave').show();
+
+
+
+            }
+            function Add() {
+                debugger
+
+                var res = validate();
+                if (res == false) {
+                    return false;
+                }
+
+
+
+                var empObj = {
+
+                    GovtTitle: $('#GovtTitle').val(),
+                    GovtTitle_local: $('#GovtTitle_local').val(),
+                    SiteTitle: $('#SiteTitle').val(),
+                    SiteTitle_local: $('#SiteTitle_local').val(),
+                    SubTitle: $("#SubTitle").val(),
+                    SubTitle_local: $("#SubTitle_local").val(),
+                    MCTitle: $("#MCTitle").val(),
+                    MCTitle_local: $("#MCTitle_local").val(),
+                    CounsilTitle: $("#CounsilTitle").val(),
+                    CounsilTitle_local: $("#CounsilTitle_local").val(),
+                    LoginTitle: $("#LoginTitle").val(),
+                    LoginTitle_local: $("#LoginTitle_local").val(),
+                    SitemapTitle: $("#Sitemap").val(),
+                    SitemapTitle_local: $("#Sitemap_local").val(),
+                    NoticeTitle: $("#NoticeTitle").val(),
+                    NoticeTitle_local: $("#NoticeTitle_local").val(),
+                    HousesTitle: $("#HousesTitle").val(),
+                    HousesTitle_local: $("#HousesTitle_local").val(),
+                    Councilors: $("#Councilors").val(),
+                    Councilors_local: $("#Councilors_local").val(),
+                    Meetings: $("#Meetings").val(),
+                    Meetings_local: $("#Meetings_local").val(),
+                    Departments: $("#Departments").val(),
+                    Departments_local: $("#Departments_local").val(),
+                    FCC: $("#FCC").val(),
+                    FCC_local: $("#FCC_local").val(),
+                    Employees: $("#Employees").val(),
+                    Employees_local: $("#Employees_local").val(),
+                    StatusPanel: $("#StatusPanel").val(),
+                    StatusPanel_local: $("#StatusPanel_local").val(),
+                    MemberListTitle: $("#MemberListTitle").val(),
+                    MemberListTitle_local: $("#MemberListTitle_local").val(),
+                    MemberListDescription: $("#MemberListDescription").val(),
+                    MemberListDescription_local: $("#MemberListDescription_local").val(),
+                    NewsTitle: $("#NewsTitle").val(),
+                    NewsTitle_local: $("#NewsTitle_local").val(),
+                    NewsDescription: $("#NewsDescription").val(),
+                    NewsDescription_local: $("#NewsDescription_local").val(),
+                    GalleryTitle: $("#GalleryTitle").val(),
+                    GalleryTitle_local: $("#GalleryTitle_local").val(),
+                    HouseBusiness: $("#HouseBusiness").val(),
+                    HouseBusiness_local: $("#HouseBusiness_local").val(),
+                    HouseResolutions: $("#HouseResolutions").val(),
+                    HouseResolutions_local: $("#HouseResolutions_local").val(),
+                    FCCResolutions: $("#FCCResolutions").val(),
+                    FCCResolutions_local: $("#FCCResolutions_local").val(),
+                    alert: $("#alert").val(),
+                    alert_local: $("#alert_local").val(),
+                    StateSubTitle: $("#StateSubTitle").val(),
+                    StateSubTitle_local: $("#StateSubTitle_local").val(),
+                };
+                $.ajax({
+                    url: '@Url.Action("Create", "HomeLabel")',
+                    data: JSON.stringify(empObj),
+                    type: "POST",
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        {
+                            debugger
+                            if (result != 0) {
+                                alert("Updated Successfully");
+                                $('#myModal').hide();
+                                location.reload();
+                            }
+                            else {
+                                alert("Not Updated");
+                            }
+                        }
+                    }
+
+                });
+            }
+            function Update() {
+                var res = validate();
+                if (res == false) {
+                    return false;
+                }
+                var empObj = {
+                    Id: $('#Id').val(),
+                    GovtTitle: $('#GovtTitle').val(),
+                    GovtTitle_local: $('#GovtTitle_local').val(),
+                    SiteTitle: $('#SiteTitle').val(),
+                    SiteTitle_local: $('#SiteTitle_local').val(),
+                    SubTitle: $("#SubTitle").val(),
+                    SubTitle_local: $("#SubTitle_local").val(),
+                    MCTitle: $("#MCTitle").val(),
+                    MCTitle_local: $("#MCTitle_local").val(),
+                    CounsilTitle: $("#CounsilTitle").val(),
+                    CounsilTitle_local: $("#CounsilTitle_local").val(),
+                    LoginTitle: $("#LoginTitle").val(),
+                    LoginTitle_local: $("#LoginTitle_local").val(),
+                    SitemapTitle: $("#Sitemap").val(),
+                    SitemapTitle_local: $("#Sitemap_local").val(),
+                    NoticeTitle: $("#NoticeTitle").val(),
+                    NoticeTitle_local: $("#NoticeTitle_local").val(),
+                    HousesTitle: $("#HousesTitle").val(),
+                    HousesTitle_local: $("#HousesTitle_local").val(),
+                    Councilors: $("#Councilors").val(),
+                    Councilors_local: $("#Councilors_local").val(),
+                    Meetings: $("#Meetings").val(),
+                    Meetings_local: $("#Meetings_local").val(),
+                    Departments: $("#Departments").val(),
+                    Departments_local: $("#Departments_local").val(),
+                    FCC: $("#FCC").val(),
+                    FCC_local: $("#FCC_local").val(),
+                    Employees: $("#Employees").val(),
+                    Employees_local: $("#Employees_local").val(),
+                    StatusPanel: $("#StatusPanel").val(),
+                    StatusPanel_local: $("#StatusPanel_local").val(),
+                    MemberListTitle: $("#MemberListTitle").val(),
+                    MemberListTitle_local: $("#MemberListTitle_local").val(),
+                    MemberListDescription: $("#MemberListDescription").val(),
+                    MemberListDescription_local: $("#MemberListDescription_local").val(),
+                    NewsTitle: $("#NewsTitle").val(),
+                    NewsTitle_local: $("#NewsTitle_local").val(),
+                    NewsDescription: $("#NewsDescription").val(),
+                    NewsDescription_local: $("#NewsDescription_local").val(),
+                    GalleryTitle: $("#GalleryTitle").val(),
+                    GalleryTitle_local: $("#GalleryTitle_local").val(),
+                    HouseBusiness: $("#HouseBusiness").val(),
+                    HouseBusiness_local: $("#HouseBusiness_local").val(),
+                    HouseResolutions: $("#HouseResolutions").val(),
+                    HouseResolutions_local: $("#HouseResolutions_local").val(),
+                    FCCResolutions: $("#FCCResolutions").val(),
+                    FCCResolutions_local: $("#FCCResolutions_local").val(),
+                    alert: $("#alert").val(),
+                    alert_local: $("#alert_local").val(),
+                    StateSubTitle: $("#StateSubTitle").val(),
+                    StateSubTitle_local: $("#StateSubTitle_local").val(),
+                };
+
+                $.ajax({
+                    url: '@Url.Action("Update", "HomeLabel")',
+                    data: JSON.stringify(empObj),
+                    type: "POST",
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        {
+                            debugger
+                            if (result != 0) {
+                                alert("Updated Successfully");
+                                $('#myModal').hide();
+                                location.reload();
+                            }
+                            else {
+                                alert("Not Updated");
+                            }
+                        }
+                    }
+
+                });
+            }
+            var MyApp = {};
+            function DeleteDepartmentRecord(xyz) {
+                /*  $('#DeleteConfirmation').modal("show");*/
+                MyApp = xyz;
+                DeleteID();
+            }
+            function ConfirmDelete() {
+                DeleteID();
+            }
+            function DeleteID() {
+                var i = MyApp;
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("Delete", "HomeLabel")' + '?id=' + i,
+                    success: function (result) {
+                        alert("Updated Successfully");
+
+                    }
+                });
+            }
+</script>
+
+

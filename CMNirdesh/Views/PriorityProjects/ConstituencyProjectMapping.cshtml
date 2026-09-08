@@ -1,0 +1,215 @@
+﻿@model  CMNirdesh.Models.AssignProjectConstituencyWise
+@{
+    ViewBag.Title = "ConstituencyProjectMapping";
+
+    string fileacessingpath = ViewBag.FileAcessingPath;
+}
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+<script src="~/assets/js/bootbox.min.js"></script>
+
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<style>
+    .field-validation-error {
+        color: red;
+        padding-left: 10px;
+    }
+</style>
+
+<div id="main-content">
+    <div class="main-content">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs" id="breadcrumbs">
+            <script type="text/javascript">
+                try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+            </script>
+            <ul class="breadcrumb" style="font-size: large; color: #555; padding: 0 3px 0 3px;">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="@Url.Action("ConstituencyProjectList", "PriorityProjects")">Priority Projects</a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("ConstituencyProjectList", "PriorityProjects")">Constituencies</a>
+                </li>
+                @*<li class="active">List</li>*@
+            </ul>
+
+
+        </div>
+
+
+        <section class="form_dsign Create_priority_project cm_sec_container form_setting">
+            <div class="container-fluid">
+
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" inr_frm_dsgn">
+                            @if (Model.Mode == "Add")
+                            {
+                                <h4 class="widget-title lighter">Add Constituency</h4>
+                            }
+                            else
+                            {
+                                <h4 class="widget-title lighter">Edit Constituency</h4>
+                            }
+
+
+                            <div class="form_lyot">
+                                @using (Html.BeginForm("SaveConstituencyProject", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "ProjectImage" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.HiddenFor(model => model.ProjectMappedConstituencyId)
+                                    @Html.HiddenFor(model => model.Mode)
+
+
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <fieldset class="fieldset_box personal_fild comn_field fild_btn">
+                                                <legend class="leg_box">Constituency Details:</legend>
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt">Project</label>
+                                                        @Html.DropDownListFor(a => a.ProjectId, Model.ProjectList, new { @class = "width-100", @tabindex = "1" })
+
+                                                        @Html.ValidationMessageFor(model => model.ProjectId)
+
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Constituency </label>
+                                                        @if (Model.Mode == "Add")
+                                                        {
+                                                            @Html.DropDownListFor(a => a.ConstituencyId, new SelectList(Model.Contituencylist, "Value", "Text"), new { @id = "ddlConstituencyId", @class = "width-100", @style = "height:30px", @tabindex = "3", @multiple = "multiple" })
+                                                            @Html.ValidationMessageFor(model => model.ConstituencyId)
+                                                            @Html.HiddenFor(m => m.cdid, new { @id = "cdid" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.DropDownListFor(a => a.ConstituencyId, new SelectList(Model.Contituencylist, "Value", "Text"), new { @id = "ddlConstituencyId1", @style = "height:39px", @class = "width-100", @tabindex = "3" })
+                                                            @Html.ValidationMessageFor(model => model.ConstituencyId)
+                                                            @Html.HiddenFor(m => m.cdid, new { @id = "cdid" })
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Publishing Status </label>
+                                                        @Html.DropDownListFor(model => model.IsActive, Model.StatusTypeList, new { @class = "width-100", @tabindex = "13" })
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-2" style="margin-top:30px; text-align:right;">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> </label>
+                                                        <button type="reset" class="btn btn-sm btn-danger" onclick="resetFields();">
+                                                            <i class="ace-icon fa fa-times bigger-125"></i>
+                                                            Reset
+                                                        </button>
+                                                        <button type="submit" id="savebtn" class="btn btn-sm btn-purple" onclick="return checkAccessActionValidation();">
+                                                            <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                                                            Save
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</div>
+
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+<link href="~/Content/MultiSelectList/multiple-select.css" rel="stylesheet" />
+<script src="~/Scripts/MultiSelectBox/jquery.multiple.select.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#ddlConstituencyId').multipleSelect({
+            columns: 1,
+            placeholder: 'Select Constituency'
+        });
+
+
+
+    });
+
+    $('#savebtn').click(function () {
+        var code = "";
+        $('#ddlConstituencyId option:selected').each(function () {
+            // alert($(this).val());
+            if ($(this).val() != " ") {
+                code = $(this).val() + ',' + code;
+            }
+        });
+
+        document.getElementById("cdid").value = code.slice(0, -1);
+        //  alert(document.getElementById("cdid").value);
+
+
+
+        ddlConstituencyId1
+    });
+
+
+    $(document).ready(function () {
+
+        //$('#ddlConstituencyId').multiselect();
+        $("#Title").focus();
+
+        $("#DdlActionId").multipleSelect({ selectAll: true, placeHolder: "Select Group" });
+        $("#Projectmain").addClass("active open");
+        $("#Projectsub").addClass("nav-show").css("display", "block");
+        $("#doclist").addClass("active");
+
+    });
+    function resetFields() {
+        $(".field-validation-error").empty();
+        $("#Title").focus();
+
+    }
+
+
+    function reset() {
+        $("#DdlActionId").multipleSelect({ selectAll: true, placeHolder: "Select Group" });
+
+
+    }
+
+    function checkAccessActionValidation() {
+
+
+        var UserAction = $("#DdlActionId").val();
+
+        // alert(UserAction);
+
+
+
+    }
+
+
+
+</script>
+
+
+
+
+

@@ -1,0 +1,308 @@
+﻿@*@model  IEnumerable<SBL.eLegistrator.HouseController.Web.Areas.Admin.Models.DocumentViewModel>*@
+@model IEnumerable <SBL.eLegistrator.HouseController.Web.Areas.Grievances.Models.DocumentTypeModel>
+@{
+    ViewBag.Title = "DocumentList";
+    Layout = "~/Views/Shared/_ResponsiveLayout.cshtml";
+    int count = 0;
+}
+
+
+@*@Html.Partial("~/Areas/Grievances/Views/Grievances/_LeftNavigationMenu.cshtml")*@
+
+<div id="main-content">
+    <div class="main-content">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs" id="breadcrumbs">
+            <script type="text/javascript">
+                try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+            </script>
+
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="@Url.Action("DocumentList", "Project")">Home</a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("DocumentList", "Project")">Project Document</a>
+                </li>
+                <li class="active">List</li>
+            </ul>
+
+            <div class="legAssm">
+                <span class="label label-large label-pink arrowed-in-right arrowed">@Html.Raw(ViewBag.CurrentAssemblyName)</span>
+                <span class="label label-large label-purple arrowed">@Html.Raw(ViewBag.CurrentSessionName)</span>
+            </div>
+
+        </div>
+
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <!-- /section:settings.box -->
+            <div class="ace-settings-container" id="ace-settings-container" style="margin-right: 20px;">
+                <button class="btn  btn-sm btn-info" onclick="javascript:window.location.href=' /Admin/Project/CreateDocument';">
+                    <i class="ace-icon fa fa-pencil-square-o bigger-150"></i>
+                    <span class="bigger-110">Create Document</span>
+                </button>
+            </div>
+            <div class="page-header">
+                <h1>
+                    Project
+                    <small>
+                        <i class="ace-icon fa fa-angle-double-right"></i>
+                        Document List
+                    </small>
+                </h1>
+
+
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+
+                    <div class="pass-table table-responsive">
+                        @if (Model != null)
+                        {
+                            if (Model.Count() > 0)
+                            {
+
+                                <table class="table table-striped table-bordered table-hover dataTable" id="sample-table-2" aria-describedby="sample-table-2_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="center sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="">No</th>
+                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="sample-table-2" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending">Title</th>
+
+
+                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="sample-table-2" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending">Project Name</th>
+
+
+                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="sample-table-2" rowspan="1" colspan="1" aria-label="Pass Type: activate to sort column ascending">Project Document</th>
+
+                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="sample-table-2" rowspan="1" colspan="1" aria-label="Pass Type: activate to sort column ascending">Date</th>
+                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="sample-table-2" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending">Status</th>
+
+                                            <th class="sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                        @foreach (var item in Model)
+                                        {
+                                            count = count + 1;
+
+                                            <tr>
+                                                <td class="center">
+                                                    @count
+                                                </td>
+
+
+                                                <td>@item.DocumentTitle</td>
+
+                                                <td>@item.Project</td>
+                                                <td>@item.ProgramTitleLocal</td>
+
+                                                <td><a href="@Url.Content(item.path+item.DocumentLocation )" target="_blank">click to download </a></td>
+                                                <td>@item.CreatedDate.ToString("dd MMM yyyy")</td>
+
+
+                                                <td class="hidden-480">
+                                                    @if (item.IsActive == 1)
+                                                    {
+                                                        <span class="label label-sm label-success">Published</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="label label-sm label-warning">Unpublished</span>
+                                                    }
+
+                                                </td>
+
+                                                <td class="center">
+                                                    <div class="hidden-sm hidden-xs action-buttons">
+
+                                                        @* <a data-rel="tooltip" class="blue tooltip-info" title="Change Status" id="ChangeStatusLink"  href="@Url.Action("ChangeOrganization", "Media", new { Id = item.LatestUpdateID })">
+                                                                <i class="ace-icon fa fa-check-square-o bigger-130"></i>
+                                                            </a>*@
+
+                                                        @*<a data-rel="tooltip" class="green tooltip-success" title="Edit"   href="@Url.Action("EditContent", "Content", new { Id = item.VContentID })">
+                                                                <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                            </a>*@
+                                                        <a data-rel="tooltip" class="green tooltip-success" title="Edit" href="@Url.Action("EditDocument", "Project", new { Id = SBL.eLegistrator.HouseController.Web.Extensions.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })">
+                                                            <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                        </a>
+                                                        <a data-rel="tooltip" class="red tooltip-error DeleteContentLink" title="Delete" id="DeleteLink" href="@Url.Action("DeleteDocument", "Project", new { Id = SBL.eLegistrator.HouseController.Web.Extensions.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })">
+                                                            <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="hidden-md hidden-lg">
+                                                        <div class="inline position-relative">
+                                                            <button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto">
+                                                                <i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>
+                                                            </button>
+
+                                                            <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+                                                                @*<li>
+                                                                        <a  href="@Url.Action("ChangeOrganization", "Media", new { Id = item.LatestUpdateID })" class="tooltip-info" data-rel="tooltip" title="Change Status">
+                                                                            <span class="blue">
+                                                                            <i class="ace-icon fa fa-check-square-o bigger-120"></i>
+                                                                            </span>
+                                                                        </a>
+                                                                    </li>*@
+
+                                                                <li>
+                                                                    <a href="@Url.Action("EditDocument", "Project", new { Id = SBL.eLegistrator.HouseController.Web.Extensions.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })" class="tooltip-success" data-rel="tooltip" title="Edit">
+                                                                        <span class="green">
+                                                                            <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                                        </span>
+                                                                    </a>
+                                                                </li>
+
+                                                                <li>
+                                                                    <a href="@Url.Action("DeleteDocument", "Project", new { Id = SBL.eLegistrator.HouseController.Web.Extensions.EncryptionUtility.Encrypt(item.ProgrammeDocsId.ToString()) })" class="tooltip-error DeleteContentLink" data-rel="tooltip" title="Delete">
+                                                                        <span class="red">
+                                                                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                                        </span>
+                                                                    </a>
+
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                                <!-- PAGE CONTENT ENDS -->
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-info">
+
+                                            <strong>There are no Document</strong><br />
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.page-content -->
+        </div>
+        <!-- /.main-content -->
+
+        <div class="footer">
+            <div class="footer-inner">
+                <!-- #section:basics/footer -->
+                <div class="footer-content">
+                    @* <span class="bigger-100">
+                            <span class="blue bolder">eVidhan@@@DateTime.Now.Year</span>
+
+                        </span>*@
+
+                </div>
+
+                <!-- /section:basics/footer -->
+            </div>
+        </div>
+
+        <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+            <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+        </a>
+    </div>
+
+    <div id="dialog-confirm" class="hide">
+        <div id="DialogMessage" class="alert alert-info bigger-110">
+            Are You Sure Want to Delete.
+        </div>
+
+        <div class="space-6"></div>
+    </div>
+
+</div>
+
+<script src="/assets/js/jquery.dataTables.min.js"></script>
+<script src="/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script src="~/assets/js/bootbox.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var oTable1 =
+            $('#sample-table-2')
+                //.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
+                .dataTable({
+                    bAutoWidth: true,
+                    "aoColumns": [
+                        { "bSortable": false },
+                        null, null, null, null, null, null, null,
+                        { "bSortable": false }
+                    ]
+                    //,
+                    //"sScrollY": "200px",
+                    //"bPaginate": false,
+
+                    //"sScrollX": "100%",
+                    //"sScrollXInner": "120%",
+                    //"bScrollCollapse": true,
+                    //Note: if you are applying horizontal scrolling (sScrollX) on a ".table-bordered"
+                    //you may want to wrap the table inside a "div.dataTables_borderWrap" element
+
+                    //"iDisplayLength": 50
+                });
+        $('[data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
+        $("#Projectmain").addClass("active open");
+        $("#Projectsub").addClass("nav-show").css("display", "block");
+        $("#doclist").addClass("active");
+    });
+
+
+    $(".DeleteContentLink").on('click', function (e) {
+
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        bootbox.confirm("Are you sure to Delete Project?", function (result) {
+
+            if (result) {
+
+                window.location.href = url;
+            }
+            else {
+
+
+            }
+
+        })
+    });
+
+    function tooltip_placement(context, source) {
+        var $source = $(source);
+        var $parent = $source.closest('table')
+        var off1 = $parent.offset();
+        var w1 = $parent.width();
+
+        var off2 = $source.offset();
+        //var w2 = $source.width();
+
+        if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+        return 'left';
+    }
+
+
+
+
+
+
+</script>

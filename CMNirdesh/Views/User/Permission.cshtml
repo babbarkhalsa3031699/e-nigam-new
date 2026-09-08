@@ -1,0 +1,1583 @@
+﻿@model  CMNirdesh.Models.PermissionModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
+}
+
+
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+<style>
+</style>
+
+<body>
+    <div id="main-content">
+
+
+        <div class="main-content cm_fund fund_rcipt">
+            <div class="row">
+
+                <div class="card p-0">
+                    <div class="card-header">
+                        <h3 class="card-title">User Permission</h3>
+                    </div>
+                    <div class="card-body">
+
+                        @using (Html.BeginForm("GetPermissionList", "User", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data" }))
+                        {
+                            <div class="row align-items-center">
+                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3" id="DivDep">
+                                    <label for="inputEmail4" class="txt_label">Department:</label>
+                                    <input type="hidden" id="hdnDepId" value="@Model.DeptId" />
+                                    @Html.DropDownListFor(m => m.DeptId, Model.mDepartmentList, "Select", new { @id = "DdlDepartment", @tabindex = "1", @class = "form-control txt_design", @Onchange = "GetDepartment();" })
+                                </div>
+
+                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3" id="DivOff">
+                                    <label for="inputEmail4" class="txt_label">Office:</label>
+                                    <input type="hidden" id="hdnOffId" value="@Model.OfficeId" />
+                                    @Html.DropDownListFor(m => m.OfficeId, Model.OfficeList, "Select", new { @id = "DdlOffice", @tabindex = "2", @class = "form-control txt_design", @Onchange = "GetUser();" })
+                                </div>
+                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                    <label for="inputEmail4" class="txt_label">User:</label>
+                                    @Html.DropDownListFor(m => m.UserId, Model.UserList, "Select", new { @id = "ddluser", @tabindex = "1", @class = "txt_design", @required = "required", @Onchange = "Getdata();" })
+
+                                </div>
+                                @if (Model.IsOpen)
+                                {
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label"></label>
+                                        <label for="inputEmail4" class="txt_label ">Authorized:</label>
+                                        <input type="checkbox" id="chkactive" class="" checked="@Model.IsActive" />
+                                        @*@Html.CheckBoxFor(m => m.IsActive, new { @id = "chkactive", @checked= @Model.IsActive })*@
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 mb-0 p-3">
+                                        @*<label for="inputEmail4" class="txt_label actlabel">Search User:</label>*@
+                                        @*<input type="checkbox" id="chkuser" class="form-control" />*@
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="chkuser">
+                                            <label class="form-check-label" for="chkuser">
+                                                Search User:
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                                <input id="btngetuser" type="submit" value="Get User" class="btn add_btn" style="display:none" />
+                            </div>
+                        }
+
+                        @if (Model.IsOpen)
+                        {
+                            <div class="permission">
+                                @*<div class="row">
+
+                                        <div class="form-group col-sm-6 col-md-4 col-lg-4 col-12">
+                                            <label for="inputEmail4" class="txt_label">Department:</label>
+                                            @Html.LabelFor(m => m.DepartmentName, Model.DepartmentName)
+                                        </div>
+
+                                        <div class="form-group col-sm-6 col-md-4 col-lg-4 col-12">
+                                            <label for="inputEmail4" class="txt_label">Office:</label>
+                                            @Html.LabelFor(m => m.OfficeName, Model.OfficeName)
+                                        </div>
+                                    </div>*@
+
+                                <div class="row">
+
+
+
+                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Menu :</label>
+                                        <select id='optgroup' multiple='multiple'>
+                                            @foreach (CMNirdesh.Models.MenuModel menu in Model.MenuList)
+                                            {
+                                                <optgroup id="@menu.MenuId" label="@menu.MenuName">
+                                                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                                                    {
+                                                        <option value='@submenu.SubMenuId'>@submenu.SubMenuName</option>
+                                                    }
+                                                </optgroup>
+                                            }
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Add/Update Option on Menu Items:</label>
+                                        @*@Html.DropDownListFor(m => m.addupdate, Model.addupdateList, new { @id = "ddladdupdate", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+                                        <select id='ddladdupdate' multiple='multiple'>
+
+                                            @foreach (CMNirdesh.Models.MenuModel menu in Model.addupdateList)
+                                            {
+                                                <optgroup id="grp_@menu.MenuName.Replace(" "," ")" label="@menu.MenuName">
+                                                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                                                    {
+                                                        <option id="sub_@submenu.SubMenuId" value='@submenu.SubMenuId'>@submenu.SubMenuName</option>
+                                                    }
+                                                </optgroup>
+                                            }
+
+
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">User Department(s):</label>
+                                        @Html.DropDownListFor(m => m.UserId, Model.mDepartmentList, new { @id = "ddldep", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
+
+                                    </div>
+
+
+                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">User Office(s):</label>
+                                        @*@Html.DropDownListFor(m => m.OfficeIdMulti, Model.MultiOfficeList, "Select", new { @id = "DdlOfficeMulti", @tabindex = "2", @class = "", @required = "required", @multiple = "multiple" })*@
+                                        <select id='DdlOfficeMulti' multiple='multiple'>
+                                        </select>
+
+                                        <input type="button" class="btn btn-primary" value="Add Designation" onclick="OpenDesModel()" />
+                                    </div>
+
+
+
+                                </div>
+
+
+                                <div class="row p-3" id="diarydiv">
+                                    <h5>LG/UDD Permissions</h5>
+                                    <hr class="dropdown-divider" />
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">References Type:</label>
+                                        @*@Html.DropDownListFor(m => m.ActionId, Model.References, new { @id = "ddlref", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+                                        <select id='ddlref' multiple='multiple'>
+
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.References)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.FundReferences)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
+
+                                        <select id='ddlstatus' multiple='multiple'>
+
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.Actions)
+                                                {
+
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.ActionFiles)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+
+
+                                        @*@Html.DropDownListFor(m => m.ActionId, Model.Actions, new { @id = "ddlstatus", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+
+
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Add/Update (User Wise):</label>
+                                        @Html.DropDownListFor(m => m.ActionId, Model.DiaryButton, new { @id = "ddladdupdatestatusDiary", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row p-3" id="dispatch">
+                                    <h5>MC Permissions</h5>
+                                    <hr class="dropdown-divider" />
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">References Type:</label>
+                                        @*@Html.DropDownListFor(m => m.UserId, Model.References, new { @id = "ddlref", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+                                        <select id='ddlrefdispatch' multiple='multiple'>
+
+                                            @*
+                                                <optgroup id="1" label="References">
+                                                    @foreach (SelectListItem submenu in Model.DispatchReferences)
+                                                    {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                    }
+                                                </optgroup>*@
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.References)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.FundReferences)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
+
+                                        <select id='ddlstatusdispatch' multiple='multiple'>
+
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.ActionsDispatch)
+                                                {
+
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.ActionsFileDispatch)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+
+                                        @*@Html.DropDownListFor(m => m.ActionId, Model.ActionsDispatch, new { @id = "ddlstatusdispatch", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+
+                                    </div>
+
+
+
+
+
+
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Add/Update (User Wise):</label>
+                                        @Html.DropDownListFor(m => m.ActionId, Model.DispatchButton, new { @id = "ddladdupdatestatusDispatch", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
+
+                                    </div>
+                                </div>
+                                <div class="row p-3" id="dispatch">
+                                    <h5>Project Permissions</h5>
+                                    <hr class="dropdown-divider" />
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
+                                        @Html.DropDownListFor(m => m.ActionId, Model.ProjectActions, new { @id = "ddlProjectAction", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="DesModel"
+         data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important; height: 300px; width: 800px; margin-left:30% ">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="InboxHeader1" class="widget-title ">Add Designation</h4>
+                    <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="DesModelbody">
+                    <div class="row">
+                        <div class="form-group col-xl-5 col-lg-4 col-md-6 col-sm-12 col-12 p-3" id="DivOff">
+                            <label for="inputEmail4" class="txt_label">Office:</label>
+                            @Html.DropDownListFor(m => m.OfficeId, Model.DesOfficeList, "Select", new { @id = "DdlDesOffice", @tabindex = "2", @class = "form-control txt_design" })
+                        </div>
+                        <div class="form-group col-xl-5 col-lg-4 col-md-6 col-sm-12 col-12 p-3" id="DivOff">
+                            <label for="inputEmail4" class="txt_label">Designation:</label>
+                            <input id="txtDes" type="text" class="form-control" />
+                        </div>
+                        <div class="form-group col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 p-3" id="DivOff">
+                            <label for="inputEmail4" class="txt_label">Action</label>
+                            <input type="button" id="btnAddDes" class="btn btn-primary" value="Add" onclick="AddDes()" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Permission</title>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    @*<link href="~/Content/MultiSelectList/multiple-select.css" rel="stylesheet" />*@
+    <link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+
+</head>
+
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+
+@*<script src="~/Scripts/MultiSelectBox/jquery.multiple.select.js"></script>*@
+<script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $("#ddluser").multipleSelect({
+            columns: 1,
+            filter: true,
+            maxHeight: 350,
+            placeholder: 'Select User',
+        });
+
+        $('#optgroup').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            animate: 'slide',
+            maxHeight: 350,
+            width: '100%',
+            placeholder: 'Select Menu',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var menuid = view.value;
+                var menuname = view.text;
+                var checked = view.selected;
+                addremovemenu(userid, menuid, checked, menuname);
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var menuid = view.children[i].value;
+                    var menuname = view.children[i].text;
+                    var checked = view.children[i].selected;
+                    addremovemenu(userid, menuid, checked, menuname);
+                });
+            },
+            //oncheckall: function (view) {
+            //    alert(1);
+            //    var $select = $('#optgroup')
+            //    alert('menu selected values: ' + $select.multipleselect('getselects'));
+            //    var userid = $('#ddluser').val();
+            //    var selected = $('#optgroup').multipleselect('getselects');
+            //    if (selected != "") {
+            //        var menulist = selected.tostring().split(",");
+            //        //console.log(menulist);
+            //        $.each(menulist, function (i) {
+            //            console.log(menulist[i]);
+            //            addremovemenu(userid, menulist[i], 1);
+            //        });
+            //    }
+            //},
+            //onuncheckall: function (view) {
+            //    alert('menu onuncheckall call: ');
+            //    var userid = $('#ddluser').val();
+            //    $('select#optgroup').find('option').each(function () {
+            //        //console.log($(this).val());
+            //        var menuid = $(this).val();
+            //        addremovemenu(userid, menuid, 0);
+            //    });
+            //},
+
+        });
+
+        $('#ddlref').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 370,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select  References',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var docid = view.value;
+                var checked = view.selected;
+                addremoveDoc(userid, docid, checked, "Diary");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var docid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveDoc(userid, docid, checked, "Diary");
+                });
+            },
+            //onCheckAll: function (view) {
+            //    //var $select = $('#optgroup')
+            //    //alert('Doc Selected values: ' + $select.multipleSelect('getSelects'));
+            //    var userid = $('#ddluser').val();
+            //    var selected = $('#ddlref').multipleSelect('getSelects');
+            //    if (selected != "") {
+            //        var menulist = selected.toString().split(",");
+            //        console.log(menulist);
+            //        $.each(menulist, function (i) {
+            //            console.log(menulist[i]);
+            //            addremoveDoc(userid, menulist[i], 1);
+            //        });
+            //    }
+            //},
+            //onUncheckAll: function (view) {
+            //    var userid = $('#ddluser').val();
+            //    alert('doc onUncheckAll call: ');
+            //    $('select#ddlref').find('option').each(function () {
+            //        //console.log($(this).val());
+            //        var docid = $(this).val();
+            //        addremoveDoc(userid, docid, 0);
+            //    });
+            //},
+        });
+
+        $('#ddlstatus').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Action',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                var menuname = view.text;
+                addremoveAction(userid, Actionid, menuname, checked, "Diary");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Actionid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    var menuname = view.children[i].text;
+                    addremoveAction(userid, Actionid, menuname, checked, "Diary");
+                });
+            },
+            //onCheckAll: function (view) {
+            //    //var $select = $('#optgroup')
+            //   // alert('status Selected values: ' + $select.multipleSelect('getSelects'));
+            //    var userid = $('#ddluser').val();
+            //    var selected = $('#ddlstatus').multipleSelect('getSelects');
+            //    if (selected != "") {
+            //        var menulist = selected.toString().split(",");
+            //        console.log(menulist);
+            //        $.each(menulist, function (i) {
+            //            console.log(menulist[i]);
+            //            addremoveAction(userid, menulist[i], 1);
+            //        });
+            //    }
+            //},
+            //onUncheckAll: function (view) {
+            //    var userid = $('#ddluser').val();
+            //    alert('status onUncheckAll call: ');
+            //    $('select#ddlstatus').find('option').each(function () {
+            //        //console.log($(this).val());
+            //        var Actionid = $(this).val();
+            //        addremoveAction(userid, Actionid, 0);
+            //    });
+            //},
+        });
+
+
+
+        $('#ddladdupdatestatusDiary').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '80%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Buttonid = view.value;
+                var checked = view.selected;
+
+                addremoveStatusButton(userid, Buttonid, checked, "Diary");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Buttonid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveStatusButton(userid, Buttonid, checked, "Diary");
+                });
+            },
+
+        });
+
+        $('#ddladdupdatestatusDispatch').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Buttonid = view.value;
+                var checked = view.selected;
+                addremoveStatusButton(userid, Buttonid, checked, "Dispatch");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Buttonid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveStatusButton(userid, Buttonid, checked, "Dispatch");
+                });
+            },
+
+        });
+
+
+        $('#ddlrefdispatch').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 370,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select  References',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var docid = view.value;
+                var checked = view.selected;
+                addremoveDoc(userid, docid, checked, "Dispatch");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var docid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveDoc(userid, docid, checked, "Dispatch");
+                });
+            },
+            //onCheckAll: function (view) {
+            //    //var $select = $('#optgroup')
+            //    //alert('Doc Selected values: ' + $select.multipleSelect('getSelects'));
+            //    var userid = $('#ddluser').val();
+            //    var selected = $('#ddlref').multipleSelect('getSelects');
+            //    if (selected != "") {
+            //        var menulist = selected.toString().split(",");
+            //        console.log(menulist);
+            //        $.each(menulist, function (i) {
+            //            console.log(menulist[i]);
+            //            addremoveDoc(userid, menulist[i], 1);
+            //        });
+            //    }
+            //},
+            //onUncheckAll: function (view) {
+            //    var userid = $('#ddluser').val();
+            //    alert('doc onUncheckAll call: ');
+            //    $('select#ddlref').find('option').each(function () {
+            //        //console.log($(this).val());
+            //        var docid = $(this).val();
+            //        addremoveDoc(userid, docid, 0);
+            //    });
+            //},
+        });
+        $('#ddlProjectAction').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                var menuname = view.text;
+                addremoveAction(userid, Actionid, menuname, checked, "Project");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Buttonid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveAction(userid, Actionid, menuname, checked, "Project");
+                });
+            },
+        });
+        $('#ddlstatusdispatch').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Action',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                var menuname = view.text;
+                addremoveAction(userid, Actionid, menuname, checked, "Dispatch");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Actionid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    var menuname = view.children[i].text;
+                    addremoveAction(userid, Actionid, menuname, checked, "Dispatch");
+                });
+            },
+            //onCheckAll: function (view) {
+            //    //var $select = $('#optgroup')
+            //   // alert('status Selected values: ' + $select.multipleSelect('getSelects'));
+            //    var userid = $('#ddluser').val();
+            //    var selected = $('#ddlstatus').multipleSelect('getSelects');
+            //    if (selected != "") {
+            //        var menulist = selected.toString().split(",");
+            //        console.log(menulist);
+            //        $.each(menulist, function (i) {
+            //            console.log(menulist[i]);
+            //            addremoveAction(userid, menulist[i], 1);
+            //        });
+            //    }
+            //},
+            //onUncheckAll: function (view) {
+            //    var userid = $('#ddluser').val();
+            //    alert('status onUncheckAll call: ');
+            //    $('select#ddlstatus').find('option').each(function () {
+            //        //console.log($(this).val());
+            //        var Actionid = $(this).val();
+            //        addremoveAction(userid, Actionid, 0);
+            //    });
+            //},
+        });
+
+
+        $('#ddldep').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            animate: 'slide',
+            maxHeight: 350,
+            width: '100%',
+            placeholder: 'Select Menu',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var menuid = view.value;
+                var menuname = view.text;
+                var checked = view.selected;
+                GetMultiOffice(userid, menuid, checked, menuname);
+
+            },
+            //onOptgroupClick: function (view) {
+            //    console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+            //    $.each(view.children, function (i, item) {
+            //        //alert(view.children[i].value);
+            //        //alert(view.children[i].selected);
+            //        var userid = $('#ddluser').val();
+            //        var menuid = view.children[i].value;
+            //        var checked = view.children[i].selected;
+            //        addremovemenu(userid, menuid, checked);
+            //    });
+            //},
+
+
+        });
+
+
+        $('#DdlOfficeMulti').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            animate: 'slide',
+            maxHeight: 350,
+            width: '100%',
+            placeholder: 'Select Office',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var menuid = view.value;
+                var menuname = view.text;
+                var checked = view.selected;
+                addremoveOffice(userid, menuid, checked, menuname);
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var menuid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveOffice(userid, menuid, checked);
+                });
+            },
+
+
+        });
+
+
+        $('#ddladdupdate').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Buttonid = view.value;
+                var checked = view.selected;
+                addremoveButton(userid, Buttonid, checked);
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Buttonid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveButton(userid, Buttonid, checked);
+                });
+            },
+
+        });
+
+
+        var menulist = "@Model.menuids";
+        var reflist = '@Model.refids';
+        var actionlist = '@Model.actionids';
+        var buttonlist = '@Model.addupdateids';
+        var deplist = '@Model.depids';
+        var officelist = '@Model.officeids';
+
+        var DisReflist = '@Model.DispatchRefids';
+        var DisActlist = '@Model.Dispatchactionids';
+        var diarybuttonlist = '@Model.Diaryaddupdateids';
+        var dispatchbuttonlist = '@Model.Dispatchaddupdateids';
+        var projectbuttonlist='@Model.Projectaddupdateids';
+
+        var mlarr = new Array();
+        var dlarr = new Array();
+        var alarr = new Array();
+        var blarr = new Array();
+        var deplarr = new Array();
+        var offlarr = new Array();
+        var disdocarr = new Array();
+        var disactarr = new Array();
+
+        var dairyblarr = new Array();
+        var dispatchblarr = new Array();
+        var projectblarr = new Array();
+
+
+        var sessdeptId = '@Model.DeptId';
+        var sessOfficeId = '@Model.OfficeId';
+
+        //deplarr.push(sessdeptId);
+        offlarr.push(sessOfficeId);
+
+        var depname = $("#ddldep option[value='" + sessdeptId + "']").text();
+        $("#ddldep option[value='" + sessdeptId + "']").attr("disabled", true);
+        $("#ddldep option[value='" + sessdeptId + "']").prop("selected", true);
+        $('#ddldep').multipleSelect('refresh');
+
+
+
+            var depl = deplist.toString().split(",");
+            for (var i = 0; i < depl.length; i++) {
+                deplarr.push(depl[i]);
+                var depname = $("#ddldep option[value='" + depl[i] + "']").text();
+
+                GetMultiOffice("", depl[i], true, depname);
+            }
+
+
+
+            var ol = officelist.toString().split(",");
+
+            for (var i = 0; i < ol.length; i++) {
+                offlarr.push(ol[i]);
+
+            }
+
+
+            var ml = menulist.toString().split(",");
+            for (var i = 0; i < ml.length ; i++) {
+                mlarr.push(ml[i]);
+            }
+
+            var dl = reflist.toString().split(",");
+            for (var i = 0; i < dl.length; i++) {
+                dlarr.push(dl[i]);
+            }
+
+            var al = actionlist.toString().split(",");
+            for (var i = 0; i < al.length; i++) {
+                alarr.push(al[i]);
+            }
+
+            var bl = buttonlist.toString().split(",");
+            for (var i = 0; i < bl.length; i++) {
+                blarr.push(bl[i]);
+            }
+
+
+            var disdl = DisReflist.toString().split(",");
+            for (var i = 0; i < disdl.length; i++) {
+                disdocarr.push(disdl[i]);
+            }
+
+            var disal = DisActlist.toString().split(",");
+            for (var i = 0; i < disal.length; i++) {
+                disactarr.push(disal[i]);
+            }
+
+            var diarybl = diarybuttonlist.toString().split(",");
+            for (var i = 0; i < diarybl.length; i++) {
+                dairyblarr.push(diarybl[i]);
+            }
+
+            var dispatchbl = dispatchbuttonlist.toString().split(",");
+            for (var i = 0; i < dispatchbl.length; i++) {
+                dispatchblarr.push(dispatchbl[i]);
+            }
+
+        var projectbl = projectbuttonlist.toString().split(",");
+        for (var i = 0; i < projectbl.length; i++) {
+            projectblarr.push(projectbl[i]);
+        }
+
+
+
+
+        setTimeout(() => {
+            $("#DdlOfficeMulti option[value='" + sessOfficeId + "']").attr("disabled", true);
+            $("#DdlOfficeMulti option[value='" + sessOfficeId + "']").prop("selected", true);
+            $('#DdlOfficeMulti').multipleSelect('refresh');
+        }, 1000);
+
+            $('#optgroup').multipleSelect('setSelects', mlarr);
+            $('#ddlref').multipleSelect('setSelects', dlarr);
+            $('#ddlrefdispatch').multipleSelect('setSelects', disdocarr);
+            $('#ddlstatus').multipleSelect('setSelects', alarr);
+            $('#ddlstatusdispatch').multipleSelect('setSelects', disactarr);
+            $('#ddladdupdate').multipleSelect('setSelects', blarr);
+            $('#ddldep').multipleSelect('setSelects', deplarr);
+             $('#ddladdupdatestatusDiary').multipleSelect('setSelects', dairyblarr);
+        $('#ddladdupdatestatusDispatch').multipleSelect('setSelects', dispatchblarr);
+        $('#ddlProjectAction').multipleSelect('setSelects', projectblarr);
+        setTimeout(() => {
+            $('#DdlOfficeMulti').multipleSelect('setSelects', offlarr);
+        }, 3000);
+
+
+
+        //var depid = $('#hdnDepId').val();
+        //var offid = $('#hdnOffId').val();
+
+        //$('#DdlDepartment option[value='+depid+']').attr("selected", "selected");
+        //$('#DdlOffice option[value='+offid+']').attr("selected", "selected");
+
+
+
+        });
+
+
+    function addremovemenu(userid, menuid, checked, menuname) {
+        //alert(userid + " " + menuid + " " + checked + " " + menuname );
+        var pathurl = '';
+        if (checked == 1) {
+            //var pathurl = '/User/AddMenu';
+             pathurl='@Url.Action("AddMenu", "User")';
+            var opt = '<optgroup id=grp_' + menuname.replace(" ","") + ' label="' + menuname + '"><option id=sub_' + menuid +' value="' + menuid + '">' + menuname +'</option></optgroup>';
+            //var opt = '<option value="' + menuid + '">' + menuname +'</option>';
+            $('#ddladdupdate').append(opt).multipleSelect('refresh');
+        } else {
+
+          //  var pathurl = '/User/RemoveMenu';
+            pathurl='@Url.Action("RemoveMenu", "User")';
+            $("#ddladdupdate #sub_" + menuid).remove();
+
+            $('#ddladdupdate').multipleSelect('refresh');
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, MenuId: menuid },
+            success: function (result) {
+
+            }
+
+
+        });
+        $("#ddladdupdate #grp_" + menuname.replace(" ", "").replace(".", "")).remove();
+    }
+
+    function addremoveDoc(userid, docid, checked, type) {
+
+
+        //alert(userid + " " + menuid + " " + checked);
+        var pathurl = '';
+        if (checked == 1) {
+             pathurl='@Url.Action("AddDocument", "User")';
+            //var pathurl = '/User/AddDocument';
+        } else {
+            pathurl= '@Url.Action("RemoveDocument", "User")';
+            //var pathurl = '/User/RemoveDocument';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, DocTypeId: docid, type: type },
+            success: function (result) {
+
+            }
+
+
+        });
+
+    }
+
+
+    function addremoveAction(userid, Actionid, menuname, checked, type) {
+        //alert(menuname + " " + type);
+        //alert(userid + " " + menuid + " " + checked + " " + type);
+        var pathurl = '';
+        if (checked == 1) {
+            var opt = '<option id=sub_' + Actionid + ' value="' + Actionid + '">' + menuname + '</option>';
+
+            //var opt = '<option value="' + menuid + '">' + menuname +'</option>';
+            $('#ddladdupdatestatus' + type).append(opt).multipleSelect('refresh');
+              pathurl= '@Url.Action("AddAction", "User")';
+            //var pathurl = '/User/AddAction';
+        } else {
+            var ddlid = "#ddladdupdatestatus" + type + "  option[value = '"+ Actionid +"']";
+            $(ddlid).remove();
+            $('#ddladdupdatestatus' + type).multipleSelect('refresh');
+            //var pathurl = '/User/RemoveAction';
+             pathurl= '@Url.Action("RemoveAction", "User")';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, ActionId: Actionid, type: type },
+            success: function (result) {
+
+            }
+
+
+        });
+
+    }
+
+
+    function addremoveButton(userid, Buttonid, checked) {
+
+        //alert(userid + " " + menuid + " " + checked);
+        var pathurl = '';
+        if (checked == 1) {
+            //var pathurl = '/User/AddButton';
+             pathurl= '@Url.Action("AddButton", "User")';
+
+        } else {
+
+            //var pathurl = '/User/RemoveButton';
+               pathurl= '@Url.Action("RemoveButton", "User")';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, ButtonId: Buttonid },
+            success: function (result) {
+
+            }
+
+
+        });
+
+    }
+
+
+
+    function addremoveStatusButton(userid, Buttonid, checked, type) {
+        //ddladdupdatestatus
+        //alert(userid + " " + Buttonid + " " + checked + " " + type);
+        var pathurl = '';
+        if (checked == 1) {
+
+            //var pathurl = '/User/AddStatusButton';
+              pathurl= '@Url.Action("AddStatusButton", "User")';
+        } else {
+
+
+           // var pathurl = '/User/RemoveStatusButton';
+              pathurl= '@Url.Action("RemoveStatusButton", "User")';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, ButtonId: Buttonid, type: type },
+            success: function (result) {
+
+            }
+
+
+        });
+
+    }
+
+
+
+    function GetMultiOffice(userid, menuid, checked, menuname) {
+        var html = "";
+
+       // alert(userid + " " + menuid + " " + checked);
+        var pathurl = '';
+        if (checked == 1) {
+                 $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetOfficebyDepartmentId", "User")',
+                    datatype: "Json",
+                     data: { deptid: menuid },
+                     success: function (data) {
+                        // console.log(data);
+                         html = html+ '<optgroup id="' + menuid + '" label="' + menuname + '">';
+                        $.each(data, function (index, value) {
+                            html = html + '<option value="' + value.id + '" depid="'+menuid+'">' + value.name + '</option>';
+                        });
+                         html = html + "</optgroup>"
+                         $('#DdlOfficeMulti').append(html).multipleSelect('refresh');
+                    }
+                 });
+           // alert(html);
+            var pathurl = '/User/AddMenu';
+            //var opt = '<option value="' + menuid + '">' + menuname + '</option>';
+
+        } else {
+
+            var pathurl = '/User/RemoveMenu';
+            $("#DdlOfficeMulti #" + menuid).remove();
+            $('#DdlOfficeMulti').multipleSelect('refresh');
+        }
+
+        //$.ajax({
+        //    url: pathurl,
+        //    type: 'GET',
+        //    data: { UserId: userid, MenuId: menuid },
+        //    success: function (result) {
+
+        //    }
+
+
+        //});
+
+    }
+
+
+    function addremoveOffice(userid, menuid, checked, menuname) {
+        var depid = $("#DdlOfficeMulti option[value='" + menuid +"']").attr("depid");
+        //alert(userid + " " + menuid + " " + checked);
+        var pathurl = '';
+        if (checked == 1) {
+           // var pathurl = '/User/AddOffice';
+
+             pathurl= '@Url.Action("AddOffice", "User")';
+
+        } else {
+
+           // var pathurl = '/User/RemoveOffice';
+              pathurl= '@Url.Action("RemoveOffice", "User")';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, OfficeId: menuid, DeptId: depid },
+            success: function (result) {
+                //alert(result);
+            }
+
+
+        });
+
+    }
+
+
+    $('#chkactive').change(function () {
+        var act = $(this).is(':checked');
+        if (act == true) {
+            var active = 1;
+        } else {
+
+            var active = 0;
+        }
+        //alert(active);
+        var userid = $('#ddluser').val();
+       // var pathurl = '/User/Active';
+        //pathurl: '@Url.Action("Active", "User")';
+        $.ajax({
+             url: '@Url.Action("Active", "User")',
+          //  url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, act: active },
+            success: function (result) {
+
+            }
+
+
+        });
+    });
+
+
+
+    $('#chkuser').change(function () {
+
+        var act = $(this).is(':checked');
+        if (act == true) {
+            var active = 1;
+            $('#DivDep').hide();
+            $('#DivOff').hide();
+        } else {
+            $('#DivDep').show();
+            $('#DivOff').show();
+            var active = 0;
+        }
+
+        if (act == true) {
+           // var pathurl = '/User/GetAllUser';
+            // pathurl: '@Url.Action("GetAllUser", "User")';
+            $.ajax({
+                 url: '@Url.Action("GetAllUser", "User")',
+               // url: pathurl,
+                type: 'GET',
+                data: { act: active },
+                success: function (data) {
+
+                    $.each(data, function (index, value) {
+                        $('#ddluser').append('<option value="' + value.UserId + '">' + value.UserName + '</option>').multipleSelect('refresh');
+                    });
+                }
+            });
+        } else {
+            $('#ddluser').empty().append('<option value="">-Select-</option>').multipleSelect('refresh');
+        }
+
+    });
+
+        $(function () {
+            $('[type="date"]').prop('max', function () {
+                return new Date().toJSON().split('T')[0];
+            });
+            $('#txtfundamount').val('');
+            $('#filephoto').show();
+
+        });
+
+
+        $("#filephoto").change(function () {
+            CheckImage("#filephoto", "filephoto", "#PhotoLocation", "#PhotoFileName", "#imgphoto");
+        });
+
+        $("#filesignature").change(function () {
+            CheckImage("#filesignature", "filesignature", "#SignLocation", "#SignFileName", "#imgsign");
+        });
+
+        function CheckImage(input, name, hdnfileloc, hdnfilename,photoid) {
+
+
+            //let img = new Image()
+            //img.src = window.URL.createObjectURL($(input)[0].files[0])
+            //img.onload = () => {
+            //    alert(img.width + " " + img.height);
+            //}
+
+            var sizeInKB = $(input)[0].files[0].size / 1024;
+            var filename = $(input)[0].files[0].name;
+            var dots = $(input).val().split(".").length - 1;
+            var sizeLimit = 2048;
+
+
+            if ($(input).val().length > 0 && !(/\.(jpg|jpeg|bmp|png|gif)$/i).test($(input).val())) {
+                toastr.error('You must select file in format of jpg,jpeg,bmp,png,gif .');
+                $('#Photo').val('');
+                $('#Photo').focus();
+            }
+
+            else if (dots > 1) {
+                toastr.error('Invalid file Format.');
+                $(input).val('');
+                $(input).focus();
+                $(input + "hdn").val('');
+                $(input).val('');
+            }
+
+
+            else {
+                var inpt = "input[name=" + name + "]";
+
+                var inputElement1 = $(inpt);
+
+                readImage(inputElement1).done(function (base64Data) {
+
+                    $(input + "hdn").val(base64Data);
+                    $(hdnfileloc).val(base64Data);
+                    $(hdnfilename).val(filename);
+                    $(photoid).attr("src", base64Data);
+                    $(photoid).show();
+                });
+            }
+
+        }
+        function readImage(inputElement) {
+            var deferred = $.Deferred();
+            var files = inputElement.get(0).files;
+            if (files && files[0]) {
+                var fr = new FileReader();
+                fr.onload = function (e) {
+                    deferred.resolve(e.target.result);
+                };
+                fr.readAsDataURL(files[0]);
+            } else {
+                deferred.resolve(undefined);
+            }
+            return deferred.promise();
+        }
+
+
+        $("#fileupload1").click(function (event) {
+            $('#Actionfile').text('No');
+            $('#IsFile').val("N");
+
+            $('#fileupload1').fileupload({
+
+                dataType: 'json',
+                async: true,
+                url: "/eFile/UploadFundFiles",
+                autoUpload: true,
+
+                done: function (e, data) {
+                 var sim = setTimeout("hidevalueAction()", 1000);
+                  $('.file_nameEn').html(data.result.name);
+                $('#afile_nameEn').attr("href", "@path" + data.result.name);
+                    $('#removefileupload1').show();
+                }
+            }).on('fileuploadprogressall', function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.progress12 .progress-bar').css('width', progress + '%');
+                $('#removefileupload1').css('display', 'none');
+            });
+
+        });
+
+
+
+        function hidevalueForwd() {
+            $('.progress1 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueForwd()", 3000);
+        }
+
+        function hidevalueAction() {
+            $('.progress12 .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueAction()", 3000);
+        }
+
+        function hidevalueActionEnclosure() {
+            $('.progressEnclosure .progress-bar').fadeOut(500);
+            var sim = setTimeout("hidevalueActionEnclosure()", 3000);
+        }
+
+        function RemoveActionEnclosureFiles() {
+
+            $('.file_nameEn').html('');
+            $('.file_sizeEn').html('');
+            $('.progressEnclosure .progress-bar').css('width', '0%');
+            $("#removeUploadEnclosure").hide();
+            $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
+            $.post("/eFile/RemoveActionEnclosureFiles",
+                {
+                },
+                function (data) {
+                });
+
+        }
+
+
+
+        function removefileupload() { //ActionFile
+            $('.file_nameEn').html('');
+            $('.file_size1').html('');
+            $('.progress12 .progress-bar').css('width', '0%');
+            $("#removefileupload1").hide();
+            $('#fileuploadcontant1').css('border', '0px solid rgb(244, 239, 239)');
+            //$.post("/eFile/RemoveMlaForwardFiles",
+            //    {
+            //    },
+            //    function (data) {
+            //    });
+
+        }
+
+          function GetDepartment() {
+              var id = $("#DdlDepartment").val();
+              $('#DdlOffice').empty().append('<option value="0">-Select-</option>');
+              $('#ddluser').empty().append('<option value="">-Select-</option>').multipleSelect('refresh');
+              var userid = $("#ddluser").val();
+              if (userid != "") {
+
+                  $('.permission').show();
+              } else {
+
+                  $('.permission').hide();
+              }
+
+              if (id != "0") {
+                          $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetOfficebyDepartmentId", "User")',
+                    datatype: "Json",
+                    data: { deptid: id },
+                    success: function (data) {
+                        $.each(data, function (index, value) {
+                            $('#DdlOffice').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+
+                        //$('#DdlOffice').val(0);
+                    }
+                });
+              }
+
+    }
+
+
+
+    function GetUser() {
+        var deptid = $("#DdlDepartment").val();
+              var officeid = $("#DdlOffice").val();
+        $('#ddluser').empty().append('<option value="">-Select-</option>').multipleSelect('refresh');
+        var userid = $("#ddluser").val();
+        if (userid != "") {
+
+            $('.permission').show();
+        } else {
+
+            $('.permission').hide();
+        }
+
+        if (deptid != "0" && officeid != "") {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUserbyOfficeId", "User")',
+                datatype: "Json",
+                data: { deptid: deptid, officeid: officeid },
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $('#ddluser').append('<option value="' + value.id + '">' + value.name + '</option>').multipleSelect('refresh');
+                    });
+
+
+                }
+            });
+        } else {
+
+
+        }
+
+    }
+
+
+    function Getdata() {
+
+        var userid = $("#ddluser").val();
+
+        if (userid != "") {
+
+            $('#btngetuser').click();
+        } else {
+
+            $('.permission').hide();
+        }
+    }
+
+    function OpenDesModel() {
+        $("#DesModel").css("display", "block");
+    }
+
+    function closeInboxEdit() {
+        $("#DesModel").css("display", "none");
+
+    }
+
+    function AddDes() {
+        var userid = $("#ddluser").val();
+        var desoffice = $("#DdlDesOffice").val();
+        var des = $("#txtDes").val();
+
+        if (userid != "" && desoffice != "" && des != "") {
+             $.ajax({
+                 type: "Post",
+                 url: '@Url.Action("AddOfficeDesignation", "User")',
+                 datatype: "Json",
+                 data: { userid: userid, officeid: desoffice, designation: des },
+                 success: function (data) {
+                     alert("Designation Added");
+                     var des = $("#txtDes").val('');
+                     var desoffice = $("#DdlDesOffice").val(0);
+                 }
+             });
+
+        } else {
+            alert("Please Enter Details");
+        }
+
+    }
+</script>
+
+
+

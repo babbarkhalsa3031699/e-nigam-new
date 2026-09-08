@@ -1,0 +1,221 @@
+﻿@model CMNirdesh.Models.AgendaNoteViewModel
+
+<style>
+    .note-textarea {
+        height: 300px !important;
+        resize: vertical;
+    }
+</style>
+
+<div class="card p-3">
+    <h5 class="mb-">Add Agenda Note</h5>
+
+    <form id="noteForm">
+        @Html.HiddenFor(m => m.MeetingId)
+        <input type="hidden" id="NoteId" name="NoteId" />
+
+        <div class="form-group mb-2">
+            <label for="CategoryId">Category <span class="text-danger">*</span></label>
+            @Html.DropDownListFor(
+                         m => m.CategoryId,
+                         new SelectList(Model.Categories, "CategoryId", "CategoryName"),
+                         "-- Select Category --",
+                         new { @class = "form-control", id = "CategoryId", required = "required" }
+                     )
+        </div>
+        <button id="convertBtn" class="btn btn-primary" type="button">Convert to Raavi Unicode</button>
+
+
+        <div class="form-group mb-3">
+            <label for="NoteText">Note <span class="text-danger">*</span></label>
+            <textarea id="NoteText"
+                      name="NoteText"
+                      class="note-textarea"
+                      placeholder="Enter note here..."
+                      required="required"></textarea>
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+<hr />
+
+<div id="notesList">
+    @if (Model.AgendaNoteList != null && Model.AgendaNoteList.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="width:20% !important">Category</th>
+                    <th style="width: 60% !important">Note</th>
+                    <th style="width: 20% !important">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var note in Model.AgendaNoteList)
+                {
+                    <tr data-id="@note.NoteId" data-categoryid="@note.CategoryId">
+                        <td>@note.CategoryName</td>
+                        <td>@Html.Raw(note.NoteText)</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary editNote" title="Edit">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger deleteNote" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No notes added yet</p>
+    }
+</div>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script>
+
+  $(document).ready(function () {
+
+    // Initialize TinyMCE
+    tinymce.init({
+        selector: '#NoteText',
+        height: 300,
+        menubar: false,
+        plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount',
+        toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | code preview',
+        content_style: `
+        body, p, div {
+        content_style: "body { font-family: Asees, Raavi, Arial; font-size:14px }"
+        font-size: 12px !important;
+        line-height: 1.0 !important;
+    }
+`,
+        setup: function (editor) {
+            editor.on('change', function () {
+                editor.save(); // keep <textarea> in sync
+            });
+        }
+    });
+
+    // Ensure form submit binds after TinyMCE is ready
+    $("#noteForm").on('submit', function (e) {
+        e.preventDefault();
+
+        // Make sure TinyMCE content is synced
+        if (tinymce.get('NoteText')) {
+            tinymce.get('NoteText').save();
+        }
+
+        $.ajax({
+            url: '@Url.Action("SaveNote", "Attendance")',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function (res) {
+                if (res.success) {
+                    $("#notesList").html(res.notesHtml);
+                    $("#noteForm")[0].reset();
+                    $("#NoteId").val("");
+                    tinymce.get('NoteText').setContent(""); // clear editor
+                } else {
+                    alert("Error saving note.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", error);
+            }
+        });
+    });
+});
+
+    // Delete note
+    $(document).on("click", ".deleteNote", function (e) {
+        e.preventDefault();
+        var noteId = $(this).closest("tr").data("id");
+
+        $.post('@Url.Action("DeleteNote", "Attendance")',
+            { noteId: noteId, agendaId: @Model.MeetingId },
+            function (res) {
+                if (res.success) {
+                    $("#notesList").html(res.notesHtml);
+                    $("#noteForm")[0].reset();
+                    $("#NoteId").val("");
+                }
+            });
+    });
+
+    // Edit note
+    $(document).on("click", ".editNote", function (e) {
+        e.preventDefault();
+
+        var row = $(this).closest("tr");
+        var noteId = row.data("id");
+        var categoryId = row.data("categoryid");
+        var noteText = row.find("td:nth-child(2)").html().trim(); // use html to preserve formatting
+
+        // Fill form fields
+        $("#NoteId").val(noteId);
+        $("#CategoryId").val(categoryId);
+
+        // Set content into TinyMCE editor
+        if (typeof tinymce !== "undefined") {
+            tinymce.get("NoteText").setContent(noteText);
+        } else {
+            $("#NoteText").val(noteText); // fallback if TinyMCE not loaded
+        }
+
+        // Change button text to Update
+        $("#btnSave").text("Update");
+
+        // Scroll to form
+        $("html, body").animate({ scrollTop: $("#noteForm").offset().top }, 300);
+    });
+
+    function convertAseesToUnicode(input) {
+        const mapping = [
+            ["@@", "ੱ"], // Multi-character mappings first
+            ["Õ", "ਕ"], ["Ô", "ਖ"], ["Ö", "ਗ"], ["×", "ਘ"], ["Ý", "ਚ"], ["ß", "ਜ"],
+            ["à", "ਟ"], ["á", "ਠ"], ["â", "ਡ"], ["ã", "ਢ"], ["ä", "ਣ"], ["å", "ਤ"],
+            ["æ", "ਥ"], ["ç", "ਦ"], ["è", "ਧ"], ["é", "ਨ"], ["ê", "ਪ"], ["ë", "ਫ"],
+            ["ì", "ਬ"], ["í", "ਭ"], ["î", "ਮ"], ["ï", "ਯ"], ["ð", "ਰ"], ["ñ", "ਲ"],
+            ["ò", "ਵ"], ["ó", "ਸ਼"], ["ô", "ਸ"], ["õ", "ਹ"], ["ö", "ਲ਼"], ["÷", "ਖ਼"],
+            ["ø", "ਗ਼"], ["ù", "ਜ਼"], ["ú", "ਫ਼"], ["ü", "ੲ"], ["ý", "ੳ"],
+            // Vowels
+            ["A", "ਅ"], ["B", "ਆ"], ["C", "ਇ"], ["D", "ਈ"], ["E", "ਉ"], ["F", "ਊ"],
+            ["G", "ਏ"], ["H", "ਐ"], ["I", "ਓ"], ["J", "ਔ"],
+            // Matras
+            ["k", "ਾ"], ["l", "ਿ"], ["m", "ੀ"], ["n", "ੁ"], ["o", "ੂ"], ["p", "ੇ"],
+            ["q", "ੈ"], ["r", "ੋ"], ["s", "ੌ"], ["t", "ੰ"], ["u", "ੱ"], ["v", "਼"],
+            ["w", "ਿਂ"], ["x", "ੱ੍"],
+            // Special signs
+            ["(", "ਁ"], [")", "ਃ"], ["[", "੍"], ["]", "।"], ["{", "ੴ"], ["}", "ੵ"], ["`", "ਙ"], ["~", "ਞ"], ["#", "਩"], ["$", "ੰ"], ["%", "ੱ"], ["^", "ੱ"],
+            // Numbers
+            ["0", "੦"], ["1", "੧"], ["2", "੨"], ["3", "੩"], ["4", "੪"], ["5", "੫"], ["6", "੬"], ["7", "੭"], ["8", "੮"], ["9", "੯"]
+        ];
+
+        let output = input;
+        mapping.forEach(([aseesChar, unicodeChar]) => {
+            const regex = new RegExp(aseesChar.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
+            output = output.replace(regex, unicodeChar);
+        });
+
+        return output;
+    }
+
+    document.getElementById("convertBtn").addEventListener("click", function () {
+        alert('converted');
+        var text = tinymce.activeEditor.getContent({ format: 'text' });
+        alert(text);
+        var unicodeText = convertAseesToUnicode(text);
+        alert(unicodeText);
+        // Replace editor content with Unicode + Raavi font
+        tinymce.activeEditor.setContent("<p style='font-family: Raavi;'>" + unicodeText + "</p>");
+    });
+
+</script>

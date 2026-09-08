@@ -1,0 +1,348 @@
+﻿@model  CMNirdesh.Models.UserModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+
+}
+<style>
+    input[type="file"] {
+        display: none !important;
+    }
+</style>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        var table = $('#fundreport').DataTable({
+            "bLengthChange": false,
+            "pageLength": 50,
+            "searching": true,
+            order: [[0, 'desc']],
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+
+                {
+                    extend: 'pdfHtml5',
+                    orientation: 'landscape',
+                    customize: function (doc) {
+                        /* here I am aligning text in a column to the right */
+                        rowCount = table.rows({ search: 'applied' }).count() + 1;
+
+                        for (i = 0; i < rowCount; i++) {
+
+                            //doc.content[1].table.body[i][3].alignment = 'right';
+                            doc.content[1].table.body[i][3].alignment = 'right';
+                        };
+                        doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+                    },
+
+                    exportOptions: {
+                        columns: [1, 2, 3, 4, 5]
+                    }
+                }
+            ]
+            //bFilter: false,
+
+        });
+        //rowCount = table.rows().count() + 1;
+
+
+
+        $("#filter p").each(function (i) {
+            var dt = "";
+
+            if (i == 0) {
+                dt = 'Select';
+            } else if (i == 1) {
+                dt = 'Select';
+            }
+            var select = $('<select class="form-control"><option value="">' + dt + '</option></select>')
+                .appendTo($(this).empty())
+                .on('change', function () {
+                    var totalamount = 0;
+
+                    table.column(1)
+                        .search($(this).val())
+                        .draw();
+
+                    arowCount = table.rows({ search: 'applied' }).count();
+                    for (i = 0; i < arowCount; i++) {
+                        //alert((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replace("₹ ", ""));
+                        totalamount = parseInt(totalamount) + parseInt((table.rows({ search: 'applied' }).data()[i][4]).replaceAll(",", "").replaceAll("₹ ", ""));
+
+                    };
+                    $('#ttlamt').html(totalamount);
+                });
+
+            table.column(1).data().unique().sort().each(function (d, j) {
+
+                select.append('<option value="' + d + '">' + d + '</option>')
+            });
+        });
+
+    });
+
+
+    function getsanction(docid) {
+        $("#loader-wrapper").show();
+
+        var html = "";
+        var pathurl = '/Fund/GetSanctionDetails';
+
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+
+            data: { docId: docid },
+            success: function (result) {
+                //debugger;
+
+                console.log(result);
+                if (result.length > 0) {
+                    //debugger;
+
+                    for (var i = 0; i < result.length; i++) {
+                        ////debugger;
+                        var item = result[i];
+
+                        html = html + "<tr >";
+                        html = html + "<td  class='center td-data'>" + result[i].SanctionDate + "</td > ";
+                        html = html + "<td  class='right td-data'>" + result[i].AmountSanctioned + "</td > ";
+                        html = html + "<td  class='center td-data'>" + result[i].Subject + "</td > ";
+                        html = html + '<td  onclick="EditMlaDairy(' + result[i].RefId + ')" class="center td-data click">' + result[i].RefId + '</td > ';
+                        html = html + "</tr>";
+
+
+                    }
+                    //debugger;
+                    var heading = "Sanction Details -" + result[0].DocumentTypeName + '(' + result[0].Dept + ')';
+                    $('#sanctionheading').html(heading)
+                    $('#sanctionDetail').show();
+                    $('#sanctiondata').html(html);
+                    $("#row_" + docid).addClass('marked');
+                    $("#loader-wrapper").hide();
+                }
+
+                else {
+                    $('#sanctionDetail').hide();
+                    $('#sanctiondata').html('');
+                    $('#sanctionheading').html('')
+                    $("#loader-wrapper").hide();
+                    $(".marked").removeClass('marked');
+
+
+                }
+
+
+
+            }
+            ,
+            error: function (result) {
+                $("#loader-wrapper").hide();
+            }
+
+        });
+
+
+    }
+
+
+    function EditMlaDairy(ID) {
+        $('#loginModaldiarybody').html('');
+        $('#loginModalBody').html('');
+        $('#loginModalDispatchbody').html('');
+         var pathurl = '@Url.Action("EditMlaDairyForm", "References")';
+       // var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+            async: true,
+            data: { ID: ID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#loginModaldiary").modal('show');
+                    $('#loginModaldiarybody').html(data);
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+
+
+    function bindgrid() {
+        var year = $('#ddlyear').val();
+        window.location.href = "/Fund/FundReceipt?year=" + year;
+    }
+    function getbyID(UserId) {
+        debugger
+        $('#profilephoto').val('');
+        $('#signaturephoto').val('');
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Edit", "User")' + '?id=' + UserId,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                var obj = JSON.parse(data);
+
+                var data = obj._LstUser[0];
+                var event = new CustomEvent('partialValue', {
+                    detail: {
+                        username: data.UserName,
+                        password: data.Password,
+                        mobile: data.MobileNo,
+                        email: data.Email,
+                        name: data.Name,
+                        designation: data.Designation,
+                        department: data.DeptId,
+                        office: data.OfficeId,
+                        profilephoto: data.PhotoLocation,
+                        signaturephoto: data.SignLocation,
+                        userid: UserId,
+                        Apex: data.Apex,
+                        role: data.RoleId,
+                    }
+                   
+                });
+              
+
+                window.parent.document.dispatchEvent(event);
+
+
+            }
+        });
+    }
+
+    
+</script>
+
+
+ 
+    <div class="col-lg-12">
+        <!-- BAR CHART -->
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title">User List</h3>
+            </div>
+            <div class="card-body">
+                <div class="row" id="filter">
+                  
+                    <div class="col-sm-6 col-md-3 col-lg-3 mb-3">
+                        <label class="txt_label">Department:</label>
+                            <p class="pera_txt_design">
+                            </p>
+                    </div>
+                    
+                </div>
+                <div class="table-responsive">
+                    <table id="fundreport" class="table table-bordered  dataTable">
+                        <thead>
+                            <tr>
+                                @*
+                                <th class="center td-heading" display:none">Id</th>*@
+                                <th class="center td-heading">UserName</th>
+                                <th class="center td-heading">Department</th>
+                                <th class="center td-heading">Office</th>
+                                <th class="center td-heading">Name</th>
+                                <th class="center td-heading">Designation</th>
+                                <th class="center td-heading">Email</th>
+                                <th class="center td-heading">Mobile</th>
+                                @*
+                                <th class="center td-heading">Role</th>*@
+                                <th class="center td-heading">Photo & Sign</th>
+                                <th class="center td-heading">IsApex</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var mdl in Model._LstUser)
+                            {
+                            <tr id="row_@mdl.UserId">
+                                @*
+        <td>@mdl.UserId</td>*@
+                                <td>@mdl.UserName</td>
+                                <td>@mdl.DepartmentName</td>
+                                <td>@mdl.OfficeName</td>
+                                <td>@mdl.Name</td>
+                                <td>@mdl.Designation</td>
+                                <td>@mdl.Email</td>
+                                <td>@mdl.MobileNo</td>
+                                @*
+        <td>@mdl.RoleName</td>*@
+                                <td>
+                                    @if (mdl.Photo != "")
+                                    {
+                                        <img id="adocLoc" src="@Url.Content(@Model.fileacessingUrl+"/"+@mdl.Photo)" width="50" height="50" /><br />
+                                    }
+                                    @if (mdl.Signature != "")
+                                    {
+                                        <img id="adocLoc" src="@Url.Content(@Model.fileacessingUrl+"/"+@mdl.Signature)" width="100" height="50" />
+                                    }
+
+
+                                </td>
+                                <td class="center td-data" style="padding: 14px 4px !important">
+                                    <input type="checkbox" @(Convert.ToBoolean(mdl.Apex) ? "checked" : "") readonly onclick="return false;" />
+                                    @Html.HiddenFor(modelItem => mdl.Apex)
+                                </td>
+                                <td>
+                                    <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@mdl.UserId')">
+
+                                        <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                    </a>
+                                    <a data-rel="tooltip" class="red tooltip-error" onclick="DeleteUserRecord('@mdl.UserId')">
+                                        <i class="ace-icon fa fa-trash bigger-130"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </div>
+
+
+
+
+
+
+
+
+
+

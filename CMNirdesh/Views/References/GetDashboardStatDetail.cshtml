@@ -1,0 +1,95 @@
+﻿
+@model CMNirdesh.Models.LstDashboard
+
+
+<script>
+
+    $('#statdiv').DataTable({
+        paging: true,
+        searching: true,
+        bInfo: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'excel', 'print'
+        ],
+        aaSorting: [[0, 'desc']]
+    });
+
+
+
+</script>
+@if (Model._LstStatDetail.Count > 0)
+{
+    if (Model._LstStatDetail != null)
+    {
+
+        <div style="font-family: 'Trebuchet MS', sans-serif;  margin-bottom: 20px; margin-left: 12px; margin-right: 12px;"> <h4>@Model.OutLineHeader</h4></div>
+
+        <div style="font-family: 'Trebuchet MS', sans-serif; margin-bottom: 20px; margin-left: 12px; margin-right: 12px;">
+
+            <table id="statdiv" class="cell-border">
+                <thead>
+                    <tr>
+                        @*<th style="color:black" class="text-center cell-border">Sr.No</th>*@
+                        <th style="color:black" class="text-center cell-border">Subject</th>
+                        <th style="color:black" class="text-center cell-border">Created Date</th>
+                        <th style="color:black">Created By</th>
+                        <th style="color:black" class="text-center cell-border">Action Date</th>
+                        <th style="color:black" class="text-center cell-border">Action Taken</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var mdl1 in Model._LstStatDetail)
+                    {
+
+                        <tr>
+                            @*<td class="td-data text-center " style="width:5%;">
+                                @mdl1.SrNo
+
+                            </td>*@
+
+                            <td class="td-data" style="width:30%;">
+                                @mdl1.Subject
+
+                            </td>
+                            <td class="td-data text-center" style="width:13%;">
+                                @mdl1.LetterDate.ToString("dd/MM/yyyy")
+
+                            </td>
+                            <td class="td-data" style="width:20%;">
+                                @mdl1.CreatedBy
+
+                            </td>
+
+                            <td class="td-data text-center">
+
+                                @mdl1.ActionDate.ToString("dd/MM/yyyy")
+
+                            </td>
+
+                            <td class="td-data text-center">
+                                @mdl1.ActionTaken
+
+
+                            </td>
+                        </tr>
+
+
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
+    }
+    else
+    {
+        <span>No Records found</span>
+    }
+
+}
+else
+{
+    <span>No Records found</span>
+}

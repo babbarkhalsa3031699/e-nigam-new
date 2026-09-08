@@ -1,0 +1,29 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+       
+        $("#thirdLinkMenu").html('References >> Diary');
+        $("#loader-wrapper").show();
+       // $('#MainDiv').html('');
+        $.ajax({
+            async: true,
+            url: "/References/MLADiaryReport",
+            type: 'GET',
+                success: function (data) {
+                   // alert("MLA DiaryReport Called");
+                   // alert(data);
+                $('#MainDiv').html(data);
+                $("#MainDiv").css("display", "block");
+                //  ClearControls();
+                $("#loader-wrapper").hide();
+
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        })
+    })
+</script>
+

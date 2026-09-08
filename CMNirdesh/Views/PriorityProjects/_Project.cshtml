@@ -1,0 +1,193 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+}
+<div class="row pb-3">
+    <div class="col-lg-6">
+        @using (Html.BeginForm("SaveProject", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "PriorityProjectSaveForm", enctype = "multipart/form-data" }))
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @if (@Model.mode != "Add")
+                    {
+                        <span style="font-weight: 500; font-size: 12pt; color: #707070;">
+                            Project ID: <span id="spnProjectid"> @Model.PromiseRefId </span>
+                        </span><br />
+                    }
+                    <span style="font-weight: 500; font-size: 12pt; color: #707070;">
+                        Project Name
+                    </span>
+                </div>
+                <div class="col-md-12 mt-2">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.PromiseId, new { id = "PromiseId" })
+                    @Html.HiddenFor(model => model.mode, new { id = "modeId" })
+                    @Html.HiddenFor(model => model.DeptId)
+                    @Html.TextAreaFor(model => model.PromiseName, new { @placeholder = "Enter Project Name", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "1", @id = "txtprojectName", @style = "min-height:100px !important;" })
+
+                    @Html.ValidationMessageFor(model => model.PromiseName)
+
+                </div>
+            </div>
+            <div class="row mrgn_tp pt-3">
+                <div class="col-md-12">
+                    <div class="pull-right c_btn">
+                        @if (@Model.mode == "Add")
+                        {
+                            <button id="saveProject" onclick="saveproject(); return false;" class="btn btn-sm btn-success">
+                                <i class="ace-icon fa fa-floppy-o bigger-125"></i>Save
+                            </button>
+                        }
+                        else
+                        {
+                            <button id="saveProject" onclick="saveproject(); return false;" class="btn btn-sm btn-success">
+                                <i class="ace-icon fa fa-floppy-o bigger-125"></i>Update
+                            </button>
+                        }
+                        <button type="reset" id="btnreset" class="btn btn-sm btn-danger">
+                            <i class="ace-icon fa fa-times bigger-125"></i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-lg-6">
+        <div class="col-md-12">
+            <span style="font-weight: 500; font-size: 12pt; color: #707070;">
+                Projects List
+            </span>
+        </div>
+        <div class="col-md-12" style="height:350px;overflow:auto">
+            @if (Model != null)
+            {
+                <table id="tableProjects" class="table table2" style="vertical-align:top">
+                    <tbody id="tbodyProjectsList">
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    function getProjectsList(ProjectId) {
+        $("#loader-wrapper").show();
+        $('#tbodyProjectsList').html('');
+        var html = '';
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getProjectsList", "PriorityProjects")',
+            async: true,
+            data: { ProjectId: ProjectId },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        //var onclickString = 'DeleteDeptBtn("' + deptId + '"); return false;';
+                        html = "<tr role='row'><td>" +
+                            "<a class='loader btn-link' title='Click to Update Project Name' onclick='getProjectDetail(" + item.Value + "); return false;'>" + item.Text + "</a>" +
+                            "</td></tr > ";
+                        $('#tbodyProjectsList').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Projects Not Available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectsList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+    }
+    function getProjectDetail(projectid) {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        url: '@Url.Action("getProjectDetails", "PriorityProjects")',
+        datatype: "Json",
+        contentType: "application/json; charset=utf-8",
+        data: { projectid: projectid },
+        success: function (response) {
+            if (response != null) {
+                $('#txtprojectName').val(response[0].PromiseName);
+                $('#modeId').val('Edit');
+                $('#PromiseId').val(projectid);
+                $('#spnProjectid').text(response[0].PromiseRefId);
+                $("#loader-wrapper").hide();
+                $("#projectSaveHead").text("Update Project");
+                $("#saveProject").text("Update");
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+        });
+    }
+    function saveproject() {
+        try {
+            if ($("#txtprojectName").val() == "") {
+                alert("Please Enter Project Name");
+                return false;
+            }
+            else
+            {
+            var projectid = $('#PromiseId').val();
+            if (confirm("Are you sure you want to save ?")) {
+                $("#loader-wrapper").show();
+                var action = $("#PriorityProjectSaveForm").attr("action");
+                if ($("#PriorityProjectSaveForm").attr("enctype") == "multipart/form-data") {
+                    var dataString = new FormData($("#PriorityProjectSaveForm").get(0));
+                    processData = false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: action,
+                    async: true,
+                    data: dataString,
+                    dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        $("#loader-wrapper").hide();
+                        if (data == "1") {
+                            alert("Project added successfully");
+                            $("#txtprojectName").val('')
+                            $("#saveProject").text("Save");
+                            $("#projectSaveHead").text("New Project");
+                            getProjectsList(projectid);
+                            return false;
+                        }
+                        else {
+                            alert("Some error occurred,please try again");
+                            return false;
+                            e.preventDefault();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#loader-wrapper").hide();
+                        alert("Some error occurred,please try again2");
+                    },
+                });
+            }
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again3");
+        }
+    }
+</script>

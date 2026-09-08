@@ -1,0 +1,600 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@using CMNirdesh.Models
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+    string SiteName = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceName"];
+}
+
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/datatables/jszip.min.js"></script>
+<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+<script src="~/Scripts/datatables/vfs-fonts.js"></script>
+<script src="~/Scripts/datatables/buttons.print.min.js"></script>
+<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-sortable.js"></script>
+<script src="https://cdn.datatables.net/rowreorder/1.3.2/js/dataTables.rowReorder.min.js"></script>
+
+<link href="https://cdn.datatables.net/rowreorder/1.3.2/css/rowReorder.dataTables.min.css" rel="stylesheet" />
+
+
+<script>
+    function refresh() {
+        var agendid = $("#ddlagenda").val();
+        if (agendid != "") {
+            var categories = [];
+            $('#tableRef').DataTable().rows().every(function (rowIdx, tableLoop, rowLoop) {
+                // categories.push(this.data().at(1));
+                //console.log(rowIdx);
+                //console.log(this.data().at(1));
+
+                var rowid = this.data().at(1);
+                var index = $('#ser_' + rowid).val();
+
+                categories.push({
+                    AgendaRecordId: rowid,
+                    Index: index
+                });
+
+
+
+            });
+
+
+            var fd = JSON.stringify(categories)
+            console.log(fd);
+            $("#hdnAgendaDetails").val(fd);
+            $("#hdnrefresh").val(1);
+            $("#btnrefresh").click();
+
+        }
+
+
+
+    }
+
+    function generateindex() {
+        var i = 1;
+        //var row1 = $("#tableRef").DataTable().row(0).data();
+        //alert(firstRow[1]);
+        //var firstindex = $("#ser_" + firstRow[1]).val();
+        //if (firstindex != "") {
+        //    i = firstindex;
+        //}
+        $("#tableRef").DataTable().rows().every(function () {
+            var data = this.data();
+            //console.log(data);
+            //console.log(data[1]);
+          
+            if (i == 1) {
+                var firstindex = $("#ser_" + data[1]).val();
+                if (firstindex != "") {
+                    i = firstindex;
+                }
+            }
+            var val = $("#ser_" + data[1]).val(i);
+            i++;
+        });
+    }
+
+
+    function generateindex1() {
+        var i = 1;
+        $("#tableRef").DataTable().rows().every(function () {
+            var data = this.data();
+            if (i == 1) {
+                var firstindex = $("#serTwo_" + data[1]).val();
+                if (firstindex != "") {
+                    i = firstindex;
+                }
+            }
+            var val = $("#serTwo_" + data[1]).val(i);
+            i++;
+        });
+    }
+
+     function freeze() {
+     var result = confirm("Are you sure you want to Freeze Agenda?");
+     if (result) {
+         var agendid = $("#ddlagenda").val();
+         if (agendid != "") {
+             var categories = [];
+
+
+             $('#tableRef').DataTable().rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+                 //categories.push(this.data().at(1));
+                 //console.log(rowIdx);
+                 //console.log(this.data().at(1));
+                 var rowid = this.data().at(1);
+                 var index = $('#ser_' + rowid).val();
+
+                 categories.push({
+                     AgendaRecordId: rowid,
+                     Index: index
+                 });
+
+
+
+             });
+
+
+             var fd = JSON.stringify(categories)
+             $("#hdnAgendaDetails").val(fd);
+             $("#hdnfreezed").val(1);
+         }
+
+     }
+
+ }
+
+ function SaveMeetingIndex() {
+     var result = confirm("Are you sure you want to Save?");
+     if (result) {
+         var agendid = '@Model.agendaId';
+         if (agendid != "") {
+             var categories = [];
+
+
+             $('#tableRef').DataTable().rows().every(function (rowIdx, tableLoop, rowLoop) {
+                
+                 //categories.push(this.data().at(1));
+                 //console.log(rowIdx);
+                 //console.log(this.data().at(1));
+                 
+                 var rowid = this.data().at(1);
+                 var index = $('#ser_' + rowid).val();
+                 var indexTwo = $('#serTwo_' + rowid).val();
+              
+                 categories.push({
+                     AgendaRecordId: rowid,
+                     Index: index,
+                     IndexTwo: indexTwo,
+                     AgendaId: agendid
+                 });
+
+
+
+             });
+
+
+             var fd = JSON.stringify(categories)
+          
+             $('#tableRef').DataTable().clear().destroy();
+              $.ajax({
+                 type: "POST",
+                  data: fd,
+                 url: "@Url.Action("SaveIndex", "References")",
+                 contentType: "application/json"
+                    }).done(function (result) {
+                 alert("Updated Successfully");
+                 $("#MeetingSetting").html(result);
+                        GetIncludedRef();
+                    });
+
+
+
+             $("#hdnAgendaDetails").val(fd);
+             $("#hdnfreezed").val(1);
+         }
+     } else {
+         return false;
+     }
+
+
+ }
+
+ function Delete (id){
+
+     var result = confirm("Are you sure you want to delete?");
+     if (result) {
+                if (id != "") {
+
+         //var pathurl = '/Agenda/DeleteAgendaDetail';
+
+         $.ajax({
+             type: "GET",
+             url: '@Url.Action("DeleteAgendaDetail", "Agenda")',
+
+             async: true,
+             data: { AgendaDetailId: id },
+             beforeSend: function () {
+                 $('#loader-wrapper').show();
+             },
+             success: function (data) {
+
+                 $("#loader-wrapper").hide();
+
+                 if (data) {
+                     $("#tr_"+id).hide();
+
+                 } else { alert("error"); }
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+                 alert(xhr.responseText);
+                 alert(thrownError);
+             },
+             complete: function (results) {
+                 $('#loader-wrapper').hide();
+             }
+         });
+     }
+     }
+
+
+ }
+
+
+ function voting(id, isvote) {
+     if (id != "") {
+
+         //var pathurl = '/Agenda/LockUnlockAgenda';
+
+         $.ajax({
+             type: "GET",
+              url: '@Url.Action("VotingAgenda", "Agenda")',
+             async: true,
+             data: { AgdId: id, IsVote: isvote },
+             beforeSend: function () {
+                 $('#loader-wrapper').show();
+             },
+             success: function (data) {
+
+                 $("#loader-wrapper").hide();
+
+                 if (data) {
+                     if (isvote) {
+                         $("#unf_" + id).show();
+                         $("#fr_" + id).hide();
+                     } else {
+                         $("#unf_" + id).hide();
+                         $("#fr_" + id).show();
+                     }
+                     // $("#tr_" + id).hide();
+
+                 } else { alert("error"); }
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+                 alert(xhr.responseText);
+                 alert(thrownError);
+             },
+             complete: function (results) {
+                 $('#loader-wrapper').hide();
+             }
+         });
+     }
+
+ }
+</script>
+
+<body>
+    <div class="AgendaRefDetail" id="sortdiv">
+        <div class="count-header p-2 row">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12 p-0">
+                    <span style="font-size: 18px;" id="DocumentTypename"></span>
+                </div>
+
+                <div class="col-lg-6 p-2">
+                    @if (Model._MeetingSettingReferences.Count > 0)
+                    {
+                    if (Model.MeetingSetting.freezeButton)
+                    {
+                    <div class="pull-right ml-2">
+                        <div class="">
+                            <input id="btnfreeze" type="button" name="btnfreeze" value="Save" class="btn btn-primary" onclick="return SaveMeetingIndex()" />
+                            
+                        </div>
+                     
+                    </div>
+                    }
+                    }
+
+                    <span class="badge badge-danger pull-right count-font ml-2">Count: &nbsp; <span class="" id="DiaryCount"> @Model.MeetingSetting.Count</span></span>
+                    @if (Model.MeetingSetting.FileRefId != "")
+                    {
+                    <span class="badge badge-danger pull-right count-font">File RefId: &nbsp; <span class="" id="FileCount"> @Model.MeetingSetting.FileRefId</span></span>
+                    } 
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="table-responsive" style="margin-top: 10px;">
+            <table class="table table-bordered" id="tableRef">
+                <thead>
+                    <tr class="table-heading">
+                        <th class="hideshow td-heading" style="width:3%;"><span class="font-weight-bold"></span></th>
+                        <th class="hideshow td-heading hide" style="width:3%;"><span class="font-weight-bold"></span></th>
+                        <th class="td-heading" style=" width:25%;">
+                            <span class="font-weight-bold">Serial</span>
+                            <span class="font-weight-bold generate" onclick="generateindex();">Generate</span>
+                        </th>
+                        <th class="td-heading" style=" width:25%;">
+                            <span class="font-weight-bold">Annual Item No.</span>
+                            <span class="font-weight-bold generate" onclick="generateindex1();">Generate</span>
+                        </th>
+                        <th class="td-heading" style=" width:25%;"><span class="font-weight-bold">Subject</span></th>
+                        <th class="td-heading" style=" width: 6%;"><span class="font-weight-bold ">Release Date </span></th>
+                        <th class="td-heading" style=" width: 15%;"><span class="font-weight-bold">Department </span></th>
+                        @*<th class="td-heading" style=" width: 25%;"><span class="font-weight-bold">Brief of Last Action Taken</span></th>*@
+                        <th class="td-heading" style=" width: 10%;"><span class="font-weight-bold">Status </span></th>
+                        <th class="td-heading" style=" width: 6%;"><span class="font-weight-bold">Ref.Id <br />Date </span></th>
+                        @if (SiteName == "CMNirdesh")
+                        {
+                            <th class="td-heading" style=" width: 6%;"><span class="font-weight-bold">Priority </span></th>
+                            <th class="td-heading" style=" width: 6%;"><span class="font-weight-bold">Term </span></th>
+                        }
+                        <th class="td-heading" style=" width: 6%; display:none"><span class="font-weight-bold">Subject Details </span></th>
+                        @if (SiteName == "MC")
+                        {
+                            <th class="td-heading"><span class="font-weight-bold">Voting</span></th>
+                        }
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int b = 1;}
+                    @foreach (var mdl in Model._MeetingSettingReferences)
+                    {
+
+                        <tr id="tr_@mdl.Id">
+                            <td class="grab td-data"><span style="display:none">@b</span>  <i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i> </td>
+                            <td class="td-data hide">@mdl.Id</td>
+                            @*@if (!Model.freezeButton)
+        {
+            <td class="td-data serial" id="ser_@mdl.Id">@mdl.SerialIndex</td>
+        }
+        else
+        {
+            <td class="serial td-data"><input type="text" id="ser_@mdl.Id" value="@mdl.SerialIndex" max="8" class="form-control" style="width:70px" onkeypress="return isNumberKey(this,event)" /></td>
+        }*@
+                            <td class="serial td-data"><input type="text" id="ser_@mdl.Id" value="@mdl.SerialIndex" max="8" class="form-control" style="width:70px" onkeypress="return isNumberKey(this,event)" /></td>
+                            <td class="serial td-data"><input type="text" id="serTwo_@mdl.Id" value="@mdl.SerialIndexTwo" max="8" class="form-control" style="width:70px" onkeypress="return isNumberKey(this,event)" /></td>
+                            <td class="td-data" id="sub_@mdl.Id">@mdl.Subject</td>
+                            <td class="td-data">@mdl.LetterDate</td>
+                            @if (SiteName == "MC")
+                            {
+                                <td class="td-data">@mdl.ToOffice</td>
+                            }
+                            else
+                            {
+                                <td class="td-data">@mdl.FromOffice</td>
+                            }
+
+                            @*<td class="td-data">
+            @mdl.ActionDescription
+        </td>*@
+                            <td class="td-data">
+                                @mdl.StatusName  <br> @mdl.ActionTakenDate  <br>
+                                @{
+
+                                    string Enpath1 = @mdl.attachedfile; }
+                                @if (!string.IsNullOrEmpty(@mdl.attachedfile))
+                                {
+                                    <a href="@Enpath1" target="_blank" class="text-decoration-none">
+                                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                    </a>
+                                }
+                                else
+                                {
+                                }
+                            </td>
+                            <td class="td-data">
+                                @if (@mdl.RefId != "0")
+                                {
+                                    @*<a data-rel='tooltip' class='green tooltip-success' href='#' id='@mdl.RefId' onclick=EditMlaDispatchAgenda(@mdl.RefId)>
+                    @mdl.RefId
+                </a>*@
+                                    @mdl.RefId
+                                } <br> @mdl.CreatedDate
+                            </td>
+                            @if (SiteName == "CMNirdesh")
+                            {
+                                <td class="td-data">
+                                    @if (@mdl.ReferencePriorityType != "0")
+                                    {
+                                        @mdl.ReferencePriorityType
+                                    }
+                                </td>
+                                <td class="td-data">
+                                    @if (@mdl.ReferenceTerm != "0")
+                                    {
+                                        @mdl.ReferenceTerm
+                                    }
+                                </td>
+                            }
+                            <td class="td-data" style="display:none">
+                                <a onclick="ViewSB('@mdl.Id')">View</a>
+                                <textarea id="sb_@mdl.Id" style="display:none">@mdl.SubjectDetails</textarea>
+
+                            </td>
+                            @if (SiteName == "MC")
+                            {
+                                <td>
+
+                                    @if (Model.MeetingSetting.freezeButton)
+                                    {
+                                        <a data-rel="tooltip" id="unf_@mdl.Id" style="@(@mdl.Voting == 1 ? " " : " display:none")" class="tooltip-primary" title="Yes" onclick="voting('@mdl.Id',0);">
+                                            <i class="ace-icon fa fa-thumbs-up bigger-130 voteyes"></i>
+                                        </a>
+
+
+                                        <a data-rel="tooltip" id="fr_@mdl.Id" style="@(@mdl.Voting == 1 ? " display:none" : "" )" class="tooltip-primary" title="No" onclick="voting('@mdl.Id',1);">
+
+                                            <i class="ace-icon fa fa-thumbs-down bigger-130" style="color: grey; font-size: 28px !important; "></i>
+
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <i class="ace-icon fa fa-thumbs-up bigger-130 voteyes" style="@(@mdl.Voting == 1 ? " " : " display:none")"></i>
+                                        <i class="ace-icon fa fa-thumbs-down bigger-130 voteno" style="@(@mdl.Voting == 1 ? " display:none" : "" )"></i>
+
+                                    }
+
+
+                                </td>
+                            }
+
+                        </tr>
+                        b++;
+                    }
+                </tbody>
+            </table>
+        </div>
+     
+
+
+
+    </div>
+</body>
+
+<head>
+
+
+    @*<script src="~/Scripts/jquery-sortable.js"></script>*@
+
+</head>
+<style>
+    .dt-rowReorder-moving td:first-child .fa-arrow-up {
+        color: green;
+    }
+
+    .dt-rowReorder-moving td:first-child .fa-arrow-down {
+        color: red;
+    }
+
+    .dt-rowReorder-float-parent {
+        z-index: 9999999 !important;
+    }
+
+    .serial {
+        width: 4%;
+    }
+
+    .grab {
+        cursor: grab;
+    }
+
+
+    /*.main-content.cm_fund table.table thead tr th, .main-content .cm_fund table.table thead tr th {
+        background-color: #ccd1dd !important;
+    }*/
+
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        opacity: 0.5;
+        top: 0;
+        z-index: 2000;
+    }
+
+    .sorted_table tr.placeholder {
+        display: block;
+        background: red;
+        position: relative;
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    .sorted_table tr {
+        cursor: pointer;
+    }
+
+        .sorted_table tr.placeholder::before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 5px solid transparent;
+            border-right-color: transparent;
+            border-right-style: solid;
+            border-right-width: 5px;
+            border-left-color: transparent;
+            border-left-color: red;
+            margin-top: -5px;
+            left: -5px;
+            border-right: none;
+        }
+
+    .dragged {
+        background-color: black !important;
+    }
+
+    #btnaddref {
+        float: right;
+    }
+
+    #includedivbutton {
+        float: right;
+    }
+
+    .voteyes {
+        color: green;
+        font-size: 28px !important
+    }
+
+    .voteno {
+        color: red;
+        font-size: 28px !important;
+        margin-left: 10px
+    }
+
+    .generate {
+        color: green !important;
+        cursor: pointer;
+    }
+
+    .noadded {
+        background-color: #b5b5b5 !important;
+    }
+
+    #tableRef {
+        width: 100% !important;
+    }
+
+    .dataTables_length {
+        display: none !important;
+    }
+
+    .dataTables_filter {
+        display: none !important;
+    }
+    #tableRef_info{
+        display:none;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('#tableRef').DataTable({
+            rowReorder: true,
+            paging: false,
+            Destroy: true
+        });
+    });
+</script>
+
+
+
+
+
+
+
+

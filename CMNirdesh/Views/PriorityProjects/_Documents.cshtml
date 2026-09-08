@@ -1,0 +1,307 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+}
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            @using (Html.BeginForm("SaveDocument", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "uploadDocForm", enctype = "multipart/form-data" }))
+            {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.PromiseId)
+            @Html.HiddenFor(model => model.DeptId)
+            @Html.HiddenFor(model => model.worksdatalist.ProjectId, new { @Id = "hdnDocWorkId" })
+            @Html.HiddenFor(model => model.worksdatalist.mode)
+            @Html.HiddenFor(model => model.worksdatalist.DeptId)
+            @Html.HiddenFor(model => model.ProjectId)
+            @Html.HiddenFor(model => model.ProgrammeDocsId)
+            @Html.HiddenFor(model => model.mode)
+            <div class="row mrgn_tp mt-2">
+                <div class="col-12">
+                    <h4 class="control-label lbl_txt text-left" style="font-size: 12pt;"> Document Details</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.DocumentTitle, new { @class = "form-control", @placeholder = "Document Title", @autocomplete = "off",@id="txtTitle" })
+
+                    @Html.ValidationMessageFor(model => model.DocumentTitle)
+
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <input type="file" name="projectDoc" id="projectDoc" accept=".pdf,.xlsx,.doc,.xls" />
+                    @Html.HiddenFor(model => model.DocumentLocation)
+                    @Html.HiddenFor(model => model.DocumentFileName)
+                    <input type="hidden" id="projectDochdn" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12" style="margin-top:30px;">
+                    <button id="savebtn" class="btn btn-sm btn-danger" onclick="SaveDoc();return false;">
+                        <i class="fa fa-upload"></i>
+                        Upload
+                    </button>
+                </div>
+            </div>
+            }
+            <div class="row">
+                <div class="col-lg-12 mt-4">
+                    <label for="inputinfo" class="control-label lbl_txt text-danger" style="font-size: 14pt;">
+                        <b>Uploaded Documents</b>
+                    </label>
+                </div>
+                <div class="col-lg-12 mt-4" style="height: 300px; overflow: auto;">
+                    @if (Model != null)
+                    {
+                    <table id="tblDocuments">
+                    </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    $("#projectDoc").change(function () {
+        CheckDocument("#projectDoc", "projectDoc", "#DocumentLocation", "#DocumentFileName");
+    });
+    function CheckDocument(input, name, locationid, filenameid) {
+        var sizeInKB = $(input)[0].files[0].size / 1024;
+        var filename = $(input)[0].files[0].name;
+        var dots = $(input).val().split(".").length - 1;
+        var sizeLimit = 2048;
+        if (sizeInKB > sizeLimit) {
+            alert('File size must be less than 2MB .');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $(locationid).val('');
+        }
+        else if (dots > 1) {
+            alert('Invalid file Format.');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $(locationid).val('');
+        }
+
+
+        else {
+            var inpt = "input[name=" + name + "]";
+
+            var inputElement1 = $(inpt);
+
+            readDocument(inputElement1).done(function (base64Data) {
+                $(input + "hdn").val(base64Data);
+                $(locationid).val(base64Data);
+                $(filenameid).val(filename);
+                $("#adocLoc").hide();
+            });
+        }
+
+    }
+    function readDocument(inputElement) {
+        var deferred = $.Deferred();
+        var files = inputElement.get(0).files;
+        if (files && files[0]) {
+            var fr = new FileReader();
+            fr.onload = function (e) {
+                deferred.resolve(e.target.result);
+            };
+            fr.readAsDataURL(files[0]);
+        } else {
+            deferred.resolve(undefined);
+        }
+        return deferred.promise();
+    }
+</script>
+<script>
+    function SaveDoc() {
+        try {
+            if ($("#txtTitle").val() == "") {
+                alert("Please Enter Document Title");
+                return false;
+            }
+            //else if ($($('#projectDoc').get(0).files.length === 0)) {
+            //    alert("Please Select Document");
+            //    return false;
+            //}
+            else {
+                if (confirm("Are you sure you want to save ?")) {
+                    $("#loader-wrapper").show();
+                    var action = $("#uploadDocForm").attr("action");
+                    if ($("#uploadDocForm").attr("enctype") == "multipart/form-data") {
+                        var dataString = new FormData($("#uploadDocForm").get(0));
+                        processData = false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: action,
+                        async: true,
+                        data: dataString,
+                        dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+                            if (data == "1") {
+                                //loadDocuments();
+                                //$('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                                alert("Document has been uploaded successfully");
+                                $('#tblDocuments').html('');
+                                loadDocuments();
+                                return false;
+                            }
+                            else {
+                                $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                                alert("Some error occurred,please try again");
+                                return false;
+                                e.preventDefault();
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $("#loader-wrapper").hide();
+                            $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                            alert("Some error occurred,please try again");
+                            //// window.location.reload(true);
+                        },
+                    });
+                }
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+    function DeleteDocument(docId) {
+        try {
+            $("#loader-wrapper").show();
+            var workID = $('#hdnConstWorkId').val();
+            var ProjectId = $('#hdnConstProjectId').val();
+            var DeptId = $('#hdnConstDeptId').val();
+            if (confirm("Are you sure you want to delete document ?")) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteDocument", "PriorityProjects")',
+                    async: true,
+                    data: { ProjectId: ProjectId, deptID: DeptId, workID: workID, docId: docId },
+                    beforeSend: function () {
+                        $('#loader-wrapper').show();
+                    },
+                    success: function (data) {
+                        $("#loader-wrapper").hide();
+                        if (data == "1") {
+                            $('#tblDocuments').html('');
+                            loadDocuments();
+                            return false;
+                        }
+                        else {
+                            $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                            alert("Some error occurred,please try again");
+                            return false;
+                            e.preventDefault();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#loader-wrapper").hide();
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again");
+                        //// window.location.reload(true);
+                    },
+                });
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+    function loadDocuments() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnDocWorkId').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkDocuments", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<tr><td>" +
+                            "<a href='@url/mlaDiary/" + item.DocumentLocation + "' target='_blank'>" + item.DocumentTitle + "</a>" +
+                            "</td><td style='padding-left: 10px;'>" +
+                            "<a class='loader text-danger' title='Delete Document' onclick='DeleteDocument(" + item.ProgrammeDocsId + ");return false;'><i class='fa fa-times'></i></a>" +
+                            "</td></tr > ";
+                        $('#tblDocuments').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Documents not added with this work" +
+                        "</td>'</tr > ";
+                    $('#tblDocuments').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "Documents not added with this work" +
+                    "</td>'</tr > ";
+                $('#tblDocuments').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function closePopup() {
+        $("#modalAddDocument").hide();
+        $("#modalImages").hide();
+        $("#modalAddConstituency").hide();
+        $("#myImgModal").hide();
+        $("#modalPromise").hide();
+        $("#modalDepartment").hide();
+        loadWorkDocumentsList();
+    }
+    function loadWorkDocumentsList() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnDocWorkId').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkDocuments", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                $('#documentsList').html('');
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<li>" +
+                            "<a href='@url/mlaDiary/" + item.DocumentLocation + "' target='_blank' title='Click to View Document'>" + item.DocumentTitle + "</a>" +
+                            "<a class='loader text-danger' title = 'Delete Document' style = 'float:right' onclick='DeleteWorkDocument(" + item.ProgrammeDocsId + ");return false;'> " +
+                            "<i class='fa fa-times' ></i ></a></li> ";
+                        $('#documentsList').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Documents not added with this work" +
+                        "</td>'</tr > ";
+                    $('#documentsList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "Documents not added with this work" +
+                    "</td>'</tr > ";
+                $('#documentsList').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+</script>

@@ -1,0 +1,354 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+}
+<div class="modal-header">
+    <h5 class="modal-title">
+        <b> Project:</b> @Model.PromiseName <br />
+        @if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+        {
+            <span class="modal-category pb-2">Add Department(s):</span>
+        }
+        else
+        {
+            @*<b> Department:</b> @Model.projectslist[0].OfficeName <br />*@
+            <span class="modal-category pb-2">Add Department Wise Office(s):</span>
+        }
+
+    </h5>
+    <button type="button" class="btn-close" onclick="closePopup();" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-lg-6" style="border-right:1px solid #eee;">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.ProjectMappedDeptId)
+            @Html.HiddenFor(model => model.PromiseId, new { @id = "projectid" })
+
+            <div class="row mrgn_tp">
+                <div class="col-md-12">
+                    @if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+                    {
+                        <span style="font-weight: 600; font-size: 14pt; color: #515457;">Select Departments </span>
+                    }
+                    else
+                    {
+                <span style="font-weight: 600; font-size: 14pt; color: #515457;">Select Department Office </span>
+                    }
+
+                </div>
+                <div class="col-md-12 mt-2" style="overflow: auto; max-height: 500px; min-height: 300px;">
+                    @if ((CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh" && Model.mDepartmentList.Count() > 0) || (CMNirdesh.Models.CurrentSession.serviceName == "MC" && Model.mProjectDepartmentList.Count() > 0))
+                    {
+
+                        if (CMNirdesh.Models.CurrentSession.serviceName == "MC")
+                        {
+                            foreach (var item in Model.mProjectDepartmentList)
+                            {
+                                <ul class="main-list">
+                                    <li>
+                                        <input type="checkbox" id="ddlChkDepartment2" class="parent-checkbox"
+                                               name="SelectedDepartments"
+                                               value="@item.Value" /> @item.Text
+                                            <ul class="nested-list nested-list-@item.Value">
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                }
+                            }
+                            else
+                            {
+                                foreach (var item in Model.mDepartmentList)
+                                {
+                                    <ul class="main-list">
+                                        <li>
+                                            <input type="checkbox" id="ddlDepartments" class="child-checkbox" name="SelectedDepartments" value="@item.Value" /> @item.Text
+                                            @*@Html.HiddenFor(model => item.Value, new { @id = "hdnDeptID" })*@
+                                        </li>
+                                    </ul>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+                            {
+                                <h4 class="text-center pt-4 font-weight-bold" style="color: #cdc8c8; font-size: 20pt; ">All Department has added to this project</h4>
+                            }
+                            else
+                            {
+                                <h4 class="text-center pt-4 font-weight-bold" style="color: #cdc8c8; font-size: 20pt; ">All office has added to this project</h4>
+                            }
+                        }
+                    @Html.ValidationMessageFor(model => model.DeptId)
+                    @Html.HiddenFor(model => model.mdeptid, new { @id = "mdeptid" })
+                    @Html.HiddenFor(model => model.PromiseId, new { @id = "mPromiseId" })
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            @if (Model != null)
+            {
+
+                <table id="tableProjectDepts" class="table table2" style="vertical-align:top">
+                    <thead>
+                        <tr>
+                            @if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+                            {
+                                <th colspan="2"><span style="font-weight: 600; font-size: 14pt; color: #515457;">Departments Added to Project</span></th>
+                            }
+                            else
+                            {
+                                <th colspan="2"><span style="font-weight: 600; font-size: 14pt; color: #515457;">Office Added to Project</span></th>
+                            }
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyDepartments">
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+<style>
+    li {
+        display: inherit;
+    }
+
+    ul {
+        padding-left: 0px;
+        font-weight: 500;
+        margin: 5px 0px;
+        font-size: 14px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $(document).off('click', '.child-checkbox').on('click', '.child-checkbox', function () {
+            //debugger;
+            if ($(this).is(':checked')) {
+                var servicename = '@Model.projectServiceName';
+                var deptId = $('#hdnDeptID').val();
+                var officeId = $(this).val();
+                if (servicename == "CMNirdesh") {
+                    deptId = officeId;
+                    officeId = 0;
+                }
+                try {
+                    var projectid = $('#projectid').val();
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("SaveDepartment", "PriorityProjects")',
+                        async: true,
+                        data: { deptId: deptId, PromiseId: projectid, officeId: officeId },
+                        beforeSend: function () {
+                            $('#loader-wrapper').show();
+                        },
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+                            if (data == "Y") {
+                                $('#tbodyDepartments').html('');
+                                LoadDepartments(projectid);
+                                return false;
+                            }
+                            else {
+                                alert("Some error occurred,please try again1");
+                                return false;
+                                e.preventDefault();
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $("#loader-wrapper").hide();
+                            alert("Some error occurred,please try again2");
+                        },
+                    });
+
+                }
+                catch (ex) {
+                    alert("Some error occurred,please try again3");
+                }
+            }
+            $event.stopPropagation();
+        });
+    });
+    function DeleteDeptBtn(Id) {
+        try {
+            $("#loader-wrapper").show();
+            var PromiseId = $('#projectid').val();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteProjectDepartment", "PriorityProjects")',
+                async: true,
+                data: { Id: Id, PromiseId: PromiseId },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    if (data == "Y") {
+                        $('#tbodyDepartments').html('');
+                        LoadDepartments(PromiseId);
+                        return false;
+                    }
+                    else if (data == "N") {
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again");
+                        return false;
+                        e.preventDefault();
+                    }
+                    else {
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert(data);
+                        return false;
+                        e.preventDefault();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $("#loader-wrapper").hide();
+                    $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                    alert("Some error occurred,please try again");
+                    //// window.location.reload(true);
+                },
+            });
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+    function LoadDepartments(ProjectId) {
+        $("#loader-wrapper").show();
+        $('#modalDepartmentBody').html('');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ViewDepartments", "PriorityProjects")',
+            async: true,
+            data: { ProjectId: ProjectId },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalDepartment").css("display", "block");
+                    $('#modalDepartmentBody').html(data);
+                    getProjectDepartment();
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+    function getProjectDepartment() {
+        $("#loader-wrapper").show();
+        var PromiseId = $('#projectid').val();
+        var html = '';
+        $('#tbodyDepartments').html('');
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetProjectDepartmentList", "PriorityProjects")',
+            data: { ID: PromiseId },
+            success: function (data) {
+                $("#loader-wrapper").hide();
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<tr role='row'><td>" +
+                            "<span>" + item.Text + "</span" +
+                            "</td><td>" +
+                            "<a class='text-danger mr-1' style='font-size: 10pt; padding: 2px 5px;' title='Delete' id='btnDeletConst' onclick='DeleteDeptBtn(&#39;" + item.Value + "&#39;); return false;'><i class='fa fa-times'></i></a>" +
+                            "</td></tr > ";
+                        $('#tbodyDepartments').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "No Record Found" +
+                        "</td>'</tr > ";
+                    $('#tbodyDepartments').append(html);
+                }
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "No Record Found" +
+                    "</td>'</tr > ";
+                $('#tbodyDepartments').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function closePopup() {
+        $("#modalAddDocument").hide();
+        $("#modalImages").hide();
+        $("#modalAddConstituency").hide();
+        $("#myImgModal").hide();
+        $("#modalPromise").hide();
+        $("#modalDepartment").hide();
+        loadProjects();
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        // Hide all nested lists initially
+        $(".nested-list").hide();
+
+        // Handle checkbox change event
+        $(".parent-checkbox").change(function () {
+            var nestedList = $(this).next(".nested-list");
+            if ($(this).is(":checked")) {
+                nestedList.show();
+                var deptId = $(this).val(); //alert(deptId);
+                var ProjectId = $('#mPromiseId').val();
+                loadDeptOffice(deptId, ProjectId);
+            } else {
+               // nestedList.hide();
+            }
+        });
+    });
+</script>
+<script>
+    function loadDeptOffice(deptId, ProjectId) {
+        $("#loader-wrapper").show();
+        $('.nested-list-' + deptId).html('');
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getdeptwiseofclist", "PriorityProjects")',
+                data: { deptId: deptId, ProjectId: ProjectId },
+                success: function (data) {
+                    $('#tbodyPrzt').html('');
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            html = "<li><input type='checkbox' id='ddlDepartments' name='SelectedOffices' class='child-checkbox' value='" + item.Value + "' /> " + item.Text;
+                            html += "<input type='hidden' id='hdnDeptID' value=" + deptId +" /></li>";
+                            $('.nested-list-' + deptId).append(html);
+                        });
+                    }
+                    else {
+                        html = "";
+                        $('.nested-list-' + deptId).append(html);
+                        alert("Office list not available for selected department")
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "";
+                    $('.nested-list-').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+                }
+</script>

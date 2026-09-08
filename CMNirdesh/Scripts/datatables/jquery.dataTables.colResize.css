@@ -1,0 +1,17 @@
+﻿table.dataTable thead th[data-is-resizable=true] {
+    border-left: 1px solid transparent;
+    border-right: 4px solid #fff !important;
+   
+}
+table.dataTable thead th.dt-colresizable-hover {
+  cursor: col-resize;
+  border-left: 1px solid #bfbfbf;
+ }
+table.dataTable thead th.dt-colresizable-bound-min, 
+table.dataTable thead th.dt-colresizable-bound-max {
+  opacity: 0.2;
+  cursor: not-allowed !important;
+}
+.cussorting_asc {
+    padding-right: 0px;
+}

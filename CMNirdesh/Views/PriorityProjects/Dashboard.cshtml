@@ -1,0 +1,467 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/Content/style_ms.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/responsive_ms.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/common.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main-content" id="main-content">
+        <div class="widget-box" id="divAction">
+            <div class="widget-header widget-header-flat">
+                <h4>  <span id="selectednew" class="">Total Projects: </span></h4>
+                <div class="widget-toolbar no-border">
+                    <button class="btn btn-xs btn-primary bigger" id="btnNewD" style="display:none;" onclick="CreateNewDispatch()">
+                        <i class="ace-icon fa fa-pencil-square-o"></i>
+                        New
+                    </button>
+                </div>
+            </div>
+            @Html.Hidden("maintype", "0")
+            <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
+        </div>
+        <div class="col-md-12 col-xl-12 col-lg-12 no-right-margin filter-part position-relative ">
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                            <div>
+                                <div class="form fc align-items-center gap-1">
+                                    <span class="label-text"><b> Project</b></span><br />
+                                    @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, "--Select--", new { @id = "ddlProject", @class = "width-100 form-control drop_txt", @tabindex = "2" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                            <div>
+                                <div class="form fc align-items-center gap-1">
+                                    <span class="label-text"><b>Department </b></span><br />
+                                    @Html.DropDownListFor(model => model.DeptId, Model.mDepartmentList, "--Select--", new { @id = "ddlDepartment", @class = "width-100 form-control drop_txt", @tabindex = "2" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                            <div>
+                                <div class="form fc align-items-center gap-1">
+                                    <span class="label-text"><b>Constituency </b></span><br />
+                                    @Html.DropDownListFor(model => model.ConstituencyId, Model.mProjectConstituencyList, "--Select--", new { @id = "ddlConstituency", @class = "width-100 form-control drop_txt", @tabindex = "2" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                            <div>
+                                <div class="form fc align-items-center gap-1">
+                                    <span class="label-text"><b>Status</b></span><br />
+                                    @Html.DropDownListFor(model => model.ProjectStatusId, Model.ProjectStatusTypeList, new { @id = "ddlStatus", @class = "width-100 form-control drop_txt", @tabindex = "11" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                            <div style="margin-top:20px;" class="text-start d-flex gap-3">
+                                <button class="btn btn-primary" id="searchbutton" onclick="searchData();"> Search</button>
+                                <button class="btn btn-success" id="resetbutton" style="display:block;" onclick="ResetD();"> Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-xl-12 col-lg-12 p-0 no-right-margin" id="DispatchTableDiv">
+            <div class="row">
+                <div class="col-md-12 col-xl-12 cl-lg-12">
+                    <div class="row">
+                        <div class="col-md-12 col-xl-12 col-lg-12 mt-3">
+                            <div class="table-switch">
+                                <div>
+                                    <input type="radio" id="rbtnStatus" name="radiobutton" value="rbtnStatus" checked="checked" onclick="loadDepartmentWiseProjectStatus();">
+                                    <label for="status"><b>Department-Status Summary</b></label>&nbsp;&nbsp;
+                                </div>
+                                <div>
+                                    <input type="radio" id="rbtnList" name="radiobutton" value="rbtnList" onclick="loadProjects();">
+                                    <label for="list"><b>List</b></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12 cl-lg-12 table-responsive">
+                    <div class="row table-responsive">
+                        <div class="col-md-12 col-xl-12 col-lg-12 mt-3 table-responsive">
+                            <table id="tableProjects" class="table table-hover table-bordered width-100" style="vertical-align:top">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modalWorks" class="modal pr-0" style="background: rgb(54 55 56 / 63%);" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-xxl">
+                <div class="modal-content" id="modalWorksBody">
+                </div>
+            </div>
+        </div>
+        <div class="modal coman_modal dispatch_modal" tabindex="-1" id="mpProjectList" data-keyboard="false" data-backdrop="static" style="z-index: 111">
+            <div class="modal-dialog modal-lg" id="Scroll2">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h4 class="widget-title modal_heading">Projects List</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closepopup();"></button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                            <table id="tableProjectList" class="table table-hover table-bordered" style="vertical-align:top">
+                                <thead>
+                                    <tr class="table-heading">
+                                        <td class="td-heading" style="width:70px">Project ID</td>
+                                        <td class="td-heading">Project Name</td>
+                                        <td class="td-heading">Department</td>
+                                        <td class="td-heading">
+                                            Works Name<br />
+                                            (Components)
+                                        </td>
+                                        <td class="center td-heading">Constituency</td>
+                                        <td class="center td-heading">Estimated Amount <br />(in Lakhs)</td>
+                                        <td class="center td-heading">Expenditure Till Date <br />(In Lakhs)</td>
+                                        <td class="center td-heading">Physical Progress<br />(%)</td>
+                                        <td class="center td-heading">Status</td>
+                                        <td class="td-heading" style="width:65px">Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyProjectList">
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ($('input[name="radiobutton"]:checked').val() === 'rbtnList') {
+                loadProjects();
+            }
+            else {
+                loadDepartmentWiseProjectStatus();
+            }
+        });
+        function ResetD() {
+            $('#ddlProject').prop('selectedIndex', 0);
+            $('#ddlDepartment').prop('selectedIndex', 0);
+            $('#ddlConstituency').prop('selectedIndex', 0);
+            $('#ddlStatus').prop('selectedIndex', 0);
+            searchData();
+        }
+        function searchData() {
+            if ($('input[name="radiobutton"]:checked').val() === 'rbtnList') {
+                loadProjects();
+            }
+            else {
+                loadDepartmentWiseProjectStatus();
+            }
+        }
+        function loadProjects() {
+            var html = '';
+            var projectId = $('#ddlProject').val();
+            var deptId = $('#ddlDepartment').val();
+            var constituencyId = $('#ddlConstituency').val();
+            var statusId = $('#ddlStatus').val();
+            if (projectId == '') {
+                projectId = 0;
+            }
+            if (deptId == '') {
+                deptId = '0';
+            }
+            if (constituencyId == '') {
+                constituencyId = 0;
+            }
+            if (statusId == '') {
+                statusId = 0;
+            }
+            if ($.fn.DataTable.isDataTable("#tableProjects")) {
+                $('#tableProjects').DataTable().destroy();
+            }
+            $('#tableProjects').html('');
+            $('#tbodyPrzt').html('');
+            html = "<thead id='theadPrzt'><tr class='table-heading'><td class='td-heading' style='width:70px'>Project ID</td>"+
+                "<td class='td-heading'>Project Name</td><td class='td-heading'>Department</td>" +
+                "<td class='td-heading'>Works Name<br />(Components)</td>" +
+                "<td class='center td-heading'>Constituency</td><td class='center td-heading'>Estimated Amount <br />(in Lakhs)</td>" +
+                "<td class='center td-heading'>Expenditure Till Date <br />(In Lakhs)</td><td class='center td-heading'>Physical Progress<br />(%)</td>" +
+                "<td class='center td-heading'>Status</td><td class='center td-heading'>Action</td></tr></thead>" +
+                "<tbody id='tbodyPrzt'></tbody>";
+            $('#tableProjects').append(html);
+
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("getProjectsforDasboard", "PriorityProjects")',
+                        data: { projectId: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+                        success: function (data) {
+                            $('#tbodyPrzt').html('');
+                            if (data.length > 0) {
+                                $.each(data, function (i, item) {
+                                    html = "<tr role='row'><td class='sorting_1'>" + item.PromiseRefId + "</td><td>" + item.PromiseName + "</td><td>" + item.DeptName + "</td>"+
+                                        "<td><span class='limitChars' > " + item.ProjectName + "</span ></td ><td class='center'>" + item.ConstituencyName + "</td><td class='center'>" + item.EstimatedAmount + "</td><td class='center'>" +
+                                            item.Expenditure + "</td><td class='center'>" + item.PhysicalProgress + "</td><td>" + item.ProjectStatusName + "</td>"+
+                                    "<td><div class='btn-group'>"+
+                                    "<a class='btn btnLinks btn-sm btn-warning mr-1' title='Project Works' onclick='loadWorkDetails(" + item.PromiseId + ", &#39;" + item.DeptId + "&#39;, " + item.ProjectId + ");'>W</a>";
+                                    "</div></td></tr>";
+                                    $('#tbodyPrzt').append(html);
+                                });
+                                $('#tableProjects').DataTable(
+                                     {
+                                    paging: true,
+                                    searching: true,
+                                    "ordering": true,
+                                    "aaSorting": [],
+                                    "pageLength": 10,
+                                    dom: 'Bfrtip',
+                                    buttons: [
+                                        'csv',
+                                        'pdf',
+                                        'excel'
+                                    ]
+                                });
+
+                            }
+                            else {
+                                html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                                    "Projects List Not available" +
+                                    "</td>'</tr > ";
+                                $('#tbodyPrzt').append(html);
+                            }
+                        },
+                        error: function () {
+                            html = "<tr role='row'><td colspan='10'>" +
+                                "Projects List Not available" +
+                                "</td>'</tr > ";
+                            $('#tbodyPrzt').append(html);
+                        }
+                    });
+        }
+        function loadDepartmentWiseProjectStatus() {
+            var html = '';
+            var projectId = $('#ddlProject').val();
+            var deptId = $('#ddlDepartment').val();
+            var constituencyId = $('#ddlConstituency').val();
+            var statusId = $('#ddlStatus').val();
+            if (projectId == '') {
+                projectId = 0;
+            }
+            if (deptId == '') {
+                deptId = '0';
+            }
+            if (constituencyId == '') {
+                constituencyId = 0;
+            }
+            if (statusId == '') {
+                statusId = 0;
+            }
+            if ($.fn.DataTable.isDataTable("#tableProjects")) {
+                $('#tableProjects').DataTable().destroy();
+            }
+            $('#tableProjects').html('');
+            $('#tbodyPrzt').html('');
+            html = "<thead id='theadPrzt'><tr class='table-heading'>"+
+                "<td class='td-heading'>Department</td><td class='td-heading text-center'>Implemented</td>" +
+            "<td class='td-heading text-center'>Not Implemented</td><td class='text-center td-heading'>Partially Implemented</td>" +
+                    "<td class='text-center td-heading'>NA</td><td class='text-center td-heading'>Total</td></tr></thead>"+
+                "<tbody id='tbodyPrzt'></tbody>";
+            $('#tableProjects').append(html);
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("getDeptWiseProjectCount", "PriorityProjects")',
+                        data: { projectId: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+                        success: function (data) {
+                            $('#tbodyPrzt').html('');
+                            if (data.length > 0) {
+                                $.each(data, function (i, item) {
+                                    html = "<tr role='row'><td>" + item.DeptName + "</td>";
+                                    if (item.implementedProject > 0) {
+                                        html += "<td class='text-center'><a style='text-decoration: underline;font-weight: 500;' onclick='getProjectsList(&#39;" + item.DeptId + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                                    }
+                                    else {
+                                        html += "<td class='text-center'>"+ item.implementedProject + "</a></td>";
+                                    }
+                                    if (item.NotImplemented > 0) {
+                                        html += "<td class='text-center'><a style='text-decoration: underline;font-weight: 500;' onclick='getProjectsList(&#39;" + item.DeptId + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                                    }
+                                    else {
+                                        html += "<td class='text-center'>" + item.NotImplemented + "</a></td>";
+                                    }
+                                    if (item.PartiallyImplemented > 0) {
+                                        html += "<td class='text-center'><a style='text-decoration: underline;font-weight: 500;' onclick='getProjectsList(&#39;" + item.DeptId + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                                    }
+                                    else {
+                                        html += "<td class='text-center'>" + item.PartiallyImplemented + "</a></td>";
+                                    }
+                                    if (item.noStatusProject > 0) {
+                                        html += "<td class='text-center'><a style='text-decoration: underline;font-weight: 500;' onclick='getProjectsList(&#39;" + item.DeptId + "&#39;,99)'>" + item.noStatusProject + "</a></td>";
+                                    }
+                                    else {
+                                        html += "<td class='text-center'>" + item.noStatusProject + "</a></td>";
+                                    }
+                                    if (item.totalProject > 0) {
+                                        html += "<td class='text-center'><a style='text-decoration: underline;font-weight: 500;' onclick='getProjectsList(&#39;" + item.DeptId + "&#39;,98)'>" + item.totalProject + "</a></td>";
+                                    }
+                                    else {
+                                        html += "<td class='text-center'>" + item.totalProject + "</a></td>";
+                                    }
+                                    html += "</tr > ";
+                                    $('#tbodyPrzt').append(html);
+                                });
+                                $('#tableProjects').DataTable(
+                                     {
+                                    paging: true,
+                                    searching: true,
+                                    "ordering": true,
+                                    "aaSorting": [],
+                                    "pageLength": 10,
+                                    dom: 'Bfrtip',
+                                    buttons: [
+                                        'csv',
+                                        'pdf',
+                                        'excel'
+                                    ]
+                                });
+
+                            }
+                            else {
+                                html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                                    "Projects List Not available" +
+                                    "</td>'</tr > ";
+                                $('#tbodyPrzt').append(html);
+                            }
+                        },
+                        error: function () {
+                            html = "<tr role='row'><td colspan='10'>" +
+                                "Projects List Not available" +
+                                "</td>'</tr > ";
+                            $('#tbodyPrzt').append(html);
+                        }
+                    });
+        }
+        function getProjectsList(deptId, statusId) {
+            $('#mpProjectList').show();
+            var html = '';
+            $("#tableProjectList").DataTable().destroy();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getProjectsforDasboard", "PriorityProjects")',
+                data: { projectId: 0, deptId: deptId, constituencyId: 0, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyProjectList').html('');
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td class='sorting_1'>" + item.PromiseRefId + "</td><td>" + item.PromiseName + "</td><td>" + item.DeptName + "</td>"+
+                                "<td>" + item.ProjectName + "</td ><td>" + item.ConstituencyName+"</td><td class='center'>" + item.EstimatedAmount + "</td><td class='center'>"+ item.Expenditure +
+                            "</td><td class='center'>" + item.PhysicalProgress + "</td><td>" + item.ProjectStatusName + "</td><td><div class='btn-group'>" +
+                            "<a class='btn btnLinks btn-sm btn-warning mr-1' title='Project Works' onclick='loadWorkDetails(" + item.PromiseId + ", &#39;" + item.DeptId + "&#39;, " + item.ProjectId + ");'>W</a>" +
+                            "</div></td></tr>";
+                            $('#tbodyProjectList').append(html);
+                        });
+                        $('#tableProjectList').DataTable({
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 50,
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'csv',
+                                'pdf',
+                                'excel'
+                            ]
+
+                        });
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='2'>" +
+                            "Projects List Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyProjectList').append(html);
+                    }
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Projects List Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectList').append(html);
+                }
+            });
+        }
+        function closepopup() {
+            $("#mpProjectList").hide();
+        }
+        function loadWorkDetails(ProjectId, DeptId, workID) {
+            $('#modalWorksBody').html('');
+
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ViewWorkDetails", "PriorityProjects")',
+                async: true,
+                data: { promiseid: ProjectId, deptID: DeptId, workID: workID },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    var options = {
+                        "backdrop": "static",
+                        keyboard: true
+                    };
+                    $("#loader-wrapper").hide();
+
+                    if (data) {
+                        $("#modalWorks").css("display", "block");
+                        $('#modalWorksBody').html(data);
+
+                    } else { alert("error"); }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+﻿@model CMNirdesh.Models.PdfCoverLetterViewModel
+@using CMNirdesh;
+@{
+    ViewBag.Title = "Edit Contact Us";
+
+}
+<style>
+    body {
+        margin: 0 auto;
+        padding: 40px 60px; /* Top/Bottom, Left/Right */
+    }
+
+    @@media print {
+        body {
+            width: 210mm;
+            height: 297mm;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+    }
+</style>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+
+<script>
+    let signatureUrl = ''; // will store the signature image URL
+
+    tinymce.init({
+        selector: '#CoverHtml',
+        height: 1123, // A4 height at 96dpi
+        menubar: false,
+        plugins: 'paste link lists image code table media fullscreen preview pagebreak',
+        toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter | code fullscreen preview | fontselect fontsizeselect | sign',
+
+        // Paste cleanup
+        paste_as_text: false,
+        paste_remove_styles: true,
+        paste_remove_spans: true,
+        paste_webkit_styles: "none",
+
+        // A4-like styling
+        content_style: `
+            body {
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0 auto;
+                padding: 10mm;
+                box-sizing: border-box;
+                background: white;
+                border: 1px solid #ccc;
+                font-family: Arial, sans-serif;
+                font-size: 14pt;
+                font-family: inherit;
+                line-height: 1.5;
+            }
+            @@page {
+                size: A4;
+                margin: 20mm;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+        `,
+
+        // Default table style
+        table_default_styles: {
+            width: '100%'
+        },
+
+        setup: function (editor) {
+            // Custom "Sign" button
+            editor.ui.registry.addButton('sign', {
+                text: 'Sign',
+                tooltip: 'Insert Signature',
+                icon: 'edit-block',
+                onAction: function () {
+                    if (signatureUrl) {
+                        editor.insertContent('<img src="' + signatureUrl + '" style="max-width:150px; height:auto;" />');
+                    } else {
+                        alert('Signature not loaded yet.');
+                    }
+                }
+            });
+
+            // Fetch signature on init
+            editor.on('init', function () {
+                fetch('@Url.Action("GetUserSignature", "Agenda")')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.url) {
+                            signatureUrl = data.url;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching signature:', error));
+            });
+        },
+
+        // Mobile support
+        mobile: {
+            menubar: true,
+            toolbar: 'undo redo | bold italic underline | bullist numlist | sign'
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+<div id="main-content">
+
+    <div class="main-content">
+
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+
+
+                <div class="card mb-3 p-3">
+
+                    @Html.Hidden("DeptId", Model.DeptId)
+                    @Html.Hidden("AgendaId", Model.AgendaId)
+                    @Html.Hidden("DocumentType", Model.DocumentType)
+                    <textarea name="CoverHtml" id="CoverHtml" class="form-control" rows="8">@Html.Raw(Model.CoverHtml)</textarea>
+                    <div class="mt-2">
+                        <button type="button" id="btnPreview" class="btn btn-success">Perview</button>
+                        <button type="button" onclick="saveCoverLetter()" class="btn btn-success">Save</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+</div>
+
+<script>
+    function saveCoverLetter() {
+        var deptId = $("#DeptId").val();
+        var AgendaID = $("#AgendaId").val();
+        var DocumentType1 = $("#DocumentType").val();
+        var coverHtml = tinymce.get('CoverHtml').getContent();
+        $("#loader-wrapper").show();
+        $.ajax({
+            url: '@Url.Action("SaveCoverLetterAsync", "Agenda")',
+            type: 'POST',
+            data: {
+                DeptId: deptId,
+                AgendaID: AgendaID,
+                DocumentType: DocumentType1,
+                CoverHtml: coverHtml
+            },
+            success: function (response) {
+                if (response.success) {
+                    $("#loader-wrapper").hide();
+                    location.reload();
+                    alert(response.message);
+
+                } else {
+                    alert("Error: " + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("AJAX error: " + error);
+            }
+        });
+    }
+
+
+
+ $("#btnPreview").on("click", function () {
+
+    var payload = {
+        DeptId: $("#DeptId").val(),
+        AgendaID: $("#AgendaId").val(),
+        DocumentType: $("#DocumentType").val(),
+        CoverHtml: tinymce.get('CoverHtml').getContent()
+    };
+
+    $.ajax({
+        url: '@Url.Action("PreviewCoverLetter", "Agenda")',
+        type: "POST",
+        data: JSON.stringify(payload),
+        contentType: "application/json; charset=utf-8",
+        processData: false,
+
+        xhrFields: {
+            responseType: 'blob'   // receive PDF stream
+        },
+
+        beforeSend: function () {
+            $('#loader-wrapper').show();
+        },
+
+        success: function (data) {
+            $('#loader-wrapper').hide();
+
+            // Convert response to PDF blob
+            var blob = new Blob([data], { type: 'application/pdf' });
+            var url = URL.createObjectURL(blob);
+
+            // Open PDF preview in new tab
+            window.open(url, "_blank");
+        },
+
+        error: function (xhr, status, error) {
+            $('#loader-wrapper').hide();
+
+            console.error("AJAX ERROR");
+            console.error("Status Code:", xhr.status);
+            console.error("Status Text:", xhr.statusText);
+            console.error("Response Text:", xhr.responseText);
+            console.error("Error:", error);
+
+            alert(
+                "Error while generating PDF\n\n" +
+                "HTTP Status: " + xhr.status + "\n" +
+                "Status Text: " + xhr.statusText + "\n\n" +
+                "Server Response:\n" + xhr.responseText
+            );
+        }
+    });
+
+});
+
+
+
+</script>
+
+
+
+
+

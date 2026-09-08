@@ -1,0 +1,314 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@using CMNirdesh.Models
+
+
+
+@if (Model != null)
+{
+    <style>
+        .ui-datepicker {
+            width: 25em;
+            /*padding: .2em .2em 0;*/
+            display: none;
+            border: 1px solid;
+            font-weight: bolder;
+        }
+
+
+        .Mytextarea {
+            font-size: 10px;
+            height: 14px !important;
+            color: #333 !important;
+            font-family: inherit;
+        }
+        /*
+        .sblFullScreen select, input, textarea {
+            width: 100%;
+        }*/
+    </style>
+
+
+
+
+
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+
+
+
+    @Html.HiddenFor(m => m.FromDeptId, new { id = "lnkToDeptId" })
+
+    @Html.HiddenFor(m => m.FromOfficeId, new { id = "lnkToOfficeId" })
+
+
+    @Html.HiddenFor(m => m.DocmentType, new { id = "lnkDocmentType" })
+
+    @Html.HiddenFor(m => m.Subject, new { id = "lnkSubject" })
+    @Html.HiddenFor(m => m.SubjectDetails, new { id = "lnkSubjectDetails" })
+    @Html.HiddenFor(m => m.ApplicantAddress, new { id = "lnkApplicantAddress" })
+    @Html.HiddenFor(m => m.ApplicantEmail, new { id = "lnkApplicantEmail" })
+    @Html.HiddenFor(m => m.ApplicantMobile, new { id = "lnkApplicantMobile" })
+    @Html.HiddenFor(m => m.ApplicantName, new { id = "lnkApplicantName" })
+    @Html.HiddenFor(m => m.isLetter, new { id = "lnkisLetter" })
+    @Html.HiddenFor(m => m.LetterNo, new { id = "lnkTxtLetterNo" })
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <h4 style="color:dodgerblue; font-size:15px;font-weight: 600">
+            Ref.Id:@Model.RefId
+            |Date:@Model.CreatedDate
+        </h4>
+
+        @if (!(Model.LinkRefID == 0))
+        {
+            <br />
+            <h4 style="color: dodgerblue; font-size: 15px; font-weight: 600">Linked Ref.Id: @Model.LinkRefID</h4>
+
+        }<br />
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">From</label>
+
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.FromDept
+            </span>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Office </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.FromOffice
+            </span>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">To </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.ToDept
+            </span>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Office </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.ToOffice
+            </span>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Document Type </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.DocumentTypeName
+            </span>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Letter/File </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.isLetter
+            </span>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Letter/File No. </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.LetterNo
+            </span>
+        </div>
+    </div>
+
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Release Date </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.LetterDate
+            </span>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Subject </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.Subject
+            </span>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Subject Details </label>
+        </div>
+
+        <div class="col-md-9 col-lg-9">
+            <span>
+                @Model.SubjectDetails
+            </span>
+        </div>
+    </div>
+
+    <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-3 col-lg-3">
+            <label style="font-weight:bold">Attached Enclosure (File) </label>
+        </div>
+
+        <div class=" col-md-9 col-lg-9">
+            <div>
+
+
+                @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                {
+                    <a href="@Model.EnclosureFile" target="_blank">Click here to download</a>
+                }
+                else
+                {
+
+
+                }
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+    @if (!string.IsNullOrEmpty(Model.ApplicantName))
+
+    {
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+            <div class="col-md-3 col-lg-3">
+                <label style="font-weight:bold">Applicant Name </label>
+            </div>
+
+            <div class="col-md-9 col-lg-9">
+                <span>
+                    @Model.ApplicantName
+                </span>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
+    {
+
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+            <div class="col-md-3 col-lg-3">
+                <label style="font-weight:bold">Applicant Address </label>
+            </div>
+
+            <div class="col-md-9 col-lg-9">
+                <span>
+                    @Model.ApplicantAddress
+                </span>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
+
+    {
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+            <div class="col-md-3 col-lg-3">
+                <label style="font-weight:bold">Applicant Mobile </label>
+            </div>
+
+            <div class="col-md-9 col-lg-9">
+                <span>
+                    @Model.ApplicantMobile
+                </span>
+            </div>
+        </div>
+
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
+
+    {
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+
+            <div class="col-md-3 col-lg-3">
+                <label style="font-weight:bold">Applicant Email </label>
+            </div>
+
+            <div class="col-md-9 col-lg-9">
+                <span>
+                    @Model.ApplicantEmail
+                </span>
+            </div>
+        </div>
+
+    }
+
+</div>
+
+}

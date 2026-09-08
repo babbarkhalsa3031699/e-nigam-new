@@ -1,0 +1,276 @@
+﻿@model  IEnumerable<CMNirdesh.Models.Promise>
+
+@{
+    ViewBag.Title = "PromiseList";
+
+    int count = 0;
+}
+<style>
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+</style>
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<div id="main-content">
+    <div class="main-content">
+        <section class="form_dsign">
+            <div class="inr_frm_dsgn">
+                <div class="Tab_hdr p-2" style="display:flex;">
+                    <div class="col-md-6">
+                        <h2>Promise List</h2>
+                    </div>
+                    <div class="col-md-6 text-end txt_rit">
+                        <button class="btn  btn-sm btn-primary" style="font-size:14px;" onclick="javascript:window.location.href='/Promise/CreatePromise';">
+                            <i class="ace-icon fa fa-pencil-square-o bigger-150"></i>
+                            <span class="bigger-110">New Promise</span>
+                        </button>
+                    </div>
+
+                </div>
+                <div class="form_lyot">
+
+                    @if (Model != null)
+                    {
+                        if (Model.Count() > 0)
+                        {
+                            <table id="example" class="table table-hover table-bordered">
+                                <thead>
+                                    <tr class="table-heading">
+                                        <th class="td-heading" style="width:30%;"><span class="font-weight-bold">Sr no.</span></th>
+                                        <th class="td-heading" style="width:30%;"><span class="font-weight-bold">Promise Name</span></th>
+                                        <th class="td-heading" style="width:30%;"><span class="font-weight-bold">Status</span></th>
+                                        <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Action</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                    @foreach (var item in Model)
+                                    {
+                                        count = count + 1;
+
+                                        <tr>
+                                            <td class="center td-data" >
+                                                @count
+                                            </td>
+                                            <td class="center td-data">
+                                                @item.PromiseName
+                                            </td>
+
+
+
+
+                                            <td class="hidden-480 center td-data">
+                                                @if (item.isActive == true)
+                                                {
+                                                    <span class="label label-sm label-primary">Published</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="label label-sm label-warning">Unpublished</span>
+                                                }
+
+                                            </td>
+
+                                            <td class="center td-data">
+                                                <div class="hidden-sm hidden-xs action-buttons">
+
+
+                                                    <a data-rel="tooltip" class="green tooltip-primary" title="Edit" href="@Url.Action("EditPromise", "Promise", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.PromiseId.ToString()) })">
+                                                        <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                    </a>
+                                                    <a data-rel="tooltip" class="red tooltip-error" title="Delete" id="DeleteLink" href="@Url.Action("DeletePromise", "Promise", new { Id = CMNirdesh.Models.EncryptionUtility.Encrypt(item.PromiseId.ToString()) })">
+                                                        <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                    </a>
+                                                </div>
+
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="alert alert-info">
+                                        <strong>There are no record found</strong><br />
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+
+        </section>
+
+
+
+
+        <div class="footer">
+            <div class="footer-inner">
+                <!-- #section:basics/footer -->
+                <div class="footer-content">
+
+
+                </div>
+
+                <!-- /section:basics/footer -->
+            </div>
+        </div>
+
+        <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+            <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+        </a>
+    </div>
+
+
+    <div id="dialog-confirm" class="hide">
+        <div id="DialogMessage" class="alert alert-info bigger-110">
+            Are You Sure Want to Delete.
+        </div>
+
+        <div class="space-6"></div>
+    </div>
+
+</div>
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var oTable1 =
+            $('#sample-table-2')
+                //.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
+                .dataTable({
+                    bAutoWidth: true,
+                    "aoColumns": [
+                        { "bSortable": false },
+                        { "bSortable": false }
+                    ]
+
+                });
+        $('#example').DataTable({
+
+
+        });
+        $('[data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
+
+
+
+        $("#DepartmentDetailsmain").addClass("active open");
+        $("#DepartmentDetailssub").addClass("nav-show").css("display", "block");
+        $("DepartmentDetailslist").addClass("active");
+
+
+
+    });
+
+
+    $(".DeleteContentLink").on('click', function (e) {
+
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        bootbox.confirm("Are you sure to Delete Promise Details?", function (result) {
+
+            if (result) {
+
+                window.location.href = url;
+            }
+            else {
+
+
+            }
+
+        })
+    });
+
+
+
+    //$("#ChangeStatusLink , #DeleteLink").on('click', function (e) {
+    //    e.preventDefault();
+    //    var url = $(this).attr('href');
+    //    var message = "";
+    //    var buttonlabel = "";
+    //    var buttoncss = "";
+    //    var title = "";
+    //    if ($(this).attr('id') == "ChangeStatusLink") {
+    //        message = "Are you sure want to change the status ?";
+    //        buttonlabel = "Change Status";
+    //        buttoncss = "btn-info";
+    //        title="Change Status Confirmation"
+    //    }
+    //    else {
+    //        message = "Are you sure want to delete ?";
+    //        buttonlabel = "Delete";
+    //        buttoncss = "btn-danger";
+    //        title = "Delete Confirmation"
+    //    }
+    //    bootbox.dialog({
+    //        message: message,
+    //        title: title,
+    //        buttons: {
+    //            success: {
+    //                label: buttonlabel,
+    //                className: buttoncss,
+    //                callback: function () {
+    //                    window.location.href = url;
+    //                }
+    //            },
+    //            danger: {
+    //                label: "Cancel",
+    //                className: "btn",
+    //                callback: function () {
+    //                    $('.modal-dialog').modal('hide');
+    //                }
+    //            },
+
+    //        }
+    //    });
+    //});
+
+
+    function tooltip_placement(context, source) {
+        var $source = $(source);
+        var $parent = $source.closest('table')
+        var off1 = $parent.offset();
+        var w1 = $parent.width();
+
+        var off2 = $source.offset();
+        //var w2 = $source.width();
+
+        if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+        return 'left';
+    }
+
+</script>

@@ -1,0 +1,769 @@
+﻿@model CMNirdesh.Models.APIConstituency
+
+@*@{ Layout = null; }*@
+
+<head>
+
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @*<link href="~/Content/MobileSite.css" rel="stylesheet" />*@
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script>
+       
+
+
+    </script>
+    <style>
+
+        body {
+            font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", "sans-serif";
+            font-size: 62.5%;
+        }
+
+        .accordion-expand-holder {
+            text-align: center;
+            padding: 10px;
+        }
+
+        #header {
+            display: none;
+        }
+
+        .inr_frm_dsgn {
+            box-shadow: 0px 0px 4px 1px #ccc;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .form_lyot {
+            padding: 10px;
+        }
+
+        .hand {
+            cursor: pointer
+        }
+
+        .form-group input[type="number"].txt_design {
+            border-radius: 4px !important;
+            height: 41px !important;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .addnew_modal {
+            padding-right: 300px !important;
+            padding-left: 300px;
+            padding-top: 94px;
+            padding-bottom: 94px;
+        }
+
+        .toggle {
+            --width: 80px;
+            --height: calc(var(--width) / 3);
+            position: relative;
+            display: inline-block;
+            width: var(--width);
+            height: var(--height);
+            border-radius: var(--height);
+            cursor: pointer;
+        }
+
+            .toggle input {
+                display: none;
+            }
+
+            .toggle .slider {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: var(--height);
+                border: 2px solid #969696;
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+                .toggle .slider::before {
+                    content: "";
+                    position: absolute;
+                    top: 3.5px;
+                    left: 2px;
+                    width: calc(var(--height)*0.6);
+                    height: calc(var(--height)*0.6);
+                    border-radius: calc(var(--height) / 2);
+                    border: 3px solid #969696;
+                    background-color: #dbdbdb;
+                    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                    transition: all 0.4s ease-in-out;
+                }
+
+            .toggle input:checked + .slider {
+                border-color: #2196F3;
+            }
+
+                .toggle input:checked + .slider::before {
+                    border-color: #2196F3;
+                    background-color: #c6e5ff;
+                    transform: translateX(calc(var(--width) - var(--height)));
+                }
+
+            .toggle .labels {
+                position: absolute;
+                top: 4.5px;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                color: #4d4d4d;
+                font-size: 12px;
+                font-family: sans-serif;
+                transition: all 0.4s ease-in-out;
+            }
+
+                .toggle .labels::after {
+                    content: attr(data-off);
+                    position: absolute;
+                    right: 5px;
+                    opacity: 1;
+                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                    transition: all 0.4s ease-in-out;
+                }
+
+                .toggle .labels::before {
+                    content: attr(data-on);
+                    position: absolute;
+                    left: 5px;
+                    opacity: 0;
+                    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                    transition: all 0.4s ease-in-out;
+                }
+
+            .toggle input:checked ~ .labels::after {
+                opacity: 0;
+            }
+
+            .toggle input:checked ~ .labels::before {
+                opacity: 1;
+            }
+
+        .pencil-class {
+            font-size: 15px;
+        }
+
+        .edit-1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+        }
+
+        .email {
+            font-size: 12px;
+        }
+
+        .ldn {
+            font-size: 12px;
+        }
+
+        .dept {
+            font-size: 12px;
+        }
+
+        .office {
+            font-size: 12px;
+        }
+
+        .table-heading1 .td-heading1 span {
+            background-color: var(--bg-light-table-heading);
+            font-size: 12px !important;
+            font-weight: 600;
+            color: #05264E;
+        }
+
+
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            border: none;
+            position: relative;
+            margin-bottom: 15px;
+            box-shadow: 0 0.46875rem 0.1275rem rgba(90,97,105,0.1), 0 0.9375rem 1.40625rem rgba(90,97,105,0.1), 0 0.25rem 0.53125rem rgba(90,97,105,0.12), 0 0.125rem 0.1875rem rgba(90,97,105,0.1);
+        }
+
+            .card .card-statistic-3 .card-icon-large .fas, .card .card-statistic-3 .card-icon-large .far, .card .card-statistic-3 .card-icon-large .fab, .card .card-statistic-3 .card-icon-large .fal {
+                font-size: 110px;
+            }
+
+            .card .card-statistic-3 .card-icon {
+                text-align: center;
+                line-height: 50px;
+                margin-left: 15px;
+                color: #000;
+                position: absolute;
+                right: -5px;
+                top: 20px;
+                opacity: 0.1;
+            }
+
+
+
+        .l-bg-cyan {
+            background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
+            color: #fff;
+        }
+
+
+        .l-bg-grey {
+            background: linear-gradient(135deg, #dbe0e4, #e8e8e8) !important;
+            color: #201e1e;
+        }
+
+        .l-bg-darkgrey {
+            background: linear-gradient(135deg, #ccdfec, #9fceea) !important;
+            color: #201e1e;
+        }
+
+        .lbloff1 {
+            font-size: 14px !important;
+        }
+
+        .card-title.mb-0 {
+            font-size: 14px;
+        }
+
+        .card-item.mb-0 {
+            font-size: 12px;
+        }
+
+        .card-email.mb-0 {
+            font-size: 11px;
+        }
+
+        .fa:hover {
+            opacity: 0.7;
+        }
+
+
+        .far.fa-flag {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .fa.fa-flag {
+            font-size: 20px;
+            cursor: pointer;
+            color: red;
+        }
+
+        .dot {
+            font-size: 25px !important;
+            margin-top: -25px;
+        }
+
+        .custom-select {
+            appearance: none; /* Removes default arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: white url("data:image/svg+xml;utf8,<svg fill='black' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center !important;
+            background-size: 30px !important;
+            padding: 8px 30px 8px 10px; /* Add right padding for arrow space */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+@using (Html.BeginForm("Index", "API", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data" }))
+{
+    <div id="main-content">
+        <div class="main-content">
+            <section class="form_dsign">
+
+                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12" id="DivOff">
+                    <label for="inputEmail4" class="txt_label">Constituency:</label>
+                    <input type="hidden" id="hdnOffId" value="@Model.ConstituencyId" />
+                    @Html.HiddenFor(m => m.Type)
+                    @Html.HiddenFor(m => m.Clicked, new { @id = "hdnClicked" })
+                    @Html.HiddenFor(m => m.PostDeptID, new { @id = "hdnDept" })
+                    @Html.HiddenFor(m => m.PostOfficeID, new { @id = "hdnOffice" })
+                    @Html.DropDownListFor(m => m.ConstituencyId, Model.Constituencylist, "Select", new { @id = "DdlCons", @tabindex = "2", @class = "form-control custom-select", @Onchange = "Getdata();" })
+                    <input id="btngetuser" type="submit" value="Get User" class="btn add_btn" style="display:none" />
+                </div>
+
+                <div class="col-md-10">
+                    @Html.RadioButtonFor(model => model.typechkbox, "Flaged", new { @id = "RadioFlaged", @onchange = "Getdata()", @checked = "checked" })
+                    <label class="form-check-label" for="flexRadioCheckedDisabled">
+                        <i class="fa fa-flag" aria-hidden="true"></i> Flagged 
+                    </label>
+
+                    @Html.RadioButtonFor(model => model.typechkbox, "All", new { @id = "RadioAll", @onchange = "Getdata()" })
+                    <label class="form-check-label" for="flexRadioDisabled">
+                        All
+                    </label>
+
+                </div>
+
+                @if (Model.IsOpen)
+                {
+                    <div id="OfficeDiv" class="container-fluid p-0">
+                        <div class="inr_frm_dsgn">
+                            <div class="widget-box " id="divAction">
+                                <div class="widget-header widget-header-flat rounded-top rounded-0">
+                                    <h4 id="lbloff1" class="lbloff1">Departments(@Model.OfficeData.GroupBy(o => new { o.DepartmentName, o.DepartmentAbbr }).ToList().Count) >>  Offices   (@Model.OfficeData.Count)</h4>
+                                </div>
+                            </div>
+                            @*<p class="accordion-expand-holder">
+            <a class="accordion-expand-all" href="#">Expand all</a>
+        </p>*@
+                            @*<div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
+            <h3 class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all">
+                <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                Section 1
+            </h3>
+
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <p>
+                    Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+                    ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+                    amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+                    odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque
+                    vulputate.
+                </p>
+            </div>
+
+
+        </div>*@
+                        <div id="accordion" class="form_lyot">
+
+                            @if (Model.IsOpen)
+                            {
+                                int index = 0; 
+
+                                foreach (var items in Model.OfficeData.GroupBy(o => new { o.DepartmentName, o.DepartmentAbbr }))
+                                {
+                                    var isEven = index % 2 == 0;
+                                    <div class="accordion-header row ui-accordion ui-widget ui-helper-reset hand">
+
+                                        <div class="col-xl-6 col-lg-6">
+                                            <div class="card @(isEven ? "l-bg-grey" : "l-bg-darkgrey")">
+                                                <div class="card-statistic-3 pl-3 pr-3 pt-2 pb-2">
+                                                    <div class="">
+                                                        <h6 class="card-item mb-0"><b><i class="fas fa-building"></i> @*@items.Key.DepartmentAbbr -*@ @items.Key.DepartmentName </b></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    int ind = 0;
+                                    <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                                        @foreach (var office in items)
+                                        {
+                                            var isEven1 = ind % 2 == 0;
+                                        <div class="col-xl-6 col-lg-6">
+                                            <div class="card @(isEven1 ? "l-bg-grey" : "l-bg-darkgrey")">
+                                                <div class="card-statistic-3 pl-3 pr-3 pt-2 pb-2">
+                                                    <div class="">
+                                                        <h6 class="card-title mb-0"><b><i class="fas fa-building"></i> @office.DepartmentAbbr - @office.DepartmentName</b></h6>
+                                                        <h6 class="card-item mb-0"><i class="fas fa-store"></i> @office.OfficeName  </h6>
+                                                        <h6 class="card-item mb-0"><i class="fas fa-user"></i> Head : @office.OfficeHead </h6>
+                                                        <h6 class="card-item mb-0 row">
+                                                            <span class="col-8"><i class="fas fa-phone-alt"></i> <a href="tel:@office.OfficeHeadContactNo">@office.OfficeHeadContactNo</a>  </span>
+                                                            <span class="col-2">
+                                                                @if (office.Flag == null)
+                                                                {
+                                                                    <span id="heart_@office.OfficeID"><i class="far fa-flag dot" aria-hidden="true" onclick="flaged('@office.OfficeID','@Model.ConstituencyId')"></i> </span>
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span id="heart_@office.OfficeID"><i class="fa fa-flag dot liked" aria-hidden="true" onclick="flaged('@office.OfficeID','@Model.ConstituencyId')"></i> </span>
+                                                                }
+
+                                                            </span>
+                                                            <span class="col-2"><i class="fas fa-comment-dots dot hand" onclick="GetEmp('@office.DepartmentID','@office.OfficeID')"></i></span>
+                                                        </h6>
+
+                                                        <div class="row align-items-center">
+                                                            <div class="col-8">
+                                                            </div>
+                                                            <div class="col-1">
+
+
+                                                            </div>
+                                                            <div class="col-3">
+                                                                @if (Model.Type == 1)
+                                                                {
+                                                                    <img src="/Assets/Home_Images/PDF.png" alt="Works" title="Works" class="hand" width="25" height="25" />
+                                                                }
+                                                                else if (Model.Type == 2)
+                                                                {
+                                                                    <img src="/Assets/Home_Images/PDF.png" alt="Beneficiaries" title="Beneficiaries" class="hand" width="25" height="25" />
+                                                                }
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                            ind++;
+                                        }
+                                    </div>
+
+
+                                index++;
+                            }
+
+                         
+
+                            }
+
+                        </div>
+
+
+                        </div>
+                    </div>
+                }
+
+                @if (Model.EmpOpen)
+                {
+                    int index = 0;
+
+                    <div id="EmpCard" class="container">
+                        <div class="row ">
+
+                            <div class="col-xl-6 col-lg-6">
+                                <div class="card l-bg-grey">
+                                    <div class="card-statistic-3 p-3">
+                                        <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
+                                        <div class="mb-4">
+                                            <h6 class="card-title mb-0"><i class="fas fa-building"></i> @Model.OfficeDetial.DepartmentName</h6>
+                                            <h6 class="card-item mb-0"><i class="fas fa-store"></i> @Model.OfficeDetial.OfficeName</h6>
+                                        </div>
+                                        <div class="row align-items-center d-flex">
+                                            <div class="col-12">
+                                                <h6 class="card-item mb-0"><i class="fas fa-user"></i> Head : @Model.OfficeDetial.OfficeHead</h6>
+                                                <h6 class="card-item mb-0 row">
+
+                                                    <span class="col-6"><i class="fas fa-phone-alt"></i> <a href="tel:@Model.OfficeDetial.OfficeHeadContactNo">@Model.OfficeDetial.OfficeHeadContactNo</a>  </span>
+                                                    <span class="col-4"><i class="fas fa-map-marker-alt hand" onclick="openmap('@Model.OfficeDetial.Longitude','@Model.OfficeDetial.Latitude')"> Location</i>  </span>
+                                                </h6>
+                                                <h6 class="card-email mb-0"><i class="fas fa-envelope"></i> @Model.OfficeDetial.OfficeEmailID</h6>
+                                                @*<h6 class="card-item mb-0"> </h6>*@
+                                                @*<img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-map-icon.png" height="25" width="25" />*@
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div id="EmployeeDiv" class="container-fluid p-0">
+
+                        <div class="inr_frm_dsgn">
+
+                            <div class="widget-box " id="divAction">
+                                <div class="widget-header widget-header-flat rounded-top rounded-0">
+                                    <h4 class="lbloff1">Designation(@Model.EmployeeData.GroupBy(o => new { o.Designation }).ToList().Count) >> Employees (@Model.EmployeeData.Count)</h4>
+                                    <button style="float:right; padding: 5px 15px; font-size: 14px;" type="button" onclick="Goback()" class="btn btn-primary" aria-label="Close">Back</button>
+                                </div>
+                            </div>
+
+                            <div id="accordion" class="form_lyot">
+
+                                @foreach (var emp in Model.EmployeeData.GroupBy(o => new { o.Designation }))
+                                {
+
+                                    var isEven = index % 2 == 0;
+
+                                    <div class="accordion-header row ui-accordion ui-widget ui-helper-reset hand">
+
+                                        <div class="col-xl-6 col-lg-6">
+                                            <div class="card @(isEven ? "l-bg-grey" : "l-bg-darkgrey")">
+                                                <div class="card-statistic-3 pl-3 pr-3 pt-2 pb-2">
+                                                    <div class="">
+                                                        <h6 class="card-item mb-0"><b><i class="fas fa-user-tag"></i> @emp.Key.Designation </b></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" onclick="">
+                                        @{int ind = 0;}
+                                        @foreach (var ep in emp)
+                                        {
+                                            var isEven1 = ind % 2 == 0;
+                                            <div class="col-xl-6 col-lg-6">
+                                                <div class="card @(isEven1 ? "l-bg-grey" : "l-bg-darkgrey")">
+                                                    <div class="card-statistic-3 p-2">
+                                                        <div class="">
+                                                            <h6 class="card-title mb-0"><b><i class="fas fa-user-tag"></i>  @ep.Designation </b></h6>
+                                                            <h6 class="card-item mb-0"><i class="fas fa-user-tie"></i> @ep.EmployeeName </h6>
+                                                            <h6 class="row card-item mb-0">
+                                                                <span class="col-7"> <i class="fas fa-id-card"> DOJ :</i> @ep.DateOfJoiningCurrentOffice</span>
+                                                                <span class="col-5"><i class="fas fa-phone-alt"></i> <a href="tel:@ep.MobileNumber">@ep.MobileNumber</a></span>
+                                                            </h6>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            ind++;
+                                        }
+                                    </div>
+                                    index++;
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </section>
+        </div>
+    </div>
+}
+@*sept 2024*@
+
+<script>
+
+
+    $(document).ready(function () {
+        
+        var headers = $('#accordion .accordion-header');
+        var contentAreas = $('#accordion .ui-accordion-content ').hide();
+
+
+        //// add the accordion functionality
+        headers.click(function () {
+            var panel = $(this).next();
+            var isOpen = panel.is(':visible');
+
+            // open or close as necessary
+            panel[isOpen ? 'slideUp' : 'slideDown']()
+                // trigger the correct custom event
+                .trigger(isOpen ? 'hide' : 'show');
+
+            // stop the link from causing a pagescroll
+            return false;
+        });
+
+        // hook up the expand/collapse all
+        //expandLink.click(function () {
+        //    $(".ui-accordion-content").show();
+        //});
+
+        //$("#EmployeeDiv").hide();
+        var type = '@Model.Type';
+        var dt=$('#example').DataTable({
+            rowReorder: true,
+            paging: true,
+            searching: true,
+            pageLength: 100,
+            "bLengthChange": false,
+           //columnDefs: [{ visible: false, targets: [4,5] }]
+        });
+        if (type == "1") {
+            dt.columns([2, 4, 5]).visible(false);
+            $('#lbloff').html("Development Works");
+        } else if (type == "2") {
+            dt.columns([2, 3, 5]).visible(false);
+            $('#lbloff').html("Beneficiaries");
+        } else if (type == "3") {
+            dt.columns([3, 4]).visible(false);
+            $('#lbloff').html("Offices");
+        }
+        $('#Employee').DataTable({
+            rowReorder: true,
+            paging: true,
+            searching: true,
+            pageLength: 100,
+            "bLengthChange": false,
+        });
+
+        var empopen = '@Model.EmpOpen';
+        if (empopen == 'True') {
+            $("#OfficeDiv").hide();
+            $("#EmployeeDiv").show();
+        } else {
+            $("#EmployeeDiv").hide();
+            $("#EmpCard").hide();
+        }
+    });
+
+
+
+
+
+    function flaged(officeid,cid) {
+        if ($("#heart_" + officeid).hasClass("liked")) {
+            $("#heart_" + officeid).html('<i class="far fa-flag dot" aria-hidden="true"  onclick="flaged('+officeid+','+cid+')"></i>');
+            $("#heart_" + officeid).removeClass("liked");
+            var isSup = "0";
+        } else {
+            $("#heart_" + officeid).html('<i class="fa fa-flag dot" aria-hidden="true"  onclick="flaged('+officeid+','+cid+')"></i>');
+            $("#heart_" + officeid).addClass("liked");
+            var isSup = "1";
+        }
+
+        var ConstituencyId = '@Model.ConstituencyId';
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("UpdateFlag", "API")',
+            datatype: "Json",
+            data: { ConstituencyId: ConstituencyId, OfficeId: officeid, IsFlag: isSup },
+            success: function (data) {
+               //alert("Office Flagged");
+            }
+        });
+    }
+
+
+
+    function GetEmp(dept, office) {
+
+        if (dept != "" && office != "") {
+            $("#hdnClicked").val(1);
+            $("#hdnDept").val(dept);
+            $("#hdnOffice").val(office);
+            $('#btngetuser').click();
+
+        }
+
+
+
+
+        //$("#OfficeDiv").hide();
+        //$("#lblEmpDept").html("Department : " + dept);
+        //$("#lblEmpOff").html("Office : " + office);
+        //$("#EmployeeDiv").show();
+
+    }
+
+
+    function openmap(long, lat) {
+        window.open('http://maps.google.com/?q=' + lat+','+long, '_blank');
+    }
+    function Goback() {
+        $("#OfficeDiv").show();
+        $("#EmpCard").hide();
+        $("#EmployeeDiv").hide();
+        $("#hdnClicked").val(0);
+    }
+
+     function Getdata() {
+         $("#hdnClicked").val(0);
+         var consid = $("#DdlCons").val();
+
+         if (consid != "") {
+
+                $('#btngetuser').click();
+            } else {
+
+                $('.permission').hide();
+            }
+        }
+
+    function handleSuccess(response) {
+        if (response.success) {
+            alert("Form submitted successfully!");
+             window.location.href =  "@Url.Action("Index", "Zone")";
+        } else {
+
+            var errorsHtml = "<ul>";
+            $.each(response.errors, function (index, error) {
+                errorsHtml += "<li>" + error + "</li>";
+            });
+            errorsHtml += "</ul>";
+            $("#validationErrors").html(errorsHtml);
+        }
+    }
+
+    function handleFailure(response) {
+        $("#validationErrors").html("An error occurred while processing your request.");
+    }
+    function AddNew() {
+        clearTextBox();
+        $('#myModal').modal('show');
+        $("#mode").val('Add');
+    }
+
+
+
+        var MyApp = {};
+    function DeleteDepartmentRecord(xyz) {
+        MyApp = xyz;
+        DeleteID();
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+    function DeleteID() {
+        var i = MyApp;
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("UpdateStatusZone", "Zone")' + '?ZoneId=' + i,
+            success: function (result) {
+                alert("Updated Successfully");
+               // window.location.href =  "@Url.Action("Index", "Assembly")";
+            }
+        });
+    }
+    function getbyID(ZoneID) {
+
+          clearTextBox();
+        $("#myModalLabel").html("Update Zone Record");
+        $("#btnUpdate").show();
+        $("#btnSave").hide();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("EditZone", "Zone")' + '?ZoneID=' + ZoneID,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var obj = JSON.parse(data);
+                var data = obj.Zoneslist[0];
+                $('#myModal').modal('show');
+                $("#mode").val('Edit');
+                $("#ZoneID").val(data.ZoneID);
+                $("#ZoneName").val(data.ZoneName);
+                $('#ZoneNameLocal').val(data.ZoneNameLocal);
+                $("#btnSave").hide();
+
+            }
+        });
+    }
+
+    function clearTextBox() {
+        $('#ZoneName').val("");
+        $('#ZoneNameLocal').val("");
+        $("#btnSave").show();
+        $("#btnUpdate").hide();
+        $("#btnSave").show();
+    }
+
+
+</script>

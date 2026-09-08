@@ -1,0 +1,249 @@
+﻿@model  CMNirdesh.Models.DocumentViewModel
+@{
+    ViewBag.Title = "CreateDocument";
+
+    string fileacessingpath = ViewBag.FileAcessingPath;
+}
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+<script src="~/assets/js/bootbox.min.js"></script>
+
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<style>
+    .field-validation-error {
+        color: red;
+        padding-left: 10px;
+    }
+</style>
+
+<div id="main-content">
+    <div class="main-content">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs" id="breadcrumbs">
+            <script type="text/javascript">
+                try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+            </script>
+
+            <ul class="breadcrumb" style="font-size: large; color: #555; padding: 0 3px 0 3px;">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="@Url.Action("DocumentList", "PriorityProjects")">Priority Projects</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("DocumentList", "PriorityProjects")">Document</a>
+                </li>
+
+            </ul>
+
+
+        </div>
+
+        <section class="form_dsign Create_priority_project cm_sec_container form_setting">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" inr_frm_dsgn">
+                            @if (Model.Mode == "Add")
+                            {
+                                <h4 class="widget-title lighter">Add Document</h4>
+                            }
+                            else
+                            {
+                                <h4 class="widget-title lighter">Edit Document</h4>
+                            }
+
+                            <div class="form_lyot">
+                                @using (Html.BeginForm("SaveDocument", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "Project" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.HiddenFor(model => model.ProgrammeDocsId)
+                                    @Html.HiddenFor(model => model.Mode)
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <fieldset class="fieldset_box personal_fild comn_field fild_btn">
+                                                <legend class="leg_box">Document Details:</legend>
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt">Project</label>
+                                                        @Html.DropDownListFor(a => a.ProjectId, Model.ProjectList, new { @class = "width-100" })
+
+                                                        @Html.ValidationMessageFor(model => model.ProjectId)
+
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Document Title </label>
+                                                        @Html.TextBoxFor(model => model.DocumentTitle, new { @class = "width-100", @placeholder = "Document Title", @autocomplete = "off" })
+
+                                                        @Html.ValidationMessageFor(model => model.DocumentTitle)
+
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Document</label>
+                                                        <input type="file" style="margin-left: 40px;" name="projectDoc" id="projectDoc" accept=".pdf,.xlsx,.doc,.xls" />
+                                                        @Html.HiddenFor(model => model.DocumentLocation)
+                                                        @Html.HiddenFor(model => model.DocumentFileName)
+                                                        <input type="hidden" id="projectDochdn" />
+
+                                                        @if (Model.Mode == "Add")
+                                                        {
+                                                            <a href="@Model.DocumentLocation" id="adocLoc" style="display:none;"></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Content("~/MlaDiary/" + Model.DocumentLocation)" id="adocLoc">Click to download</a>
+
+                                                        }
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Publishing Status </label>
+                                                        @Html.DropDownListFor(model => model.IsActive, Model.StatusTypeList, new { @class = "width-100" })
+
+                                                    </div>
+
+
+
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-2" style="margin-top:30px; text-align:right;">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> </label>
+                                                        <button type="reset" class="btn btn-sm btn-danger" onclick="resetFields();">
+                                                            <i class="ace-icon fa fa-times bigger-125"></i>
+                                                            Reset
+                                                        </button>
+                                                        <button type="submit" id="savebtn" class="btn btn-sm btn-primary ">
+                                                            <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                                                            Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</div>
+
+
+<link href="~/Content/datepicker.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/datatables/jszip.min.js"></script>
+<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+<script src="~/Scripts/datatables/vfs-fonts.js"></script>
+<script src="~/Scripts/datatables/buttons.print.min.js"></script>
+<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+<script src="~/Scripts/date-time/bootstrap-datepicker.min.js"></script>
+<script>
+
+    $("#projectDoc").change(function () {
+
+
+        CheckImage("#projectDoc", "projectDoc");
+
+    });
+
+    function CheckImage(input, name) {
+
+        var sizeInKB = $(input)[0].files[0].size / 1024;
+        var filename = $(input)[0].files[0].name;
+        var dots = $(input).val().split(".").length - 1;
+        var sizeLimit = 2048;
+        //if (sizeInKB > sizeLimit) {
+        //    toastr.error('File size must be less than 20 Mb.');
+        //    $(input).val('');
+        //    $(input + "hdn").val('');
+        //    $(input).focus();
+        //    $("#DocumentLocation").val('');
+
+        //}
+
+        if (dots > 1) {
+            toastr.error('Invalid file Format.');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $("#DocumentLocation").val('');
+        }
+
+
+        else {
+            var inpt = "input[name=" + name + "]";
+
+            var inputElement1 = $(inpt);
+
+            readImage(inputElement1).done(function (base64Data) {
+                $(input + "hdn").val(base64Data);
+                $("#DocumentLocation").val(base64Data);
+                $("#DocumentFileName").val(filename);
+                $("#adocLoc").hide();
+
+            });
+
+
+
+
+
+        }
+
+    }
+    function readImage(inputElement) {
+
+
+        var deferred = $.Deferred();
+
+        var files = inputElement.get(0).files;
+        if (files && files[0]) {
+            var fr = new FileReader();
+            fr.onload = function (e) {
+                deferred.resolve(e.target.result);
+            };
+            fr.readAsDataURL(files[0]);
+        } else {
+            deferred.resolve(undefined);
+        }
+
+        return deferred.promise();
+    }
+
+    $(document).ready(function () {
+        $("#Title").focus();
+
+        $("#Projectmain").addClass("active open");
+        $("#Projectsub").addClass("nav-show").css("display", "block");
+        $("#doclist").addClass("active");
+
+
+
+
+
+
+    });
+    function resetFields() {
+        $(".field-validation-error").empty();
+        $("#Title").focus();
+
+    }
+
+
+</script>

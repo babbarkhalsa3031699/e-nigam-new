@@ -1,0 +1,85 @@
+﻿@model  CMNirdesh.Models.UserMenu
+@using CMNirdesh.Models
+
+<head>
+    @*<script src="~/Scripts/sidebar.js"></script>*@
+    
+</head>
+<body>
+
+
+
+<div class="mobile-nav">
+    <ul class="list-unstyled ps-0">
+
+        <li class="menu-list-item mb-4 " id="" label="">
+            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="getUserProfileDetail();">
+                <div class="d-inline-flex align-items-center user-section user-detail-in-popup gap-2">
+                    <div class="user-image">
+                        <img class="rounded-circle usr_img" src="~/Assets/Home_Images/user.png" alt="user-image">
+                    </div>
+                    <div class="user-detail">
+                        <p class="mb-0 user-name"> @CurrentSession.Name</p>
+                        <p class="mb-0 user-designation" data-bs-toggle="tooltip" data-bs-title="Default tooltip"> @CurrentSession.Designation</p>
+                        <p class="mb-0 user-deptname" data-bs-toggle="tooltip" data-bs-title="Default tooltip"> @CurrentSession.DeptName</p>
+                    </div>
+                </div>
+            </a>
+        </li>
+
+
+        <li><hr class="dropdown-divider"> </li>
+        <li class="menu-list-item mb-4 ">
+            <a href="@Url.Action(" Index", "References" )" class="menu-list-item-link align-items-center rounded">
+                <span class="menu-item-icon">
+                    <svg width="21" height="23" viewBox="0 0 21 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1.505" y="1.37433" width="18.3387" height="20.1251" rx="1.25" stroke="#173C34" stroke-width="1.5" />
+                        <path d="M7.97546 1.50977V21.6771" stroke="#173C34" stroke-width="1.5" />
+                        <path d="M8.22302 6.20514H20.1416" stroke="#173C34" stroke-width="1.5" />
+                        <path d="M8.22302 16.4797H20.1416" stroke="#173C34" stroke-width="1.5" />
+                    </svg>
+                </span>
+                <span class="menu-item-text">Dashboard</span>
+            </a>
+        </li>
+
+
+        @foreach (CMNirdesh.Models.MenuModel menu in Model.MenuList)
+        {
+        <li class="menu-list-item mb-3 " id="@menu.MenuId" label="@menu.MenuName">
+            <a class="menu-list-item-link align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#@menu.MenuName.Replace(" "," ")" aria-expanded="false" aria-controls="@menu.MenuName">
+                <span class="menu-item-icon">
+                    <img src="@Url.Content(" ~ /" + menu.icon)" height="25" width="25" />
+                </span>
+                <span class="menu-item-text">@menu.MenuName</span>
+            </a>
+            <div class="sub-nav-list collapse  " id="@menu.MenuName.Replace(" "," ")">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small" id="menu_@menu.MenuName.Replace(" "," ")">
+                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                    {
+                    <li value='@submenu.SubMenuId' class="mobile-submenu">
+                        <a class="link-dark rounded" href="@Url.Action(submenu.ActionName, submenu.ControllerName,new { type = submenu.Type })">@submenu.SubMenuName</a>
+                    </li>
+
+                    }
+                </ul>
+            </div>
+        </li>
+
+
+        }
+        <li><hr class="dropdown-divider"> </li>
+        <li class="menu-list-item mb-1 ">
+            <a href="~/Account/LogOff" class="menu-list-item-link align-items-center rounded">
+                <span class="menu-item-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </span>
+                <span class="menu-item-text">Logout</span>
+            </a>
+        </li>
+    </ul>
+
+    </div>
+</body>
+
+

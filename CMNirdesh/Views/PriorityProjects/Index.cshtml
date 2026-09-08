@@ -1,0 +1,3544 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+    var servicename = CMNirdesh.Models.CurrentSession.serviceName;
+    var isapex = CMNirdesh.Models.CurrentSession.isApex;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/Content/style_ms.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/responsive_ms.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/common.css" rel="stylesheet" />    
+    @if (TempData["Message"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                var msg = '@TempData["Message"]';
+                alert(msg);
+            });
+        </script>
+
+    }
+    @if (TempData["ErrMsgPromise"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                $("#modalPromise").modal('show');
+        </script>
+    }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <script>
+            $(document).ready(function () {
+                alert('@Html.Raw(ViewBag.ErrorMessage)')
+            });
+        </script>
+    }
+    <text>
+        @{
+            TempData["Message"] = null;
+        }
+    </text>
+</head>
+<body>
+
+    <input type="hidden" name="hidden" value="2" id="hdnMCorLeg" />
+    <div id="main-content">
+        <section class="form_dsign">
+            <div class="">
+                <div class="widget-box" id="divAction">
+                    <div class="widget-header widget-header-flat">
+                        @if (servicename == "CMNirdesh" || isapex == "1")
+                        {
+
+                            if (Model.useractiontype == "Edit")
+                            {
+                                <h4>
+                                    <span id="selectednew" class="">
+                                        Project-Departments
+                                    </span>
+                                </h4>
+                            }
+                            else
+                            {
+                                <h4>
+                                    <span id="selectednew" class="">
+                                        Department-Works
+                                    </span>
+                                </h4>
+                            }
+                        }
+                        else
+                        {
+
+                            if (Model.useractiontype == "Edit")
+                            {
+                                <h4>
+                                    <span id="selectednew" class="">
+                                        Project-Offices
+                                    </span>
+                                </h4>
+                            }
+                            else
+                            {
+                                <h4>
+                                    <span id="selectednew" class="">
+                                        Office-Works
+                                    </span>
+                                </h4>
+                            }
+                        }
+                        <div class="widget-toolbar no-border">
+                            @if ((isapex == "1" || Model.projectedityn == "Y") && Model.useractiontype == "Edit")
+                            {
+                                <button class="loader btn btn-sm btn-success" style="font-size:14px !important;" onclick="AddProjects('0');">
+                                    <i class="ace-icon fa fa-pencil-square-o"></i>
+                                    <span class="bigger-110">New Project</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    @Html.Hidden("maintype", "0")
+                    <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
+                </div>
+                <div class="col-md-12 col-xl-12 col-lg-12 no-right-margin filter-part position-relative ">
+                    <div class="row">
+                        @if (Model.useractiontype == "All")
+                        {
+                            <div class="col-lg-10">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                                        <div>
+                                            <div class="form fc align-items-center gap-1">
+                                                <span class="label-text">
+                                                    <b> Project</b>
+                                                </span>
+                                                <div class="btn-group dropup">
+
+                                                    <button onclick="ProjectCountD();" type="button" class=" dropdown-toggle link-option icon-refrence" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="far fa-briefcase"></i>
+                                                    </button>
+
+                                                    <div class="dropdown-menu popup-box p-0">
+
+                                                        <div class="filter-popup" id="DispatchProjectCount">
+                                                            <div class="table-responsive">
+                                                                <table class="table " id="DispatchProjectTableCount" style="width:100%">
+                                                                    <thead>
+                                                                        <tr class="table-heading ">
+                                                                            <th class='td-heading'>
+                                                                                <b>Project </b>
+                                                                            </th>
+                                                                            <th class='td-heading'>Works</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, "--Select--", new { @id = "ddlProject", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @disabled = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                                        <div>
+                                            <div class="form fc align-items-center gap-1">
+                                                <span class="label-text">
+                                                    @if (servicename == "CMNirdesh")
+                                                    {
+                                                        <b>Department </b>
+                                                    }
+                                                    else
+                                                    {
+                                                        <b>Department/Office</b>
+                                                    }
+                                                </span>
+                                                <div class="btn-group dropup">
+
+                                                    <button onclick="DepartmentCountD();" type="button" class=" dropdown-toggle link-option icon-department" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fas fa-building"></i>
+
+                                                    </button>
+
+                                                    <div class="dropdown-menu popup-box p-0">
+
+                                                        <div class="filter-popup" id="DispatchOfficeCount">
+                                                            <div class="table-responsive">
+                                                                <table class="table " id="DispatchOfficeTableCount" style="width:100%">
+                                                                    <thead>
+                                                                        <tr class="table-heading ">
+                                                                            <th class='td-heading'>
+                                                                                <b>Department </b>
+                                                                            </th>
+                                                                            <th class='td-heading'>Works</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @Html.DropDownListFor(model => model.DeptId, Model.mDepartmentList, "--Select--", new { @id = "ddlDepartment", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2" })
+                                                @Html.DropDownListFor(model => model.OfficeId, Model.mOfficeList, "--Select--", new { @id = "ddlOffice", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @style = "display:none" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                                        <div>
+                                            <div class="form fc align-items-center gap-1">
+                                                @if (servicename == "CMNirdesh")
+                                                {
+                                                    <span class="label-text">
+                                                        <b>Constituency </b>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="label-text">
+                                                        <b>MC Wards </b>
+                                                    </span>
+                                                }
+                                                <div class="btn-group dropup">
+
+                                                    <button onclick="WardCountD();" type="button" class=" dropdown-toggle link-option icon-office" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fas fa-poll-people"></i>
+
+                                                    </button>
+
+                                                    <div class="dropdown-menu popup-box p-0">
+
+                                                        <div class="filter-popup" id="DispatchWardCount">
+                                                            <div class="table-responsive">
+                                                                <table class="table " id="DispatchWardTableCount" style="width:100%">
+                                                                    <thead>
+                                                                        <tr class="table-heading ">
+                                                                            <th class='td-heading'>
+                                                                                @if (servicename == "CMNirdesh")
+                                                                                {
+                                                                                    <b>
+                                                                                        Constituency
+                                                                                    </b>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <b>
+                                                                                        Ward
+                                                                                    </b>
+                                                                                }
+                                                                            </th>
+                                                                            <th class='td-heading'>Works</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @Html.DropDownListFor(model => model.ConstituencyId, Model.mProjectConstituencyList, "--Select--", new { @id = "ddlConstituency", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @disabled = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                                        <div>
+                                            <div class="form fc align-items-center gap-1">
+                                                <span class="label-text">
+                                                    <b>Status </b>
+                                                </span>
+                                                <div class="btn-group dropup">
+
+                                                    <button onclick="StatusCountD();" type="button" class=" dropdown-toggle link-option icon-status" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fas fa-chart-line"></i>
+                                                    </button>
+
+                                                    <div class="dropdown-menu popup-box p-0">
+
+                                                        <div class="filter-popup" id="DispatchStatusCount">
+                                                            <div class="table-responsive">
+                                                                <table class="table " id="DispatchStatusTableCount" style="width:100%">
+                                                                    <thead>
+                                                                        <tr class="table-heading ">
+                                                                            <th class='td-heading'>Status</th>
+                                                                            <th class='td-heading'>Works</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @Html.DropDownListFor(model => model.ProjectStatusId, Model.ProjectStatusTypeList, new { @id = "ddlStatus", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "11", @disabled = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 mt-3 pt-4">
+                                        <div class="text-start d-flex gap-3 pt-4">
+                                            <button class="loader btn btn-primary" id="searchbutton" onclick="searchData();"> Search</button>
+                                            <button class="loader btn btn-success" id="resetbutton" style="display:block;" onclick="ResetD();"> Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
+                                <div>
+                                    <div class="form fc align-items-center gap-1">
+                                        <span class="label-text">
+                                            <b> Project</b>
+                                        </span>
+                                        <div class="btn-group dropup">
+
+                                            <button onclick="ProjectOfcCountD();" type="button" class="inline dropdown-toggle link-option icon-refrence" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="far fa-briefcase"></i>
+
+                                            </button>
+
+                                            <div class="dropdown-menu popup-box p-0">
+
+                                                <div class="filter-popup" id="DispatchProjectCount">
+                                                    <div class="table-responsive">
+                                                        <table class="table " id="DispatchProjectTableCount" style="width:100%">
+                                                            <thead>
+                                                                <tr class="table-heading ">
+                                                                    <th class='td-heading'>
+                                                                        <b>Project </b>
+                                                                    </th>
+                                                                    <th class='td-heading'>
+                                                                        @if (isapex == "0" && servicename == "MC")
+                                                                        {
+                                                                            <b>Office</b>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <b>Department</b>
+                                                                        }
+
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, "--Select--", new { @id = "ddlProject", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
+                                <div>
+                                    <div class="form fc align-items-center gap-1 pt-1">
+                                        <span class="label-text">
+                                            @if (servicename == "CMNirdesh" || isapex == "1")
+                                            {
+                                                <b>Department </b>
+                                            }
+                                            else
+                                            {
+                                                <b>Office</b>
+                                            }
+                                        </span>
+                                        <div class="btn-group dropup">
+
+                                            <button onclick="OfficeCountD();" type="button" class=" dropdown-toggle link-option icon-department" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-building"></i>
+
+                                            </button>
+
+                                            <div class="dropdown-menu popup-box p-0">
+
+                                                <div class="filter-popup" id="DispatchOfficeCount">
+                                                    <div class="table-responsive">
+                                                        <table class="table " id="DispatchOfficeTableCount" style="width:100%">
+                                                            <thead>
+                                                                <tr class="table-heading ">
+                                                                    <th class='td-heading'>
+                                                                        @if (servicename == "CMNirdesh" || isapex == "1")
+                                                                        {
+                                                                            <b>Department </b>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <b>Office</b>
+                                                                        }
+                                                                    </th>
+                                                                    <th class='td-heading'>Projects</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.DeptId, Model.mDepartmentList, "--Select--", new { @id = "ddlDepartment", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2" })
+                                        @Html.DropDownListFor(model => model.OfficeId, Model.mOfficeList, "--Select--", new { @id = "ddlOffice", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @style = "display:none" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 mt-4 pt-4">
+                                <div class="text-start d-flex gap-3 pt-3">
+                                    <button class="loader btn btn-primary" id="searchbutton" onclick="searchData();"> Search</button>
+                                    <button class="loader btn btn-success" id="resetbutton" style="display:block;" onclick="ResetD();"> Reset</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-12 cl-lg-12">
+                    <div class="row">
+                        <div class="col-md-12 col-xl-12 col-lg-12 mt-3" id="divOffficeSummaryBtn">
+                            <div class="table-switch">
+                                @if (Model.useractiontype == "Edit")
+                                {
+                                    if (servicename == "CMNirdesh" || isapex == "1")
+                                    {
+                                        <div>
+                                            <input type="radio" id="rbtnProjectDeptStatus" name="radiobutton" value="rbtnProjectDeptStatus" checked="checked" onclick="loadProjectWiseDepartmentStatus();">
+                                            <label for="status"><b>Project-Department Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="rbtnDeptProjectStatus" name="radiobutton" value="rbtnDeptProjectStatus" onclick="loadDepartmentWiseProjectStatus();">
+                                            <label for="status"><b>Department-Project Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <input type="radio" id="rbtnProjectDeptStatus" name="radiobutton" value="rbtnProjectDeptStatus" checked="checked" onclick="loadProjectWiseDepartmentStatus();">
+                                            <label for="status"><b>Project-Office Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="rbtnDeptProjectStatus" name="radiobutton" value="rbtnDeptProjectStatus" onclick="loadDepartmentWiseProjectStatus();">
+                                            <label for="status"><b>Office-Project Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                    }
+                                }
+                                @if (Model.useractiontype == "All")
+                                {
+                                    if (servicename == "CMNirdesh" || isapex == "1")
+                                    {
+                                        <div>
+                                            <input type="radio" id="rbtnDeptWiseProjectWorkStatus" name="radiobutton" checked="checked" value="rbtnDeptWiseProjectWorkStatus" onclick="loadDeptWiseProjectWorkStatus(0);">
+                                            <label for="status"><b>Department-Project-Work Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="rbtnProjectWiseDeptWorkStatus" name="radiobutton" value="rbtnProjectWiseDeptWorkStatus" onclick="loadProjectDeptWiseWorkStatus();">
+                                            <label for="status"><b>Project-Department-Work Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <input type="radio" id="rbtnDeptWiseProjectWorkStatus" name="radiobutton" checked="checked" value="rbtnDeptWiseProjectWorkStatus" onclick="loadDeptWiseProjectWorkStatus(0);">
+                                            <label for="status"><b>Office-Project-Work Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                        <div>
+                                            <input type="radio" id="rbtnProjectWiseDeptWorkStatus" name="radiobutton" value="rbtnProjectWiseDeptWorkStatus" onclick="loadProjectDeptWiseWorkStatus();">
+                                            <label for="status"><b>Project-Office-Work Status Summary</b></label>&nbsp;&nbsp;
+                                        </div>
+                                    }
+                                }
+                                <div>
+                                    <input type="radio" id="rbtnList" name="radiobutton" value="rbtnList" onclick="loadProjects();">
+                                    <label for="list"><b>List (View/Update)</b></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form_lyot table-responsive">
+                    @if (Model != null)
+                    {
+                        <div id="divProjectDeptName" style="display:none">
+                            <label for="inputinfo" class="control-label lbl_txt width-100" style="font-size: 13pt;">
+                                <b>Department: </b><span id="ddlProjectDeptName"></span>
+                                <a id="btnBackStatus" onclick="loadlist();" class="loader btn btn-sm btn-danger float-right"><i class="fa fa-arrow-left"></i> Back</a>
+                            </label>
+                        </div>
+                        <div id="divtableProjects">
+                            <table id="tableProjects" class="table table-hover table-bordered width-100" style="vertical-align:top">
+                            </table>
+                        </div>
+                        <div id="divProjectWorksStatus" class="mt-2">
+                        </div>
+                        <input type="hidden" id="hdnSelectedDeptID" />
+                        <input type="hidden" id="hdnSelectedCurrDeptID" />
+                        <input type="hidden" id="hdnStepNo" />
+                        <input type="hidden" id="hdnSelectedProjectid" />
+                        <input type="hidden" id="hdnSelectedStatusid" />
+                    }
+
+                </div>
+            </div>
+
+
+            <div id="modalPromise" class="modal" style="background: rgb(54 55 56 / 63%);" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="projectSaveHead">New Project</h5>
+                            <button type="button" class="btn-close" onclick="closePopup();" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modalPromiseBody">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modalDepartment" class="modal" style="background: rgb(54 55 56 / 63%);" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-xxl">
+                    <div class="modal-content" id="modalDepartmentBody">
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div id="modalWorks" class="modal pr-0" style="background: rgb(54 55 56 / 63%);" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-xxl">
+                    <div class="modal-content" id="modalWorksBody">
+                    </div>
+                </div>
+            </div>
+            <!-- The Modal -->
+            <div id="myImgModal" class="modalnew">
+                <span class="close closenew" onclick="closeImgPopup();">&times;</span>
+
+                <img class="modalnew-content" id="img01">
+                <div id="caption"></div>
+            </div>
+            <div id="modalImages" class="modal pr-0" style="background: rgb(54 55 56 / 63%);" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered modal-xxl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Upload Image</h5>
+                            <button type="button" class="btn-close" onclick="closePopup();" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modalImagesbody" style="overflow:auto;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modalAddDocument" class="modal pr-0" data-keyboard="false" data-backdrop="static" style="background: rgb(54 55 56 / 63%);">
+                <div class="modal-dialog modal-dialog-centered modal-xxl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Upload Document</h5>
+
+                            <button type="button" class="btn-close" onclick="closePopup();" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modalAddDocumentBody">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modalAddConstituency" class="modal pr-0" style="background: rgb(54 55 56 / 63%);" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered modal-xxl">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            @if (servicename == "CMNirdesh")
+                            {
+                                <h5 class="modal-title">Update Constituency</h5>
+                            }
+                            else
+                            {
+                                <h5 class="modal-title">Update Ward</h5>
+                            }
+
+                            <button type="button" class="btn-close" onclick="closePopup();" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modalAddConstituencyBody">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="modalsuccess">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal body -->
+                        <div class="modal-body mt-4">
+                            <span id="successmsg"></span>
+                            <div class="row text-right float-right mt-3 p-3">
+                                <button type="button" class="loader btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div id="mpProjectList" class="modal pr-0" style="background: rgb(54 55 56 / 63%);z-index:111" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-xxl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="widget-title modal_heading">Projects List</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeImgPopup();"></button>
+
+                        </div>
+                        <div class="modal-body modal-dialog-scrollable">
+                            <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                                <table id="tableProjectList" class="table table-hover table-bordered w-100 width-100" style="vertical-align:top">
+                                    <thead>
+                                        <tr class="table-heading">
+                                            <td class="td-heading" style="width:70px">Project ID</td>
+                                            <td class="td-heading">Project Name</td>
+                                            @if (servicename == "CMNirdesh")
+                                            {
+                                                <td class="center td-heading">
+                                                    Department
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="center td-heading">
+                                                    Office
+                                                </td>
+                                            }
+                                            <td class="td-heading">Work ID</td>
+                                            <td class="td-heading">
+                                                Works Name<br />
+                                                (Components)
+                                            </td>
+                                            @if (servicename == "CMNirdesh")
+                                            {
+                                                <td class="center td-heading">Constituency</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="center td-heading">MC Wards</td>
+                                            }
+                                            <td class="center td-heading">Start Date</td>
+                                            <td class="center td-heading">Estimated Amount <br />(in Lakhs)</td>
+                                            <td class="center td-heading">Expenditure Till Date <br />(In Lakhs)</td>
+                                            <td class="center td-heading">Physical Progress<br />(%)</td>
+                                            <td class="text-center td-heading">Status</td>
+                                            <td class="td-heading" style="width:65px">Action</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyProjectList">
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <script src="~/Scripts/ow_iteml.carousel.min.js"></script>
+    @*<script src="~/Scripts/jquery-3.4.1.js"></script>*@
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+    <link href="~/Content/multiple-select.css" rel="stylesheet" />
+    <link href="~/Content/MultiSelectList/multiple-select.css" rel="stylesheet" />
+    <script src="~/Scripts/MultiSelectBox/jquery.multiple.select.js"></script>
+    <script type="text/javascript">
+            $("#popupClose").on("click", function () {
+                $(".modal-backdrop").remove();
+            });
+            function checkAccessActionValidation(btn) {
+                var id = $(btn).attr("id"); //alert(id);
+                var UserAction = $(id).val();
+            }
+            $('#ddlworkProject').on('change', function () {
+                var projectID = $(this).val();
+                $("#loader-wrapper").show();
+                $.ajax({
+                    type: 'GET',
+                    // url: '/PriorityProjects/GetProjectDepartmentList',
+                    url: '@Url.Action("GetProjectDepartmentList", "PriorityProjects")',
+                    data: { id: projectID },
+                    success: function (data) {
+                        $('#ddlworkDepartment').empty();
+                        $.each(data, function (index, item) {
+                            $('#ddlworkDepartment').append($('<option>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                        $("#loader-wrapper").hide();
+                    },
+                    error: function () {
+                        $("#loader-wrapper").hide();
+                    }
+                });
+            });
+            $(document).on('click', '#btnreset', function () {
+                $("#projectSaveHead").text("New Project");
+                $("#saveProject").text("Save");
+                resetFields();
+            });
+            function resetFields() {
+                $("#txtWorkName").empty();
+                $("#txtprojectname").empty();
+                $('#ddlworkProject').val('');
+                $('#ddlworkDepartment').val('');
+                }
+                function loadlist() {
+                    EnableSearch();
+                    $('#divtableProjects').show();
+                    $('#divProjectWorksStatus').hide();
+                }
+                $(document).ready(function () {
+                    $('#divProjectWorksStatus').hide();
+                    $(".loader").click(function () {
+                    $("#loader-wrapper").show();
+                });
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptProjectStatus') {
+                        loadDepartmentWiseProjectStatus();
+                    }
+                    else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectDeptStatus') {
+                        loadProjectWiseDepartmentStatus();
+                    }
+                    else if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptWiseProjectWorkStatus') {
+                        $("#hdnStepNo").val("2");
+                        loadDeptWiseProjectWorkStatus(0);
+                    }
+                    else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectWiseDeptWorkStatus') {
+                        $("#hdnStepNo").val("5");
+                        loadProjectDeptWiseWorkStatus();
+                    }
+                    else {
+                        $("#hdnStepNo").val("1");
+                        loadProjects();
+                    }
+            });
+            function closePopup() {
+                $("#modalAddDocument").hide();
+                $("#modalImages").hide();
+                $("#modalAddConstituency").hide();
+                $("#myImgModal").hide();
+                $("#modalPromise").hide();
+                $("#modalDepartment").hide();
+                if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptProjectStatus') {
+                    loadDepartmentWiseProjectStatus();
+                }
+                else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectDeptStatus') {
+                    loadProjectWiseDepartmentStatus();
+                }
+                else if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptWiseProjectWorkStatus') {
+                    $("#hdnStepNo").val("2");
+                    loadDeptWiseProjectWorkStatus(0);
+                }
+                else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectWiseDeptWorkStatus') {
+                    $("#hdnStepNo").val("5");
+                    loadProjectDeptWiseWorkStatus();
+                }
+                else {
+                    $("#hdnStepNo").val("1");
+                    loadProjects();
+                }
+            }
+            function closeImgPopup() {
+                $("#myImgModal").hide();
+                    $("#mpProjectList").hide();
+            }
+            function HideShow(id) {
+                $('.prdata').not('#' + id).hide();
+                $("#" + id).show();
+                $('.liproject').not('#' + id + "-li").css('background-color', '#fffcfc');
+                $("#" + id + "-li").css('background-color', '#C5C5C5');
+            }
+            $(".nav li").on("click", function () {
+                $(".nav li").removeClass("active");
+                $(this).addClass("active");
+            });
+            function openPopup() {
+                $("projectName").val();
+                $("#modalPromise").modal('show');
+                // window.open('/Promise/CreatePromise', 'popup', 'width=400,height=400');
+            }
+            $("#modalPromise").click(function (event) {
+                // Check if the click was outside of the popup
+                if (!$(event.target).closest(".modal").length) {
+                    // If the click was outside of the popup, prevent the popup from closing
+                    event.stopPropagation();
+                }
+            });
+                function getProjectDetail(projectid) {
+                    $("#loader-wrapper").show();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("getProjectDetails", "PriorityProjects")',
+                    datatype: "Json",
+                    contentType: "application/json; charset=utf-8",
+                    data: { projectid: projectid },
+                    success: function (response) {
+                        if (response != null) {
+                            $('#txtprojectName').val(response[0].PromiseName);
+                            $('#modeId').val('Edit');
+                            $('#PromiseId').val(projectid);
+                            $("#loader-wrapper").hide();
+                            $("#projectSaveHead").text("Update Project");
+                            $("#saveProject").text("Update");
+                        }
+                        else {
+                            $("#loader-wrapper").hide();
+                        }
+                        $("#loader-wrapper").hide();
+                    },
+                    error: function (error) {
+                        $("#loader-wrapper").hide();
+                    }
+                });
+            }
+
+    </script>
+    <script>
+        var modal = $('#myImgModal');
+        var img = $('.myWorkImage');
+        var modalImg = $('#img01');
+        var captionText = $('#caption');
+        $(document).on('click', '.myWorkImage', function () {
+            $(modal).css({ "display": "block" });
+            $(modalImg).attr("src", this.id);
+            $(captionText).html(this.alt);
+        });
+        var span = $('.close');
+        $(span).click(function () {
+            $(modal).css({ "display": "none" });
+        });
+        $('#btnUploadImages').on('click', function (e) {
+            e.preventDefault();
+            loadImages();
+        });
+        $('#btnAddConstituency').on('click', function (e) {
+            e.preventDefault();
+            loadConstituency();
+        });
+    </script>
+    <script>
+        function loadImages() {
+        var workID = $('#hdnWorkId').val();
+        var PromiseId = $('#hdnWorkProjectId').val();
+        var DeptID = $('#hdnWorkDeptId').val();
+            var html = '';
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkImages", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<div class='col-12 col-sm-3 col-md-2 col-lg-2'>" +
+                            "<img src='@url/mlaDiary/" + item.ImageThumbLocation + "' id = '@url/mlaDiary/" + item.ImageLocation + "' alt = " + item.ImageLocation + " class= 'myWorkImage img-fluid mx-auto d-block float-left' alt = '" + item.ImageTitle + "' data-toggle='tooltip' title ='" + item.ImageTitle + "' style='width: 120px;height:80px'>" +
+                            "<a class='loader text-danger float-right' title='Delete Image' href='/PriorityProjects/DeleteImage?ProjectId=" + PromiseId + "&deptID=" + DeptID + "&workID=" + workID + "&imageId=" + item.ProgrammeImageId + "'>" +
+                            "<i class='fa fa-times'></i>" +
+                            "</a>" +
+                            "<div class='clearfix'></div>" +
+                            "<h4 class='carousal_title text-center' style='font-size: 10pt;'>" + item.ImageTitle + "</h4></div>";
+                        $('#divImages').append(html);
+                    });
+                }
+                else {
+                    html = "<h4 style='color: #b9b4b4; margin - top: 20px; font - size: 13pt;'>Images Not Avaialable</h4>";
+                    $('#divImages').append(html);
+                }
+                closePopup();
+                $("#modalWorks").modal('show');
+                $("#modalImages").modal('show');
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                $("#loader-wrapper").hide();
+                // Handle any errors that occurred during the AJAX call
+            }
+        });
+        }
+        function loadDocuments() {
+        var workID = $('#hdnDocWorkId').val();
+            var html = '';
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkDocuments", "PriorityProjects")',
+
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<tr><td>" +
+                            "<a class='loader' href='@url/mlaDiary/" + item.DocumentLocation + "' target='_blank'>" + item.DocumentTitle + "</a>" +
+                            "</td><td style='padding-left: 10px;'>" +
+                            "<a class='loader text-danger' title='Delete Document' href='/PriorityProjects/DeleteDocument?ProjectId=" + item.PromiseId + "&deptID=" + item.DeptId + "&workID=" + workID + "&docId=" + item.ProgrammeDocsId + "'><i class='fa fa-times'></i></a>" +
+                            "</td></tr > ";
+                        $('#tblDocuments').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Documents not added with this work" +
+                        "</td>'</tr > ";
+                    $('#tbodyWorkConstituency').append(html);
+                }
+                closePopup();
+                $("#modalWorks").modal('show');
+                $("#modalAddDocument").modal('show');
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "Documents not added with this work" +
+                    "</td>'</tr > ";
+                $('#tbodyWorkConstituency').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+        function loadConstituency() {
+        var workID = $('#hdnConstWorkId').val();
+        var ProjectId = $('#hdnConstProjectId').val();
+        var DeptId = $('#hdnConstDeptId').val();
+            var html = '';
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getProjectConstituency", "PriorityProjects")',
+            // url: '/PriorityProjects/getProjectConstituency',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<tr role='row'><td>" +
+                            "<span>" + item.Text + "</span" +
+                            "</td><td>" +
+                            "<a class='loader text-danger mr-1' style='font-size: 10pt; padding: 2px 5px;' title='Delete' id='btnDeletConst' href='/PriorityProjects/DeleteProjectConstituency?ProjectId=" + ProjectId + "&deptID=" + DeptId + "&workID=" + workID + "&contituencyId=" + item.Value + "'><i class='fa fa-times'></i></a>" +
+                            "</td></tr > ";
+                        $('#tbodyWorkConstituency').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "No Record Found" +
+                        "</td>'</tr > ";
+                    $('#tbodyWorkConstituency').append(html);
+                }
+                closePopup();
+                $("#modalWorks").modal('show');
+                $("#modalAddConstituency").modal('show');
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "No Record Found" +
+                    "</td>'</tr > ";
+                $('#tbodyWorkConstituency').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+        function loadWorkDetails(ProjectId, DeptId, workID) {
+        $('#modalWorksBody').html('');
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ViewWorkDetails", "PriorityProjects")',
+            async: true,
+            data: { promiseid: ProjectId, deptID: DeptId, workID: workID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalWorks").css("display", "block");
+                    $('#modalWorksBody').html(data);
+
+                } else { alert("error"); }
+                $("#loader-wrapper").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+        }
+        function AddDepartments(ProjectId, DeptId, workID) {
+        $('#modalDepartmentBody').html('');
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: "GET",
+            // url: pathurl,
+            url: '@Url.Action("ViewDepartments", "PriorityProjects")',
+            async: true,
+            data: { ProjectId: ProjectId },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalDepartment").css("display", "block");
+                    $('#modalDepartmentBody').html(data);
+                    getProjectDepartment(ProjectId);
+
+                } else { alert("error"); }
+                $("#loader-wrapper").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+        }
+        function AddProjects(ProjectId) {
+        $('#modalPromiseBody').html('');
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: "GET",
+            //url: pathurl,
+            url: '@Url.Action("ViewProjects", "PriorityProjects")',
+            async: true,
+            data: { ProjectId: ProjectId },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalPromise").css("display", "block");
+                    $('#modalPromiseBody').html(data);
+                    getProjectsList(ProjectId);
+                } else { alert("error"); }
+                $("#loader-wrapper").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+        }
+        function getProjectsList(ProjectId) {
+        $('#tbodyProjectsList').html('');
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getProjectsList", "PriorityProjects")',
+
+            async: true,
+            data: { ProjectId: ProjectId },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        //var onclickString = 'DeleteDeptBtn("' + deptId + '"); return false;';
+                        html = "<tr role='row'><td>" +
+                            "<a class='loader btn-link' title='Click to Update Project Name' onclick='getProjectDetail(" + item.Value + "); return false;'>" + item.Text + "</a>" +
+                            "</td></tr > ";
+                        $('#tbodyProjectsList').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Projects Not Available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectsList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+            }
+        });
+        }
+        function getProjectDepartment() {
+            var html = '';
+            $("#loader-wrapper").show();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetProjectDepartmentList", "PriorityProjects")',
+            //  url: '/PriorityProjects/GetProjectDepartmentList',
+            data: { ID: ProjectId },
+            success: function (data) {
+                console.log(data);
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+
+                        html = "<tr role='row'><td>" +
+                            "<span>" + item.Text + "</span" +
+                            "</td><td>" +
+                            "<a class='loader btn btn-sm btn-danger mr-1' style='font-size: 10pt; padding: 2px 5px;' title='Delete Department' id='btnDeletConst' onclick='DeleteDeptBtn(" + item.Value + "); return false;'><i class='fa fa-times'></i></a>" +
+                            "</td></tr > ";
+                        $('#tbodyDepartments').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Department not added with this project" +
+                        "</td>'</tr > ";
+                    $('#tbodyDepartments').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "Department not added with this project" +
+                    "</td>'</tr > ";
+                $('#tbodyDepartments').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+                function loadProjects() {
+                    EnableSearch();
+                    $("#loader-wrapper").show();
+                    $("#hdnStepNo").val("1");
+            $('#divProjectWorksStatus').hide();
+            $('#divtableProjects').show();
+            var html = '';
+            var useraction = '@Model.useractiontype';
+            var parentYN = '@TempData["parentYN"]';
+        var projectedityn = '@Model.projectedityn';
+        var deptedityn = '@Model.deptedityn';
+        var projectId = $('#ddlProject').val();
+                    var deptId = $("#ddlOffice").val();
+                    //if (useraction == "Edit") {
+                    //    deptId = $("#ddlDepartment").val();
+                    //}
+        var constituencyId = $('#ddlConstituency').val();
+                    var statusId = $('#ddlStatus').val();
+        if (projectId == '') {
+            projectId = 0;
+        }
+        if (deptId == '') {
+            deptId = '0';
+        }
+        if (constituencyId == '') {
+            constituencyId = 0;
+        }
+        if (statusId == '') {
+            statusId = 0;
+        }
+        if (useraction == "Edit") {
+                constituencyId = 0;
+                statusId = 0;
+        }
+        if ($.fn.DataTable.isDataTable("#tableProjects")) {
+            $('#tableProjects').DataTable().destroy();
+        }
+        $('#tableProjects').html('');
+            $('#tbodyPrzt').html('');
+
+            html = "<thead id='theadPrzt'><tr class='table-heading'><td class='td-heading' style='width:70px'>Project ID</td>" +
+            "<td class='td-heading'>Project Name</td>";
+        if ('@servicename' == "CMNirdesh") {
+            html += "<td class='td-heading'>Department</td>";
+        }
+        else {
+            html += "<td class='td-heading'>Office</td>";
+        }
+            if (useraction == "All") {
+                html += "<td class='td-heading'>Work ID </td><td class='td-heading'>Works Name<br />(Components)</td>";
+               if ('@servicename' == "CMNirdesh") {
+                       html += "<td class='center td-heading'>Constituency</td>";
+                                            }
+                                            else
+                                            {
+                       html += "<td class='center td-heading'>MC Wards</td>";
+                                            }
+                html +="<td class='center td-heading'>Start Date</td><td class='center td-heading'>Estimated Amount <br />(in Lakhs)</td>" +
+                    "<td class='center td-heading'>Expenditure Till Date <br />(In Lakhs)</td><td class='center td-heading'>Physical Progress<br />(%)</td>" +
+                    "<td class='text-center td-heading'>Status</td>";
+            }
+            html += "<td class='center td-heading'>Action</td></tr ></thead > " +
+            "<tbody id='tbodyPrzt'></tbody>";
+        $('#tableProjects').append(html);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getProjects", "PriorityProjects")',
+                data: { projectId: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId, useraction: useraction },
+                //data: { Id: '0', useraction: useraction },
+                success: function (data) {
+                    $('#tbodyPrzt').html('');
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td class='sorting_1'>" + item.PromiseRefId + "</td><td>" + item.PromiseName + "</td><td>" + item.DeptName + "</td>";
+
+                            if (useraction == "All") {
+                                if (item.ProjectId == 0) {
+                                    html += "<td></td>";
+                                }
+                                else {
+                                    html += "<td>" + item.ProjectId + "</td>";
+                                }
+                                html += "<td><span class='limitChars' > " + item.ProjectName + "</span ></td ><td>" + item.ConstituencyName + "</td><td class='center'>" + item.SStartDate + "</td><td class='center'>" + item.EstimatedAmount + "</td><td class='center'>" +
+                                    item.Expenditure + "</td><td class='center'>" + item.PhysicalProgress + "</td><td class='text-center'>" + item.ProjectStatusName +"</td>";
+                            }
+                            html += "<td><div class='btn-group'>";
+                            if ((@isapex == "1" || projectedityn == 'Y') && useraction == "Edit") {
+                                html += "<a class='loader btn btnLinks btn-sm btn-primary mr-1' title='Edit Project Details' onclick='AddProjects(" + item.PromiseId + ");'>P</a>";
+                            }
+                            if (@isapex == "1" || deptedityn == "Y") {
+                                if ('@servicename' == "CMNirdesh") {
+                                    html += "<a class='loader btn btnLinks btn-sm btn-success mr-1' title='Add Department' onclick='AddDepartments(" + item.PromiseId + ");'>D</a>";
+                                }
+                                else {
+                                    html += "<a class='loader btn btnLinks btn-sm btn-success mr-1' title='Add Office' onclick='AddDepartments(" + item.PromiseId + ");'>O</a>";
+                                }
+                            }
+                            if (useraction != "Edit") {
+                                html += "<a class='loader btn btnLinks btn-sm btn-danger w-auto mr-1' title='View/Update Project Works' onclick='loadWorkDetails(" + item.PromiseId + ", &#39;" + item.DeptId + "&#39;, " + item.ProjectId + ");'><i class='fa fa-edit'></i>W</a>";
+                                html += "<a class='loader btn btnLinks btn-sm btn-primary w-auto mr-1' title='Add Project Works' onclick='AddWorkDetails(" + item.PromiseId + ", &#39;" + item.DeptId + "&#39;);'><i class='fa fa-plus'></i>W</a>";
+                            }
+                            "</div></td></tr>";
+                            $('#tbodyPrzt').append(html);
+                        });
+                        $('#tableProjects').DataTable({
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    orientation: 'landscape',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                        doc.content[1].table.body.forEach(function (row) {
+                                            row.pop(); // Remove the last cell
+                                        });
+                                        // Customize the PDF here
+                                        doc.content.splice(0, 1, {
+                                            text: 'Projects List',
+                                            fontSize: 14,
+                                            margin: [10, 10, 10, 10], // Adjust margins as needed
+                                            alignment: 'center',
+                                        });
+                                    }
+                                }
+                            ]
+
+                        });
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10'>" +
+                            "Projects List Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyPrzt').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Projects List Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyPrzt').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+                }
+        function AddWorkDetails(ProjectId, deptID) {
+            $("#loader-wrapper").show();
+            $('#modalWorksBody').html('');
+    $('#ddlResolutionNo').attr('disabled', false);
+    $("#headAddWork").html('Add Work Basic Details');
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("AddWorkDetails", "PriorityProjects")',
+                datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: { promiseid: ProjectId, deptID: deptID },
+                success: function (data) {
+                    if (data != null) {
+                        $("#modalWorks").css("display", "block");
+                        $('#modalWorksBody').html(data);
+                        $("#divAddWork").show();
+                        $("#divWorkDetails").hide();
+                tinyMCE.init({
+                    selector: "#editor-eng",
+                    branding: false,
+                    content_style:
+                        "body {  font-size: 14px; font-family: inherit; }",
+                });
+            }
+            $("#loader-wrapper").hide();
+        },
+        error: function (error) {
+            $("#loader-wrapper").hide();
+        }
+    });
+}
+        function ResetD() {
+            $("#ddlProject").removeAttr("disabled");
+            $("#ddlDepartment").removeAttr("disabled");
+            if ($('input[name="radiobutton"]:checked').val() === 'rbtnList') {
+                $("#ddlConstituency").removeAttr("disabled");
+                $("#ddlStatus").removeAttr("disabled");
+            }
+        $('#ddlProject').prop('selectedIndex', 0);
+        $('#ddlDepartment').prop('selectedIndex', 0);
+        $('#ddlOffice').prop('selectedIndex', 0);
+        $('#ddlConstituency').prop('selectedIndex', 0);
+            $('#ddlStatus').prop('selectedIndex', 0);
+            if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptProjectStatus') {
+                loadDepartmentWiseProjectStatus();
+            }
+            else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectDeptStatus') {
+                loadProjectWiseDepartmentStatus();
+            }
+            else if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptWiseProjectWorkStatus') {
+                loadDeptWiseProjectWorkStatus(0);
+            }
+            else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectWiseDeptWorkStatus') {
+                loadProjectDeptWiseWorkStatus();
+            }
+            else {
+                loadProjects();
+            }
+        }
+        function DisableSearch() {
+            $("#ddlProject").prop("disabled", true);
+            $("#ddlDepartment").prop("disabled", true);
+            if ($('input[name="radiobutton"]:checked').val() === 'rbtnList') {
+                $("#ddlConstituency").prop("disabled", true);
+                $("#ddlStatus").prop("disabled", true);
+            }
+            $("#searchbutton").prop("disabled", true);
+            $("#resetbutton").prop("disabled", true);
+                }
+                function EnableSearch() {
+                    $("#ddlProject").prop("disabled", true);
+                    $("#ddlDepartment").prop("disabled", true);
+                    $("#ddlDepartment").css("display", "block");
+                    $("#ddlOffice").css("display", "none");
+                    $("#ddlConstituency").prop("disabled", true);
+                    $("#ddlStatus").prop("disabled", true);
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptWiseProjectWorkStatus') {
+                        $("#ddlDepartment").removeAttr("disabled");
+                    }
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectWiseDeptWorkStatus') {
+                        $("#ddlProject").removeAttr("disabled");
+                    }
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptWiseProjectWorkStatus' || $('input[name="radiobutton"]:checked').val() === 'rbtnProjectWiseDeptWorkStatus') {
+                        if (@isapex== 0 && '@servicename' == 'MC') {
+                            $("#ddlDepartment").css("display", "none");
+                            $("#ddlOffice").css("display", "block");
+                        }
+                    }
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectDeptStatus' || $('input[name="radiobutton"]:checked').val() === 'rbtnDeptProjectStatus') {
+                        $("#ddlProject").removeAttr("disabled");
+                        $("#ddlDepartment").removeAttr("disabled");
+                        }
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnList') {
+                        $("#ddlProject").removeAttr("disabled");
+                        $("#ddlDepartment").removeAttr("disabled");
+                        $("#ddlDepartment").css("display", "none");
+                        $("#ddlOffice").css("display", "block");
+                        @*var useraction = '@Model.useractiontype';
+                    @*if (useraction == "Edit") {
+                           @* $("#ddlDepartment").css("display", "block");
+                        }*@
+                        $("#ddlConstituency").removeAttr("disabled");
+                        $("#ddlStatus").removeAttr("disabled");
+                    }
+                    $("#ddlProject").removeAttr("disabled");
+                    $("#ddlDepartment").removeAttr("disabled");
+                    $("#ddlOffice").removeAttr("disabled");
+                    $("#ddlConstituency").removeAttr("disabled");
+                    $("#ddlStatus").removeAttr("disabled");
+                    $("#searchbutton").removeAttr("disabled");
+                    $("#resetbutton").removeAttr("disabled");
+                }
+                function searchData() {
+                    $("#ddlProject").prop("disabled", true);
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnList') {
+                        $("#ddlConstituency").prop("disabled", true);
+                        $("#ddlStatus").prop("disabled", true);
+                    }
+                    $("#ddlStatus").prop("disabled", true);
+
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptProjectStatus') {
+                        loadDepartmentWiseProjectStatus();
+                    }
+                    else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectDeptStatus') {
+                        loadProjectWiseDepartmentStatus();
+                    }
+                    else if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptWiseProjectWorkStatus') {
+                        loadDeptWiseProjectWorkStatus(0);
+                    }
+                    else if ($('input[name="radiobutton"]:checked').val() === 'rbtnProjectWiseDeptWorkStatus') {
+                        loadProjectDeptWiseWorkStatus();
+                    }
+                    else {
+                        loadProjects();
+                    }
+                }
+                function getSummaryProjectsList(currDeptId, officeId, projectId, deptId, statusId) {
+        if ($("#hdnStepNo").val() != 4) {
+            $('#hdnSelectedCurrDeptID').val(currDeptId);
+        }
+        $('#hdnSelectedDeptID').val(deptId);
+        $('#hdnSelectedProjectid').val(projectId);
+        $('#hdnSelectedStatusid').val(statusId);
+        $('#mpProjectList').show();
+        $("#loader-wrapper").show();
+        var html = '';
+        var sprojectId = $('#ddlProject').val();
+        var sdeptId = $('#ddlDepartment').val();
+        var constituencyId = $('#ddlConstituency').val();
+        var searchstatusId = $('#ddlStatus').val();
+        var useraction = '@Model.useractiontype';
+        if (projectId == 0 && sprojectId != '') {
+            projectId = sprojectId;
+        }
+        if (deptId == 0 && sdeptId != '') {
+            deptId = sdeptId;
+        }
+        if (statusId == 0 && searchstatusId != '') {
+            statusId = searchstatusId;
+        }
+        if (constituencyId== '') {
+            constituencyId = 0;
+        }
+        if (useraction == "Edit") {
+            constituencyId = 0;
+        }
+        if ($.fn.DataTable.isDataTable("#tableProjectList")) {
+            $('#tableProjectList').DataTable().destroy();
+        }
+        $.ajax({
+        type: 'GET',
+        url: '@Url.Action("getProjectsforDasboard", "PriorityProjects")',
+            data: { currDeptId: currDeptId, officeId: officeId,projectId: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+        success: function (data) {
+            $('#tbodyProjectList').html('');
+            if (data.length > 0) {
+                $.each(data, function (i, item) {
+                    html = "<tr role='row'><td class='sorting_1'>" + item.PromiseRefId + "</td><td>" + item.PromiseName + "</td><td>" + item.DeptName + "</td>"+
+                        "<td>" + item.ProjectId + "</td ><td>" + item.ProjectName + "</td ><td>" + item.ConstituencyName + "</td><td class='center'>" + item.SStartDate + "</td><td class='center'>" + item.EstimatedAmount + "</td><td class='center'>"+ item.Expenditure +
+                        "</td><td class='center'>" + item.PhysicalProgress + "</td><td  class='text-center'>" + item.ProjectStatusName + "</td><td><div class='btn-group'>" +
+                    "<a class='loader btn btnLinks btn-sm btn-warning mr-1' title='Project Works' onclick='loadWorkDetails(" + item.PromiseId + ", &#39;" + item.DeptId + "&#39;, " + item.ProjectId + ");'>W</a>" +
+                    "</div></td></tr>";
+                    $('#tbodyProjectList').append(html);
+                });
+                $('#tableProjectList').DataTable({
+                    paging: true,
+                    searching: true,
+                    "ordering": true,
+                    "aaSorting": [],
+                    "pageLength": 25,
+                    dom: 'Blfrtip',
+                    buttons: [
+                        'csv',
+                        'excel',
+                        {
+                            extend: 'pdf',
+                            orientation: 'landscape',
+                            customize: function (doc) {
+                                // Set custom margins for the PDF
+                                doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+
+                                doc.content[1].table.body.forEach(function (row) {
+                                    row.pop(); // Remove the last cell
+                                });
+                                // Replace the default heading with custom text
+                                doc.content.splice(0, 1, {
+                                    text: 'Projects List',
+                                    fontSize: 14,
+                                    alignment: 'center',
+                                    margin: [0, 10],
+                                });
+                            }
+                        }
+                    ]
+
+                });
+            }
+            else {
+                $('#tbodyProjectList').html('');
+                html = "<tr role='row'><td colspan='10'>" +
+                    "Projects List Not available" +
+                    "</td>'</tr > ";
+                $('#tbodyProjectList').append(html);
+            }
+            $("#loader-wrapper").hide();
+        },
+        error: function () {
+            $('#tbodyProjectList').html('');
+            html = "<tr role='row'><td colspan='10'>" +
+                "Projects List Not available" +
+                "</td>'</tr > ";
+            $('#tbodyProjectList').append(html);
+            $("#loader-wrapper").hide();
+        }
+        });
+                }
+                function loadDeptWiseProjectOfficeStatus(promiseId, deptId) {
+                    $("#loader-wrapper").show();
+                    $("#hdnStepNo").val("3");
+                    $('#hdnSelectedDeptID').val(deptId);
+
+            var spromiseId = $('#ddlProject').val();
+                    var sdeptId = $('#ddlDepartment').val();
+                    var sconstituencyId = $('#ddlConstituency').val();
+                    var statusId = $('#ddlStatus').val();
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        sdeptId = $('#ddlOffice').val();
+                    }
+                    if (spromiseId == '') {
+                        spromiseId = 0;
+                    }
+                    if (sdeptId == '') {
+                        sdeptId = '0';
+                    }
+                    if (statusId == '') {
+                        statusId = 0;
+                    }
+                    if (sconstituencyId == '') {
+                        sconstituencyId = 0;
+                    }
+
+            var html = '';
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+                $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+                    html = "<div class='card mt - 4' style='background: #f7f5f5; '>"
+            html += "<div class='card-body' style = 'min-height:200px' >"
+                    html += " <label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;'>";
+            if (promiseId >0) {
+                html += "<b>Project: </b><span id='projectName'></span><br>";
+            }
+            html += "<b>Department: </b><span id='DeptName'></span>";
+            html += " <a id='btnBackStatus11' onclick='loadProjectWiseDepartmentStatus();' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+            html += " </label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"
+            html += "<thead><tr class='table-heading'><td class='td-heading width-30' rowspan='2'>Office</td>";
+            if (promiseId == 0 || promiseId == '') {
+                html += "<td class='text-center td-heading' rowspan='2'>No. of Projects</td>";
+            }
+            html += "<td class='text-center td-heading' rowspan='2'>No. of Works</td><td class='text-center td-heading' colspan='3'>Work Status</td></tr>";
+            html += "<tr class='table-heading'><td class='td-heading text-center'>Not Implemented</td><td class='text-center td-heading'>Under Implementation</td>";
+            html += "<td class='td-heading text-center'>Implemented</td></tr></thead>";
+            html += "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+            $('#divProjectWorksStatus').append(html);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getdeptofcprojectdata", "PriorityProjects")',
+                data: { promiseId: promiseId, deptId: deptId, spromiseId: spromiseId, sdeptId: sdeptId, constituencyId: sconstituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyProjectWorksList').html('');
+                    if (data.length > 0) {
+                        var rowCount = $('#tableProjects >tbody >tr').length;
+                        if (rowCount > 1) {
+                            $('#divtableProjects').hide();
+                        }
+                        else {
+                            $('#btnBackStatus').hide();
+                        }
+                        $('#divProjectWorksStatus').show();
+                        $('#projectName').text(data[0].PromiseName);
+                        $('#DeptName').text(data[0].DeptName);
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.OfficeName + "</td>";
+                            if (promiseId == 0 || promiseId == '') {
+                                if (item.totalProject > 0) {
+                                    html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectWiseWorkStatus(&#39;" + item.DeptId + "&#39;,&#39;" + item.OfficeId + "&#39;)'>" + item.totalProject + "</a></td>";
+                                }
+                                else {
+                                    html += "<td class='text-center'>" + item.totalProject + "</a></td>";
+                                }
+                            }
+                            if (item.totalWorks > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId +"&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,98)'>" + item.totalWorks + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.totalWorks + "</a></td>";
+                            }
+                            if (item.NotImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.NotImplemented + "</a></td>";
+                            }
+                            if (item.PartiallyImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.PartiallyImplemented + "</a></td>";
+                            }
+                            if (item.implementedProject > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.implementedProject + "</a></td>";
+                            }
+                            html += "</tr > ";
+                            $('#tbodyProjectWorksList').append(html);
+                        });
+                        $('#tableProjectWorksList').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyProjectWorksList').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectWorksList').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+        //--------------------------------
+                function loadProjectWiseWorkStatus(deptId, officeId) {
+                  //  DisableSearch();
+                    $("#loader-wrapper").show();
+                    $("#hdnStepNo").val("4");
+                    $('#hdnSelectedCurrDeptID').val(deptId);
+
+                    var sprojectId = $('#ddlProject').val();
+                    var sdeptId = $('#ddlDepartment').val();
+                    var sconstituencyId = $('#ddlConstituency').val();
+                    var statusId = $('#ddlStatus').val();
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        sdeptId = $('#ddlOffice').val();
+                    }
+                    if (sprojectId == '') {
+                        sprojectId = 0;
+                    }
+                    if (sdeptId == '') {
+                        sdeptId = '0';
+                    }
+                    if (statusId == '') {
+                        statusId = 0;
+                    }
+                    if (sconstituencyId == '') {
+                        sconstituencyId = 0;
+                    }
+
+            var html = '';
+                    var selectedDeptID = $('#hdnSelectedCurrDeptID').val();
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+                $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+            html = "<div class='card mt - 4' style='background: #f7f5f5; '>"
+            html += "<div class='card-body' style = 'min-height:200px' >"
+                    html += " <label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;'>";
+                    if (officeId == 0) {
+                        html += "<b>Department: </b><span id='OfficeName'></span>";
+                html += " <a id='btnBackStatus2' onclick='loadDeptWiseProjectWorkStatus(0);' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+            }
+                    else {
+                        html += "<b>Office: </b><span id='OfficeName'></span>";
+                html += " <a id='btnBackStatus2' onclick='loadDeptOfficeProjectStatus(0,&#39;" + selectedDeptID + "&#39;);' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+            }
+            html += " </label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"
+            html += "<thead><tr class='table-heading'><th class='td-heading' rowspan='2'>Project ID</th>";
+            //if (officeId == 0) {
+            //    html += "<th class='td-heading' rowspan='2'>Office Name</th>"
+            //}
+            html += "<th class='td-heading width-30' rowspan='2'>Name of Project</th> <th class='td-heading text-center' rowspan='2'>No. of Works</th><th class='td-heading text-center' colspan='3'>Work Status</th>"
+            html += "</tr><tr class='table-heading'><th class='td-heading text-center'>Not Implemented</th> <th class='td-heading text-center'>Under Implementation</th>"
+            html += "<th class='td-heading text-center'>Implemented</th> </tr> </thead>"
+            html += "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+            $('#divProjectWorksStatus').append(html);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getProjectWiseWorkSummary", "PriorityProjects")',
+                data: { deptId: deptId, officeId: officeId, projectId: sprojectId, sdeptId: sdeptId, constituencyId: sconstituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyProjectWorksList').html('');
+                    if (data.length > 0) {
+                        var rowCount = $('#tableProjects >tbody >tr').length;
+                        if (rowCount > 1) {
+                            $('#divtableProjects').hide();
+                        }
+                        else {
+                            $('#btnBackStatus').hide();
+                        }
+                        $('#divProjectWorksStatus').show();
+                        var officename = data[0].DeptName + ' - ' + data[0].OfficeName;
+                        if (officeId == 0) {
+                            officename = data[0].DeptName;
+                        }
+                        $('#OfficeName').text(officename);
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.PromiseRefId + "</td>";
+                            //if (officeId == 0) {
+                            //    html += "<td>" + item.OfficeName + "</td>"
+                            //}
+                            html += "<td>" + item.PromiseName + "</td>";
+                            if (item.totalWorks > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + deptId + "&#39;,"+officeId+"," + item.PromiseId + ",&#39;" + "0" + "&#39;,98)'>" + item.totalWorks + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.totalWorks + "</a></td>";
+                            }
+                            if (item.NotImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + deptId + "&#39;," + officeId +"," + item.PromiseId + ",&#39;" + "0" + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.NotImplemented + "</a></td>";
+                            }
+                            if (item.PartiallyImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + deptId + "&#39;," + officeId +"," + item.PromiseId + ",&#39;" + "0" + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.PartiallyImplemented + "</a></td>";
+                            }
+                            if (item.implementedProject > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + deptId + "&#39;," + officeId +"," + item.PromiseId + ",&#39;" + "0" + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.implementedProject + "</a></td>";
+                            }
+                            html += "</tr > ";
+                            $('#tbodyProjectWorksList').append(html);
+                        });
+                        $('#tableProjectWorksList').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                        // Iterate through all cells in the table
+                                        doc.content[1].table.body.forEach(function (row) {
+                                            row.forEach(function (cell, columnIndex) {
+                                                // Align the first column to the left, rest to the right
+                                                if (columnIndex === 0 || columnIndex === 1) {
+                                                    cell.alignment = 'left';
+                                                } else {
+                                                    cell.alignment = 'right';
+                                                }
+                                            });
+                                        });
+                                        var head = 'Department: ';
+                                        if (@isapex == 0 && '@servicename' == 'MC') {
+                                            head = 'Office: ';
+                                        }
+                                        // Replace the default heading with custom text
+                                        doc.content.splice(0, 1, {
+                                            text: head + officename,
+                                            fontSize: 14,
+                                            alignment: 'center',
+                                            margin: [0, 10],
+                                        });
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyProjectWorksList').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectWorksList').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+   function loadProjectDeptWiseWorkStatus() {
+        EnableSearch();
+        $("#loader-wrapper").show();
+        $("#hdnStepNo").val("5");
+        $('#divProjectWorksStatus').hide();
+        $('#divtableProjects').show();
+        var html = '';
+        var projectId = $('#ddlProject').val();
+       var deptId = $('#ddlDepartment').val();
+       if (@isapex == 0 && '@servicename' == 'MC') {
+           deptId = $('#ddlOffice').val();
+       }
+        var constituencyId = $('#ddlConstituency').val();;
+        var statusId = $('#ddlStatus').val();;
+        if (projectId == '') {
+        projectId = 0;
+        }
+        if (deptId == '') {
+        deptId = '0';
+        }
+        if (constituencyId == '') {
+        constituencyId = 0;
+        }
+        if (statusId == '') {
+        statusId = 0;
+        }
+        if ($.fn.DataTable.isDataTable("#tableProjects")) {
+        $('#tableProjects').DataTable().destroy();
+        }
+        $('#tableProjects').html('');
+        $('#tbodyPrzt').html('');
+        html = "<thead id='theadPrzt'><tr class='table-heading'><td class='td-heading' rowspan='2'>Project ID</td><td class='td-heading width-30' rowspan='2'>Name of Project</td>";
+
+        if (@isapex == 0 && '@servicename' == 'MC') {
+            html += "<td class='td-heading' rowspan='2'>No. of Office</td>";
+        }
+        else {
+            html += "<td class='td-heading' rowspan='2'>No. of Department</td>";
+        }
+        html += "<td class='text-center td-heading' rowspan='2'>No. of Works</td><td class='text-center td-heading' colspan='3'>Work Status</td></tr>" +
+        "<tr class='table-heading'><td class='td-heading text-center'>Not Implemented</td><td class='text-center td-heading'>Under Implementation</td>" +
+        "<td class='td-heading text-center'>Implemented</td></tr></thead>"+
+        "<tbody id='tbodyPrzt'></tbody>";
+        $('#tableProjects').append(html);
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getProjectDeptWiseWorkStatus", "PriorityProjects")',
+            data: { projectId: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+            success: function (data) {
+                $('#tbodyPrzt').html('');
+                //if (data.length == 1) {
+                //    loadProjectWiseWorkStatus(data[0].DeptId);
+                //}
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<tr role='row'><td>" + item.PromiseRefId + "</td><td>" + item.PromiseName + "</td>";
+                        if (item.totalDepartment > 0) {
+                            if (@isapex == 0 && '@servicename' == 'MC') {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadDeptOfficeProjectStatus(" + item.PromiseId + ",&#39;" +'0'+ "&#39;)'>" + item.totalDepartment + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectDeptworkStatus(" + item.PromiseId + ")'>" + item.totalDepartment + "</a></td>";
+                            }
+                        }
+                        else {
+                            html += "<td class='text-center'>" + item.totalDepartment + "</a></td>";
+                        }
+                        if (item.totalWorks > 0) {
+                            html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId + ",&#39;" + "0" + "&#39;,98)'>" + item.totalWorks + "</a></td>";
+                        }
+                        else {
+                            html += "<td class='text-center'>" + item.totalWorks + "</a></td>";
+                        }
+                        if (item.NotImplemented > 0) {
+                            html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId + ",&#39;" + "0" + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                        }
+                        else {
+                            html += "<td class='text-center'>" + item.NotImplemented + "</a></td>";
+                        }
+                        if (item.PartiallyImplemented > 0) {
+                            html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId + ",&#39;" + "0" + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                        }
+                        else {
+                            html += "<td class='text-center'>" + item.PartiallyImplemented + "</a></td>";
+                        }
+                        if (item.implementedProject > 0) {
+                            html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId + ",&#39;" + "0" + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                        }
+                        else {
+                            html += "<td class='text-center'>" + item.implementedProject + "</a></td>";
+                        }
+                        html += "</tr > ";
+                        $('#tbodyPrzt').append(html);
+                    });
+                    $('#tableProjects').DataTable(
+                            {
+                        paging: true,
+                        searching: true,
+                        "ordering": true,
+                        "aaSorting": [],
+                        "pageLength": 25,
+                        dom: 'Blfrtip',
+                        buttons: [
+                            'csv',
+                            'excel',
+                            {
+                                extend: 'pdf',
+                                customize: function (doc) {
+                                    // Set custom margins for the PDF
+                                    doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                    // Find the header row
+                                    var header = doc.content[1].table.body[0];
+
+                                    // Set alignment to 'left' for all header cells
+                                    for (var i = 0; i < header.length; i++) {
+                                        header[i].alignment = 'left';
+                                    }
+                                    // Iterate through all cells in the table
+                                    doc.content[1].table.body.forEach(function (row) {
+                                        row.forEach(function (cell, columnIndex) {
+                                            // Align the first column to the left, rest to the right
+                                            if (columnIndex === 0 || columnIndex === 1) {
+                                                cell.alignment = 'left';
+                                            } else {
+                                                cell.alignment = 'right';
+                                            }
+                                        });
+                                    });
+                                    var head = 'Project-Department-Work Status Summary';
+                                        if (@isapex == 0 && '@servicename' == 'MC') {
+                                            head = 'Project-Office-Work Status Summary';
+                                        }
+                                    // Replace the default heading with custom text
+                                    doc.content.splice(0, 1, {
+                                        text: head,
+                                        fontSize: 14,
+                                        alignment: 'center',
+                                        margin: [0, 10],
+                                    });
+                                }
+                            }
+                        ]
+                    });
+
+                }
+                else {
+                    html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyPrzt').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='10'>" +
+                    "Data Not available" +
+                    "</td>'</tr > ";
+                $('#tbodyPrzt').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+        }
+                function loadProjectWiseDeptWorkStatus(projectID) {
+                    $("#loader-wrapper").show();
+        var html = '';
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+                $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+            html = "<div class='card mt - 4' style='background: #f7f5f5; '>"
+            html += "<div class='card-body' style = 'min-height:200px' >"
+            html += " <label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;'>"
+            html += "<b>Project: </b><span id='OfficeName'></span>"
+            html += " <a id='btnBackStatus3' onclick='loadlist();' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+            html += " </label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"
+            html += "<thead><tr class='table-heading'><th class='td-heading' rowspan='2'>Name of Office</th> <th class='td-heading text-center' rowspan='2'>No. of Works</th><th class='td-heading text-center' colspan='3'>Work Status</th></tr>"
+            html += "<tr class='table-heading'><th class='td-heading text-center'>Not Implemented</th> <th class='td-heading text-center'>Under Implementation</th>"
+            html += "<th class='td-heading text-center'>Implemented</th> </tr> </thead>"
+            html += "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+            $('#divProjectWorksStatus').append(html);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getProjectWiseDeptWorkSummary", "PriorityProjects")',
+                data: { projectID: projectID },
+                success: function (data) {
+                    $('#tbodyProjectWorksList').html('');
+                    if (data.length > 0) {
+                        var rowCount = $('#tableProjects >tbody >tr').length;
+                        if (rowCount > 1) {
+                            $('#divtableProjects').hide();
+                        }
+                        else {
+                            $('#btnBackStatus').hide();
+                        }
+                        $('#divProjectWorksStatus').show();
+                        $('#OfficeName').text(data[0].PromiseName);
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.DeptName + "</td>";
+                            if (item.totalWorks > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId + ",&#39;" + item.DeptId + "&#39;,98)'>" + item.totalWorks + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.totalWorks + "</a></td>";
+                            }
+                            if (item.NotImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId +",&#39;" + item.DeptId + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.NotImplemented + "</a></td>";
+                            }
+                            if (item.PartiallyImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId +",&#39;" + item.DeptId + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.PartiallyImplemented + "</a></td>";
+                            }
+                            if (item.implementedProject > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + "0" + "&#39;,0," + item.PromiseId +",&#39;" + item.DeptId + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.implementedProject + "</a></td>";
+                            }
+                            html += "</tr > ";
+                            $('#tbodyProjectWorksList').append(html);
+                        });
+                        $('#tableProjectWorksList').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyProjectWorksList').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectWorksList').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+        //------------------------------------
+                function loadDeptWiseProjectWorkStatus(promiseid) {
+                    $("#divProjectWorksStatusbody").css("background", "#f7f5f5");
+                    EnableSearch();
+                    $("#loader-wrapper").show();// alert($("#hdnStepNo").val());
+                    $("#hdnStepNo").val("2");
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        var deptId = $('#ddlOffice').val();
+                        if (deptId == '') {
+                            deptId = '0';
+                        }
+                        loadDeptOfficeProjectStatus(0, deptId);
+                        $("#btnBackStatus1").hide();
+                        $("#divProjectWorksStatusbody").css("background", "white");
+                        return;
+                    }
+                    $("#btnBackStatus1").show();
+            $('#divProjectWorksStatus').hide();
+            $('#divtableProjects').show();
+        var html = '';
+        var projectId = $('#ddlProject').val();
+        var deptId = $('#ddlDepartment').val();
+        var constituencyId = $('#ddlConstituency').val();
+        var statusId = $('#ddlStatus').val();
+        if (projectId == '') {
+        projectId = 0;
+        }
+        if (deptId == '') {
+        deptId = '0';
+                    }
+                    if (constituencyId == '') {
+                        constituencyId = 0;
+                    }
+                    if (statusId == '') {
+                        statusId = '0';
+                    }
+                    //var constituencyId = 0;
+                    //var statusId = 0;
+        if ($.fn.DataTable.isDataTable("#tableProjects")) {
+        $('#tableProjects').DataTable().destroy();
+        }
+        $('#tableProjects').html('');
+            $('#tbodyPrzt').html('');
+            if (promiseid > 0) {
+                $('#divProjectDeptName').css("display","block");
+            }
+            html = "<thead id='theadPrzt'><tr class='table-heading'><td class='td-heading width-30' rowspan='2'>Department</td>";
+            if (promiseid == 0 || promiseid=='') {
+                html += "<td class='text-center td-heading' rowspan='2'>No. of Projects</td>";
+            }
+                html += "<td class='text-center td-heading' rowspan='2'>No. of Works</td><td class='text-center td-heading' colspan='3'>Work Status</td></tr > " +
+        "<tr class='table-heading'><td class='td-heading text-center'>Not Implemented</td><td class='text-center td-heading'>Under Implementation</td>" +
+        "<td class='td-heading text-center'>Implemented</td></tr></thead>"+
+        "<tbody id='tbodyPrzt'></tbody>";
+        $('#tableProjects').append(html);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getDeptWiseProjectWorkStatus", "PriorityProjects")',
+                data: { promiseid: promiseid, spromiseid: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyPrzt').html('');// alert(25);
+                    //if (data.length == 1) {
+                    //    loadProjectWiseWorkStatus(data[0].DeptId);
+                    //}
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            if (i != data.length - 1 && '@servicename' != "CMNirdesh") {
+                                html = "<tr role='row'><td><a class='loader' style='font-weight: 500;text-decoration: underline;' onclick='loadDeptOfficeProjectStatus(0,&#39;" + item.DeptId + "&#39;)'>" + item.DeptName + "</a></td>";
+                            }
+                            else {
+                                html = "<tr role='row'><td>" + item.DeptName + "</td>";
+                            }
+                            if (promiseid == 0 || promiseid == '') {
+                                if (item.totalProject > 0 && i != data.length - 1) {
+                                    html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectWiseWorkStatus(&#39;" + item.DeptId + "&#39;,&#39;" + "0" + "&#39;)'>" + item.totalProject + "</a></td>";
+                                }
+                                else if (i == data.length - 1) {
+                                    html += "<td class='text-center'></td>";
+                                }
+                                else {
+                                html += "<td class='text-center'>" + item.totalProject + "</td>";
+                            }
+                            }
+                            if (item.totalWorks > 0 && i != data.length-1) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid +",&#39;" + "0" + "&#39;,98)'>" + item.totalWorks + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.totalWorks + "</td>";
+                            }
+                            if (item.NotImplemented > 0 && i != data.length - 1) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid+",&#39;" + "0" + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.NotImplemented + "</td>";
+                            }
+                            if (item.PartiallyImplemented > 0 && i != data.length - 1) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid +",&#39;" + "0" + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.PartiallyImplemented + "</td>";
+                            }
+                            if (item.implementedProject > 0 && i != data.length - 1) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid +",&#39;" + "0" + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.implementedProject + "</td>";
+                            }
+                            html += "</tr > ";
+                            $('#tbodyPrzt').append(html);
+                        });
+                        $('#tableProjects').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'right';
+                                            header[0].alignment = 'left';
+                                        }
+                                        // Iterate through all cells in the table
+                                        doc.content[1].table.body.forEach(function (row) {
+                                            row.forEach(function (cell, columnIndex) {
+                                                // Align the first column to the left, rest to the right
+                                                if (columnIndex === 0) {
+                                                    cell.alignment = 'left';
+                                                } else {
+                                                    cell.alignment = 'right';
+                                                }
+                                            });
+                                        });
+                                        var head = 'Department-Project-Work Status Summary';
+                                        if (@isapex == 0 && '@servicename' == 'MC') {
+                                            head = 'Department-Office-Work Status Summary';
+                                        }
+                                        // Replace the default heading with custom text
+                                        doc.content.splice(0, 1, {
+                                            text: head,
+                                            fontSize: 14,
+                                            alignment: 'center',
+                                            margin: [0, 10],
+                                        });
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyPrzt').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyPrzt').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+                }
+        function loadDeptSmryOption() {
+        $('#rbtnDeptWiseProjectWorkStatus').prop('checked', true);
+        loadDeptWiseProjectWorkStatus(0);
+    }
+                function loadDeptOfficeProjectStatus(promiseId, deptId) {
+                    DisableSearch();
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        EnableSearch();
+                    }
+                    $("#loader-wrapper").show();
+                    $("#hdnStepNo").val("3");
+                    $('#hdnSelectedDeptID').val(deptId);
+
+                    var spromiseId = $('#ddlProject').val();
+                    var sdeptId = $('#ddlDepartment').val();
+                    var sconstituencyId = $('#ddlConstituency').val();
+                    var statusId = $('#ddlStatus').val();
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        sdeptId = $('#ddlOffice').val();
+                    }
+                    if (spromiseId == '') {
+                        spromiseId = 0;
+                    }
+                    if (sdeptId == '') {
+                        sdeptId = '0';
+                    }
+                    if (statusId == '') {
+                        statusId = 0;
+                    }
+                    if (sconstituencyId == '') {
+                        sconstituencyId = 0;
+                    }
+
+            var html = '';
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+                $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+                    html = "<div class='card mt - 4' style='background: #f7f5f5; ' id='divProjectWorksStatusbody'>"
+            html += "<div class='card-body' style = 'min-height:200px' >"
+                    html += " <label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;' id=divProjectWorksStatushead'>";
+            if (promiseId >0) {
+                html += "<b>Project: </b><span id='projectName'></span><br>";
+            }
+            html += "<b>Department: </b><span id='DeptName'></span>";
+
+                    if (@isapex == 0 && '@servicename' == 'MC' && $('input[name="radiobutton"]:checked').val() === 'rbtnProjectWiseDeptWorkStatus') {
+                        html += " <a id='btnBackStatus1' onclick='loadProjectDeptWiseWorkStatus();' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+                    }
+                    else {
+                        if (promiseId == 0 || promiseId == '') {
+                            html += " <a id='btnBackStatus1' onclick='loadDeptWiseProjectWorkStatus(" + promiseId + ");' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+                        }
+                        else {
+                            html += " <a id='btnBackStatus1' onclick='loadProjectDeptworkStatus(" + promiseId + ");' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+                        }
+                    }
+            html += " </label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"
+            html += "<thead><tr class='table-heading'><td class='td-heading width-30' rowspan='2'>Office</td>";
+            if (promiseId == 0 || promiseId == '') {
+                html += "<td class='text-center td-heading' rowspan='2'>No. of Projects</td>";
+            }
+            html += "<td class='text-center td-heading' rowspan='2'>No. of Works</td><td class='text-center td-heading' colspan='3'>Work Status</td></tr>";
+            html += "<tr class='table-heading'><td class='td-heading text-center'>Not Implemented</td><td class='text-center td-heading'>Under Implementation</td>";
+            html += "<td class='td-heading text-center'>Implemented</td></tr></thead>";
+            html += "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+                    $('#divProjectWorksStatus').append(html);
+                    $("#btnBackStatus1").show();
+                    $("#divProjectWorksStatusbody").css("background", "#f7f5f5");
+                    if (@isapex == 0 && '@servicename' == 'MC' && $('input[name="radiobutton"]:checked').val() === 'rbtnDeptWiseProjectWorkStatus') {
+                        $("#btnBackStatus1").hide();
+                        $("#divProjectWorksStatusbody").css("background", "white");
+                    }
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getdeptofcprojectdata", "PriorityProjects")',
+                data: { promiseId: promiseId, deptId: deptId, spromiseId: spromiseId, sdeptId: sdeptId, constituencyId: sconstituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyProjectWorksList').html('');
+                    if (data.length > 0) {
+                        var rowCount = $('#tableProjects >tbody >tr').length;
+                        if (rowCount > 1) {
+                            $('#divtableProjects').hide();
+                        }
+                        else {
+                            $('#btnBackStatus').hide();
+                        }
+                        $('#divProjectWorksStatus').show();
+                        $('#projectName').text(data[0].PromiseName);
+                        $('#DeptName').text(data[0].DeptName);
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.OfficeName + "</td>";
+                            if (promiseId == 0 || promiseId == '') {
+                                if (item.totalProject > 0) {
+                                    html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectWiseWorkStatus(&#39;" + item.DeptId + "&#39;,&#39;" + item.OfficeId + "&#39;)'>" + item.totalProject + "</a></td>";
+                                }
+                                else {
+                                    html += "<td class='text-center'>" + item.totalProject + "</a></td>";
+                                }
+                            }
+                            if (item.totalWorks > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId +"&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,98)'>" + item.totalWorks + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.totalWorks + "</a></td>";
+                            }
+                            if (item.NotImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.NotImplemented + "</a></td>";
+                            }
+                            if (item.PartiallyImplemented > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.PartiallyImplemented + "</a></td>";
+                            }
+                            if (item.implementedProject > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;," + item.OfficeId +"," + promiseId + ",&#39;" + "0" + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.implementedProject + "</a></td>";
+                            }
+                            html += "</tr > ";
+                            $('#tbodyProjectWorksList').append(html);
+                        });
+                        $('#tableProjectWorksList').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                        // Iterate through all cells in the table
+                                        doc.content[1].table.body.forEach(function (row) {
+                                            row.forEach(function (cell, columnIndex) {
+                                                // Align the first column to the left, rest to the right
+                                                if (columnIndex === 0) {
+                                                    cell.alignment = 'left';
+                                                } else {
+                                                    cell.alignment = 'right';
+                                                }
+                                            });
+                                        });
+                                        if (promiseId > 0) {
+                                            doc.content.splice(0, 1, {
+                                                text: 'Project: ' + data[0].PromiseName + '\n' + 'Department: ' + data[0].DeptName,
+                                                fontSize: 14,
+                                                alignment: 'center',
+                                                margin: [0, 10],
+                                            });
+                                        }
+                                        else {
+                                            doc.content.splice(0, 1, {
+                                                text: 'Department: ' + data[0].DeptName,
+                                                fontSize: 14,
+                                                alignment: 'center',
+                                                margin: [0, 10],
+                                            });
+                                        }
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyProjectWorksList').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectWorksList').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+        }
+                function loadDepartmentWiseProjectStatus() {
+                    EnableSearch();
+                    $("#loader-wrapper").show();
+        var html = '';
+        var projectId = $('#ddlProject').val();
+        var deptId = $('#ddlDepartment').val();
+        var constituencyId = 0;
+        var statusId = 0;
+        if (projectId == '') {
+        projectId = 0;
+        }
+        if (deptId == '') {
+        deptId = '0';
+        }
+        if ($.fn.DataTable.isDataTable("#tableProjects")) {
+        $('#tableProjects').DataTable().destroy();
+        }
+        $('#tableProjects').html('');
+        $('#tbodyPrzt').html('');
+        html = "<thead id='theadPrzt'><tr class='table-heading'>";
+                    if ('@servicename' == "CMNirdesh" || @isapex==1) {
+            html += "<td class='td-heading width-30'>Department</td>";
+        }
+        else {
+            html += "<td class='td-heading width-30'>Office</td>";
+        }
+        html += "<td class='text-center td-heading'>No. of Projects</td></tr></thead>" +
+        "<tbody id='tbodyPrzt'></tbody>";
+            $('#tableProjects').append(html);
+            $('#divProjectWorksStatus').hide();
+            $('#divtableProjects').show();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getDeptWiseProjectSummary", "PriorityProjects")',
+                data: { projectId: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyPrzt').html('');
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.DeptName + "</td>";
+                            if (item.totalProject > 0) {
+                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadOfficeProjects(&#39;" + item.DeptId + "&#39;,&#39;" + item.OfficeId + "&#39;)'>" + item.totalProject + "</a></td>";
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.totalProject + "</a></td>";
+                            }
+                            html += "</tr > ";
+                            $('#tbodyPrzt').append(html);
+                        });
+                        $('#tableProjects').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                        var head = 'Department-Project Status Summary';
+                                        if (@isapex == 0 && '@servicename' == 'MC') {
+                                            head = 'Office-Project Status Summary';
+                                        }
+                                        // Replace the default heading with custom text
+                                        doc.content.splice(0, 1, {
+                                            text: head,
+                                            fontSize: 14,
+                                            alignment: 'center',
+                                            margin: [0, 10],
+                                        });
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyPrzt').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyPrzt').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+                }
+                function loadProjectWiseDepartmentStatus() {
+                    EnableSearch();
+                    $("#loader-wrapper").show();
+        var html = '';
+        var projectId = $('#ddlProject').val();
+        var deptId = $('#ddlDepartment').val();
+        var constituencyId = 0;
+        var statusId = 0;
+        if (projectId == '') {
+        projectId = 0;
+        }
+        if (deptId == '') {
+        deptId = '0';
+        }
+        //alert("projectId" + projectId + "deptId" + deptId + "constituencyId" + constituencyId + "statusId" + statusId);
+        if ($.fn.DataTable.isDataTable("#tableProjects")) {
+        $('#tableProjects').DataTable().destroy();
+        }
+        $('#tableProjects').html('');
+        $('#tbodyPrzt').html('');
+                    html = "<thead id='theadPrzt'><tr class='table-heading'><td class='td-heading'>Project ID</td><td class='td-heading width-50'>Project Name</td>";
+                    if ('@servicename' == "CMNirdesh" || @isapex==1) {
+            html += "<td class='text-center td-heading'>No. of Departments</td>";
+        }
+        else {
+            html += "<td class='text-center td-heading'>No. of Offices</td>";
+        }
+        html+="</tr></thead><tbody id='tbodyPrzt'></tbody>";
+            $('#tableProjects').append(html);
+            $('#divProjectWorksStatus').hide();
+            $('#divtableProjects').show();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getProjectWiseDeptSummary", "PriorityProjects")',
+                data: { projectId: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyPrzt').html('');
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.PromiseRefId + "</td><td>" + item.PromiseName + "</td>";
+                            if (item.totalDepartment > 0) {
+                                if ('@servicename' == "MC") {
+                                    html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectOffices(" + item.PromiseId + ",&#39;" + "0" + "&#39;)'>" + item.totalDepartment + "</a></td>";
+                                }
+                                else {
+                                    html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectDepartments(" + item.PromiseId + ")'>" + item.totalDepartment + "</a></td>";
+                                }
+                            }
+                            else {
+                                html += "<td class='text-center'>" + item.totalDepartment + "</a></td>";
+                            }
+                            html += "</tr > ";
+                            $('#tbodyPrzt').append(html);
+                        });
+                        $('#tableProjects').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                        var head = 'Project-Department Status Summary';
+                                        if (@isapex == 0 && '@servicename' == 'MC') {
+                                            head = 'Project-Office Status Summary';
+                                        }
+
+                                        // Replace the default heading with custom text
+                                        doc.content.splice(0, 1, {
+                                            text: head,
+                                            fontSize: 14,
+                                            alignment: 'center',
+                                            margin: [0, 10],
+                                        });
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Projects List Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyPrzt').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Projects List Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyPrzt').append(html);
+                $("#loader-wrapper").hide();
+                }
+            });
+                }
+                function loadProjectDeptworkStatus(promiseid) {
+                    var projectId = $('#ddlProject').val();
+        var deptId = $('#ddlDepartment').val();
+                    var constituencyId = $('#ddlConstituency').val();
+        var statusId = $('#ddlStatus').val();
+        if (projectId == '') {
+        projectId = 0;
+        }
+        if (deptId == '') {
+        deptId = '0';
+        }
+        if (constituencyId == '') {
+        constituencyId = 0;
+        }
+        if (statusId == '') {
+        statusId = 0;
+        }
+                    DisableSearch();
+                    $("#loader-wrapper").show();
+                    $("#hdnStepNo").val("6");
+            var html = '';
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+            $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+            html = "<div class='card mt-4' style='background: #f7f5f5; '>"+
+                   "<div class='card-body' style = 'min-height:200px' >"+
+                   "<label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;'>"+
+                   "<b>Project: </b><span id='DeptName'></span>"+
+                   "<a id='btnBackStatus0' onclick='loadlist();' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"+
+                   "</label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"+
+                   "<thead id='theadPrzt'><tr class='table-heading'><td class='td-heading width-30' rowspan='2'>Name of Department</td>";
+                   if (promiseid == 0 || promiseid == '') {
+                    html += "<td class='text-center td-heading' rowspan='2'>No. of Projects</td>";
+                   }
+                   html += "<td class='text-center td-heading' rowspan='2'>No. of Works</td><td class='text-center td-heading' colspan='3'>Work Status</td></tr > " +
+                           "<tr class='table-heading'><td class='td-heading text-center'>Not Implemented</td><td class='text-center td-heading'>Under Implementation</td>" +
+                           "<td class='td-heading text-center'>Implemented</td></tr></thead>"+
+                           "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+            $('#divProjectWorksStatus').append(html);
+            $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getDeptWiseProjectWorkStatus", "PriorityProjects")',
+                data: { promiseid: promiseid, spromiseid: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+            success: function (data) {
+            $('#tbodyProjectWorksList').html('');
+            if (data.length > 0) {
+                var rowCount = $('#tableProjects >tbody >tr').length;
+                if (rowCount > 1) {
+                    $('#divtableProjects').hide();
+                }
+                else {
+                    $('#btnBackStatus').hide();
+                }
+                $('#divtableProjects').hide();
+                $('#divProjectWorksStatus').show();
+                $('#DeptName').text(data[0].PromiseName);
+                $.each(data, function (i, item) {
+                    if ('@servicename' == "MC") {
+                        html = "<tr role='row'><td><a class='loader' style='font-weight: 500;text-decoration: underline;' onclick='loadDeptOfficeProjectStatus(" + promiseid + ",&#39;" + item.DeptId + "&#39;)'>" + item.DeptName + "</a></td>";
+                    }
+                    else {
+                        html = "<tr role='row'><td>" + item.DeptName + "</td>";
+                    }
+
+                    if (promiseid == 0 || promiseid == '') {
+                        if (item.totalProject > 0) {
+                            html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadDeptOfficeProjectStatus(0,&#39;" + item.DeptId + "&#39;)'>" + item.totalProject + "</a></td>";
+                        }
+                        else {
+                            html += "<td class='text-center'>" + item.totalProject + "</a></td>";
+                        }
+                    }
+                    if (item.totalWorks > 0) {
+                        html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid + ",&#39;" + "0" + "&#39;,98)'>" + item.totalWorks + "</a></td>";
+                    }
+                    else {
+                        html += "<td class='text-center'>" + item.totalWorks + "</a></td>";
+                    }
+                    if (item.NotImplemented > 0) {
+                        html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid + ",&#39;" + "0" + "&#39;,3)'>" + item.NotImplemented + "</a></td>";
+                    }
+                    else {
+                        html += "<td class='text-center'>" + item.NotImplemented + "</a></td>";
+                    }
+                    if (item.PartiallyImplemented > 0) {
+                        html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid + ",&#39;" + "0" + "&#39;,2)'>" + item.PartiallyImplemented + "</a></td >";
+                    }
+                    else {
+                        html += "<td class='text-center'>" + item.PartiallyImplemented + "</a></td>";
+                    }
+                    if (item.implementedProject > 0) {
+                        html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='getSummaryProjectsList(&#39;" + item.DeptId + "&#39;,0," + promiseid + ",&#39;" + "0" + "&#39;,1)'>" + item.implementedProject + "</a></td>";
+                    }
+                    else {
+                        html += "<td class='text-center'>" + item.implementedProject + "</a></td>";
+                    }
+                    html += "</tr > ";
+                    $('#tbodyProjectWorksList').append(html);
+                });
+                $('#tableProjectWorksList').DataTable(
+                        {
+                    paging: true,
+                    searching: true,
+                    "ordering": true,
+                    "aaSorting": [],
+                    "pageLength": 25,
+                    dom: 'Blfrtip',
+                    buttons: [
+                        'csv',
+                        'excel',
+                        {
+                            extend: 'pdf',
+                            customize: function (doc) {
+                                // Set custom margins for the PDF
+                                doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                // Find the header row
+                                var header = doc.content[1].table.body[0];
+
+                                // Set alignment to 'left' for all header cells
+                                for (var i = 0; i < header.length; i++) {
+                                    header[i].alignment = 'left';
+                                }
+                                // Iterate through all cells in the table
+                                doc.content[1].table.body.forEach(function (row) {
+                                    row.forEach(function (cell, columnIndex) {
+                                        // Align the first column to the left, rest to the right
+                                        if (columnIndex === 0) {
+                                            cell.alignment = 'left';
+                                        } else {
+                                            cell.alignment = 'right';
+                                        }
+                                    });
+                                });
+                                // Replace the default heading with custom text
+                                doc.content.splice(0, 1, {
+                                    text: 'Project: ' + data[0].PromiseName,
+                                    fontSize: 14,
+                                    alignment: 'center',
+                                    margin: [0, 10],
+                                });
+                            }
+                        }
+                    ]
+                });
+
+            }
+            else {
+                html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                    "Data Not available" +
+                    "</td>'</tr > ";
+                $('#tbodyProjectWorksList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+            html = "<tr role='row'><td colspan='10'>" +
+                "Data Not available" +
+                "</td>'</tr > ";
+                $('#tbodyProjectWorksList').append(html);
+                $("#loader-wrapper").hide();
+            }
+            });
+            }
+    </script>
+    <script>
+                function loadOfficeProjects(deptId, officeId) {
+                    DisableSearch();
+                    $("#loader-wrapper").show();
+                    $("#hdnStepNo").val("4");
+                    $('#hdnSelectedCurrDeptID').val(deptId);
+
+                    var sprojectId = $('#ddlProject').val();
+                    var sdeptId = $('#ddlDepartment').val();
+                    var sconstituencyId = 0;
+                    var statusId = 0;
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        sdeptId = $('#ddlOffice').val();
+                    }
+                    if (sprojectId == '') {
+                        sprojectId = 0;
+                    }
+                    if (sdeptId == '') {
+                        sdeptId = '0';
+                    }
+
+            var html = '';
+                    var selectedDeptID = $('#hdnSelectedCurrDeptID').val();
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+                $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+            html = "<div class='card mt - 4' style='background: #f7f5f5; '>"
+            html += "<div class='card-body' style = 'min-height:200px' >"
+            html += " <label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;'>";
+            if (officeId == 0) {
+                  html += "<b>Department: </b><span id='OfficeName'></span>";
+
+            }
+            else {
+                 html += "<b>Office: </b><span id='OfficeName'></span>";
+            }
+            html += " <a id='btnBackOffice' onclick='loadDepartmentWiseProjectStatus();' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+            html += " </label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"
+            html += "<thead><tr class='table-heading width-20'><th class='td-heading'>Project ID</th>";
+            html += "<th class='td-heading'>Name of Project</th></tr> </thead>"
+            html += "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+            $('#divProjectWorksStatus').append(html);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getProjectWiseWorkSummary", "PriorityProjects")',
+                data: { deptId: deptId, officeId: officeId , projectId: sprojectId, sdeptId: sdeptId, constituencyId: sconstituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyProjectWorksList').html('');
+                    if (data.length > 0) {
+                        //var rowCount = $('#tableProjects >tbody >tr').length;
+                        //if (rowCount > 1) {
+                        //    $('#divtableProjects').hide();
+                        //}
+                        //else {
+                        //    $('#btnBackStatus').hide();
+                        //}
+                        $('#divtableProjects').hide();
+                        $('#divProjectWorksStatus').show();
+                        var office = data[0].DeptName + ' - ' + data[0].OfficeName;
+                        if (officeId == 0) {
+                            office=data[0].DeptName;
+                        }
+                        $('#OfficeName').text(office);
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.PromiseRefId + "</td>";
+                            html += "<td>" + item.PromiseName + "</td></tr >";
+                            $('#tbodyProjectWorksList').append(html);
+                        });
+                        $('#tableProjectWorksList').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                        var head = 'Department: ';
+                                        if (@isapex == 0 && '@servicename' == 'MC') {
+                                            head = 'Office: ';
+                                        }
+                                        // Replace the default heading with custom text
+                                        doc.content.splice(0, 1, {
+                                            text: head + office,
+                                            fontSize: 14,
+                                            alignment: 'center',
+                                            margin: [0, 10],
+                                        });
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='2' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyProjectWorksList').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectWorksList').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+                }
+                function loadProjectOffices(promiseId, deptId) {
+                    DisableSearch();
+                    $("#loader-wrapper").show();
+                    var spromiseId = $('#ddlProject').val();
+                    var sdeptId = $('#ddlDepartment').val();
+                    var sconstituencyId = 0;
+                    var statusId = 0;
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        sdeptId = $('#ddlOffice').val();
+                    }
+                    if (spromiseId == '') {
+                        spromiseId = 0;
+                    }
+                    if (sdeptId == '') {
+                        sdeptId = '0';
+                    }
+
+            var html = '';
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+                $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+            html = "<div class='card mt - 4' style='background: #f7f5f5; '>"
+            html += "<div class='card-body' style = 'min-height:200px' >"
+            html += " <label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;'>";
+            html += "<b>Project: </b><span id='projectName'></span>";
+            html += " <a id='btnBackProject' onclick='loadProjectWiseDepartmentStatus();' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"
+            html += " </label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"
+            html += "<thead><tr class='table-heading'><td class='td-heading width-30'>Office</td></tr></thead>";
+            html += "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+            $('#divProjectWorksStatus').append(html);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("getprojectdeptstatusdata", "PriorityProjects")',
+                data: { promiseId: promiseId, deptId: deptId, spromiseId: spromiseId, sdeptId: sdeptId, constituencyId: sconstituencyId, statusId: statusId },
+                success: function (data) {
+                    $('#tbodyProjectWorksList').html('');
+                    if (data.length > 0) {
+                        var rowCount = $('#tableProjects >tbody >tr').length;
+                        if (rowCount > 1) {
+                            $('#divtableProjects').hide();
+                        }
+                        else {
+                            $('#btnBackStatus').hide();
+                        }
+                        $('#divtableProjects').hide();
+                        $('#divProjectWorksStatus').show();
+                        $('#projectName').text(data[0].PromiseName);
+                        $('#DeptName').text(data[0].DeptName);
+                        $.each(data, function (i, item) {
+                            html = "<tr role='row'><td>" + item.OfficeName + "</td></tr>";
+                            $('#tbodyProjectWorksList').append(html);
+                        });
+                        $('#tableProjectWorksList').DataTable(
+                                {
+                            paging: true,
+                            searching: true,
+                            "ordering": true,
+                            "aaSorting": [],
+                            "pageLength": 25,
+                            dom: 'Blfrtip',
+                            buttons: [
+                                'csv',
+                                'excel',
+                                {
+                                    extend: 'pdf',
+                                    customize: function (doc) {
+                                        // Set custom margins for the PDF
+                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                        // Find the header row
+                                        var header = doc.content[1].table.body[0];
+
+                                        // Set alignment to 'left' for all header cells
+                                        for (var i = 0; i < header.length; i++) {
+                                            header[i].alignment = 'left';
+                                        }
+                                        // Replace the default heading with custom text
+                                        doc.content.splice(0, 1, {
+                                            text: 'Project: '+ data[0].PromiseName,
+                                            fontSize: 14,
+                                            alignment: 'center',
+                                            margin: [0, 10],
+                                        });
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+                    else {
+                        html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                            "Data Not available" +
+                            "</td>'</tr > ";
+                        $('#tbodyProjectWorksList').append(html);
+                    }
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    html = "<tr role='row'><td colspan='10'>" +
+                        "Data Not available" +
+                        "</td>'</tr > ";
+                    $('#tbodyProjectWorksList').append(html);
+                    $("#loader-wrapper").hide();
+                }
+            });
+                }
+        function loadProjectDepartments(promiseid) {
+            $("#loader-wrapper").show();
+            var projectId = $('#ddlProject').val();
+            var deptId = $('#ddlDepartment').val();
+            var constituencyId = $('#ddlConstituency').val();
+            var statusId = $('#ddlStatus').val();
+            if (projectId == '') {
+            projectId = 0;
+            }
+            if (deptId == '') {
+            deptId = '0';
+            }
+            var constituencyId = 0;
+            var statusId = 0;
+            var html = '';
+            if ($.fn.DataTable.isDataTable("#tableProjectWorksList")) {
+            $('#tableProjectWorksList').DataTable().destroy();
+            }
+            $('#divProjectWorksStatus').html('');
+            $('#tbodyProjectWorksList').html('');
+            html = "<div class='card mt-4' style='background: #f7f5f5; '>"+
+                   "<div class='card-body' style = 'min-height:200px' >"+
+                   "<label for='inputinfo' class='control-label lbl_txt width-100' style='font-size: 13pt;'>"+
+                   "<b>Project: </b><span id='DeptName'></span>"+
+                   "<a id='btnBackStatus0' onclick='loadlist();' class='loader btn btn-sm btn-danger float-right'><i class='fa fa-arrow-left'></i> Back</a>"+
+                   "</label><table id='tableProjectWorksList' class='table table-over table-bordered width-100' style='vertical-align:top'>"+
+                   "<thead id='theadPrzt'><tr class='table-heading'><td class='td-heading'>Name of Department</td></td></tr></thead>"+
+                   "<tbody id='tbodyProjectWorksList'><tr><td></td></tr></tbody></table></div ></div > ";
+            $('#divProjectWorksStatus').append(html);
+            $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getDeptWiseProjectWorkStatus", "PriorityProjects")',
+                data: { promiseid: promiseid, spromiseid: projectId, deptId: deptId, constituencyId: constituencyId, statusId: statusId },
+            success: function (data) {
+            $('#tbodyProjectWorksList').html('');
+            if (data.length > 0) {
+                var rowCount = $('#tableProjects >tbody >tr').length;
+                if (rowCount > 1) {
+                    $('#divtableProjects').hide();
+                }
+                else {
+                    $('#btnBackStatus').hide();
+                }
+                $('#divtableProjects').hide();
+                $('#divProjectWorksStatus').show();
+                $('#DeptName').text(data[0].PromiseName);
+                $.each(data, function (i, item) {
+                    html = "<tr role='row'><td>" + item.DeptName + "</td></tr >";
+                    $('#tbodyProjectWorksList').append(html);
+                });
+                $('#tableProjectWorksList').DataTable(
+                        {
+                    paging: true,
+                    searching: true,
+                    "ordering": true,
+                    "aaSorting": [],
+                    "pageLength": 25,
+                    dom: 'Blfrtip',
+                    buttons: [
+                        'csv',
+                        'excel',
+                        {
+                            extend: 'pdf',
+                            customize: function (doc) {
+                                // Set custom margins for the PDF
+                                doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
+                                // Find the header row
+                                var header = doc.content[1].table.body[0];
+
+                                // Set alignment to 'left' for all header cells
+                                for (var i = 0; i < header.length; i++) {
+                                    header[i].alignment = 'left';
+                                }
+                            }
+                        }
+                    ]
+                });
+
+            }
+            else {
+                html = "<tr role='row'><td colspan='10' class='p-2'>" +
+                    "Data Not available" +
+                    "</td>'</tr > ";
+                $('#tbodyProjectWorksList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+            html = "<tr role='row'><td colspan='10'>" +
+                "Data Not available" +
+                "</td>'</tr > ";
+                $('#tbodyProjectWorksList').append(html);
+                $("#loader-wrapper").hide();
+            }
+            });
+            }
+    </script>
+    <script>
+        //-------------------------------- filter Office icon click popup ---------------------------------
+
+                function OfficeCountD() {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        datatype: "Json",
+       // url: '@Url.Action("getDeptWiseWorkStatus", "PriorityProjects")',
+        url: '@Url.Action("getDeptWiseProjectSummary", "PriorityProjects")',
+                data: { projectId: 0, deptId: '0', constituencyId: 0, statusId: 0 },
+        success: function (response) {
+            if (response.length > 0) {
+                getTableListOfficeCount(response);
+                $("#DispatchOfficeCount").css("display", "block");
+                $("#loader-wrapper").hide();
+
+            }
+            else {
+                $("#loader-wrapper").hide();
+                $("#DispatchOfficeCount").css("display", "none");
+
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+
+        });
+        }
+                function DepartmentCountD() {
+                    if (@isapex == 0 && '@servicename' == 'MC') {
+                        DeptOfcCountD();
+                        return;
+                    }
+                    if ($('input[name="radiobutton"]:checked').val() === 'rbtnList') {
+                        DeptOfcCountD();
+                        return;
+                    }
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        datatype: "Json",
+            url: '@Url.Action("getDeptWiseProjectWorkStatus", "PriorityProjects")',
+            data: { promiseid: 0, spromiseid: 0, deptId: '0', constituencyId: 0, statusId: 0 },
+        success: function (response) {
+            if (response.length > 0) {
+                $("#DispatchOfficeTableCount").DataTable().destroy();
+                $("#DispatchOfficeTableCount tbody").html('');
+                $.each(response, function (index, item) {
+
+                    $("#DispatchOfficeTableCount tbody").append(
+                        "<tr role='row' class='odd'>" +
+                        "<td  class='' style='font-size: 12px; width: 75%;'>" + item.DeptName + "</td>" +
+                        "<td  class='' style='font-size: 12px; width: 25%;'>" + item.totalWorks + "</td>"
+                        + "</tr>"
+                    );
+                });
+                $("#DispatchOfficeTableCount tr:last").remove();
+                $("#DispatchOfficeCount").css("display", "block");
+                $("#loader-wrapper").hide();
+
+            }
+            else {
+                $("#loader-wrapper").hide();
+                $("#DispatchOfficeCount").css("display", "none");
+
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+
+        });
+                }
+                function DeptOfcCountD() {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        datatype: "Json",
+            url: '@Url.Action("getDeptOfficeWiseProjectCount", "PriorityProjects")',
+            data: { },
+        success: function (response) {
+            if (response.length > 0) {
+                getTableListOfficeCount(response);
+                $("#DispatchOfficeCount").css("display", "block");
+                $("#loader-wrapper").hide();
+
+            }
+            else {
+                $("#loader-wrapper").hide();
+                $("#DispatchOfficeCount").css("display", "none");
+
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+
+        });
+                }
+                function getTableListOfficeCount(tableData) {
+    $("#DispatchOfficeTableCount").DataTable().destroy();
+    $("#DispatchOfficeTableCount tbody").html('');
+        $.each(tableData, function (index, response) {
+
+            $("#DispatchOfficeTableCount tbody").append(
+                "<tr role='row' class='odd'>" +
+                "<td  class='' style='font-size: 12px; width: 75%;'>" + response.DeptName + "</td>" +
+                "<td  class='' style='font-size: 12px; width: 25%;'>" + response.totalProject + "</td>"
+                + "</tr>"
+            );
+        });
+}
+//-------------------------------- filter Project icon click popup ---------------------------------
+
+function ProjectOfcCountD() {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        datatype: "Json",
+        url: '@Url.Action("getProjectWiseDeptSummary", "PriorityProjects")',
+                data: { projectId: 0, deptId: '0', constituencyId: 0, statusId: 0 },
+        success: function (response) {
+            if (response.length > 0) {
+                $("#DispatchProjectTableCount").DataTable().destroy();
+                $("#DispatchProjectTableCount tbody").html('');
+                $.each(response, function (index, item) {
+
+                    $("#DispatchProjectTableCount tbody").append(
+                        "<tr role='row' class='odd'>" +
+                        "<td  class='' style='font-size: 12px; width: 75%;'>" + item.PromiseName + "</td>" +
+                        "<td  class='' style='font-size: 12px; width: 25%;'>" + item.totalDepartment + "</td>"
+                        + "</tr>"
+                    );
+                });
+                $("#DispatchProjectCount").css("display", "block");
+                $("#loader-wrapper").hide();
+
+            }
+            else {
+                $("#loader-wrapper").hide();
+                $("#DispatchProjectCount").css("display", "none");
+
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+
+        });
+
+                }
+    function ProjectCountD() {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        datatype: "Json",
+        url: '@Url.Action("getProjectWiseworkCount", "PriorityProjects")',
+        data: {  },
+        success: function (response) {
+            if (response.length > 0) {
+                getTableListProjectCount(response);
+                $("#DispatchProjectCount").css("display", "block");
+                $("#loader-wrapper").hide();
+
+            }
+            else {
+                $("#loader-wrapper").hide();
+                $("#DispatchProjectCount").css("display", "none");
+
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+
+        });
+
+                }
+                function getTableListProjectCount(tableData) {
+                    $("#DispatchProjectTableCount").DataTable().destroy();
+                    $("#DispatchProjectTableCount tbody").html('');
+                    $.each(tableData, function (index, response) {
+
+                        $("#DispatchProjectTableCount tbody").append(
+                            "<tr role='row' class='odd'>" +
+                            "<td  class='' style='font-size: 12px; width: 75%;'>" + response.PromiseName + "</td>" +
+                            "<td  class='' style='font-size: 12px; width: 25%;'>" + response.totalWorks + "</td>"
+                            + "</tr>"
+                        );
+                    });
+                }
+//-------------------------------- filter ward icon click popup ---------------------------------
+function WardCountD() {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        datatype: "Json",
+            url: '@Url.Action("getConstituencyWiseProjectCount", "PriorityProjects")',
+            data: {},
+        success: function (response) {
+            if (response.length > 0) {
+                getTableListWardCount(response);
+                $("#DispatchWardCount").css("display", "block");
+                $("#loader-wrapper").hide();
+
+            }
+            else {
+                $("#loader-wrapper").hide();
+                $("#DispatchWardCount").css("display", "none");
+
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+
+        });
+                }
+
+                function getTableListWardCount(tableData) {
+                    $("#DispatchWardTableCount").DataTable().destroy();
+                    $("#DispatchWardTableCount tbody").html('');
+                    $.each(tableData, function (index, response) {
+
+                        $("#DispatchWardTableCount tbody").append(
+                            "<tr role='row' class='odd'>" +
+                            "<td  class='' style='font-size: 12px; width: 75%;'>" + response.ConstituencyName + "</td>" +
+                            "<td  class='' style='font-size: 12px; width: 25%;'>" + response.totalProject + "</td>"
+                            + "</tr>"
+                        );
+                    });
+                }
+//-------------------------------- filter Status icon click popup ---------------------------------
+function StatusCountD() {
+        $("#loader-wrapper").show();
+        $.ajax({
+        type: "GET",
+        datatype: "Json",
+            url: '@Url.Action("getStatusWiseProjectCount", "PriorityProjects")',
+            data: {},
+        success: function (response) {
+            if (response.length > 0) {
+                getTableListStatusCount(response);
+                $("#DispatchStatusCount").css("display", "block");
+                $("#loader-wrapper").hide();
+
+            }
+            else {
+                $("#loader-wrapper").hide();
+                $("#DispatchStatusCount").css("display", "none");
+
+            }
+            $("#loader-wrapper").hide();
+        },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+        }
+
+        });
+                }
+
+                function getTableListStatusCount(tableData) {
+                    $("#DispatchStatusTableCount").DataTable().destroy();
+                    $("#DispatchStatusTableCount tbody").html('');
+                    $.each(tableData, function (index, response) {
+
+                        $("#DispatchStatusTableCount tbody").append(
+                            "<tr role='row' class='odd'>" +
+                            "<td  class='' style='font-size: 12px; width: 75%;'>" + response.ProjectStatusName + "</td>" +
+                            "<td  class='' style='font-size: 12px; width: 25%;'>" + response.totalProject + "</td>"
+                            + "</tr>"
+                        );
+                    });
+                }
+
+//---------------------------------------------------------End------------------------------------------------------//
+    </script>
+</body>
+</html>

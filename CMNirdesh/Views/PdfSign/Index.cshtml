@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "PDF Sign";
+}
+
+<h2>PDF Sign</h2>
+
+@*<form method="post" action="/PdfSign/HandleResponse">
+    <textarea name="eSignResponse" rows="10" cols="50"></textarea><br />
+    <input type="submit" value="Submit Response" />
+</form>
+
+@if (ViewBag.ResponseText != null)
+{
+    <div>
+        <h3>Response</h3>
+        <pre>@ViewBag.ResponseText</pre>
+    </div>
+}*@
+
+@if (ViewBag.DownloadEnabled != null && (bool)ViewBag.DownloadEnabled)
+{
+    <div>
+        <a href="/PdfSign/Download">Download Signed PDF</a>
+    </div>
+}
+
+
+

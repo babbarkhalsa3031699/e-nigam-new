@@ -1,0 +1,36 @@
+﻿@model CMNirdesh.Models.AgendaNoteViewModel
+
+@if (Model.AgendaNoteList != null && Model.AgendaNoteList.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style="width:20% !important">Category</th>
+                <th style="width:60% !important">Note</th>
+                <th style="width:20% !important">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var note in Model.AgendaNoteList)
+            {
+                <tr data-id="@note.NoteId" data-categoryid="@note.CategoryId">
+                    <td>@note.CategoryName</td>
+                    <td>@Html.Raw(note.NoteText)</td>
+                    <td>
+                         <button class="btn btn-sm btn-primary editNote" title="Edit">
+                            <i class="fa fa-pencil"></i>
+                         </button>
+
+                         <button class="btn btn-sm btn-danger deleteNote" title="Delete">
+                            <i class="fa fa-trash"></i>
+                         </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No notes added yet</p>
+}

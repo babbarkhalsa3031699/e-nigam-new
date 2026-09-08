@@ -1,0 +1,288 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+}
+@*@using (Html.BeginForm("AddProjectConstituency", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "PriorityProjectConstituency", enctype = "multipart/form-data" }))
+{*@
+
+    <div class="row">
+        <div class="col-lg-6" style="border-right:1px solid #eee;">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.PromiseId)
+            @Html.HiddenFor(model => model.DeptId)
+            @Html.HiddenFor(model => model.worksdatalist.PromiseId, new { @Id = "hdnConstProjectId" })
+            @Html.HiddenFor(model => model.worksdatalist.ProjectId, new { @Id = "hdnConstWorkId" })
+            @Html.HiddenFor(model => model.worksdatalist.mode)
+            @Html.HiddenFor(model => model.worksdatalist.DeptId, new { @Id = "hdnConstDeptId" })
+            @Html.HiddenFor(model => model.ProjectId)
+
+            <div class="row mrgn_tp">
+                <div class="col-md-12">
+                    @if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+                    {
+                    <span style="font-weight: 500;font-size: 12pt;">Select Constituency </span>
+                    }
+                    else
+                    { 
+                    <span style="font-weight: 500;font-size: 12pt;">Select Ward </span>
+                                        }
+                </div>
+                <div class="col-md-12 mt-2" style="max-height: 500px;overflow:auto">
+                    @foreach (var item in Model.mProjectConstituencyList)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="ddlConstituency" class="chkbox"
+                                       name="SelectedFruits"
+                                       value="@item.Value" /> @item.Text
+                                </label>
+                            </div>
+                        }
+                    @Html.ValidationMessageFor(model => model.ConstituencyId)
+                    @Html.HiddenFor(m => m.cdid, new { @id = "cdid2" })
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            @if (Model != null)
+            {
+
+                <table id="tableProjectDepts" class="table table2" style="vertical-align:top">
+                    <thead>
+                        <tr>
+                            <th colspan="2">
+                                @if (CMNirdesh.Models.CurrentSession.serviceName == "CMNirdesh")
+                                {
+                                    <span style="font-weight: 500; font-size: 12pt !important;">Constituency Added to Work</span>
+                                }
+                                else
+                                {
+                                    <span style="font-weight: 500; font-size: 12pt !important;">Ward Added to Work</span>
+                                }
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyWorkConstituency">
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+@*}*@
+<script>
+    function closePopup() {
+        $("#modalAddDocument").hide();
+        $("#modalImages").hide();
+        $("#modalAddConstituency").hide();
+        $("#myImgModal").hide();
+        loadWorkConstituencyList();
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('input:checkbox').change(function () {
+            if ($(this).is(':checked')) {
+                $("#loader-wrapper").show();
+                var contituencyId = $(this).val();
+                var workID = $('#hdnConstWorkId').val();
+                var ProjectId = $('#hdnConstProjectId').val();
+                var DeptId = $('#hdnConstDeptId').val();
+                try {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("SaveProjectConstituency", "PriorityProjects")',
+                        async: true,
+                        data: { ProjectId: ProjectId, deptID: DeptId, workID: workID, contituencyId: contituencyId },
+                        beforeSend: function () {
+                            $('#loader-wrapper').show();
+                        },
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+                            if (data == "1") {
+                                $('#tbodyWorkConstituency').html('');
+                                loadWorkConstituencies();
+                                return false;
+                            }
+                            else {
+                                $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                                alert("Some error occurred,please try again");
+                                return false;
+                                e.preventDefault();
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $("#loader-wrapper").hide();
+                            alert("Some error occurred,please try again2");
+                        },
+                    });
+
+                }
+                catch (ex) {
+                    alert("Some error occurred,please try again3");
+                }
+            }
+        });
+    });
+    function DeleteConstituencyBtn(contituencyId) {
+        try {
+            $("#loader-wrapper").show();
+            var workID = $('#hdnConstWorkId').val();
+            var ProjectId = $('#hdnConstProjectId').val();
+            var DeptId = $('#hdnConstDeptId').val();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteProjectConstituency", "PriorityProjects")',
+                async: true,
+                data: { ProjectId: ProjectId, deptID: DeptId, workID: workID, contituencyId: contituencyId },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    if (data == "1") {
+                        //alert("Constituency has been deleted successfully");
+                        $('#tbodyWorkConstituency').html('');
+                        loadWorkConstituencies();
+                        return false;
+                    }
+                    else {
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again");
+                        return false;
+                        e.preventDefault();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $("#loader-wrapper").hide();
+                    $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                    alert("Some error occurred,please try again");
+                    //// window.location.reload(true);
+                },
+            });
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+    function loadWorkConstituencies() {
+        $("#loader-wrapper").show();
+        $('#modalAddConstituencyBody').html('');
+        var workID = $('#hdnConstWorkId').val();
+        var ProjectId = $('#hdnConstProjectId').val();
+        var DeptId = $('#hdnConstDeptId').val();
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ViewConstituencies", "PriorityProjects")',
+            async: true,
+            data: { ProjectId: ProjectId, deptID: DeptId, workID: workID },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#modalAddConstituency").css("display", "block");
+                    $('#modalAddConstituencyBody').html(data);
+                    loadConstituency();
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+                $("#loader-wrapper").hide();
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+    }
+
+    function loadConstituency() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnConstWorkId').val();
+        var ProjectId = $('#hdnConstProjectId').val();
+        var DeptId = $('#hdnConstDeptId').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getProjectConstituency", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<tr role='row'><td>" +
+                            "<span>" + item.Text + "</span" +
+                            "</td><td>" +
+                            "<a class='text-danger mr-1' style='font-size: 10pt; padding: 2px 5px;' title='Delete' id='btnDeletConst' onclick='DeleteConstituencyBtn(" + item.Value+"); return false;'><i class='fa fa-times'></i></a>" +
+                            "</td></tr > ";
+                        $('#tbodyWorkConstituency').append(html);
+                    });
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "No Record Found" +
+                        "</td>'</tr > ";
+                    $('#tbodyWorkConstituency').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "No Record Found" +
+                    "</td>'</tr > ";
+                $('#tbodyWorkConstituency').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function loadWorkConstituencyList() {
+        $("#loader-wrapper").show();
+        var workID = $('#hdnConstWorkId').val();
+        $('#constituencyList').html('');
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getProjectConstituency", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<li>" +
+                            "<span>" + item.Text + "</span>" +
+                            "<a class='loader text-danger' style = 'float:right' title = 'Delete' id = 'btnDeleteDept' onclick='DeleteConstituency(" + item.Value + "); return false;' })' > " +
+                            "<i class='fa fa-times' style = 'font-weight: 700;' ></i > " +
+                            "</a > " +
+                            "</li > ";
+                        $('#constituencyList').append(html);
+                    });
+                    /**/
+                }
+                else {
+                    html = "<tr role='row'><td colspan='2'>" +
+                        "No Record Found" +
+                        "</td>'</tr > ";
+                    $('#constituencyList').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                html = "<tr role='row'><td colspan='2'>" +
+                    "No Record Found" +
+                    "</td>'</tr > ";
+                $('#constituencyList').append(html);
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+</script>

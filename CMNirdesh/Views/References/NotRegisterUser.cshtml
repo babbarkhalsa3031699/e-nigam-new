@@ -1,0 +1,44 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    @Scripts.Render("~/bundles/LoginJs")
+    <link href="~/Content/style_ms.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/responsive_ms.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome_ms.min.css" rel="stylesheet" />
+
+    <title>MC-Punjab</title>
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/CryptoJSv3.1.2/rollups/pbkdf2.js"></script>
+    <script src="~/Scripts/CryptoJSv3.1.2/components/enc-base64.js"></script>
+    <script src="~/Scripts/CryptoJSv3.1.2/components/enc-base64-min.js"></script>
+  
+    
+    <script>
+            $(document).ready(function () {
+
+
+                alert("You have Successfully Login ! But you are not authorised for using Digital-MC House Application.");
+
+              
+                window.location.href = '@Url.Action("LogOff", "Account")';
+    });
+    </script>
+    
+
+
+    <meta name="viewport" content="width=device-width" />
+    <title>NotRegisterUser</title>
+</head>
+<body>
+   
+</body>
+</html>

@@ -1,0 +1,60 @@
+﻿@model  CMNirdesh.Models.LstFundReportModel
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>FundReport</title>
+
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    <script>
+        function closediary() {
+            $("#loginModaldiary").css("display", "none");
+        }
+
+    </script>
+    <style>
+        .click {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+  
+    <div class="main-content">
+
+
+        <div>
+            @{Html.RenderPartial("~/Views/Fund/_MLAFundSanction.cshtml", Model);}
+        </div>
+    </div>
+
+
+    <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModaldiary"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl modal_design" id="Scroll2">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close close_btn" onclick="closediary()" data-dismiss="modal">x</button>
+                    <h4 class="widget-title modal_heading">Diary</h4>
+                </div>
+                <div class="modal-body" id="loginModaldiarybody">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

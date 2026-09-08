@@ -1,0 +1,153 @@
+﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+}
+
+<style>
+    .addnew_modal {
+        width: 700px;
+        margin-left: 800px;
+        margin-top: 50px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+
+       
+        $('#txtAgendaName').val('');
+
+        /* ========= EU Date Sorting ========= */
+        $.extend($.fn.dataTableExt.oSort, {
+            "date-eu-pre": function (dateString) {
+                if (!dateString) return 0;
+                var parts = dateString.split('/');
+                if (parts.length !== 3) return 0;
+                return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+            },
+            "date-eu-asc": function (a, b) {
+                return a - b;
+            },
+            "date-eu-desc": function (a, b) {
+                return b - a;
+            }
+        });
+
+        /* ========= DataTable Init ========= */
+        var table = $('#fundreport').DataTable({
+            bLengthChange: false,
+            pageLength: 10,
+            searching: true,
+            order: [[1, 'desc']],
+            columnDefs: [
+                {
+                    targets: 1,
+                    type: 'date-eu'
+                }
+            ]
+        });
+
+    });
+
+    /* ========= Lock / Unlock ========= */
+    function freeze(id, frz) {
+        if (!id) return;
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("LockUnlockAgenda", "Agenda")',
+            data: { AgendaId: id, freeze: frz },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                $('#loader-wrapper').hide();
+                if (data) {
+                    if (frz) {
+                        $("#unf_" + id).show();
+                        $("#fr_" + id).hide();
+                    } else {
+                        $("#unf_" + id).hide();
+                        $("#fr_" + id).show();
+                    }
+                } else {
+                    alert("Error while processing request.");
+                }
+            },
+            error: function (xhr) {
+                alert(xhr.responseText);
+            },
+            complete: function () {
+                $('#loader-wrapper').hide();
+            }
+        });
+    }
+
+    /* ========= Edit ========= */
+    //function GetById(id) {
+    //    // your existing edit logic / ajax call here
+    //    console.log("Edit Agenda:", id);
+    //}
+</script>
+
+<div class="col-lg-12">
+    <div class="card card-success">
+        <div class="card-body">
+            <div class="table-responsive">
+
+                <table id="fundreport" class="table table-bordered dataTable">
+                    <thead>
+                        <tr>
+                            <th class="td-heading">Meeting Name</th>
+                            <th class="td-heading">Meeting Date</th>
+                            <th class="td-heading">Start Time</th>
+                            <th class="td-heading">End Time</th>
+                            @*<th class="td-heading">Agenda Heading</th>*@
+                            @*<th class="td-heading">Action</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var mdl in Model._LstAgenda.OrderByDescending(a => a.AgendaDate))
+                        {
+                            <tr id="tr_@mdl.AgendaId">
+                                <td class="td-data">
+                                    @mdl.AgendaName
+                                    <input type="hidden" value="@mdl.AgendaId" />
+                                </td>
+
+                                <td class="td-data">@mdl.AgendaDateDisplay</td>
+
+                                <td class="td-data">
+                                    @(mdl.StartTime != null ? mdl.StartTime.ToString() : "N/A")
+                                </td>
+
+                                <td class="td-data">
+                                    @(mdl.EndTime != null ? mdl.EndTime.ToString() : "N/A")
+                                </td>
+
+                                @*<td class="td-data">
+                                    @mdl.Header
+                                </td>*@
+
+                                @*<td class="td-data text-center">
+                                    <a title="Edit"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="@(mdl.EndTime != null ? "" : "#myModal")"
+                                       onclick="@(mdl.EndTime != null
+                                       ? "alert('Cannot edit. Meeting already approved.')"
+                                       : string.Format("GetById('{0}')", mdl.AgendaId))">
+
+                                     <i class="fas fa-pencil-alt" style="color: cadetblue; font-size: 26px;"></i>
+                                    </a>
+                                </td>*@
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

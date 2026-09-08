@@ -1,0 +1,355 @@
+﻿@model  SBL.eLegistrator.HouseController.Web.Areas.Grievances.Models.DocumentViewModel
+@{
+    ViewBag.Title = "CreateDocument";
+    Layout = "~/Views/Shared/_ResponsiveLayout.cshtml";
+
+    string fileacessingpath = ViewBag.FileAcessingPath;
+}
+
+@*@Html.Partial("~/Areas/Grievances/Views/Grievances/_LeftNavigationMenu.cshtml")*@
+<style>
+    .field-validation-error {
+        color: red;
+        padding-left: 10px;
+    }
+</style>
+<div class="main-content" id="main-content">
+    <!-- #section:basics/content.breadcrumbs -->
+    <div class="breadcrumbs" id="breadcrumbs">
+        <script type="text/javascript">
+            try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+        </script>
+
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon fa fa-home home-icon"></i>
+                <a href="@Url.Action("DocumentList", "Project")">Admin</a>
+            </li>
+            <li>
+                <a href="@Url.Action("DocumentList", "Project")">Document List</a>
+            </li>
+
+        </ul>
+        <!-- /.breadcrumb -->
+        <!-- #section:basics/content.searchbox -->
+        <div class="legAssm">
+            <span class="label label-large label-pink arrowed-in-right arrowed">@Html.Raw(ViewBag.CurrentAssemblyName)</span>
+            <span class="label label-large label-purple arrowed">@Html.Raw(ViewBag.CurrentSessionName)</span>
+        </div>
+
+    </div>
+
+    <div class="page-content">
+        @*<div id="ace-settings-container" class="ace-settings-container">
+
+                <button class="btn  btn-sm btn-success" id="saveandnew">
+                    <i class="ace-icon fa fa-floppy-o bigger-150"></i>
+                    <span class="bigger-110">Save &amp; New</span>
+                </button>
+
+                <button type="submit" class="btn  btn-sm btn-warning" id="savebtn2">
+                    <i class="ace-icon fa fa-floppy-o bigger-150"></i>
+                    <span class="bigger-110">Save</span>
+                </button>
+                @if (Model.Mode != "Add")
+                {
+                    //onclick="javascript:window.location.href='/Admin/Gallery/DeleteGallery/@Model.CategoryID';"
+                    <button class="btn  btn-sm btn-danger" id="@Url.Action("DeleteGallery", "Gallery", new { id = @Model.CategoryID })" onclick="DeleteGalleryCategoryInEdit(this.id)" >
+                        <i class="ace-icon fa fa-trash-o bigger-150"></i>
+                        <span class="bigger-50">Delete</span>
+                    </button>
+                }
+                <button class="btn  btn-sm  btn-grey" onclick="javascript:window.location.href='/Admin/Gallery/GalleryCategoryIndex';">
+                    <i class="ace-icon fa fa-times bigger-150"></i>
+                    <span class="bigger-110">Cancel</span>
+                </button>
+
+
+
+            </div>*@
+        <div class="page-header">
+            <h1>
+                Admin
+
+                <small>
+                    <i class="ace-icon fa fa-angle-double-right"></i>
+                    Document
+                </small>
+            </h1>
+
+
+        </div>
+
+        <!-- /section:settings.box -->
+
+        <div class="widget-header widget-header-blue widget-header-flat">
+            @if (Model.Mode == "Add")
+            {
+                <h4 class="widget-title lighter">Create Document</h4>
+            }
+            else
+            {
+                <h4 class="widget-title lighter">Edit Document</h4>
+            }
+
+        </div>
+        <div class="widget-body">
+            <div class="widget-main">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="messageBox"></div>
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div class="row">
+
+                            @using (Html.BeginForm("SaveDocument", "Project", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "Project" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.ProgrammeDocsId)
+                                @Html.HiddenFor(model => model.Mode)
+
+                                //  <input type="hidden" id="fileacesspath" value="@fileacessingpath" />
+
+                                <h4 class="header blue lighter smaller clearfix">Basic details </h4>
+
+
+                                <div class="tabbable">
+                                    <ul id="myTab" class="nav nav-tabs padding-18">
+                                        <li class="active">
+                                            <a href="#news-english" data-toggle="tab">
+                                                <i class="green ace-icon fa fa-home bigger-120"></i>
+                                                English
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a href="#news-hindi" data-toggle="tab">
+                                                <i class="blue ace-icon fa fa-pencil-square-o bigger-120"></i>
+                                                <span class="lang-hi">हिन्दी  </span>
+
+                                            </a>
+                                    </ul>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label no-padding-right" for="Address">Project </label>
+                                        <div class="col-sm-9">
+
+                                            @Html.DropDownListFor(a => a.ProjectId, Model.ProjectList, new { @class = "col-xs-10 col-sm-5" })
+                                            <div class="help-block col-xs-12 col-sm-reset inline">
+                                                @Html.ValidationMessageFor(model => model.ProjectList)
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="tab-content no-border padding-24">
+                                        <div class="tab-pane in active" id="news-english">
+
+
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label no-padding-right" for="Name">Document Title </label>
+
+                                                <div class="col-sm-9 help-block">
+
+                                                    @Html.TextBoxFor(model => model.DocumentTitle, new { @class = "col-xs-10 col-sm-5", @placeholder = "Document Title", @autocomplete = "off" })
+
+                                                    @Html.ValidationMessageFor(model => model.DocumentTitle)
+
+                                                </div>
+                                            </div>
+
+                                            <div class="space-2"></div>
+
+                                        </div>
+                                        <div class="tab-pane" id="news-hindi">
+
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label no-padding-right" for="Name">शीर्षक </label>
+
+                                                <div class="col-sm-9 help-block">
+
+                                                    @Html.TextBoxFor(model => model.DocumentTitleLocal, new { @class = "col-xs-10 col-sm-5", @placeholder = "शीर्षक", @autocomplete = "off" })
+
+                                                    @* @Html.ValidationMessageFor(model => model.News_Title)*@
+
+                                                </div>
+                                            </div>
+
+
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="avatar">Document </label>
+
+                                    <div class="col-sm-9">
+
+                                        @* <input type="file" id="Image" name="file" class="col-xs-10 col-sm-5" />*@
+
+                                        @*@Html.TextBoxFor(m => m.FileLocation, new { @style = "margin-left:40px", type = "file", @id = "Image", @name = "file" })*@
+                                        <input type="file" style="margin-left: 40px;" name="projectDoc" id="projectDoc" accept=".pdf,.xlsx,.doc,.xls" />
+                                        @Html.HiddenFor(model => model.DocumentLocation)
+                                        @Html.HiddenFor(model => model.DocumentFileName)
+                                        <input type="hidden" id="projectDochdn" />
+
+                                        @if (Model.Mode == "Add")
+                                        {
+                                            <a href="@Model.DocumentLocation" id="adocLoc" style="display:none;"></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Content( Model.path+Model.DocumentLocation)" id="adocLoc">Click to download</a>
+
+                                        }
+
+                                    </div>
+                                </div>
+
+                                <div class="space-6"></div>
+
+
+
+                                <h4 class="header blue lighter smaller clearfix">Publishing options </h4>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="Address">Status </label>
+                                    <div class="col-sm-9">
+
+                                        @Html.DropDownListFor(model => model.IsActive, Model.StatusTypeList, new { @class = "col-xs-10 col-sm-5" })
+                                        @*<div class="help-block col-xs-12 col-sm-reset inline">
+                                            @Html.ValidationMessageFor(model => model.Status)
+                                                 </div>*@
+                                    </div>
+
+                                </div>
+                                <div class="space-2"></div>
+                                <hr />
+                                <div class="btn-group pull-right padding-10">
+                                    <!-- #section:plugins/fuelux.wizard.buttons -->
+
+                                    <button type="reset" class="btn btn-sm btn-info" onclick="resetFields();">
+                                        <i class="ace-icon fa fa-times bigger-125"></i>
+                                        Reset
+                                    </button>
+                                    <button type="submit" id="savebtn" class="btn btn-sm btn-purple ">
+                                        <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                                        Save
+                                    </button>
+
+
+                                    <!-- /section:plugins/fuelux.wizard.buttons -->
+                                </div>
+
+                            }
+
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.page-content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/assets/js/bootbox.min.js"></script>
+<link href="~/toastr/toastr.css" rel="stylesheet" />
+<script src="~/toastr/toastr.min.js"></script>
+<script>
+
+    $("#projectDoc").change(function () {
+
+
+        CheckImage("#projectDoc", "projectDoc");
+
+    });
+
+    function CheckImage(input, name) {
+
+        var sizeInKB = $(input)[0].files[0].size / 1024;
+        var filename = $(input)[0].files[0].name;
+        var dots = $(input).val().split(".").length - 1;
+        var sizeLimit = 2048;
+        //if (sizeInKB > sizeLimit) {
+        //    toastr.error('File size must be less than 20 Mb.');
+        //    $(input).val('');
+        //    $(input + "hdn").val('');
+        //    $(input).focus();
+        //    $("#DocumentLocation").val('');
+
+        //}
+
+        if (dots > 1) {
+            toastr.error('Invalid file Format.');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $("#DocumentLocation").val('');
+        }
+
+
+        else {
+            var inpt = "input[name=" + name + "]";
+
+            var inputElement1 = $(inpt);
+
+            readImage(inputElement1).done(function (base64Data) {
+                $(input + "hdn").val(base64Data);
+                $("#DocumentLocation").val(base64Data);
+                $("#DocumentFileName").val(filename);
+                $("#adocLoc").hide();
+
+            });
+
+
+
+
+
+        }
+
+    }
+    function readImage(inputElement) {
+
+
+        var deferred = $.Deferred();
+
+        var files = inputElement.get(0).files;
+        if (files && files[0]) {
+            var fr = new FileReader();
+            fr.onload = function (e) {
+                deferred.resolve(e.target.result);
+            };
+            fr.readAsDataURL(files[0]);
+        } else {
+            deferred.resolve(undefined);
+        }
+
+        return deferred.promise();
+    }
+
+    $(document).ready(function () {
+        $("#Title").focus();
+
+        $("#Projectmain").addClass("active open");
+        $("#Projectsub").addClass("nav-show").css("display", "block");
+        $("#doclist").addClass("active");
+
+
+
+
+
+
+    });
+    function resetFields() {
+        $(".field-validation-error").empty();
+        $("#Title").focus();
+
+    }
+
+
+</script>

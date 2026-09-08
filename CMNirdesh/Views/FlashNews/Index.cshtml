@@ -1,0 +1,611 @@
+﻿
+@model CMNirdesh.Models.MCHouse.FlashNews.LstFlashNewsModel
+@using CMNirdesh;
+
+@{
+    ViewBag.Title = "Index";
+    int count = 0;
+}
+
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<div id="main-content">
+<div class="main-content">
+
+
+    <section class="form_dsign">
+        <div class="container-fluid p-0">
+            <div class="inr_frm_dsgn">
+
+                <div class="widget-box " id="divAction">
+                    <div class="widget-header widget-header-flat rounded-top rounded-0">
+                        <h4 class=""> Flash News </h4>
+                        <div class="widget-toolbar no-border">
+                            <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" style="font-size:14px;" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add News</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form_lyot">
+
+                    @if (Model != null)
+                    {
+                        if (Model._LstFlashNews.Count() > 0)
+                        {
+                            <div class="table-responsive">
+                                <table id="example" class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr class="table-heading">
+                                            <th class="td-heading" style="width:10%"><span class="font-weight-bold">MC Name</span></th>
+                                            <th class="td-heading" style="width:10%"><span class="font-weight-bold">FlashNews Text</span></th>
+                                            <th class="td-heading" style="width:10%"><span class="font-weight-bold">FlashNews Text_local</span></th>
+                                            <th class="td-heading" style="width:10%"><span class="font-weight-bold">FlashNews File</span></th>
+                                            <th class="td-heading" style="width:10%"><span class="font-weight-bold">Action</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                        @foreach (var items in Model._LstFlashNews)
+                                        {
+                                            <tr>
+                                                <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MCName)</td>
+                                                <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.FlashNewsText)</td>
+                                                <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.FlashNewsText_local)</td>
+                                                <td class="center td-data" style="padding: 14px 4px !important"><a href="@Url.Content(@Model.fileacessingUrl+"/" + items.FlashNewsFile)" target="_blank"><img src="~/Assets/pdficon.jpg" height="35" width="30" /> </a></td>
+
+                                                <td class="center d-flex align-items-center gap-2" style=" padding:20px 4px !important">
+                                                    <div class="hidden-sm hidden-xs action-buttons">
+
+
+                                                        <a data-rel="tooltip" class="tooltip-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.FlashNewsID')">
+
+                                                            <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                        </a>
+                                                        @*<a data-rel="tooltip" class="red tooltip-error" onclick="DeleteDepartmentRecord('@items.FlashNewsID')">
+
+                                                    <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                                                </a>*@
+                                                    </div>
+                                                    <div class="hidden-sm hidden-xs action-buttons">
+                                                        <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.FlashNewsID')" value="@items.FlashNewsID" />
+                                                    </div>
+                                                    <div class="hidden-sm hidden-xs action-buttons">
+                                                        <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.FlashNewsID')" value="@items.FlashNewsID" />
+                                                        <label class="toggle mb-0">
+                                                            <input type="checkbox" onclick="DeleteDepartmentRecord('@items.FlashNewsID')" @(Convert.ToBoolean(items.Status) == true ? "checked='checked'" : string.Empty)>
+                                                            <span class="slider"></span>
+                                                            <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="alert alert-info">
+                                        <strong>There are no record found</strong><br />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fs-5" id="myModalLabel">Add News Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <input type="hidden" id="selectedId" />
+                            <div class="form-group" id="MenuDropdown">
+                                <div class="profile-info-name fotm_lbl">MC Name:</div>
+                                <select id="MCSelect">
+                                    <option value="select" class="form-control txt_design" id="SelectId" placeholder="MC Name"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="FlashNews" class="profile-info-name fotm_lbl">FlashNews:</label>
+                                <input type="text" class="form-control" id="FlashNewsText" placeholder="FlashNews Text" />
+
+                            </div>
+                            <div class="form-group">
+                                <label for="FlashNewslocal" class="profile-info-name fotm_lbl">FlashNews(Punjabi):</label>
+                                <input type="text" class="form-control" id="FlashNewsText_local" placeholder="FlashNews Text(Punjabi)" />
+                            </div>
+
+                            <div>
+                                <label for="MC Logo" class="profile-info-name fotm_lbl">FlashNews File:</label>
+                                <input type="file" name="file" class="form-control" id="FlashNewsFile" placeholder="FlashNews File" accept=".pdf" />
+                                <input type="hidden" id="DocumentIconName" />
+                            </div>
+
+                            <br />
+                            <div class="form-group">
+                                <input type="hidden" class="form-control" id="FlashNewsID" placeholder="FlashNews Text" />
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="background-color:white">
+                        <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                        <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+</div>
+
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+@*<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>*@
+
+<style>
+
+
+    .inr_frm_dsgn {
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+    .form-group input[type="number"].txt_design {
+        border-radius: 4px !important;
+        height: 41px !important;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+
+    .pencil-class {
+        font-size: 15px;
+    }
+
+    .edit-1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+      
+        var s = $("#MCSelect");
+
+        s.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("MCDropDown", "FlashNews")',
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                s.empty().append('<option selected="selected" value="0">Please select</option>');
+                $.each(response, function () {
+                    s.append($("<option></option>").val(this.Value).html(this.Text));
+                });
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
+        //if ($(".checkbox2").attr('checked=checked')) {
+        //    $('.slider').attr(this.checkboxValue, 'on');
+        //}
+
+
+    });
+
+    $('#example').DataTable({
+    });
+    //var checkboxValue;
+    //document.getElementById('checkbox1').addEventListener('change', (e) => {
+    //    this.checkboxValue = e.target.checked ? 'on' : 'off';
+    //    console.log(this.checkboxValue)
+    //})
+
+
+    function getbyID(EmpID) {
+        debugger
+        clearTextBox();
+
+        var url = '@Url.Action("Edit", "FlashNews")' + '?id=' + EmpID;
+        $("#myModalLabel").html("Update Flash News Details");
+        $("#btnUpdate").show();
+        $.ajax({
+            type: "GET",
+            url: url,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var obj = JSON.parse(result);
+                var data = obj._LstFlashNews[0];
+                $('#myModal').modal();
+                $('#MCSelect').val(data.MCId);
+                $('#FlashNewsText').val(data.FlashNewsText);
+                $("#FlashNewsText_local").val(data.FlashNewsText_local);
+                $("#FlashNewsID").val(data.FlashNewsID);
+                $("#btnSave").hide();
+            }
+        });
+    }
+    //Function for clearing the textboxes
+    //Valdidation using jquery
+    function validate() {
+
+        var isValid = true;
+        if ($('#MCSelect').val().trim() === "0") {
+            $('#MCSelect').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#MCSelect').css('background-color', 'white');
+        }
+
+        return isValid;
+    }
+
+
+    function clearTextBox() {
+        $('#myModal').data({ backdrop: 'static', keyboard: false });
+        $("#myModalLabel").html("Add FlashNews Details");
+        $('#MCSelect').css('background-color', 'white');
+        $('#MCSelect').val(0);
+        $('#FlashNewsText').val('');
+        $('#FlashNewsText_local').val('');
+        $('#FlashNewsFile').val("");
+        $('#btnSave').show();
+        $('#btnUpdate').hide();
+        $('#FlashNewsID').val('');
+    }
+
+
+
+    function Add() {
+        debugger
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#FlashNewsFile").get(0);
+            var files = fileUpload.files;
+            // Create FormData object
+            var fileData = new FormData();
+
+            //var today = new Date();
+            //var dd = String(today.getDate()).padStart(2, '0');
+            //var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            //var yyyy = today.getFullYear();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+
+                fileData.append(files.name, files[i]);
+
+
+            }
+
+
+            const courseDto = {
+                //  MCName: $("#MCNameDropDown option:selected").text(),
+                //  MCName_local: $("#MCLocalNameDropDown option:selected").text(),
+
+                FlashNewsText: $('#FlashNewsText').val(),
+                FlashNewsText_local: $('#FlashNewsText_local').val(),
+                FlashNewsFile: $('#FlashNewsFile').val().split('\\').pop().split('/').pop(),
+                MCId: $('#MCSelect').val(),
+                MCName: $("#MCSelect option:selected").text(),
+
+            };
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url: '@Url.Action("Create", "FlashNews")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result == 1) {
+                        alert("Added Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else {
+                        alert("FlashNews Order No. Already Present NotUpdated!");
+                    }
+                },
+                error: function (err) {
+                    if (err) {
+                        alert("Not Updated");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+
+    function Update() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#FlashNewsFile").get(0);
+            var files = fileUpload.files;
+            // Create FormData object
+            var fileData = new FormData();
+
+            //var today = new Date();
+            //var dd = String(today.getDate()).padStart(2, '0');
+            //var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            //var yyyy = today.getFullYear();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+
+                fileData.append(files.name, files[i]);
+
+
+            }
+
+
+            const courseDto = {                  
+                //  MCName_local: $("#MCLocalNameDropDown option:selected").text(),
+                FlashNewsID: $('#FlashNewsID').val(),
+                FlashNewsText: $('#FlashNewsText').val(),
+                FlashNewsText_local: $('#FlashNewsText_local').val(),
+                FlashNewsFile: $('#FlashNewsFile').val().split('\\').pop().split('/').pop(),
+                MCId: $('#MCSelect').val(),
+                MCName: $("#MCSelect option:selected").text(),
+
+            };
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url: '@Url.Action("Update", "FlashNews")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result == 1) {
+                        alert("Added Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else {
+                        alert("FlashNews Order No. Already Present NotUpdated!");
+                    }
+                },
+                error: function (err) {
+                    if (err) {
+                        alert("Not Updated");
+                        $('#myModal').hide();
+
+                    }
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+    var MyApp = {};
+    function DeleteDepartmentRecord(xyz) {
+
+        MyApp = xyz;
+        DeleteID();
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+
+
+    //function DeleteRowById(Id) {
+    //    debugger
+
+    //    var Id = $(this).data('Id');
+
+    //    var checkStatus = $(this).find($('#checkbox1')).is(':checked') ? 'on' : 'off';
+    //    console.log($('.slide').val());
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "FlashNews/Delete?id=" + Id + '&status=' + checkStatus,
+    //        data: {},
+    //        dataType: 'json',
+    //        success: function (result) {
+    //            if (result) {
+    //                console.log("OK");
+    //            } else {
+    //                console.log("error");
+    //            }
+    //        },
+    //        error: function () {
+    //            console.log("something went wrong");
+    //        }
+    //    });
+    //};
+    //$('.btn-toggle').click(function () {
+    //    $(this).find('.btn').toggleClass('active');
+
+    //    if ($(this).find('.btn-primary').size() > 0) {
+    //        $(this).find('.btn').toggleClass('btn-primary');
+    //    }
+    //    if ($(this).find('.btn-danger').size() > 0) {
+    //        $(this).find('.btn').toggleClass('btn-danger');
+    //    }
+    //    if ($(this).find('.btn-success').size() > 0) {
+    //        $(this).find('.btn').toggleClass('btn-success');
+    //    }
+    //    if ($(this).find('.btn-info').size() > 0) {
+    //        $(this).find('.btn').toggleClass('btn-info');
+    //    }
+
+    //    $(this).find('.btn').toggleClass('btn-default');
+
+    //});
+
+    function DeleteID() {
+        var i = MyApp;
+        $.ajax({
+            type: "Post",
+            url:'@Url.Action("Delete", "FlashNews")' + '?id=' + i,
+            success: function (result) {
+                $("#DeleteConfirmation").modal("hide");
+                alert("Updated Successfully");
+
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,864 @@
+﻿@model  CMNirdesh.Models.PermissionModel
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
+}
+
+
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+<style>
+</style>
+
+<body>
+    <div id="main-content">
+
+
+        <div class="main-content cm_fund fund_rcipt">
+            <div class="row">
+
+                <div class="card p-0">
+                    <div class="card-header">
+                        <h3 class="card-title">User Permission</h3>
+                    </div>
+                    <div class="card-body">
+
+                        @using (Html.BeginForm("GetRoleWisePermissionList", "User", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data" }))
+                        {
+                            <div class="row align-items-center">
+                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                    <label for="inputEmail4" class="txt_label">User Role:</label>
+                                    @Html.DropDownListFor(m => m.UserTypeId, Model.UserList, "Select", new { @id = "ddluser", @tabindex = "1", @class = "txt_design", @required = "required", @Onchange = "Getdata();" })
+
+                                </div>
+                                <input id="btngetuser" type="submit" value="Get User" class="btn add_btn" style="display:none" />
+                            </div>
+                        }
+
+                        @if (Model.IsOpen)
+                        {
+                            <div class="permission">
+                                <div class="row p-3">
+                                    <h5>Menu Permissions</h5>
+                                    <hr class="dropdown-divider" />
+                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Menu :</label>
+                                        <select id='ddlmenu' multiple='multiple'>
+                                            @foreach (CMNirdesh.Models.MenuModel menu in Model.MenuList)
+                                            {
+                                                <optgroup id="@menu.MenuId" label="@menu.MenuName">
+                                                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                                                    {
+                                                        <option value='@submenu.SubMenuId'>@submenu.SubMenuName</option>
+                                                    }
+                                                </optgroup>
+                                            }
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Add/Update Option on Menu Items:</label>
+                                        @*@Html.DropDownListFor(m => m.addupdate, Model.addupdateList, new { @id = "ddladdupdate", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+                                        <select id='ddladdupdate' multiple='multiple'>
+
+                                            @foreach (CMNirdesh.Models.MenuModel menu in Model.addupdateList)
+                                            {
+                                                <optgroup id="grp_@menu.MenuName.Replace(" "," ")" label="@menu.MenuName">
+                                                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                                                    {
+                                                        <option id="sub_@submenu.SubMenuId" value='@submenu.SubMenuId'>@submenu.SubMenuName</option>
+                                                    }
+                                                </optgroup>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="row p-3" id="diarydiv">
+                                    <h5>LG/UDD Permissions</h5>
+                                    <hr class="dropdown-divider" />
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">References Type:</label>
+                                        <select id='ddlref' multiple='multiple'>
+
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.References)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.FundReferences)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
+                                        <select id='ddlstatusdiary' multiple='multiple'>
+
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.Actions)
+                                                {
+
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.ActionFiles)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+                                        @*@Html.DropDownListFor(m => m.ActionId, Model.Actions, new { @id = "ddlstatusdiary", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Add/Update (User Wise):</label>
+                                        @Html.DropDownListFor(m => m.ActionId, Model.DiaryButton, new { @id = "ddladdupdatestatusDiary", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row p-3" id="dispatch">
+                                    <h5>MC Permissions</h5>
+                                    <hr class="dropdown-divider" />
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">References Type:</label>
+
+                                        <select id='ddlrefdispatch' multiple='multiple'>
+
+
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.References)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.FundReferences)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
+
+                                        <select id='ddlstatusdispatch' multiple='multiple'>
+
+                                            <optgroup id="1" label="References">
+                                                @foreach (SelectListItem submenu in Model.ActionsDispatch)
+                                                {
+
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup id="2" label="File">
+                                                @foreach (SelectListItem submenu in Model.ActionsFileDispatch)
+                                                {
+                                                    <option value='@submenu.Value'>@submenu.Text</option>
+                                                }
+                                            </optgroup>
+
+                                        </select>
+
+                                        @*@Html.DropDownListFor(m => m.ActionId, Model.ActionsDispatch, new { @id = "ddlstatusdispatch", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
+
+                                    </div>
+
+
+
+
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Add/Update (User Wise):</label>
+                                      
+                                        @Html.DropDownListFor(m => m.ActionId, Model.DispatchButton, new { @id = "ddladdupdatestatusDispatch", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
+
+                                    </div>
+                                </div>
+
+
+                                <div class="row p-3" id="dispatch">
+                                    <h5>Project Permissions</h5>
+                                    <hr class="dropdown-divider" />
+
+                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
+                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
+                                        @Html.DropDownListFor(m => m.ActionId, Model.ProjectActions, new { @id = "ddlProjectAction", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+</body>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Permission</title>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+    @*<link href="~/Content/MultiSelectList/multiple-select.css" rel="stylesheet" />*@
+    <link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+
+</head>
+
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+
+@*<script src="~/Scripts/MultiSelectBox/jquery.multiple.select.js"></script>*@
+<script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#ddlmenu').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            animate: 'slide',
+            maxHeight: 350,
+            width: '100%',
+            placeholder: 'Select Menu',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var usertypeid = $('#ddluser').val();
+                var menuid = view.value;
+                var menuname = view.text;
+                var checked = view.selected;
+                addremovemenu(usertypeid, menuid, checked, menuname);
+
+            },
+            onOptgroupClick: function (view) {
+                $.each(view.children, function (i, item) {
+                   // alert(view.children[i].value);
+                   // alert(view.children[i].selected);
+                    var usertypeid = $('#ddluser').val();
+                    var menuid = view.children[i].value;
+                    var menuname = view.children[i].text;
+                    var checked = view.children[i].selected;
+                    addremovemenu(usertypeid, menuid, checked, menuname);
+                });
+            },
+        });
+
+        $('#ddlstatusdiary').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Action',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var usertypeid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                var menuname = view.text;
+                addremoveAction(usertypeid, Actionid, menuname, checked, "Diary");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var usertypeid = $('#ddluser').val();
+                    var Actionid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    var menuname = view.children[i].text;
+                    addremoveAction(usertypeid, Actionid, menuname, checked, "Diary");
+                });
+            },
+        });
+
+
+
+        $('#ddladdupdatestatusDiary').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '80%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var usertypeid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+
+                addremoveStatusButton(usertypeid, Actionid, checked, "Diary");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var usertypeid = $('#ddluser').val();
+                    var Actionid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveStatusButton(usertypeid, Actionid, checked, "Diary");
+                });
+            },
+
+        });
+
+        $('#ddladdupdatestatusDispatch').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var usertypeid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                addremoveStatusButton(usertypeid, Actionid, checked, "Dispatch");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var usertypeid = $('#ddluser').val();
+                    var Buttonid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveStatusButton(usertypeid, Actionid, checked, "Dispatch");
+                });
+            },
+
+        });
+        $('#ddlstatusdispatch').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Action',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var usertypeid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                var menuname = view.text;
+                addremoveAction(usertypeid, Actionid, menuname, checked, "Dispatch");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var usertypeid = $('#ddluser').val();
+                    var Actionid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    var menuname = view.children[i].text;
+                    addremoveAction(usertypeid, Actionid, menuname, checked, "Dispatch");
+                });
+            },
+        });
+
+        $('#ddladdupdate').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Buttonid = view.value;
+                var checked = view.selected;
+                addremoveButton(userid, Buttonid, checked);
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Buttonid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveButton(userid, Buttonid, checked);
+                });
+            },
+
+        });
+
+        $('#ddlstatus').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Action',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+
+            onClick: function (view) {
+                //alert(view.text);
+                //alert(view.value);
+                //alert(view.selected);
+                var userid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                var menuname = view.text;
+                addremoveAction(userid, Actionid, menuname, checked, "Diary");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    //alert(view.children[i].value);
+                    //alert(view.children[i].selected);
+                    var userid = $('#ddluser').val();
+                    var Actionid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    var menuname = view.children[i].text;
+                    addremoveAction(userid, Actionid, menuname, checked, "Diary");
+                });
+            },
+            //onCheckAll: function (view) {
+            //    //var $select = $('#optgroup')
+            //   // alert('status Selected values: ' + $select.multipleSelect('getSelects'));
+            //    var userid = $('#ddluser').val();
+            //    var selected = $('#ddlstatus').multipleSelect('getSelects');
+            //    if (selected != "") {
+            //        var menulist = selected.toString().split(",");
+            //        console.log(menulist);
+            //        $.each(menulist, function (i) {
+            //            console.log(menulist[i]);
+            //            addremoveAction(userid, menulist[i], 1);
+            //        });
+            //    }
+            //},
+            //onUncheckAll: function (view) {
+            //    var userid = $('#ddluser').val();
+            //    alert('status onUncheckAll call: ');
+            //    $('select#ddlstatus').find('option').each(function () {
+            //        //console.log($(this).val());
+            //        var Actionid = $(this).val();
+            //        addremoveAction(userid, Actionid, 0);
+            //    });
+            //},
+        });
+
+        $('#ddlref').multipleSelect({
+
+            columns: 1,
+            selectAll: false,
+            maxHeight: 370,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select  References',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+               
+                var usertypeid = $('#ddluser').val();
+              
+                var docid = view.value;
+               
+                var checked = view.selected;
+               
+                addremoveDoc(usertypeid, docid, checked, "Diary");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    var usertypeid = $('#ddluser').val();
+                    var docid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveDoc(usertypeid, docid, checked, "Diary");
+                });
+            },
+        });
+        $('#ddlrefdispatch').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 370,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select  References',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                var usertypeid = $('#ddluser').val();
+                var docid = view.value;
+                var checked = view.selected;
+                addremoveDoc(usertypeid, docid, checked, "Dispatch");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    var usertypeid = $('#ddluser').val();
+                    var docid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveDoc(usertypeid, docid, checked, "Dispatch");
+                });
+            },
+        });
+        $('#ddlProjectAction').multipleSelect({
+            columns: 1,
+            selectAll: false,
+            maxHeight: 350,
+            animate: 'slide',
+            width: '100%',
+            placeholder: 'Select Button',
+            filter: true,
+            isOpen: true,
+            keepOpen: true,
+            multiple: true,
+            onClick: function (view) {
+                var usertypeid = $('#ddluser').val();
+                var Actionid = view.value;
+                var checked = view.selected;
+                var menuname = view.text;
+                addremoveAction(usertypeid, Actionid, menuname, checked, "Project");
+
+            },
+            onOptgroupClick: function (view) {
+                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
+                $.each(view.children, function (i, item) {
+                    var usertypeid = $('#ddluser').val();
+                    var Buttonid = view.children[i].value;
+                    var checked = view.children[i].selected;
+                    addremoveAction(usertypeid, Actionid, menuname, checked, "Project");
+                });
+            },
+        });
+        var menulist = "@Model.menuids";
+        var diaryactionlist = '@Model.Diaryactionids';
+        var dispatchactionlist = '@Model.Dispatchactionids';
+        var Diaryaddupdateidslist = '@Model.Diaryaddupdateids';
+        var Dispatchaddupdateidslist = '@Model.Dispatchaddupdateids';
+        var reflist = '@Model.refids';
+        var DisReflist = '@Model.DispatchRefids';
+        var projectbuttonlist='@Model.Projectaddupdateids';
+      
+        var mlarr = new Array();
+        var alarr = new Array();
+        var disactarr = new Array();
+        var aladdupdtarr = new Array();
+        var disaddupdtactarr = new Array();
+        var dlarr = new Array();
+        var disdocarr = new Array();
+        var projectblarr = new Array();
+
+
+        var ml = menulist.toString().split(",");
+        for (var i = 0; i < ml.length ; i++) {
+            mlarr.push(ml[i]);
+        }
+        var al = diaryactionlist.toString().split(","); console.log(diaryactionlist);
+        for (var i = 0; i < al.length; i++) {
+            alarr.push(al[i]);
+        }
+        var disal = dispatchactionlist.toString().split(","); //console.log(dispatchactionlist);
+        for (var i = 0; i < disal.length; i++) {
+            disactarr.push(disal[i]);
+        }
+        var diaryaddupdtal = Diaryaddupdateidslist.toString().split(",");
+        console.log(Diaryaddupdateidslist);
+        for (var i = 0; i < diaryaddupdtal.length; i++) {
+            aladdupdtarr.push(diaryaddupdtal[i]);
+        }
+        var disaddupdtal = Dispatchaddupdateidslist.toString().split(",");
+        console.log(Dispatchaddupdateidslist);
+        for (var i = 0; i < disaddupdtal.length; i++) {
+            disaddupdtactarr.push(disaddupdtal[i]);
+        }
+        var dl = reflist.toString().split(","); console.log(reflist);
+        for (var i = 0; i < dl.length; i++) {
+            dlarr.push(dl[i]);
+        }
+        var disdl = DisReflist.toString().split(","); console.log(DisReflist);
+        for (var i = 0; i < disdl.length; i++) {
+            disdocarr.push(disdl[i]);
+        }
+        var projectbl = projectbuttonlist.toString().split(",");
+        for (var i = 0; i < projectbl.length; i++) {
+            projectblarr.push(projectbl[i]);
+        }
+
+        $('#ddlmenu').multipleSelect('setSelects', mlarr);
+        $('#ddlstatusdiary').multipleSelect('setSelects', alarr);
+        $('#ddlstatusdispatch').multipleSelect('setSelects', disactarr);
+        $('#ddladdupdate').multipleSelect('setSelects', mlarr);
+        $('#ddladdupdatestatusDiary').multipleSelect('setSelects', aladdupdtarr);
+
+       
+
+        $('#ddladdupdatestatusDispatch').multipleSelect('setSelects', disaddupdtactarr);
+
+
+
+        $('#ddlref').multipleSelect('setSelects', dlarr);
+        $('#ddlrefdispatch').multipleSelect('setSelects', disdocarr);
+        $('#ddlProjectAction').multipleSelect('setSelects', projectblarr);
+
+        });
+
+
+    function addremovemenu(usertypeid, menuid, checked, menuname) {
+        //alert(userid + " " + menuid + " " + checked + " " + menuname );
+        var pathurl = '';
+        if (checked == 1) {
+            //var pathurl = '/User/AddMenu';
+             pathurl='@Url.Action("AddUserTypeMenu", "User")';
+            var opt = '<optgroup id=grp_' + menuname.replace(" ","") + ' label="' + menuname + '"><option id=sub_' + menuid +' value="' + menuid + '">' + menuname +'</option></optgroup>';
+            //var opt = '<option value="' + menuid + '">' + menuname +'</option>';
+            $('#ddladdupdate').append(opt).multipleSelect('refresh');
+        } else {
+
+          //  var pathurl = '/User/RemoveMenu';
+            pathurl='@Url.Action("RemoveUserTypeMenu", "User")';
+            $("#ddladdupdate #sub_" + menuid).remove();
+
+            $('#ddladdupdate').multipleSelect('refresh');
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserTypeId: usertypeid, MenuId: menuid },
+            success: function (result) {
+
+            }
+
+
+        });
+        $("#ddladdupdate #grp_" + menuname.replace(" ", "").replace(".", "")).remove();
+    }
+
+    function addremoveAction(usertypeid, Actionid, menuname, checked, type) {
+        //alert(menuname + " " + type);
+        //alert(userid + " " + menuid + " " + checked + " " + type);
+        var pathurl = '';
+        if (checked == 1) {
+            var opt = '<option id=sub_' + Actionid + ' value="' + Actionid + '">' + menuname + '</option>';
+
+            //var opt = '<option value="' + menuid + '">' + menuname +'</option>';
+            $('#ddladdupdatestatus' + type).append(opt).multipleSelect('refresh');
+              pathurl= '@Url.Action("AddUserTypeAction", "User")';
+            //var pathurl = '/User/AddAction';
+        } else {
+            var ddlid = "#ddladdupdatestatus" + type + "  option[value = '"+ Actionid +"']";
+            $(ddlid).remove();
+            $('#ddladdupdatestatus' + type).multipleSelect('refresh');
+            //var pathurl = '/User/RemoveAction';
+             pathurl= '@Url.Action("RemoveUserTypeAction", "User")';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserTypeId: usertypeid, ActionId: Actionid, type: type },
+            success: function (result) {
+
+            }
+
+
+        });
+
+    }
+
+
+    function addremoveButton(userid, Buttonid, checked) {
+
+        //alert(userid + " " + menuid + " " + checked);
+        var pathurl = '';
+        if (checked == 1) {
+            //var pathurl = '/User/AddButton';
+             pathurl= '@Url.Action("AddButton", "User")';
+
+        } else {
+
+            //var pathurl = '/User/RemoveButton';
+               pathurl= '@Url.Action("RemoveButton", "User")';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserId: userid, ButtonId: Buttonid },
+            success: function (result) {
+
+            }
+
+
+        });
+
+    }
+
+
+
+    function addremoveStatusButton(usertypeid, Actionid, checked, type) {
+        //ddladdupdatestatus
+        //alert(userid + " " + Buttonid + " " + checked + " " + type);
+        var pathurl = '';
+        if (checked == 1) {
+
+            //var pathurl = '/User/AddStatusButton';
+              pathurl= '@Url.Action("AddUserTypeAddUpdateAction", "User")';
+        } else {
+
+
+           // var pathurl = '/User/RemoveStatusButton';
+              pathurl= '@Url.Action("RemoveUserTypeAddUpdateAction", "User")';
+        }
+
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserTypeId: usertypeid, ActionId: Actionid, type: type },
+            success: function (result) {
+
+            }
+
+
+        });
+
+    }
+    function addremoveDoc(UserTypeId, docid, checked, type) {
+      
+
+    var pathurl = '';
+    if (checked == 1) {
+         pathurl='@Url.Action("AddUserTypeRefAction", "User")';
+        
+    } else {
+        pathurl= '@Url.Action("RemoveUserTypeRefAction", "User")';
+      
+    }
+
+    $.ajax({
+        url: pathurl,
+        type: 'GET',
+        data: { UserTypeId: UserTypeId, DocTypeId: docid, type: type },
+        success: function (result) {
+
+        }
+
+
+    });
+
+}
+
+        $(function () {
+            $('[type="date"]').prop('max', function () {
+                return new Date().toJSON().split('T')[0];
+            });
+            $('#txtfundamount').val('');
+
+        });
+
+    function Getdata() {
+        var usertypeid = $("#ddluser").val();
+
+        if (usertypeid != "") {
+
+            $('#btngetuser').click();
+        } else {
+
+            $('.permission').hide();
+        }
+    }
+</script>
+
+
+

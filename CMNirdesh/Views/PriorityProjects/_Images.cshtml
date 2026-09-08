@@ -1,0 +1,423 @@
+﻿@model CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "PriorityProjects";
+    var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
+}
+
+<div class="row">
+    <div class="col-12">
+        <h4 class="control-label lbl_txt" style="font-size: 12pt;"> Image 1 <span class="text-danger">*</span></h4>
+    </div>
+</div>
+
+@using (Html.BeginForm("SaveImage", "PriorityProjects", FormMethod.Post, new { @id = "uploadImageForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.PromiseId)
+    @Html.HiddenFor(model => model.DeptId)
+    @Html.HiddenFor(model => model.worksdatalist.mode)
+    @Html.HiddenFor(model => model.ProjectId)
+    @Html.HiddenFor(model => model.ProgrammeImageId)
+    @Html.HiddenFor(model => model.worksdatalist.ProjectId, new { @Id = "hdnWorkId" })
+    @Html.HiddenFor(model => model.worksdatalist.PromiseId, new { @Id = "hdnWorkProjectId" })
+    @Html.HiddenFor(model => model.worksdatalist.DeptId, new { @Id = "hdnWorkDeptId" })
+    @Html.HiddenFor(model => model.worksdatalist.path)
+    @Html.HiddenFor(model => model.path)
+    <div class="row">
+
+        <div class="col-6">
+            @Html.TextBoxFor(model => model.ImageTitle, new { @class = "form-control width-100", @placeholder = "Image Title", @autocomplete = "off", @tabindex = "2", @id = "imageTitle1" })
+
+            @Html.ValidationMessageFor(model => model.ImageTitle)
+        </div>
+        <div class="col-6">
+            <input type="file" name="projectImage" id="projectImage" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+            @Html.HiddenFor(model => model.ImageLocation)
+            <input type="hidden" id="projectImagehdn" />
+            @Html.HiddenFor(model => model.ImageFileName)
+            @Html.ValidationMessageFor(model => model.ImageFileName)
+            @if (Model.mode == "AddImage")
+            {
+                <img id="adocLoc" src="" style="display:none;" />
+            }
+            else if (Model.mode == "EditImage")
+            {
+                <img id="adocLoc" src="@Url.Content("~/MlaDiary/" + Model.ImageLocation)" width="50" height="50" />
+            }
+        </div>
+    </div>
+    <div class="row mrgn_tp mt-2">
+        <div class="col-12">
+            <h4 class="control-label lbl_txt" style="font-size: 12pt;"> Image 2</h4>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-6">
+            @Html.TextBoxFor(model => model.ImageTitle2, new { @class = "form-control width-100", @id = "imageTitle2", @placeholder = "Image Title", @autocomplete = "off", @tabindex = "2" })
+
+            @Html.ValidationMessageFor(model => model.ImageTitle2)
+        </div>
+        <div class="col-6">
+            <input type="file" name="projectImage2" id="projectImage2" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+            @Html.HiddenFor(model => model.ImageLocation2)
+            <input type="hidden" id="projectImagehdn2" />
+            @Html.HiddenFor(model => model.ImageFileName2)
+            @if (Model.mode == "AddImage")
+            {
+                <img id="adocLoc2" src="" style="display:none;" />
+            }
+            else if (Model.mode == "EditImage")
+            {
+                <img id="adocLoc2" src="@Url.Content("~/MlaDiary/" + Model.ImageLocation2)" width="50" height="50" />
+            }
+        </div>
+    </div>
+    <div class="row mrgn_tp mt-2">
+        <div class="col-12">
+            <h4 class="control-label lbl_txt" style="font-size: 12pt;"> Image 3</h4>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-6">
+            @Html.TextBoxFor(model => model.ImageTitle3, new { @class = "form-control width-100", @id = "imageTitle3", @placeholder = "Image Title", @autocomplete = "off", @tabindex = "2" })
+
+            @Html.ValidationMessageFor(model => model.ImageTitle3)
+        </div>
+        <div class="col-6">
+            <input type="file" name="projectImage3" id="projectImage3" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+            @Html.HiddenFor(model => model.ImageLocation3)
+            <input type="hidden" id="projectImagehdn3" />
+            @Html.HiddenFor(model => model.ImageFileName3)
+            @if (Model.mode == "AddImage")
+            {
+                <img id="adocLoc3" src="" style="display:none;" />
+            }
+            else if (Model.mode == "EditImage")
+            {
+                <img id="adocLoc3" src="@Url.Content("~/MlaDiary/" + Model.ImageLocation3)" width="50" height="50" />
+            }
+
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <button id="uploadImage" class="btn btn-sm btn-danger" onclick="SaveImage(); return false;">
+                <i class="ace-icon fa fa-upload"></i>
+                Upload
+            </button>
+        </div>
+    </div>
+}
+<div class="row">
+    <div class="col-lg-12 mt-3">
+        <label for="inputinfo" class="control-label lbl_txt text-danger" style="font-size: 14pt;">
+            <b>Uploaded Images</b>
+        </label>
+       
+        @if (Model != null)
+        {
+            @Html.HiddenFor(model => model.worksdatalist.path)
+            <div class="row" id="divImages">
+            </div>
+        }
+    </div>
+</div>
+<script>
+    $('#uploadImage').click(function (e) {
+
+        if ($('#projectImage').get(0).files.length === 0) {
+            alert("Image 1 is mandatory");
+        }
+        //else {
+        //    $('#PriorityProjects').submit();
+        //}
+    });
+    $('#projectImage').change(function () {
+        CheckImageType("#projectImage", "projectImage", "#ImageLocation", "#ImageFileName");
+        CheckImage("#projectImage", "projectImage", "#ImageLocation", "#ImageFileName");
+    });
+    $('#projectImage2').change(function () {
+        CheckImageType("#projectImage2", "projectImage2", "#ImageLocation2", "#ImageFileName2");
+        CheckImage("#projectImage2", "projectImage2", "#ImageLocation2", "#ImageFileName2");
+    });
+    $('#projectImage3').change(function () {
+        CheckImageType("#projectImage3", "projectImage3", "#ImageLocation3", "#ImageFileName3");
+        CheckImage("#projectImage3", "projectImage3", "#ImageLocation3", "#ImageFileName3");
+    });
+    function CheckImageType(input, name, locationid, filenameid) {
+        if ($(input).val().length > 0 && !(/\.(jpg|jpeg|bmp|png|gif)$/i).test($(input).val())) {
+            alert('You must select file in format of jpg,jpeg,bmp,png,gif .');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $(locationid).val('');
+        }
+    }
+    function CheckImage(input, name, locationid, filenameid) {
+        var sizeInKB = $(input)[0].files[0].size / 1024;
+        var filename = $(input)[0].files[0].name;
+        var dots = $(input).val().split(".").length - 1;
+        var sizeLimit = 2048;
+        if (sizeInKB > sizeLimit) {
+            alert('File size must be less than 2MB .');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $(locationid).val('');
+        }
+        else if (dots > 1) {
+            alert('Invalid file name.(Use single dot(.) in file name).');
+            $(input).val('');
+            $(input).focus();
+            $(input + "hdn").val('');
+            $(locationid).val('');
+        }
+
+
+        else {
+            var inpt = "input[name=" + name + "]";
+
+            var inputElement1 = $(inpt);
+
+            readImage(inputElement1).done(function (base64Data) {
+                $(input + "hdn").val(base64Data);
+                $(locationid).val(base64Data);
+                $(filenameid).val(filename);
+                $("#adocLoc").hide();
+            });
+        }
+
+    }
+    function readImage(inputElement) {
+        var deferred = $.Deferred();
+        var files = inputElement.get(0).files;
+        if (files && files[0]) {
+            var fr = new FileReader();
+            fr.onload = function (e) {
+                deferred.resolve(e.target.result);
+            };
+            fr.readAsDataURL(files[0]);
+        } else {
+            deferred.resolve(undefined);
+        }
+        return deferred.promise();
+    }
+</script>
+<script>
+    function SaveImage() {
+        try {
+            if ($('#projectImage').get(0).files.length === 0) {
+                alert("Image 1 is mandatory");
+            }
+            if ($("#imageTitle1").val() == "") {
+                alert("Please Enter Image 1 Title");
+                return false;
+            }
+            else {
+                $("#loader-wrapper").show();
+                var action = $("#uploadImageForm").attr("action");
+                if ($("#uploadImageForm").attr("enctype") == "multipart/form-data") {
+                    var dataString = new FormData($("#uploadImageForm").get(0));
+                    processData = false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: action,
+                    async: true,
+                    data: dataString,
+                    dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        $("#loader-wrapper").hide();
+                        if (data == "1") {
+                            alert("Image has been uploaded successfully");
+                            $('#divImages').html('');
+                            loadImages();
+                            $("#projectImage").val('');
+                            $("#ImageFileName").val('');
+                            $("#projectImage2").val('');
+                            $("#ImageFileName2").val('');
+                            $("#projectImage3").val('');
+                            $("#ImageFileName3").val('');
+                            $("#imageTitle1").val('');
+                            $("#imageTitle2").val('');
+                            $("#imageTitle3").val('');
+                            return false;
+                        }
+                        else {
+                            $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                            alert(data);
+                            return false;
+                            e.preventDefault();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $("#loader-wrapper").hide();
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again1- "+errorThrown);
+                        //// window.location.reload(true);
+                    },
+                });
+            }
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again2" + ex.message);
+        }
+    }
+    function DeleteImage(imageId) {
+        try {
+            $("#loader-wrapper").show();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteImage", "PriorityProjects")',
+                async: true,
+                data: { imageId: imageId },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    $("#loader-wrapper").hide();
+                    if (data == "1") {
+                        //loadImage();
+                        //$('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Image has been deleted successfully");
+                        $('#divImages').html('');
+                        loadImages();
+                        return false;
+                    }
+                    else {
+                        $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                        alert("Some error occurred,please try again");
+                        return false;
+                        e.preventDefault();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $("#loader-wrapper").hide();
+                    $('#modalWorks').modal({ backdrop: 'static', keyboard: false }, 'show');
+                    alert("Some error occurred,please try again");
+                    //// window.location.reload(true);
+                },
+            });
+        }
+        catch (ex) {
+            alert("Some error occurred,please try again");
+            window.location.reload(true);
+        }
+    }
+    function loadImages() {
+        var workID = $('#hdnWorkId').val();
+        var PromiseId = $('#hdnWorkProjectId').val();
+        var DeptID = $('#hdnWorkDeptId').val();
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkImages", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                console.log(data.length);
+                if (data.length > 0) {
+                    $.each(data, function (i, item) {
+                        html = "<div class='col-12 col-sm-3 col-md-2 col-lg-2'>" +
+                            "<img src='@url/mlaDiary/" + item.ImageThumbLocation + "' id = '@url/mlaDiary/" + item.ImageLocation + "' alt = '" + item.ImageDescription + "' class= 'myWorkImage img-fluid mx-auto d-block float-left' data-toggle='tooltip' title ='" + item.ImageTitle + "' style='width: 180px;height:120px'>" +
+                            "<a class='loader text-danger float-right' title='Delete Image' onclick='DeleteImage(" + item.ProgrammeImageId + ");'>" +
+                            "<i class='fa fa-times'></i>" +
+                            "</a>" +
+                            "<div class='clearfix'></div>" +
+                            "<h4 class='carousal_title text-center mt-1' style='font-size: 10pt;'>" + item.ImageDescription + "</h4></div>";
+                        $('#divImages').append(html);
+                    });
+                }
+                else {
+                    html = "<h4 style='color: #b9b4b4; margin-top: 20px; font-size: 13pt;'>Images Not Avaialable</h4>";
+                    $('#divImages').append(html);
+                }
+            },
+            error: function () {
+                // Handle any errors that occurred during the AJAX call
+            }
+        });
+    }
+</script>
+<script>
+    function closePopup() {
+        $("#modalAddDocument").hide();
+        $("#modalImages").hide();
+        $("#modalAddConstituency").hide();
+        $("#myImgModal").hide();
+        loadWorkImages();
+    }
+    @*function loadWorkImages() {
+        $("#loader-wrapper").show();
+        var apex = '@TempData["apex"]';
+        var workID = $('#hdnWorkId').val(); alert("apex2" + apex);
+        var html = '';
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getWorkImages", "PriorityProjects")',
+            data: { workId: workID },
+            success: function (data) {
+                if (data.length > 0) {
+                    html = "";
+                    var dataLength = data.length;
+                    $('#imgcarouselBody').html('');
+                    for (var i = 0; i < data.length; i++) {
+                        if (data.length == 1) {
+                            html = "<div class='carousel-item p-1" + i + " " + (i === 0 ? "active" : "") + "'><div class='d-flex flex-row flex-nowrap' style='width:100% !important;'>";
+                        }
+                        else {
+                            html = "<div class='carousel-item p-1" + i + " " + (i === 0 ? "active" : "") + "'><div class='d-flex flex-row flex-nowrap'>";
+                        }
+                        for (var j = i; j < data.length; j++) {
+                            html += "<div class='card border-0 col-lg-3'><div class='card-img' style='width:220px !important;'>" +
+                                "<img src='@url/mlaDiary/" + data[j].ImageThumbLocation + "' class='myWorkImage d-block float-left' id='@url/mlaDiary/" + data[j].ImageLocation + "' alt='" + data[j].ImageDescription + "' data-toggle='tooltip' title='" + data[j].ImageTitle + "' style='width:200px !important;height:150px'>";
+                            if ((apex == "0" || workedityn == "Y") && module != "View") {
+                                html += "<a class='loader text-danger float-right pr-2' title='Delete Image' onclick='DeleteImage(" + data[j].ProgrammeImageId + ");' })'>" +
+                                    "<i class='fa fa-times'></i></a>";
+                            }
+                            html += "</div><h4 class='text-center mt-1' style='font-size:10pt'>" + data[j].ImageDescription +"</h4></div>"
+                            if (i == data.length - 1 || i == data.length - 2 || i == data.length - 3)
+                            {
+                                i = 0;
+                                for (var j = i; j < data.length; j++) {
+                                    html += "<div class='card border-0 col-lg-3'><div class='card-img' style='width:220px !important;'>" +
+                                        "<img src='@url/mlaDiary/" + data[j].ImageThumbLocation + "' class='myWorkImage d-block float-left' id='@url/mlaDiary/" + data[j].ImageLocation + "' alt='" + data[j].ImageDescription + "' data-toggle='tooltip' title='" + data[j].ImageTitle + "' style='width:200px !important;height:150px'>";
+                                    if ((apex == "0" || workedityn == "Y") && module != "View") {
+                                        html += "<a class='loader text-danger float-right pr-2' title='Delete Image' onclick='DeleteImage(" + data[j].ProgrammeImageId + ");' })'>" +
+                                            "<i class='fa fa-times'></i></a>";
+                                    }
+                                    html += "</div><h4 class='text-center mt-1' style='font-size:10pt'>" + data[j].ImageDescription + "</h4></div>"
+                                    i++;
+                                }
+                        }
+                        }
+
+                        html += "</div ></div > ";
+                        $('#imgcarouselBody').append(html);
+                        var html = '';
+                        html+="<button class='carousel-control-prev no-print' type='button' data-bs-target='#imgcarousel' data-bs-slide='prev'>"+
+                            "<span class='carousel-control-prev-icon' aria-hidden='true'></span>"+
+                            "<span class='visually-hidden' > Previous</span > "+
+                            "</button > <button class='carousel-control-next no-print' type='button' data-bs-target='#imgcarousel' data-bs-slide='next'>"+
+                            "<span class='carousel-control-next-icon' aria-hidden='true'></span>"+
+                            "<span class='visually-hidden'> Next</span></button>";
+                        $('#imgcarouselBtn').append(html);
+                    };
+                }
+                else {
+                    html = "<h4 style='color: #b9b4b4; margin - top: 20px; font - size: 13pt;'>Images Not Avaialable</h4>";
+                    $('#imgcarouselBody').append(html);
+                }
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }*@
+</script>

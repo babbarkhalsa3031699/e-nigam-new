@@ -1,0 +1,1367 @@
+@model CMNirdesh.Models.MCHouse.LstMembers
+
+@{
+    ViewBag.Title = "Index";
+    var roleid = CMNirdesh.Models.CurrentSession.RoleID;
+}
+<head>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+    <script src="~/Scripts/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery.fileupload.js"></script>
+
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+
+
+    <script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+</head>
+<div id="main-content">
+    <div class="main-content">
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="inr_frm_dsgn">
+
+                    <div class="widget-box " id="divAction">
+                        <div class="widget-header widget-header-flat rounded-top rounded-0">
+                            <h4 class=""> Members List </h4>
+                            <div class="widget-toolbar no-border">
+                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add New Member</button>
+                            </div>
+                        </div>
+                        <div class="adjust-label adjust-label-house">
+                            <div class="d-flex align-items-center gap-2">
+                                <label>House:</label>                                
+                                <div class="dropdown-arrow">
+                                    <select class="form-control" id="mcNav" name="mcNav">
+                                        <option value="">-- All (Active) --</option>
+                                        @foreach (var item in Model.Houses)
+                                        {
+                                            <option value="@item.AssemblyID">@item.AssemblyName</option>
+                                        }
+                                    </select>
+                                    <i class=" fas fa-chevron-down"></i>
+                                </div>
+                                
+                            </div>
+                            <span id="depcount" class="bubble blink" style="display: none;"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form_lyot">
+                        @if (Model != null)
+                        {
+                            <div class=" table-responsive">
+                                <table id="example" class="table table-hover table-bordered " style="font-size:20px;">
+                                    <thead>
+                                        <tr class="table-heading">
+                                            <th class="td-heading" style="width:15%;"><span class="font-weight-bold">Name</span></th>
+                                            <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Name(Punjabi)</span></th>
+                                            <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Permanent Address</span></th>
+                                            <th class="td-heading" style="width:25%;"><span class="font-weight-bold">Permanent Address(Punjabi)</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Mobile</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Email</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Designation</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Designation(Punjabi)</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Ward</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Member Code</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Icon</span></th>
+                                            <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Action</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                        @if (Model._LstMembers.Count() > 0)
+                                        {
+                                            foreach (var items in Model._LstMembers)
+                                            {
+                                                string iconsource = !string.IsNullOrEmpty(items.Icon) ? Url.Content("~/" + items.Icon) : string.Empty;
+                                                <tr>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Name)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Name_local)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.PermanentAddress)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.PermanentAddress_local)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Mobile)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Email)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Designation)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Designation_local)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.WardName)</td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MemberCode)</td>
+
+                                                    <td class="center td-data" style="padding: 14px 4px !important"><img src="@Url.Content(@Model.fileacessingUrl +"/" + items.Icon)" height="100" width="100" /></td>
+                                                    <td class="center td-data" style="padding: 14px 4px !important">
+                                                        @if (items.IsHouseActive && items.IsWardActive)
+                                                        {
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <div class="hidden-sm hidden-xs action-buttons">
+                                                                    <input type="hidden" id="imageurl" value="@iconsource" />
+                                                                    <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.MemberID')">
+                                                                        <i class="ace-icon fa fa-pencil bigger-130"></i>
+                                                                    </a>
+
+                                                                </div>
+                                                                <div class="hidden-sm hidden-xs action-buttons">
+                                                                    <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.MemberID')" value="@items.MemberID" />
+                                                                </div>
+                                                                <div class="hidden-sm hidden-xs action-buttons">
+                                                                    <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.MemberID')" value="@items.MemberID" />
+                                                                    <label class="toggle mb-0">
+                                                                        <input type="checkbox" onclick="DeleteDepartmentRecord('@items.MemberID')" @(Convert.ToBoolean(items.Active) == true ? "checked='checked'" : string.Empty)>
+                                                                        <span class="slider"></span>
+                                                                        <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>-</p>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5" id="myModalLabel">Add Member Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="fileUpload" enctype="multipart/form-data">
+                                <div class="form-group">
+
+                                    <input type="hidden" class="form-control" id="id" />
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Prefix:</div>
+                                        <select id="PrefixDropDown">
+                                            <option value="0" class="form-control txt_design">Please select</option>
+                                            <option value="Sh." class="form-control txt_design">Sh.</option>
+                                            <option value="Smt." class="form-control txt_design">Smt.</option>
+                                            <option value="Smt." class="form-control txt_design">Miss</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Prefix(Punjabi):</div>
+                                        <select id="PrefixDropDown_local">
+                                            <option value="0" class="form-control txt_design">Please select</option>
+                                            <option value="ਸ਼੍ਰੀ" class="form-control txt_design">ਸ਼੍ਰੀ</option>
+                                            <option value="ਸ਼੍ਰੀਮਤੀ" class="form-control txt_design">ਸ਼੍ਰੀਮਤੀ</option>
+                                            <option value="ਸ਼੍ਰੀਮਤੀ" class="form-control txt_design">ਮਿਸ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Name:</div>
+                                        <input type="text" class="form-control" id="Name" placeholder="Name" />
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">
+                                            Name(Punjabi):
+                                        </div>
+                                        <input type="text" class="form-control" id="Name_local" placeholder="Name(Punjabi)" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Gender</div>
+                                        <select id="Gender" name="Gender">
+                                            <option value="">Select</option>
+                                            <option value="M">Male</option>
+                                            <option value="F">Female</option>
+                                            <option value="O">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Member DOB</div>
+                                        <input type="date" class="form-control" id="memberDOB" placeholder="DOB" />
+                                    </div>
+                                </div>
+                                <div class="form-group row" id="MemberCodeField">
+                                    <div class="col-6">
+                                        @*<div class="profile-info-name fotm_lbl">
+                                            MemberCode:
+                                        </div>*@
+                                        @*@Html.TextAreaFor(model => model.MemberCodeOld, new { @id = "MemberCode", @placeholder = "Member Code", @autocomplete = "off", @class = "form-control", @type = "number" })*@
+
+                                        <div class="col-6">
+                                            @Html.HiddenFor(model => model.MemberCodeOld, new { id = "MemberCode" })
+                                            <input type="hidden" id="MemberID" name="MemberID" />
+                                        </div>
+                                    </div>
+                                    @*<div class="col-6" id="MemberIdField">
+                                        <div class="profile-info-name fotm_lbl">
+                                            MemberID:
+                                        </div>
+                                        <input type="number" class="form-control" id="MemberID" placeholder="Member ID" />
+                                    </div>*@
+                                    @*<div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Description</div>
+                                        <input type="text" class="form-control" id="Description" placeholder="Description" />
+                                    </div>*@
+                                </div>
+                                <div class="form-group row">
+
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Mobile (Max. 10 Digit)</div>
+                                        <input type="text" class="form-control" id="Mobile" placeholder="Mobile" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+                                        <span id="MobileValidation" style="color:darkred;font-size:15PX;">MOBILE NUMBER SHOULD BE 10 DIGITS</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Email</div>
+                                        <input type="text" class="form-control" id="Email" placeholder="Email" />
+                                        <span id="EmailValidation" style="color:darkred;font-size:15PX;">EMAIL FORMAT INVALID</span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Permanent Address</div>
+                                        <input type="text" class="form-control" id="PermanentAddress" placeholder="Permanent Address" />
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Permanent Address(Punjabi)</div>
+                                        <input type="text" class="form-control" id="PermanentAddress_local" placeholder="Permanent Address(Punjabi)" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Designation</div>
+                                        @Html.DropDownList(
+                                             "Designation",
+                                             Model._LstDesignation,
+                                             "-------- Select Designation ---------",
+                                             new { @class = "form-control", required = "required" }
+                                         )
+                                        
+                                        @*<input type="text" class="form-control" id="Designation" placeholder="Designation" />*@
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Designation(Punjabi)</div>
+                                        @Html.DropDownList("Designation_local", Model._LstDesignationlocal, "--------  Select Designation -------- ", new { @class = "form-control",required = "required" })
+                                        @*<input type="text" class="form-control" id="Designation_local" placeholder="Designation(Punjabi)" />*@
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">MC</div>
+                                        <select id="ddlMc">
+                                            <option value="select" class="form-control txt_design"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Ward</div>
+                                        <select id="ddlWard" required = "required">
+                                            <option value="select" class="form-control txt_design"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Party</div>
+                                        <select id="ddlParty">
+                                            <option value="select" class="form-control txt_design"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Office Phone No.</div>
+                                        <input type="text" class="form-control" id="OfficePhoneNo" placeholder="Office Phone No." />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">State</div>
+                                        <select id="ddlState">
+                                            <option value="select" class="form-control txt_design" id="SelectId"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">District</div>
+                                        <select id="ddlDistrict">
+                                            <option value="select" class="form-control txt_design"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    @*<div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">Is Alive</div>
+                                        <select id="ddlIsAlive" name="Gender">
+                                            <option value="Y" selected>Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>*@
+                                    <div class="col-6">
+                                        <div class="profile-info-name fotm_lbl">
+                                            Member Icon:
+                                        </div>
+                                        <input type="file" name="file" class="form-control" id="DocumentIcon" placeholder="Document Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                        <img src="https://placehold.jp/100x100.png" id="imgPreview" class="form-control" style="width:100px; height:100px; border:1px solid red;" alt="Load Image" />
+                                        <input type="hidden" id="DocumentIconName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="profile-info-name fotm_lbl col-12 pl-3" style="display: flex;">
+                                        Commitee Member Type:
+                                    </div>
+                                    <div class="col-12">
+                                        <p class="pera_txt_design">
+
+                                            @foreach (var item in Model._CommitteeType)
+                                            {
+                                                <div class="checkbox" style="display: inline;">
+                                                    <input type="checkbox" id="@item.Value" name="ChkStatusFilter" value="@item.Value" onclick="StatusFilter1(this, this.value)" />
+                                                    <label for="@item.Value" class="lbltxt">@item.Text</label>
+                                                </div>
+                                            }
+                                            <input type="hidden" id="hiddenCommitteeType" name="HiddenCommitteeType" value="" />
+                                            <input type="hidden" id="hdnmeetingtype" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer" style="background-color:white;">
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
+                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+
+
+<style>
+
+
+    .inr_frm_dsgn {
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+
+    .form-group input[type="number"].txt_design {
+        border-radius: 4px !important;
+        height: 41px !important;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .addnew_modal {
+        padding-right: 300px !important;
+        padding-left: 300px;
+        padding-top: 94px;
+        padding-bottom: 94px;
+    }
+
+    .toggle {
+        --width: 80px;
+        --height: calc(var(--width) / 3);
+        position: relative;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        border-radius: var(--height);
+        cursor: pointer;
+    }
+
+        .toggle input {
+            display: none;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--height);
+            border: 2px solid #969696;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .slider::before {
+                content: "";
+                position: absolute;
+                top: 3.5px;
+                left: 2px;
+                width: calc(var(--height)*0.6);
+                height: calc(var(--height)*0.6);
+                border-radius: calc(var(--height) / 2);
+                border: 3px solid #969696;
+                background-color: #dbdbdb;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked + .slider {
+            border-color: #2196F3;
+        }
+
+            .toggle input:checked + .slider::before {
+                border-color: #2196F3;
+                background-color: #c6e5ff;
+                transform: translateX(calc(var(--width) - var(--height)));
+            }
+
+        .toggle .labels {
+            position: absolute;
+            top: 4.5px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #4d4d4d;
+            font-size: 12px;
+            font-family: sans-serif;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .toggle .labels::after {
+                content: attr(data-off);
+                position: absolute;
+                right: 5px;
+                opacity: 1;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+            .toggle .labels::before {
+                content: attr(data-on);
+                position: absolute;
+                left: 5px;
+                opacity: 0;
+                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+                transition: all 0.4s ease-in-out;
+            }
+
+        .toggle input:checked ~ .labels::after {
+            opacity: 0;
+        }
+
+        .toggle input:checked ~ .labels::before {
+            opacity: 1;
+        }
+
+    .pencil-class {
+        font-size: 15px;
+    }
+
+    .edit-1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+    }
+
+    .adjust-label-house {
+        color: #1974d2 !important;
+        padding: 10px 10px 0px 10px;
+        justify-content: end;
+    }
+
+    .adjust-label-house .dropdown-arrow select.form-control {
+        color: #1974d2 !important;
+        border: 1px solid #1974d2 !important;
+    }
+
+    .adjust-hidde-active-div{
+        text-align:center;
+    }
+
+    .dropdown-relative
+    {
+        position: relative;
+    }
+</style>
+
+<script>
+    memberData = null;
+
+    function StatusFilter1(checkbox, value) {
+        // Uncheck all checkboxes except the one that was just checked
+        var checkboxes = document.querySelectorAll('input[type="checkbox"][name="ChkStatusFilter"]');
+        checkboxes.forEach(function (cb) {
+            if (cb !== checkbox && cb.checked) {
+                cb.checked = false;
+            }
+        });
+       var hiddenInput = document.getElementById('hiddenCommitteeType');
+        if (checkbox.checked) {
+            hiddenInput.value = value;
+        } else {
+            hiddenInput.value = '';
+        }
+    }
+    $(document).ready(function () {
+        $('#example').DataTable({
+        });
+
+        $('#mcNav').on('change', function () {
+            var assemblyId = $(this).val();
+            $("#loader-wrapper").show();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CallSearchedMCMembers", "MCMembers")',
+                data: { assemblyId: assemblyId },
+                success: function (response) {
+                    debugger
+                    var obj = JSON.parse(response);
+                    var members = obj.members;
+                    var fileacessingUrl = obj.fileacessingUrl;
+                    var table = $('#example').DataTable();
+                    table.clear().destroy();
+                    
+                    var tbody = $('#example tbody');
+                    tbody.empty();
+                    
+                    if (members && members.length > 0) {
+                        $.each(members, function (index, item) {
+                            var activeChecked = item.Active ? 'checked="checked"' : '';
+                            var imgSrc = fileacessingUrl + '/' + item.Icon;
+                            var iconSource = item.Icon ? ('/' + item.Icon) : '';
+                            
+                            var row = '<tr>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.Name || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.Name_local || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.PermanentAddress || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.PermanentAddress_local || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.Mobile || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.Email || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.Designation || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.Designation_local || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.WardName || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' + (item.MemberCode || '') + '</td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important"><img src="' + imgSrc + '" height="100" width="100" /></td>' +
+                                '<td class="center td-data" style="padding: 14px 4px !important">' +
+                                (
+                                    (item.IsWardActive && item.IsHouseActive) ?
+                                    '<div class="d-flex align-items-center gap-2">' +
+                                        '<div class="hidden-sm hidden-xs action-buttons">' +
+                                            '<input type="hidden" id="imageurl" value="' + iconSource + '" />' +
+                                            '<a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID(\'' + item.MemberID + '\')">' +
+                                                '<i class="ace-icon fa fa-pencil bigger-130"></i>' +
+                                            '</a>' +
+                                        '</div>' +
+                                        '<div class="hidden-sm hidden-xs action-buttons">' +
+                                            '<input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID(\'' + item.MemberID + '\')" value="' + item.MemberID + '" />' +
+                                        '</div>' +
+                                        '<div class="hidden-sm hidden-xs action-buttons">' +
+                                            '<input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID(\'' + item.MemberID + '\')" value="' + item.MemberID + '" />' +
+                                            '<label class="toggle mb-0">' +
+                                                '<input type="checkbox" onclick="DeleteDepartmentRecord(\'' + item.MemberID + '\')" ' + activeChecked + '>' +
+                                                '<span class="slider"></span>' +
+                                                '<span class="labels" data-on="Active" data-off="DeActive"></span>' +
+                                            '</label>' +
+                                        '</div>' +
+                                    '</div>' : '<div class="adjust-hidde-active-div"><p>-</p></div>'
+                                )
+                                +
+                                '</td>' +
+                            '</tr>';
+                            tbody.append(row);
+                        });
+                    }
+                    
+                    $('#example').DataTable({
+                    });
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    $("#loader-wrapper").hide();
+                    alert("Error loading members.");
+                }
+            });
+        });
+    });
+    var s = {};
+       function getbyID(EmpID) {
+       clearTextBox();
+       var url = '@Url.Action("Edit", "MCMembers")' + '?id=' + EmpID;
+        $("#myModalLabel").html("Update Members Record");
+        $("#MemberCodeField").hide();
+        $("#btnUpdate").show();
+        $("#btnSave").hide();
+        $.ajax({
+            type: "GET",
+            url: url,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var obj = JSON.parse(data);
+                var data = obj._LstMembers[0];
+                memberData = data;
+                debugger
+                //console.log(data);
+                $('#myModal').modal();
+                $("#Id").val(data.MemberId);
+                $("#Id").attr("disabled", "disabled");
+                $("#PrefixDropDown").val(data.Prefix);
+                $("#PrefixDropDown_local").val(data.Prefix_local);
+                $("#Name").val(data.Name);
+                $("#Name_local").val(data.Name_local);
+                $("#PermanentAddress").val(data.PermanentAddress);
+                $("#PermanentAddress_local").val(data.PermanentAddress_local);
+                $("#Mobile").val(data.Mobile);
+                $("#Icon").val(data.Icon);
+                $("#MemberID").val(data.MemberID);
+
+                //alert(data.MemberID);
+               // $("#MemberCode").val(data.MemberCode);
+                $("#Email").val(data.Email);
+                setDesignationByText(data.Designation);
+                setDesignationByTextLocal(data.Designation_local);
+                //$("#Designation").val(data.Designation);
+                //$("#Designation_local").val(data.Designation_local);
+                $("#imgPreview").attr('src', data.Icon);
+                $("#Gender").val(data.Gender);
+                $("#memberDOB").val(data.memberDOB);
+                $("#Description").val(data.Description);
+                $("#OfficePhoneNo").val(data.OfficePhoneNo);
+                loadMC(data.MCCode);
+                loadWards(data.MCCode,data.Ward);
+                loadStates(data.State);
+                loadDistrict(data.State, data.District)
+                loadParty(data.Party);
+               // $("#ddlIsAlive").val(data.IsAlive);
+
+                var commiteetypevalues = data.committeeType.split(',');
+                commiteetypevalues.forEach(function (dbcommiteetype) {
+                    // Trim the value to remove leading/trailing spaces
+                    dbcommiteetype = dbcommiteetype.trim();
+                    $('input[type="checkbox"][name="ChkStatusFilter"]').each(function () {
+                        if ($(this).val() == dbcommiteetype) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                });
+
+
+                $("#btnSave").hide();
+
+            }
+        });
+    }
+    function validate() {
+        var isValid = true;
+        if ($('#Name').val() == "") {
+            $('#Name').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#Name').css('background-color', 'white');
+        }
+        if ($('#Name_local').val() == "") {
+            $('#Name_local').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#Name_local').css('background-color', 'white');
+        } 
+
+        if ($('#Mobile').val() == "") {
+            $('#Mobile').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#Mobile').css('background-color', 'white');
+        } 
+        
+        if ($('#PermanentAddress').val() == "") {
+            $('#PermanentAddress').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#PermanentAddress').css('background-color', 'white');
+        }
+
+        if ($('#PermanentAddress_local').val() == "") {
+            $('#PermanentAddress_local').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#PermanentAddress_local').css('background-color', 'white');
+        }
+
+        if ($('#ddlState').val() == "" || $('#ddlState').val() == "0") {
+            $('#ddlState').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#ddlState').css('background-color', 'white');
+        }
+        if ($('#ddlDistrict').val() == "" || $('#ddlDistrict').val() == "0") {
+            $('#ddlDistrict').css('background-color', '#ff56564d');
+            isValid = false;
+        }
+        else {
+            $('#ddlDistrict').css('background-color', 'white');
+        }
+        
+
+        //if ($('#MemberCode').val() == "") {
+        //    $('#MemberCode').css('background-color', '#ff56564d');
+        //    isValid = false;
+        //}
+        //else {
+        //    $('#MemberCode').css('background-color', 'white');
+
+        //}
+
+        if ($('#Designation').val() == "" || $('#Designation').val() == "0") {
+            $('#Designation').css('background-color', '#ff56564d');
+            isValid = false;
+        } else {
+            $('#Designation').css('background-color', 'white');
+        }
+        
+
+        if ($('#Designation_local').val() == "" || $('#Designation_local').val() == "0") {
+            $('#Designation_local').css('background-color', '#ff56564d');
+            isValid = false;
+        } else {
+            $('#Designation_local').css('background-color', 'white');
+        }
+
+        if ($('#ddlWard').val() == "" || $('#ddlWard').val() == "0") {
+            $('#ddlWard').css('background-color', '#ff56564d');
+            isValid = false;
+        } else {
+            $('#ddlWard').css('background-color', 'white');
+        }
+
+        if ($('#Gender').val() == "" || $('#Gender').val() == "0") {
+            $('#Gender').css('background-color', '#ff56564d');
+            isValid = false;
+        } else {
+            $('#Gender').css('background-color', 'white');
+        }
+        
+
+        //if ($('#Email').val() != "") {
+        //    debugger
+        //    var EmailRegex = "/^\w+([\.-]?\w+)*\w+([\.-]?\w+)*(\.\w{2,3})+$/";
+        //    var Email = $('#Mobile').val();
+        //    if (Email.value.match(EmailRegex))
+        //    {
+        //        $('#Email').css('background-color', '#ff56564d');
+        //        $('#EmailValidation').show();
+        //        return isValid = true;
+
+        //    }
+        //    else {
+
+        //        return isValid = false;
+        //    }
+        //}
+        //if ($('#Mobile').val() != "") {
+        //    debugger
+        //    var phoneno = "/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/";
+        //    var Mobile = $('#Mobile').val();
+        //    if (phoneno.test(Mobile)
+        //    {
+        //        $('#Mobile').css('background-color', '#ff56564d');
+        //        $('#MobileValidation').show();
+        //        return isValid = true;
+        //    }
+        //    else {
+
+        //        return isValid = false;
+        //    }
+        //}
+
+
+        return isValid;
+    }
+    function clearTextBox() {
+        memberData = null;
+        $('#myModal').data({ backdrop: 'static', keyboard: false });
+        $('#btnSave').show();
+        $('#btnUpdate').hide();
+        $("#myModalLabel").html("Add Member Record");
+        $('#Id').val("");
+        $('#Name').val("");
+        $('#Name_local').val("");
+        $('#PrefixDropDown').val(0);
+        $('#PrefixDropDown_local').val(0);
+        $('#PermanentAddress').val("");
+        $('#PermanentAddress_local').val("");
+        $('#Designation').val("");
+        $('#Designation_local').val("");
+        $('#Mobile').val("");
+        $('#Email').val("");
+        $('#DocumentIcon').val("");
+        $('#Name').css('background-color', 'white');
+        $('#Name_local').css('background-color', 'white');
+        $("#imgPreview").attr('src', 'https://placehold.jp/100x100.png');
+        $('#EmailValidation').hide();
+        $('#MobileValidation').hide();
+        $('#MemberCode').prop("disabled", true);
+        $("#MemberCodeField").show();
+        $('#MemberCode').css('background-color', 'white');
+        $('#MemberIdField').hide();
+
+        $("#Gender").val("");
+        $("#memberDOB").val("");
+        $("#Description").val("");
+        $("#ddlMc").val(0);
+        $("#ddlWard").val(0);
+        $("#ddlParty").val(0);
+        $("#OfficePhoneNo").val("");
+        $("#ddlState").val(0);
+        $("#ddlDistrict").val(0);
+        $("#ddlIsAlive").val("Y");
+        loadMCList();
+        loadDistrictsList();
+        loadPartyList();
+        loadStateList();
+        loadDistrictsList();
+        $('input[type="checkbox"][name="ChkStatusFilter"]').each(function () {
+            $(this).prop('checked', false);
+        });
+    }
+    function Add() {
+
+        var res = validate();
+        var MCName = $('#ddlMc option:selected').text();
+        if (res == false) {
+            return false;
+        }
+
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#DocumentIcon").get(0);
+            var files = fileUpload.files;
+
+            var fileData = new FormData();
+
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            const courseDto = {
+                Name: $('#Name').val(),
+                Name_local: $('#Name_local').val(),
+                PermanentAddress: $('#PermanentAddress').val(),
+                PermanentAddress_local: $('#PermanentAddress_local').val(),
+                Designation: $('#Designation option:selected').text(),
+                Designation_local: $('#Designation_local option:selected').text(),
+                Mobile: $('#Mobile').val(),
+                Email: $('#Email').val(),
+                Prefix: $('#PrefixDropDown').val(),
+                Prefix_local: $('#PrefixDropDown_local').val(),
+                MemberCode: $('#MemberCode').val(),
+                Gender: $('#Gender').val(),
+                memberDOB: $('#memberDOB').val(),
+                Description: $('#Description').val(),
+                MCCode: $('#ddlMc').val(),
+                MCName: MCName,
+                Ward: $('#ddlWard').val(),
+                Party: $('#ddlParty').val(),
+                OfficePhoneNo: $('#OfficePhoneNo').val(),
+                State: $('#ddlState').val(),
+                District: $('#ddlDistrict').val(),
+                //IsAlive: $('#ddlIsAlive').val(),
+                committeeType: $('#hiddenCommitteeType').val(),
+
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+            // Adding one more key to FormData object
+            $.ajax({
+                url: '@Url.Action("Create", "MCMembers")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result == 1) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else {
+                        alert("Member Code Already Present NotUpdated!");
+                    }
+                },
+                error: function (err) {
+                    if (err) {
+                        alert("Not Updated");
+                        $('#myModal').hide();
+                    }
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+    function Update() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        debugger
+        var MCName = $('#ddlMc option:selected').text(); //alert(MCName);
+        // $('#DocumentIconName').val() = $('#DocumentIcon').val();
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#DocumentIcon").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+            debugger
+            if (files == null || !files.length) {
+                fileData.append("FileName", memberData.FileName);
+                fileData.append("FilePath", memberData.FilePath);
+            }
+
+            var code = "";
+            $('input[type="checkbox"][name="ChkStatusFilter"]').each(function () {
+                if ($(this).prop('checked')) {
+                    var checkboxValue = $(this).val();
+                    if (checkboxValue != " ") {
+                        code = checkboxValue + ',' + code;
+                    }
+                }
+            });
+            $("#hdnmeetingtype").val(code.slice(0, -1));
+            const courseDto = {
+                Name: $('#Name').val(),
+                Name_local: $('#Name_local').val(),
+                PermanentAddress: $('#PermanentAddress').val(),
+                PermanentAddress_local: $('#PermanentAddress_local').val(),
+                Designation: $('#Designation option:selected').text(),
+                Designation_local: $('#Designation_local option:selected').text(),
+                Mobile: $('#Mobile').val(),
+                Email: $('#Email').val(),
+                Prefix: $('#PrefixDropDown').val(),
+                Prefix_local: $('#PrefixDropDown_local').val(),
+                MemberCode: $('#MemberCode').val(),
+                Gender: $('#Gender').val(),
+                memberDOB: $('#memberDOB').val(),
+                Description: $('#Description').val(),
+                MCCode: $('#ddlMc').val(),
+                MemberID: $("#MemberID").val(),
+                MCName: MCName,
+                Ward: $('#ddlWard').val(),
+                Party: $('#ddlParty').val(),
+                OfficePhoneNo: $('#OfficePhoneNo').val(),
+                State: $('#ddlState').val(),
+                District: $('#ddlDistrict').val(),
+                IsAlive: $('#ddlIsAlive').val(),
+                committeeType: $('#hiddenCommitteeType').val(),
+
+            }
+            Object.entries(courseDto).map(([key, value]) =>
+                fileData.append(key, value)
+            );
+
+
+
+            // Adding one more key to FormData object
+
+
+
+            $.ajax({
+                url: '@Url.Action("Update", "MCMembers")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (result) {
+                    if (result == 1) {
+                        alert("Updated Successfully");
+                        $('#myModal').hide();
+                        location.reload();
+                    }
+                    else {
+                        alert("NotUpdated!1");
+                    }
+                },
+                error: function (err) {
+                    if (err) {
+                        alert("Not Updated2");
+                        $('#myModal').hide();
+                    }
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+    var MyApp = {};
+    function DeleteDepartmentRecord(xyz) {
+
+        MyApp = xyz;
+        DeleteID();
+    }
+    function ConfirmDelete() {
+        DeleteID();
+    }
+    function DeleteID() {
+        var i = MyApp;
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("Delete", "MCMembers")' + '?id=' + i,
+            success: function (result) {
+                alert("Updated Successfully");
+            }
+        });
+    }
+    function showimage() {
+        var s = $("#DocumentIcon").val();
+        $(location).attr("~/" + s);
+    }
+    document.getElementById('DocumentIcon').onchange = function (e) {
+        const [file] = DocumentIcon.files;
+        debugger
+        if (file) {
+            $("#imgPreview").attr('src', URL.createObjectURL(file));
+        }
+    };
+
+    function setDesignationByText(text) {
+        if (!text) return;
+
+        $("#Designation option").each(function () {
+            if ($(this).text().trim().toLowerCase() === text.trim().toLowerCase()) {
+                $(this).prop("selected", true);
+                return false; // break loop
+            }
+        });
+
+        $("#Designation").trigger("change");
+    }
+
+    function setDesignationByTextLocal(text) {
+        if (!text) return;
+
+        $("#Designation_local option").each(function () {
+            if ($(this).text().trim().toLowerCase() === text.trim().toLowerCase()) {
+                $(this).prop("selected", true);
+                return false; // break loop
+            }
+        });
+
+        $("#Designation_local").trigger("change");
+    }
+</script>
+
+
+<script>
+    function loadMCList() {
+                $('#ddlMc').prop('disabled', false);
+                var ddlMc = $("#ddlMc");
+                ddlMc.empty().append('<option selected="selected" value="0"> select</option>');
+                $('#ddlWard').empty().append('<option selected="selected" value="0"> select</option>');
+                $("#loader-wrapper").show();
+                $.ajax({
+                type: 'GET',
+                url: '@Url.Action("MCDropDown", "MCMembers")',
+                    data: {},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                    $('#ddlMc').empty();
+                    //ddlMc.empty().append('<option selected="selected" value="0">Select</option>');
+                        //alert(data.length);
+                        if (Array.isArray(data)) {
+                          if (data.length > 1) {
+                                ddlMc.empty().append('<option selected="selected" value="0">Select</option>');
+                                //console.log("Multiple records");
+                          }
+                        }
+
+
+                    $.each(data, function (index, item) {
+                        $('#ddlMc').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+
+                    });
+
+                        loadWardsList();
+                    $("#loader-wrapper").hide();
+    },
+    error: function () {
+        $("#loader-wrapper").hide();
+    }
+});
+    }
+    $('#ddlMc').on('change', function () {
+        loadWardsList();
+    });
+    $('#ddlState').on('change', function () {
+        loadDistrictsList();
+    });
+    function loadWardsList() {
+        $('#ddlWard').prop('disabled', false);
+        var mcid = $('#ddlMc').val();
+        //alert(mcid);
+       // var ddlWard = $("#ddlWard");
+    //ddlWard.empty().append('<option selected="selected" value="0"> select</option>');
+$("#loader-wrapper").show();
+$.ajax({
+    type: 'GET',
+    url: '@Url.Action("WardDropDown", "MCMembers")',
+    data: { mcid: mcid },
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (data) {
+        $('#ddlWard').empty();
+        $('#ddlWard').append('<option selected="selected" value="0"> select</option>');
+        $.each(data, function (index, item) {
+            $('#ddlWard').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+
+        });
+
+        $("#loader-wrapper").hide();
+    },
+    error: function () {
+        $("#loader-wrapper").hide();
+    }
+});
+    }
+    function loadPartyList() {
+        $('#ddlParty').prop('disabled', false);
+            $('#ddlParty').empty().append('<option selected="selected" value="0"> select</option>');
+        $("#loader-wrapper").show();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("PartyDropDown", "MCMembers")',
+            data: {},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#ddlParty').empty().append('<option selected="selected" value="0">Please select</option>');
+                $.each(response, function () {
+                    $('#ddlParty').append($("<option></option>").val(this.Value).html(this.Text));
+                });
+                $("#loader-wrapper").hide();
+            },
+            error: function () {
+                $("#loader-wrapper").hide();
+            }
+        });
+    }
+    function loadStateList() {
+                $('#ddlState').prop('disabled', false);
+                $('#ddlState').empty().append('<option selected="selected" value="0"> select</option>');
+$("#loader-wrapper").show();
+$.ajax({
+    type: 'GET',
+    url: '@Url.Action("StateDropDown", "MCMembers")',
+    data: {},
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (response) {
+        $('#ddlState').empty().append('<option selected="selected" value="0">Please select</option>');
+        $.each(response, function () {
+            $('#ddlState').append($("<option></option>").val(this.Value).html(this.Text));
+        });
+        $("#loader-wrapper").hide();
+    },
+    error: function () {
+        $("#loader-wrapper").hide();
+    }
+});
+    }
+    function loadDistrictsList() {
+            $('#ddlDistrict').prop('disabled', false);
+            var statecode = $('#ddlState').val();
+            $('#ddlDistrict').empty().append('<option selected="selected" value="0"> select</option>');
+$("#loader-wrapper").show();
+$.ajax({
+    type: 'GET',
+    url: '@Url.Action("DistrictDropDown", "MCMembers")',
+    data: { statecode: statecode },
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (data) {
+        $('#ddlDistrict').empty().append('<option selected="selected" value="0"> select</option>');
+
+        $.each(data, function (index, item) {
+            $('#ddlDistrict').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+        });
+
+        $("#loader-wrapper").hide();
+    },
+    error: function () {
+        $("#loader-wrapper").hide();
+    }
+});
+    }
+    function loadStates(statecode) {
+                $('#ddlState').prop('disabled', false);
+                $('#ddlState').empty().append('<option selected="selected" value="0"> select</option>');
+$("#loader-wrapper").show();
+$.ajax({
+    type: 'GET',
+    url: '@Url.Action("StateDropDown", "MCMembers")',
+    data: {},
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (response) {
+        $('#ddlState').empty().append('<option selected="selected" value="0">Please select</option>');
+        $.each(response, function () {
+            $('#ddlState').append($("<option></option>").val(this.Value).html(this.Text));
+        });
+        $('#ddlState').val(statecode);
+        $("#loader-wrapper").hide();
+    },
+    error: function () {
+        $("#loader-wrapper").hide();
+    }
+});
+    }
+    function loadDistrict(statecode, districtcode) {
+                //alert(districtcode);
+                //$('#ddlState').prop('disabled', false);
+                //$('#ddlState').empty().append('<option selected="selected" value="0"> select</option>');
+                $("#loader-wrapper").show();
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("DistrictDropDown", "MCMembers")',
+                    data: { statecode: statecode },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $('#ddlDistrict').empty().append('<option selected="selected" value="0"> select</option>');
+
+                        $.each(data, function (index, item) {
+                            $('#ddlDistrict').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                        });
+                        $('#ddlDistrict').val(districtcode);
+                        $("#loader-wrapper").hide();
+                    },
+                    error: function () {
+                        $("#loader-wrapper").hide();
+                    }
+                });
+    }
+    function loadMC(mccode) {
+
+    var ddlMc = $('#ddlMc');
+    var ddlWard = $('#ddlWard');
+
+    ddlMc.prop('disabled', false)
+         .empty()
+         .append('<option value="0">Select</option>');
+
+    ddlWard.empty()
+           .append('<option value="0">Select</option>');
+
+    $("#loader-wrapper").show();
+
+    $.ajax({
+        type: 'GET',
+        url: '@Url.Action("MCDropDown", "MCMembers")',
+        dataType: "json",
+        success: function (data) {
+
+            ddlMc.empty()
+                 .append('<option value="0">Select</option>');
+
+            $.each(data, function (index, item) {
+                ddlMc.append(
+                    $('<option>', {
+                        value: item.Value,
+                        text: item.Text
+                    })
+                );
+            });
+
+            // ✅ Auto-select logic
+            if (data && data.length === 1) {
+                ddlMc.val(data[0].Value);
+            }
+            else if (mccode && mccode !== "0") {
+                ddlMc.val(mccode);
+            }
+
+            $("#loader-wrapper").hide();
+        },
+        error: function () {
+            $("#loader-wrapper").hide();
+        }
+    });
+}
+    function loadWards(mccode,wardid) {
+        $('#ddlWard').prop('disabled', false);
+    //    var ddlWard = $("#ddlWard");
+    //ddlWard.empty().append('<option selected="selected" value="0"> select</option>');
+$("#loader-wrapper").show();
+$.ajax({
+    type: 'GET',
+    url: '@Url.Action("WardDropDown", "MCMembers")',
+    data: { mcid: mccode },
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (data) {
+        $('#ddlWard').empty();
+
+        $.each(data, function (index, item) {
+            $('#ddlWard').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+
+        });
+        $('#ddlWard').val(wardid);
+        $("#loader-wrapper").hide();
+    },
+    error: function () {
+        $("#loader-wrapper").hide();
+    }
+});
+    }
+    function loadParty(partycode) {
+        $('#ddlParty').prop('disabled', false);
+           /* $('#ddlParty').empty().append('<option selected="selected" value="0"> select</option>');*/
+            $("#loader-wrapper").show();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("PartyDropDown", "MCMembers")',
+                data: {},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#ddlParty').empty().append('<option selected="selected" value="0">Please select</option>');
+                    $.each(response, function () {
+                        $('#ddlParty').append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                    $('#ddlParty').val(partycode);
+                    $("#loader-wrapper").hide();
+                },
+                error: function () {
+                    $("#loader-wrapper").hide();
+                }
+            });
+    }
+</script>

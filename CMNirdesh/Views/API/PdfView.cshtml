@@ -1,0 +1,171 @@
+﻿@model List<CMNirdesh.Models.VisitorModel>
+
+@{
+    Layout = null;   // IMPORTANT for PDF
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Visitor Report</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            font-size: 12px;
+        }
+
+        h2, h4, h5 {
+            text-align: center;
+            margin: 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: #ddd;
+            padding: 5px;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        var first = Model[0];
+
+        <h2>@first.assemblyName</h2>
+        <h4>@first.sessionName</h4>
+
+        var fromDate = Convert.ToDateTime(first.sessionDate);
+        var toDate = Convert.ToDateTime(first.sessionDate);
+
+        if (fromDate.Year > 1900)
+        {
+            <h5>
+                @fromDate.ToString("dd-MMM-yyyy")
+            </h5>
+        }
+    }
+
+    <h4>
+        @(ViewBag.Status == 1 ? "Approved Media Persons" :
+          ViewBag.Status == 2 ? "Rejected Media Persons" :
+          "Pending Media Persons")
+    </h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Photo</th>
+                <th>
+                    @(ViewBag.Status == 1 ? "Approval ID" :
+                    ViewBag.Status == 2 ? "Visitor ID" :
+                    "Visitor ID")
+
+                </th>
+                <th>Name</th>
+                <th>Father Name</th>
+                <th>Age</th>
+                <th>Blood Group</th>
+                <th>Address</th>
+                <th>Designation</th>
+                <th>Mobile No.</th>
+                <th>Id Card Type</th>
+                <th>Id No</th>
+                <th>Media House</th>
+                <th>Entry Type</th>
+                <th>AddOns</th>
+                @if (ViewBag.Status == 1 || ViewBag.Status == 2)
+                {
+                    <th>Status</th>
+                    @*<th>
+                        @(ViewBag.Status == 1 ? "Approved By" :
+                      ViewBag.Status == 2 ? "Rejected By" :
+                      "Pending With")
+                    </th>*@
+                }
+                <th>Session Period From</th>
+                <th>Session Period To</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @{
+                int i = 1;
+            }
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@i</td>
+
+                    <td>
+                        <img src="https://punjabassembly.gov.in/PunjabAPI/Upload/@item.photoName" />
+                    </td>
+
+                    <td>
+
+                        @(ViewBag.Status == 1 ? @item.approvalID :
+                        ViewBag.Status == 2 ? @item.visitorRefID :
+                        @item.visitorRefID)
+
+                    </td>
+                    <td>@item.visitorName</td>
+                    <td>@item.fatherName</td>
+                    <td>@item.age (@item.gender)</td>
+                    <td>@item.bloodGroup</td>
+                    <td>@item.address</td>
+                    <td>@item.designation</td>
+                    <td>@item.phoneNumber</td>
+                    <td>@item.idCardType</td>
+                    <td>@item.idNumber</td>
+                    <td>@item.mediaHouse</td>
+                    <td>@item.gallaryName</td>
+                    <td>@item.addOns</td>
+                    @if (ViewBag.Status == 1 || ViewBag.Status == 2)
+                    {
+                        <td>@item.status</td>
+
+                        @*<td>
+                @(ViewBag.Status == 0 ? @item.modifiedName :
+                 ViewBag.Status == 1 ? @item.lying_With : @item.modifiedName
+                 )
+            </td>*@
+                    }
+
+                    <td>
+                        @Convert.ToDateTime(@item.sessionFromDate).ToString("dd-MMM-yyyy")
+                    </td>
+                    <td>
+                        @Convert.ToDateTime(@item.sessionFromDate).ToString("dd-MMM-yyyy")
+                    </td>
+                </tr>
+
+                i++;
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>

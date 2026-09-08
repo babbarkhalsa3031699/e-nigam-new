@@ -1,0 +1,187 @@
+﻿@model CMNirdesh.Models.AgendaDetailModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign PDF With Certificate</title>
+    <link rel="stylesheet" href="~/resources/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/resources/css/dsc-signer.css">
+    <script src="~/resources/js/jquery.min.js"></script>
+    <script src="~/resources/js/bootstrap.min.js"></script>
+    <script src="~/resources/js/dsc-signer.js" type="text/javascript"></script>
+    <script src="~/resources/js/dscapi-conf.js" type="text/javascript"></script>
+</head>
+<body>
+
+    <div id="main-content">
+        <div class="main-content">
+
+
+            <object id="pdfbox" type="application/pdf" data="data:application/pdf;base64,@Model.agendadetails" style="width:100%; height:700px;">
+                <p>
+                    It appears you don't have a PDF plugin for this browser. No worries, you can
+                    <a href="data:application/pdf;base64,@Model.agendadetails" download="filename.pdf">click here to download the PDF file.</a>
+                </p>
+            </object>
+
+
+            @Html.Hidden("cert", null, new { id = "cert" })
+            @Html.Hidden("signingReason", null, new { id = "signingReason" })
+            @Html.Hidden("filepath", null, new { id = "filepath" })
+            @Html.Hidden("signingLocation", null, new { id = "signingLocation" })
+            @Html.Hidden("stampingX", null, new { id = "stampingX" })
+            @Html.Hidden("stampingY", null, new { id = "stampingY" })
+            @Html.Hidden("pdfData", @Model.agendadetails, new { id = "pdfData" })
+
+
+            <select id="tsaurls" name="tsaurls" style="display:none" onchange="setTsaUrl()">
+                <option value="http://sha256timestamp.ws.symantec.com/sha256/timestamp">http://sha256timestamp.ws.symantec.com/sha256/timestamp</option>
+            </select>
+
+            <input type="text" id="tsaURL" name="tsaURL" style="display:none" value="" />
+            <input type="text" id="timeServerURL" name="timeServerURL" value="https://nicdsign.kerala.nic.in/dscapi/getServerTime" maxlength="100" style="display:none" />
+
+            <button id="signPdf" type="button" class="btn btn-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-usb-drive" viewBox="0 0 16 16">
+                    <path d="M6 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4H6zM7 1v1h1V1zm2 0v1h1V1zM6 5a1 1 0 0 0-1 1v8.5A1.5 1.5 0 0 0 6.5 16h4a1.5 1.5 0 0 0 1.5-1.5V6a1 1 0 0 0-1-1zm0 1h5v8.5a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1-.5-.5z" />
+                </svg>
+                DSC Sign and Send
+            </button>
+            <button class="btn btn-primary" onclick="location.href='@Url.Action("SignApproval", "PdfSign", new { AgendaId = Model.AgendaId,  Blobpath= Model.attachfile, ApprovedId = Model.ApprovalId})'">
+                <i class="fa fa-pencil" aria-hidden="true"></i> eSign
+            </button>
+
+            <div id="panel"></div>
+
+
+
+
+        </div>
+        </div>
+
+        <script type="text/javascript">
+
+    function myFunction() {
+           var x = document.getElementById("tsaurls").value;
+                if (x != 0) {
+                    document.getElementById("tsaURL").value = x;
+                } else {
+                    document.getElementById("tsaURL").value = "";
+                }
+        }
+
+
+        $(document).ready(function () {
+              $("#pdfData").val('@Model.agendadetails');
+              var initConfig = {
+				"preSignCallback" : function() {
+				     return true;
+				},
+                "postSignCallback": function (alias, sign) {
+
+                    var agenda = '@ViewBag.AgendaId'
+                    var pdfData = sign;
+
+                        $.ajax({
+                        url: '@Url.Action("OpenPDF", "DigitalSignature")',
+                            type: 'POST',
+                            data: { filepath: agenda, base64String: pdfData },
+
+                            success: function (response) {
+                                if (response.success) {
+                                    var fileUrl = response.filePath;
+                                    window.open(fileUrl, '_blank');
+                                } else {
+                                    alert(response.message || "An error occurred while fetching the PDF.");
+                                }
+                        },
+                        error: function (error) {
+                            alert('Error: ' + (xhr.responseText || error));
+                        }
+                    });
+
+
+				},
+				signType : 'pdf',
+				mode : 'nostampingnoencryptionv2',
+				certificateData : $('#cert').val()
+
+			};
+			dscSigner.configure(initConfig);
+
+        $('#cert').bind('input propertychange', function () {
+				var initConfig = {
+					"preSignCallback" : function() {
+					    alert("Pre-sign event fired");
+						return true;
+					},
+					"postSignCallback" : function(alias, sign) {
+					    $('#signedPdfData').val(sign);
+                    	$('#downloadDiv').addClass('btn btn-info');
+						//get pdf data
+						var pdfData = sign;
+						var dlnk = document.getElementById('downloadDiv');
+						dlnk.href = 'data:application/pdf;base64,' + pdfData;
+						$("#downloadDiv").text("Download Signed PDF File");
+
+					},
+					signType : 'pdf',
+					mode : 'nostampingnoencryptionv2',
+					certificateData : $('#cert').val()
+
+				};
+				dscSigner.configure(initConfig);
+			});
+
+
+          @*$('#signPdf').click(function () {
+           getDSCDetails();
+           var certificate = $('#cert').val();
+           var cert = '@CMNirdesh.Models.CurrentSession.RCerificate';
+           if (cert == '') {
+               alert('Please Register DSA in e-Nigam Application first');
+           }
+           else if (certificate == '') {
+               alert('DSA Token Not found')
+           }
+           else if (cert != certificate) {
+               alert('DSA Signs are not registered With Current User')
+           }
+           else {
+               alert('DSA Certificate are Varified Sucessfully for Current User, Now you can Sign This Document.')
+               var data = $("#pdfData").val();
+               dscSigner.sign(data);
+
+             }
+          });
+        });*@
+
+          $('#signPdf').click(function () {
+           //getDSCDetails();
+           //var certificate = $('#cert').val();
+           var cert = '@CMNirdesh.Models.CurrentSession.RCerificate';
+           if (cert == '') {
+               alert('Please Register DSA in e-Nigam Application first');
+           }
+           else {
+               alert('DSA Certificate are Varified Sucessfully for Current User, Now you can Sign This Document.')
+               var data = $("#pdfData").val();
+               dscSigner.sign(data);
+
+             }
+          });
+        });
+
+        function getDSCDetails() {
+            dscSigner.certificate(function (res) {
+                //alert(res.certificates[0].certificate)
+                $('#cert').val(res.certificates[0].certificate);
+
+            });
+        }
+        </script>
+
+</body>
+</html>

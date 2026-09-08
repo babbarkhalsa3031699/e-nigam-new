@@ -1,0 +1,136 @@
+﻿
+@model CMNirdesh.Models.LstDashboard
+
+
+@*<script src="~/Scripts/jquery-3.4.1.js"></script>
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/datatables/jszip.min.js"></script>
+<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+<script src="~/Scripts/datatables/vfs-fonts.js"></script>
+<script src="~/Scripts/datatables/buttons.print.min.js"></script>
+<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+<script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>*@
+<style>
+    .pointer {
+        cursor: pointer;
+    }
+
+   
+    .styled-table {
+        /*border-collapse: collapse;*/
+        margin: 1px 0;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        border: 1px solid black;
+    }
+
+    .styled-table thead tr {
+        background-color: black;
+        color: black;
+        text-align: left;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+        border-radius: 10px;
+    }
+
+    .styled-table th {
+        font-weight: 500 !important;
+        color: black;
+    }
+
+    .styled-table tbody tr {
+        border: 1px solid #baddfa;
+    }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 1px solid #baddfa;
+        }
+
+        .styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #009879;
+        }
+
+    .accordion-body {
+        padding: 5px;
+    }
+
+    #tabs {
+        height: 0;
+        line-height: 40px;
+        text-transform: uppercase;
+        text-decoration: none;
+        text-align: center;
+        color: #fff;
+        border-right: 30px solid transparent;
+        border-right: 30px solid transparent;
+        border-bottom: 40px solid rgb(65, 149, 223);
+        border-bottom-color: rgb(65, 149, 223);
+        margin-bottom: 2px;
+        width: 50%;
+    }
+</style>
+
+<script>
+    $('#statdiv1').dataTable();
+
+</script>
+<table id="statdiv1" class="table styled-table" style="width:100%;">
+
+
+    @foreach (var mdl1 in Model._LstStatDetail)
+    {
+
+        if (mdl1.SrNo == 1)
+        {
+            <thead>
+                <tr>
+                    <th>Sr. No.</th>
+                    <th class="text-center">Agenda Date</th>
+                    <th class="text-center">Meeting</th>
+                    @if (mdl1.Type == "111")
+                    {
+                        <th class="text-center">Total Resolutions</th>
+                    }
+                    else
+                    {
+                        <th class="text-center">Resolution No</th>
+                    }
+
+                </tr>
+            </thead>
+        }
+        <tbody>
+            <tr>
+                <td class="text-center">@mdl1.SrNo</td>
+                <td class="text-center">@Convert.ToDateTime(mdl1.AgendaDate).ToString("dd/MM/yyyy")</td>
+                <th class="td-data">@mdl1.Meeting</th>
+                @if (mdl1.Type == "111")
+                {
+                    <td class="text-center">@mdl1.TotalResolutions</td>
+                }
+                else
+                {
+                    <td class="text-center">@mdl1.Resolutionno</td>
+                }
+
+
+            </tr>
+        </tbody>
+    }
+
+
+
+</table>

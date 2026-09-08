@@ -1,0 +1,27 @@
+# Subversion metadata
+.svn/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosv
+*.cache
+*.docstates
+
+# Build & Compiler Outputs
+[Bb]in/
+[Oo]bj/
+packages/
+[Tt]emp/
+[Tt]mp/
+
+# ASP.NET & MVC Temp / Log files
+ExceptionDetailsFile/
+TempFile/
+*.log
+
+# Windows System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini

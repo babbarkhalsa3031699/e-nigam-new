@@ -1,0 +1,347 @@
+﻿@model  CMNirdesh.Models.PriorityProject
+
+@{
+    ViewBag.Title = "Create Priority Project";
+}
+
+@*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
+
+<style>
+
+    
+    .field-validation-error {
+        color: red;
+        padding-left: 10px;
+    }
+
+    .inr_frm_dsgn h3 {
+        background-color: #4165c1;
+        padding: 10px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        font-size: 21px;
+        font-weight: 500;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+        box-shadow: 0px 0px 4px 1px #ccc;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .inr_frm_dsgn {
+        margin-top: 20px;
+    }
+
+    .form_lyot {
+        padding: 10px;
+    }
+
+    .card_width {
+        max-width: 495px;
+    }
+
+        .card_width #PromiseName {
+            display: inline-block;
+            max-width: 493px;
+            border-radius: 5px !important;
+            margin-left: 32px;
+        }
+
+    .inr_frm_dsgn .form_lyot .card .no-padding-right {
+        text-align: left;
+    }
+
+    #isActive {
+        max-width: 493px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-left: 32px;
+    }
+
+    .card_width {
+        max-width: 776px;
+        box-shadow: 0px 0px 4px 0px #ccc;
+        padding: 15px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+        .card_width .control-label.lbl_txt {
+            min-width: 86px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+    .mrgn_tp {
+        margin-top: 5px;
+    }
+
+    .c_btn {
+        margin-right: 129px;
+    }
+
+    #Remark {
+        display: none;
+    }
+</style>
+
+<div id="main-content">
+    <div class="main-content">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs" id="breadcrumbs">
+            <script type="text/javascript">
+                try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+            </script>
+
+            <ul class="breadcrumb" style="font-size: large; color: #555; padding: 0 3px 0 3px;">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="@Url.Action("PriorityProjectDetails", "PriorityProjects")">Priority Projects >></a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("PriorityProjectDetails", "PriorityProjects")">Project Details</a>
+                </li>
+                <li class="active">Project</li>
+            </ul>
+        </div>
+
+        <section class="form_dsign Create_priority_project cm_sec_container form_setting">
+            <div class="container-fluid">
+
+                
+                        <div class=" inr_frm_dsgn">
+                            @if (Model.mode == "Add")
+                            {
+                                <h4 class="widget-title lighter fom_titl">New Project </h4>
+                            }
+                            else
+                            {
+                                <h4 class="widget-title lighter fom_titl">Edit Project</h4>
+                            }
+
+
+                            <div class="form_lyot">
+                                @using (Html.BeginForm("SavePriorityProject", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "PriorityProject" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.HiddenFor(model => model.ProjectId)
+                                    @Html.HiddenFor(model => model.mode)
+                                    @Html.HiddenFor(model => model.DeptId)
+
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <fieldset class="fieldset_box personal_fild comn_field fild_btn">
+                                                <legend class="leg_box">Basic Details:</legend>
+                                                <div class="row">
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt">Project Name </label>
+                                                        @Html.TextBoxFor(model => model.ProjectName, new { @placeholder = "Enter Project Name", @autocomplete = "off", @class = "width-100", @tabindex = "1" })
+                                                        @Html.ValidationMessageFor(model => model.ProjectName)
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Promise Name </label>
+                                                        @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, new { @class = "width-100 ", @tabindex = "2" })
+                                                        @Html.ValidationMessageFor(model => model.PromiseId)
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Firm Name </label>
+                                                        @Html.TextBoxFor(model => model.FirmName, new { @placeholder = "Enter Firm Name", @autocomplete = "off", @class = "width-100", @tabindex = "3" })
+                                                        @Html.ValidationMessageFor(model => model.FirmName)
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Category </label>
+                                                        @Html.DropDownListFor(model => model.CategoryId, Model.CategoryTypeList, new { @class = "width-100", @tabindex = "4" })
+                                                        @Html.ValidationMessageFor(model => model.CategoryId)
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Start Date </label>
+                                                        @Html.TextBoxFor(model => model.StartDate, "{0:dd/MM/yyyy}", new { @Id = "txtstartDate", @type = "text", @class = "form-control datepicker", @tabindex = "10" })
+                                                        @Html.HiddenFor(model => model.StartDate, new { @Id = "txtstartDate" })
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> End Date </label>
+                                                        @Html.TextBoxFor(model => model.EndDate, "{0:dd/MM/yyyy}", new { @Id = "txtendDate", @type = "text", @class = "form-control datepicker", @tabindex = "11" })
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Estimated Amount <b style="color:red">(in rupees)</b> </label>
+                                                        <input type="text" name="EstimatedAmount" id="EstimatedAmount" value='@Model.EstimatedAmount' autocomplete="off" required class="width-100" tabindex="5">
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Fund Released <b style="color:red">(in rupees)</b> </label>
+                                                        <input type="text" name="FundReleased" id="FundReleased" value='@Model.FundReleased' autocomplete="off" required class="width-100" tabindex="6">
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Expenditure Amount <b style="color:red">(in rupees)</b> </label>
+                                                        <input type="text" name="Expenditure" id="Expenditure" value='@Model.Expenditure' autocomplete="off" required class="width-100" tabindex="7" />
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Physical Progress <b style="color:red">(in %)</b> </label>
+                                                        <input type="text" name="PhysicalProgress" id="PhysicalProgress" value='@Model.PhysicalProgress' autocomplete="off" required class="width-100" tabindex="8">
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Project Status </label>
+                                                        @Html.DropDownListFor(model => model.ProjectStatusId, Model.ProjectStatusTypeList, new { @class = "width-100", @tabindex = "12" })
+                                                    </div>
+
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Status </label>
+                                                        @Html.DropDownListFor(model => model.isActive, Model.StatusTypeList, new { @class = "width-100 is_active", @tabindex = "13" })
+                                                    </div>
+
+                                                    <div class="col-md-12 col-lg-12">
+                                                        <label for="inputinfo" class="control-label lbl_txt"> Project Description  </label>
+                                                        <div class="wysiwyg-editor wysiwyg-style2 dtl_l_box" id="editor-eng"></div>
+
+                                                        @Html.TextAreaFor(model => model.Remark, new { @class = "hide", @placeholder = "Description", @autocomplete = "off", @tabindex = "9" })
+                                                        <div class="help-block col-xs-12 col-sm-reset inline">
+                                                            @Html.ValidationMessageFor(model => model.Remark)
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row mrgn_tp">
+                                                    <div class="col-md-12">
+                                                        <div class="btn-group pull-right">
+                                                            <button type="reset" class="btn btn-sm btn-danger" onclick="resetFields();">
+                                                                <i class="ace-icon fa fa-times bigger-125"></i>
+                                                                Reset
+                                                            </button>
+                                                            <button type="submit" id="savebtn" class="btn btn-sm btn-primary ">
+                                                                <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                                                                Save
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    
+            </div>
+        </section>
+
+
+    </div>
+
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/ow_iteml.carousel.min.js"></script>
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<link href="~/Content/style_ms.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+<script>
+
+    var engdata = $("#Remark").val();
+
+    $("div#editor-eng").html(engdata);
+
+
+    function DeleteContentInEdit(url) {
+        bootbox.confirm("Are you sure to Delete Content?", function (result) {
+            if (result) {
+                window.location.href = url;
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        var mode = $('#mode').val();
+        if (mode == "Add") {
+            $('#txtstartDate').val('');
+            $('#txtendDate').val('');
+
+        } else {
+
+        }
+        //initEditor();
+
+        tinyMCE.init({
+            selector: "#editor-eng",
+            branding: false,
+            content_style:
+                "body {  font-size: 14px; font-family: inherit; }",
+        });
+
+
+        $('.datepicker').datepicker({
+            autoclose: true,
+           todayHighlight: true,
+            dateFormat: 'dd/mm/yy',
+            /*endDate: '+0'*/
+        })
+
+        $('#EstimatedAmount').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+        $('#Expenditure').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+        $('#FundReleased').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+        $('#PhysicalProgress').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+
+       
+
+        $("#savebtn").click(function () {
+            var engdata = tinymce.activeEditor.getContent();
+            $("#Remark").val(engdata);
+        });
+
+    });
+
+    function resetFields() {
+        $(".field-validation-error").empty();
+        $("#News_Title").focus();
+    }
+
+
+</script>
+
+
+

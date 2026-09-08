@@ -1,0 +1,48 @@
+<html>
+                                    <head><meta charset='UTF-8'><title>MC-House: ReplyToMCReport</title>
+                                    <script src='https://code.jquery.com/jquery-3.6.4.min.js'></script>
+                                    <script>
+                                            $(document).ready(function() {
+                                                    window.print();
+                                                // Attach a click event to the print button
+                                                $('#printButton').on('click', function() {
+                                                    $(this).hide();
+                                                    // Call the window.print() function to open the print dialog
+                                                    window.print();
+                                                    $(this).show();
+                                                    
+                                                });
+                                            });
+                                        </script>
+                                        <style>
+                                        @media print {
+                                            .header {
+                                                display: none;
+                                            }
+                                        }
+                                            p{
+                                            line-height:1.7;
+                                            }
+                                            table{
+                                            width:100%;
+                                            }
+                                        </style>
+                                    </head> 
+                                    <body><div><button id='printButton' style='float:right;margin-bottom: 100px;'>Print Page</button><div class='clearfix'></div></div><div><div style='text-align:center'><img src='/Assets/Images/Govt-of-punjab.png' height='50' width='55' /><p style='margin:0px'>ਪੰਜਾਬ ਸਰਕਾਰ</p><p style='margin:0px'>ਸਥਾਨਕ ਸਰਕਾਰ ਵਿਭਾਗ</p><p style='font-weight:bold;margin:0px'>(ਮਿਉਨਿਸਪਲ ਸਰਵਿਸ ਸੈੱਲ)</p><p style='font-weight:bold;margin:0px'>ਪਲਾਟ ਨੰ. 03, ਮਿਉਂਸਪਲ ਭਵਨ, ਸੈਕਟਰ-35 ਏ, ਚੰਡੀਗੜ੍ਹ 160036</p></div><span style='float:left;'>ਨੰ:..... </span><span style='float:right;'>Ph. 0172-2619145</span></br><span style='float:left;'>ਮਿਤੀ:-..... </span><span style='float:right;'>Email: dlgmsc123@gmail.com</span></br><hr><span style='float:left;'>ਸੇਵਾ ਵਿਖੇ,</span></br><span style='float:left;margin-left:80px'>ਕਮਿਸ਼ਨਰ,</br>ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ.ਨਗਰ ਮੁਹਾਲੀ</br></br></span><div class='clearfix'></div><b><div style='width:100%;margin-left:30px'>ਵਿਸ਼ਾ:-ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ.ਨਗਰ ਮੁਹਾਲੀ ਦੇ ਮਤਾ ਨੰ. 1 ਤੋਂ 3 ਮਿਤੀ: 12/01/2024 ਸਬੰਧੀ।</b><br><br></div><span style='float:left;margin-left:70px'>ਆਪ ਦੇ ਦਫਤਰ ਦੇ ਪੱਤਰ ਨੰ:  ਮਿਤੀ: 19/01/2024 ਦੇ ਹਵਾਲੇ ਵਿੱਚ। </span></br><span style='float:left;margin-left:70px'>2.     ਉਪਰੋਕਤ ਵਿਸੇ ਸਬੰਧੀ ਹਵਾਲੇ ਅਧੀਨ ਪੱਤਰ ਰਾਹੀਂ ਪ੍ਰਾਪਤ ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ.ਨਗਰ ਮੁਹਾਲੀ ਦੇ ਜਨਰਲ ਹਾਊਸ ਦੇ ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ.ਨਗਰ ਮੁਹਾਲੀ ਦੇ  ਮਤਾ ਨੰ: 1 ਤੋ 3 ਮਿਤੀ: 12/01/2024 ਤੇ ਵਿਚਾਰ ਕਰਨ ਉਪਰੰਤ ਹੇਠ ਲਿਖੇ ਅਨੁਸਾਰ ਫੈਸਲਾ ਕੀਤਾ ਗਿਆ ਹੈ :-</span><table style='width:100%;font-size: 15px; border: 1px solid #cdcdcd;border-collapse: collapse;text-align: left;'><tr style = 'padding:5px;'>
+                  <th style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;text-align:center'>ਮਤਾ ਨੰ:</th> 
+                  <th style ='padding:10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top;text-align:center'>ਫੈਸਲਾ</th></tr><tr>
+										<td style='padding:10px; border: 1px solid #cdcdcd;border-collapse: collapse;vertical-align:top;text-align:center'>               
+												<b>1</b>
+										</td>
+										<td style='padding: 10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top'>
+                                        <p>comment1</p>
+<p>comment2</p>
+<p>comment3</p>
+<p>&nbsp;</p>
+                                        </td></tr><tr>
+										<td style='padding:10px; border: 1px solid #cdcdcd;border-collapse: collapse;vertical-align:top;text-align:center'>               
+												<b>3</b>
+										</td>
+										<td style='padding: 10px; border: 1px solid #cdcdcd;border - collapse: collapse;vertical-align:top'>
+                                        <p>hfghfghfgdhdfg</p>
+                                        </td></tr> </table></br></br><span style='float:right;text-align:right'>ਸੁਪਰਡੈਂਟ,</br>(ਮਿਉਨਿਸਪਲ ਸਰਵਿਸ ਸੈੱਲ)</span></div></body> </html>

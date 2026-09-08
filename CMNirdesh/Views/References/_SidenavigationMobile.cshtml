@@ -1,0 +1,31 @@
+﻿
+
+
+
+@using CMNirdesh.Models;
+@{
+    var Menu = (CMNirdesh.Models.SubMenuModel)ViewBag.Menu;
+    var Menu1 = (CMNirdesh.Models.SubMenuModel)ViewData["Menu"];
+
+}
+
+@{
+    
+    string devicetype = CurrentSession.DeviceName.ToString();
+   
+}
+
+@if (devicetype == "mobile")
+{
+    <div class="cm_left_menu">
+
+    </div>
+}
+else
+{
+
+    <div class="cm_left_menu">
+        @Html.Action("Menu", "User")
+        @* @Html.Action("UrlCheck", "User")*@
+    </div>
+}

@@ -1,0 +1,32 @@
+﻿<h1>    Pankaj</h1>
+
+
+<script>
+    $(document).ready(function () {
+
+        alert(1);
+        LoginWithParichay();
+    });
+
+
+    function LoginWithParichay() {
+        alert(2);
+            $.ajax({
+            type: "GET",
+              url: '@Url.Action("LoginButton", "ParichayLogin")',
+                datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: { },
+                success: function (response) {
+                    if (response != null) {
+                        window.location = response;
+                    }
+                    else {
+                        alert("Login Failed..");
+                    }
+                },
+                error: function (error) {
+                }
+              });
+        }
+</script>

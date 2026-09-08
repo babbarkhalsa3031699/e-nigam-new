@@ -1,0 +1,1364 @@
+﻿@model  CMNirdesh.Models.MCHomeModel
+
+@{
+    Layout = "~/Views/Shared/_MCLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @id = "formMC", enctype = "multipart/form-data" }))
+{
+    {Html.RenderPartial("~/Views/Home/_Header.cshtml", Model);}
+
+
+    var housenumber = @Model.Houses;
+    <div id="body" style="padding: 0;">
+
+        <section class="container-xxl Banner_section2" style="background-image: linear-gradient( rgb(0, 0, 0, 0.3), rgb(0, 0, 0, 0.5)),url(../MCData/@Model.MCName.Replace(" ","")/mc.jpg);">
+            <div class="  ">
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12 justify-content-center minister_section gap-lg-5 mb-3">
+                    <div class="w-100">
+                        <div class="ministers row">
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-12 mb-3 ">
+                                <div class=" minister_card position-relative mb-3 animate__animated animate__fadeInUp">
+                                    <div class="col-md-4 col-sm-4 col-12 position-relative">
+                                        <div class="h-100">
+                                            <img class="shadow w-100 rounded" src="~/MCData/@Model.MCName/@Model.HeadPhoto">
+                                        </div>
+
+                                        @*<div class=" name_overlay position-absolute bottom-0 w-100 bg-dark bg-opacity-50 rounded-bottom">
+                                            <h6 class="">@Model.HeadName</h6>
+                                            <p class="mb-0 text-white ">@Model.HeadDesignation</p>
+                                        </div>*@
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-12">
+                                        <div class=" name_overlay bottom-0 w-100">
+                                            <h6 class="notranslate">@Model.HeadName</h6>
+                                            <p class="mb-0 ">@Model.HeadDesignation</p>
+                                        </div>
+                                        <p class="Mayor_Message mb-0 my">
+                                            @Model.HeadMessage
+
+                                            <i class="fas fa-quote-righ QUOTE_SIGN"></i>
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-12 Message_card mb-3">
+                                <div class="minister_card position-relative mb-3 animate__animated animate__fadeInUp">
+                                    <div class="col-md-4 col-sm-4 col-12  position-relative">
+                                        <div class="h-100">
+                                            <img class="shadow w-100 rounded" height="" src="~/MCData/@Model.MCName/@Model.SubHeadPhoto">
+                                        </div>
+
+                                        @*<div class=" name_overlay position-absolute bottom-0 w-100 bg-dark bg-opacity-50 rounded-bottom">
+                                            <h6 class="">@Model.SubHeadName</h6>
+                                            <p class="mb-0 text-white ">@Model.SubHeadDesignation</p>
+                                        </div>*@
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-12">
+                                        <div class=" name_overlay bottom-0 w-100">
+                                            <h6 class="notranslate">@Model.SubHeadName</h6>
+                                            <p class="mb-0 ">@Model.SubHeadDesignation</p>
+                                        </div>
+                                        <p class="Mayor_Message mb-0">
+                                            @Model.SubHeadMessage
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class=" div_1">
+                    <div class="banner_content">
+                        <div class="row div_card ">
+                            <div class=" col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12  animate__animated animate__fadeInUp">
+                                <a class=" My_link shadow">
+                                    <img class="my_link_img" src="~/Assets/Images/Houses.png">
+                                    <h4 class="fw-bold">@housenumber</h4>
+                                    <p class="My_link_text"> @Model._MCHomelabel.HousesTittle</p>
+                                </a>
+                            </div>
+
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12 animate__animated animate__fadeInUp ">
+                                <a class=" My_link shadow">
+                                    <img class="my_link_img" src="~/Assets/Images/Councillors.png">
+                                    <h4 class="fw-bold">@Model.Councilors </h4>
+                                    <p class="My_link_text"> @Model._MCHomelabel.Councilors</p>
+                                </a>
+                            </div>
+
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12  animate__animated animate__fadeInUp">
+                                <a class=" My_link shadow">
+                                    <img class="my_link_img" src="~/Assets/Images/House-Meetings.png">
+                                    <h4 class="fw-bold">@Model.HouseMeetings </h4>
+                                    <p class="My_link_text">@Model._MCHomelabel.Meetings</p>
+                                </a>
+                            </div>
+
+
+
+
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12 animate__animated animate__fadeInUp">
+                                <a class=" My_link shadow">
+                                    <img class="my_link_img" src="~/Assets/Images/FCC-Meetings.png">
+                                    <h4 class="fw-bold">@Model.FCCMeetings </h4>
+                                    <p class="My_link_text">@Model._MCHomelabel.FCC</p>
+                                </a>
+                            </div>
+
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12 animate__animated animate__fadeInUp ">
+                                <a class=" My_link shadow">
+                                    <img class="my_link_img" src="~/Assets/Images/Departments.png">
+                                    <h4 class="fw-bold">@Model.Departments</h4>
+                                    <p class="My_link_text">@Model._MCHomelabel.Departments</p>
+                                </a>
+                            </div>
+
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12 animate__animated animate__fadeInUp ">
+                                <a class=" My_link shadow">
+                                    <img class="my_link_img" src="~/Assets/Images/Employees.png">
+                                    <h4 class="fw-bold">@Model.Employees </h4>
+                                    <p class="My_link_text">@Model._MCHomelabel.Employees</p>
+                                </a>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+        </section>
+
+        <!--<section class="container-xxl management-section">
+            <div class="banner_c row">
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12 div_1 p-3">
+                    <div class="management-div">
+                        <h3 class="Section_Heading fw-bold mb-3"> House Meetings</h3>
+
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="house-tab" data-toggle="tab" data-target="#house-tab-pane" type="button" role="tab" aria-controls="house-tab-pane" aria-selected="true">House Meetings</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="fncc-tab" data-toggle="tab" data-target="#fncc-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">F&CC Meetings</button>
+                            </li>
+                            @*<li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contact-tab" data-toggle="tab" data-target="#other-tab-pane" type="button" role="tab" aria-controls="other-tab-pane" aria-selected="false">Other Meetings</button>
+                            </li>
+                            *@
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="house-tab-pane" role="tabpanel" aria-labelledby="house-tab" tabindex="0">
+                                <div class="swiper meetingSwiper">
+                                    <div class="swiper-wrapper" id="houseresolutions">
+
+
+
+                                        @*<div class="swiper-slide">
+                                            <div class="meetingcard w-100 p-3">
+                                                <div class="text-end mb-3">
+                                                    <span> <img class="calender-icon" src="~/Assets/Images/SVG/calender.svg" />  </span> <span> 06/09/2023</span>
+                                                </div>
+                                                <div class="meeting-detail">
+                                                    <span> Meeting Title</span>
+                                                    <h4 class="meeting-title"> House Discussions</h4>
+                                                </div>
+
+                                                <div class="resolutions-detail p-3">
+                                                    <h5 class="total-resolution"> Total Resolution Passed: <span> 30</span> </h5>
+                                                    <hr class="divider" />
+                                                    <ul class="list-unstyled">
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/codicon_pass.svg" /> </span>
+                                                                <span>Approved by LG</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/clarification.svg" /> </span>
+                                                                <span>For clarification</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/clarified.svg" /> </span>
+                                                                <span>clarified</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/under-implementation.svg" /> </span>
+                                                                <span>Under Implementation</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/implemented.svg" /> </span>
+                                                                <span>Implemented</span>
+                                                            </div>
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <div class="meetingcard w-100 p-3">
+                                                <div class="text-end mb-3">
+                                                    <span> <img class="calender-icon" src="~/Assets/Images/SVG/calender.svg" />  </span> <span> 06/09/2023</span>
+                                                </div>
+                                                <div class="meeting-detail">
+                                                    <span> Meeting Title</span>
+                                                    <h4 class="meeting-title"> House Discussions</h4>
+                                                </div>
+
+                                                <div class="resolutions-detail p-3">
+                                                    <h5 class="total-resolution"> Total Resolution Passed: <span> 30</span> </h5>
+                                                    <hr class="divider" />
+                                                    <ul class="list-unstyled">
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/codicon_pass.svg" /> </span>
+                                                                <span>Approved by LG</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/clarification.svg" /> </span>
+                                                                <span>For clarification</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/clarified.svg" /> </span>
+                                                                <span>clarified</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/under-implementation.svg" /> </span>
+                                                                <span>Under Implementation</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/implemented.svg" /> </span>
+                                                                <span>Implemented</span>
+                                                            </div>
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="swiper-slide">
+                                            <div class="meetingcard w-100 p-3">
+                                                <div class="text-end mb-3">
+                                                    <span> <img class="calender-icon" src="~/Assets/Images/SVG/calender.svg" />  </span> <span> 06/09/2023</span>
+                                                </div>
+                                                <div class="meeting-detail">
+                                                    <span> Meeting Title</span>
+                                                    <h4 class="meeting-title"> House Discussions</h4>
+                                                </div>
+
+                                                <div class="resolutions-detail p-3">
+                                                    <h5 class="total-resolution"> Total Resolution Passed: <span> 30</span> </h5>
+                                                    <hr class="divider" />
+                                                    <ul class="list-unstyled">
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/codicon_pass.svg" /> </span>
+                                                                <span>Approved by LG</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/clarification.svg" /> </span>
+                                                                <span>For clarification</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/clarified.svg" /> </span>
+                                                                <span>clarified</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/under-implementation.svg" /> </span>
+                                                                <span>Under Implementation</span>
+                                                            </div>
+
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+
+                                                        <li class="resolution-state">
+                                                            <div class="d-flex gap-1">
+                                                                <span class="meeting-card-icon"> <img class="" src="~/Assets/Images/SVG/implemented.svg" /> </span>
+                                                                <span>Implemented</span>
+                                                            </div>
+                                                            <span class="numb-count"> 7 </span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>*@
+
+
+
+                                    <!--</div>
+                                    <div class="swiper-button-next"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-pagination"></div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="fncc-tab-pane" role="tabpanel" aria-labelledby="fncc-tab" tabindex="0">
+                                <div class="swiper meetingSwiper">
+                                    <div class="swiper-wrapper" id="FANDCC">
+
+
+                                    </div>
+                                    <div class="swiper-button-next"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-pagination"></div>
+                                </div>
+                            </div>-->
+                            @* <div class="tab-pane fade" id="other-tab-pane" role="tabpanel" aria-labelledby="other-tab" tabindex="0">Other Meetings</div>*@
+
+                        <!--</div>
+
+
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+        </section>-->
+
+
+        <section class="container-xxl management-section">
+            <div class="banner_c row">
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12 div_1">
+                    <div class="management-div">
+
+                        @*<ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="house-tab" data-toggle="tab" data-target="#house-tab-pane" type="button" role="tab" aria-controls="house-tab-pane" aria-selected="true">House Meetings</button>
+                            </li>
+                        </ul>*@
+                        <h3 class="fw-bold nav-tabs-2"> House Meetings</h3>
+                        @*<p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>*@
+
+                        <div class="tab-content"  id="myTabContent">
+                            <div class="tab-pane fade show active" id="house-tab-pane" role="tabpanel" aria-labelledby="house-tab" tabindex="0">
+                                <div class="swiper meetingSwiper">
+                                    <div class="swiper-wrapper" id="houseresolutions">
+
+                                    </div>
+                                    <div class="swiper-button-next"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-pagination"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12 div_1 ">
+                    <div class="management-div">
+                        <h3 class="fw-bold nav-tabs-1"> F&CC Meetings</h3>
+                        @*<p> Lörem ipsum är trare, valstuga on peplaktiga. Pressade rys äkande timisk. Vanynat prekemi, rutkod svischa. Serieotrohet kroren.</p>*@
+                        @*<ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="fncc-tab" data-toggle="tab" data-target="#fncc-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">F&CC Meetings</button>
+                            </li>
+                        </ul>*@
+
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="fncc-tab-pane" role="tabpanel" aria-labelledby="fncc-tab" tabindex="0">
+                                <div class="swiper meetingSwiper">
+                                    <div class="swiper-wrapper" id="FANDCC">
+
+
+                                    </div>
+                                    <div class="swiper-button-next"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-pagination"></div>
+                                </div>
+                            </div>
+                            @* <div class="tab-pane fade" id="other-tab-pane" role="tabpanel" aria-labelledby="other-tab" tabindex="0">Other Meetings</div>*@
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </section>
+
+        <section class="container-xxl Gallery_section2">
+            <div>
+                <div class="Members_an_authorities justify-content-between animate__animated animate__fadeInUp">
+                    <h3 class="fw-bold"> @Model._MCHomelabel.MemberListTittle</h3>
+
+
+                    <p class="mb-0 ">@Model._MCHomelabel.MemberListDescription</p>
+
+                </div>
+
+
+                <div class="swiper memberSwiper animate__animated animate__fadeIn notranslate">
+                    <div class="swiper-wrapper">
+
+                        @foreach (CMNirdesh.Models.Member Memb in Model._Members)
+                        {
+                            <div class="swiper-slide">
+                                <div class=" gallery_card2 ">
+                                    <div class="">
+                                        <a href="#">
+                                            <img class="" src="~/MCData/@Model.MCName/@Memb.ImagePath" alt="Member">
+                                        </a>
+                                    </div>
+                                    <div class=" name_overlay position-absolute bottom-0 w-100 bg-dark bg-opacity-50 ">
+                                        <h6 class="">@Memb.MemberPreFix @Memb.MemberName</h6>
+                                        <p class="mb-0 ">@Memb.Designation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+
+                    </div>
+                    <div class="left-arrow"> <img class="swiper-button-next" src="~/Assets/Images/whitearrow-right.svg"> </div>
+                    <div class="right-arrow"> <img class="swiper-button-prev" src="~/Assets/Images/whitearrow-left.svg"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+
+
+
+            </div>
+        </section>
+
+
+
+        <!-- Latest News slider Section Start -->
+
+        <section class="container-xxl News_section">
+            <div class="News_div">
+                <div class="d-lg-flex justify-content-between align-items-center animate__animated animate__fadeInUp">
+                    <span class="pb-3">
+                        <h3 class="fw-bold Section_Heading pb-1 "> @Model._MCHomelabel.NewsTittle </h3>
+                        <p class="mb-0 ">@Model._MCHomelabel.NewsDescription</p>
+
+                    </span>
+                    <span>
+                        <a href="#" class="English"> View All  &nbsp; &nbsp;<i class="far fa-arrow-right"></i></a>
+                        <a href="#" class="Punjabi"> ਸਭ ਦੇਖੋ  &nbsp; &nbsp;<i class="far fa-arrow-right"></i></a>
+                    </span>
+
+                </div>
+
+                <div>
+                    <div class="newsSlider">
+                        @foreach (CMNirdesh.Models.News news in Model._News)
+                        {
+                            <div class="p-2">
+                                <div class=" news_card rounded p-3 ">
+                                    <div class=""><img class="rounded" src="~/MCData/@Model.MCName@news.ImagePath" alt="news"> </div>
+                                    <p class="News_publish_detail mb-2"><span class="News_Category"> News</span> &nbsp; | &nbsp; <i class="far fa-calendar-alt"></i> @news.NewsDate </p>
+                                    <a href="#" class="headline"> @news.NewsName</a>
+                                </div>
+                            </div>
+                        }
+
+                        @foreach (CMNirdesh.Models.News news in Model._News)
+                        {
+                            <div class="p-2">
+                                <div class=" news_card rounded p-3 ">
+                                    <div class=""><img class="rounded" src="~/MCData/@Model.MCName@news.ImagePath" alt="news"></div>
+                                    <p class="News_publish_detail mb-2"><span class="News_Category"> News</span> &nbsp; | &nbsp; <i class="far fa-calendar-alt"></i> @news.NewsDate </p>
+                                    <a href="#" class="headline"> @news.NewsName</a>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Latest News Section Start -->
+        <!-- our Gallery Section Start -->
+
+        <section class="container-xxl Gallery_section">
+            <div>
+                <div class="d-lg-flex justify-content-between">
+                    <h3 class="fw-bold"> @Model._MCHomelabel.GallaryTittle </h3>
+                    <p class="btn btn-view-all English"> Explore More &nbsp; &nbsp;<i class="far fa-arrow-right"></i></p>
+                    <p class="btn btn-view-all Punjabi"> ਹੋਰ ਵੇਖੋ  &nbsp; &nbsp;<i class="far fa-arrow-right"></i></p>
+                </div>
+
+                <div class="gallerySlider">
+                    @foreach (CMNirdesh.Models.Gallary Gal in Model._Gallary)
+                    {
+                        <div id="@Gal.Id" class="p-1">
+                            <div class=" gallery_card rounded p-2 ">
+                                <div class=""><img class="rounded" src="@Url.Content("~/MCSecure/HomeGallery/"+ Gal.ImagePath)" alt="news">
+                                              <h4 class="carousal_title text-center mt-1" style="font-size: 10pt;">@Gal.ImageTittle</h4>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Gallery Section Ends -->
+        <!-- Slick slider section -->
+
+        <section class="container-xxl outer-section p-3">
+
+            <div class="slider">
+                <div><img class="" src="~/Assets/Images/slide1.png"></div>
+                <div><img class="" src="~/Assets/Images/slide2.png"></div>
+                <div><img class="" src="~/Assets/Images/slide3.png"></div>
+                <div><img class="" src="~/Assets/Images/slide4.png"></div>
+                <div><img class="" src="~/Assets/Images/slide5.png"></div>
+                <div><img class="" src="~/Assets/Images/slide6.png"></div>
+            </div>
+        </section>
+
+
+
+        @*<div>
+            <button class="btn btn_ebook_out"> <i class="fas fa-book-open"></i> House E-book </button>
+        </div>*@
+
+        <div class="popper_notice">
+            <div class="btn btn_notice"><i class="far fa-newspaper"></i> @Model._MCHomelabel.NoticeTittle</div>
+            <div class="notice-toggle-area shadow" id="notice-togglearea">
+                <div class="Popup_header">
+
+                    <h6 class="mb-0 fw-bold English"> Latest Notices </h6>
+                    <h6 class="mb-0 fw-bold Punjabi"> ਨਵੇਂ ਨੋਟਿਸ </h6>
+                    <a href="" class="English"> View All</a>
+                    <a href="" class="Punjabi"> ਸਭ ਦੇਖੋ </a>
+                </div>
+                <div class="notice_board">
+
+                    <marquee class="marquee" width="100%" loop="infinite" behavior="scroll" direction="up" scrolldelay="100" height="300" onmouseover="this.stop();" onmouseout="this.start();">
+                        <ul class="notice-list w-100 ">
+
+                            @foreach (CMNirdesh.Models.News news in Model._FlashNews)
+                            {
+                                <li id="@news.NewsId" class="notice_item rounded mb-2">
+                                    <a href="#" class="notice_link">
+                                        <h6 class="notice_date mb-1 rounded">@news.NewsDate </h6>
+                                        <p class="w-100 mb-0"> @news.NewsName</p>
+                                    </a>
+                                </li>
+                            }
+
+
+
+                        </ul>
+                    </marquee>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js" type="text/javascript"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+<script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //$("#ddlmc").multipleSelect({
+        //    filter: true,
+        //    width:"175px",
+        //    placeholder: 'Select Municipal',
+        //});
+       
+
+
+        loadAgendaData(@Model.MCId);
+        loadAgendaDataFCCResolutions(@Model.MCId);
+
+    });
+    $('.slider').slick({
+        dots: false,
+        arrows: false,
+        infinite: true,
+        speed: 100,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        autoplay: true,
+        responsive: [
+            {
+                breakpoint: 1440,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    dots: false
+                }
+            },
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    // dots: true
+                }
+            },
+            {
+                breakpoint: 769,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+        ]
+    });
+
+    $('.newsSlider').slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        autoplay: true,
+        responsive: [
+            {
+                breakpoint: 1440,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    dots: false
+                }
+            },
+
+            {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    dots: false
+                }
+            },
+
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    // dots: true
+                }
+            },
+            {
+                breakpoint: 769,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+        ]
+    });
+
+    $('.gallerySlider').slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+        speed: 100,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        autoplay: true,
+        responsive: [
+            {
+                breakpoint: 1440,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    dots: false
+                }
+            },
+
+            {
+                breakpoint: 1500,
+                settings: {
+                    slidesToShow: 5,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    dots: false
+                }
+            },
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    // dots: true
+                }
+            },
+            {
+                breakpoint: 769,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+        ]
+    });
+
+    $('.memberSlider2').slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+        speed: 100,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        autoplay: true,
+        responsive: [
+            {
+                breakpoint: 1440,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    dots: false
+                }
+            },
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    infinite: true,
+                    autoplay: true,
+                    // dots: true
+                }
+            },
+            {
+                breakpoint: 769,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: true
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+        ]
+    });
+
+
+    $('.memberSlider').slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+        vertical: true,
+        speed: 100,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        responsive: [
+
+        ]
+    });
+
+    $('.sectionSlider').slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+        speed: 100,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: false,
+        responsive: [
+
+        ]
+    });
+
+    $(document).ready(function () {
+        $(".btn_ebook_out").click(function () {
+            $(".ebook-toggle-area").toggle(500);
+        });
+    });
+
+    $(document).ready(function () {
+        $(".btn_notice").click(function () {
+            $(".notice-toggle-area").toggle(500);
+        });
+    });
+
+    $(document).ready(function () {
+        $('.marquee').mouseover(function () {
+            $(this).attr('scrollamount', 0);
+        }).mouseout(function () {
+            $(this).attr('scrollamount', 5);
+        });
+    });
+
+
+
+    $(document).ready(function () {
+        $("#search-button").click(function () {
+            $("#search-input").fadeToggle(500);
+        });
+    });
+
+
+
+    // $(".notice-toggle-area").css({
+    //      "min-width": "338px"
+    //  });
+    // $(document).ready(function(){
+
+    //   $(".chosen-select").chosen({no_results_text: "Oops, nothing found!"});
+    // });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+       // alert('@Url');
+    });
+    const header = document.querySelector(".header-section");
+    const toggleClass = "is-sticky";
+
+    window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 60) {
+            header.classList.add(toggleClass);
+        } else {
+            header.classList.remove(toggleClass);
+        }
+    });
+</script>
+
+<script>
+
+    /*    ----------------------------- Member Swiper ------------------------*/
+
+    var swiper = new Swiper(".memberSwiper", {
+        effect: "coverflow",
+        grabCursor: true,
+        /*centeredSlides: true,*/
+        /*slidesPerView: "auto",*/
+        slidesPerView: 5,
+        spaceBetween: 20,
+        loop: false,
+        coverflowEffect: {
+            rotate: 30,
+            stretch: 0,
+            depth: 100,
+            modifier:1,
+            slideShadows: true,
+        },
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        },
+        // pagination: {
+        //   el: ".swiper-pagination",
+        // },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+            slidesPerView: 5,
+        },
+
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
+
+            575: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
+            720: {
+                slidesPerView: 3,
+                spaceBetween: 20
+            },
+            991: {
+                slidesPerView: 3,
+                spaceBetween: 20
+            },
+            1024: {
+                slidesPerView: 3,
+                spaceBetween: 20
+            },
+            1200: {
+                slidesPerView:5,
+                spaceBetween: 20
+            },
+            1600: {
+                slidesPerView: 5,
+                spaceBetween: 20
+            },
+            2000: {
+                slidesPerView: 7,
+                spaceBetween: 20
+            }
+        }
+    });
+
+    /* -------------------------------------------------------------------------*/
+
+    /*    -----------------------------  Meetings slider------------------------*/
+
+    var swiper = new Swiper(".meetingSwiper", {
+       /*
+        slidesPerView: "auto",*/
+        slidesPerView: 4,
+        spaceBetween: 15,
+        loop: false,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        },
+         pagination: {
+           el: ".swiper-pagination",
+         },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+            slidesPerView: 5,
+        },
+
+
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
+
+            575: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
+            720: {
+                slidesPerView: 2,
+                spaceBetween: 20
+            },
+            991: {
+                slidesPerView: 3,
+                spaceBetween: 20
+            },
+            1024: {
+                slidesPerView: 3,
+                spaceBetween: 20
+            },
+            1200: {
+                slidesPerView: 4,
+                spaceBetween: 20
+            },
+            1600: {
+                slidesPerView: 4,
+                spaceBetween: 20
+            },
+            2000: {
+                slidesPerView:5,
+                spaceBetween: 20
+            }
+        }
+    });
+
+    /*    -----------------------------  Meetings slider end ------------------------*/
+
+
+    function Getdata() {
+
+        var mcid = $("#ddlmc").val();
+        if (mcid != "") {
+
+            $('#btngetmcdata').click();
+        } else {
+
+            window.location.href = "/StateHome/Index";
+        }
+    }
+
+
+    $("#MC-button").mouseover(function () {
+        $(".MC-List_div").show();
+        $(".MCouncil-List_div").hide();
+    });
+    $(".MC-List_div").mouseleave(function () {
+        $(".MC-List_div").hide();
+        $(".MCouncil-List_div").hide();
+    });
+
+
+    $("#MCouncil-button").mouseover(function () {
+        $(".MCouncil-List_div").show();
+        $(".MC-List_div").hide();
+    });
+    $(".MCouncil-List_div").mouseleave(function () {
+        $(".MCouncil-List_div").hide();
+        $(".MC-List_div").hide();
+    });
+
+
+    function SearchCorp() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("ULCorp");
+        console.log(ul);
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("p")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+    function SearchCons() {
+
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("txtSearchCons");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("ulCons");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("p")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+
+    function SearchMember() {
+
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("txtSearchMember");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("ulMem");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("p")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+
+    function Searchtext(text) {
+
+        var input, filter, ul, li, a, i, txtValue;
+        //input = document.getElementById("txtSearchMember");
+        filter = text;
+        ul = document.getElementById("ulMem");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("p")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+    function ChangeMC(id) {
+        if (id > 0) {
+            $("#ddlmc").val(id);
+            $('#btngetmcdata').click();
+        }
+
+    }
+
+    // Replace with your parameter value
+
+
+     
+   function loadAgendaData(mcid) {
+       var swiperWrapper = $('#houseresolutions');
+
+    $.ajax({
+        url: '/Home/GetAgendaMeetingsOfMCHouse?id=' + mcid,
+        type: 'GET',
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        success: function (result) {
+            for (var i = 0; i < result.length; i++) {
+                var pivotColumnsHtml = '';
+                for (var j = 0; j < 1; j++) {
+                    for (var key in result[j]) {
+                        if (key != "AgendaDate" && key != "AgendaId" && key !== "deptname" && key !== "AgendaDate" && key !== "Total" && key !== "AgendaName") {
+                            pivotColumnsHtml += `
+                                <li class="resolution-state">
+                                    <div class="d-flex gap-1">
+                                        <span class="meeting-card-icon">
+                                            <img class="" src="/Assets/Images/SVG/codicon_pass.svg" />
+                                        </span>
+                                        <span>${key}</span>
+                                    </div>
+                                    <span class="numb-count">${result[i][key]}</span>
+                                </li>`;
+                        }
+                    }
+                    
+                }
+                var agendaDate = result[i]["AgendaDate"] || "Unknown Date";
+                swiperWrapper.append(`
+                    <div class="swiper-slide col-lg-3 col-md-3 col-sm-6 col-12">
+                        <div class="meetingcard w-100 p-3">
+                        <div class="text-end mb-3">
+                            <span> <img class="calender-icon" src="/Assets/Images/SVG/calender.svg" /> </span> <span>${agendaDate}</span>
+                        </div>
+                                               
+                                        
+                            <div class="resolutions-detail resolution-detail-mc p-3">
+                                <h5 class="total-resolution">Total Resolutions Passed: <span>${result[i]['Total']}</span></h5>
+                                <hr class="divider" />
+                                <ul class="list-unstyled mb-0">
+                                    ${pivotColumnsHtml}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+        },
+        error: function (error) {
+            console.log('An error occurred:', error);
+        }
+    });
+   }
+   function loadAgendaDataFCCResolutions(mcid) {
+        var swiperWrapper2 = $('#FANDCC');
+        $.ajax({
+            url: '/Home/GetAgendaMeetingsOfFCCResolutions?id=' + mcid,
+            type: 'GET',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                for (var i = 0; i < result.length; i++) {
+                    var pivotColumnsHtml = '';
+                    for (var j = 0; j < 1; j++) {
+                        for (var key in result[j]) {
+                            if (key != "AgendaDate" && key != "AgendaId" && key !== "deptname" && key !== "AgendaDate" && key !== "Total" && key !== "AgendaName") {
+                                pivotColumnsHtml += `
+                            <li class="resolution-state">
+                                <div class="d-flex gap-1">
+                                    <span class="meeting-card-icon">
+                                        <img class="" src="/Assets/Images/SVG/codicon_pass.svg" />
+                                    </span>
+                                    <span>${key}</span>
+                                </div>
+                                <span class="numb-count">${result[i][key]}</span>
+                            </li>`;
+                            }
+                        }
+                    }
+                    var agendaDate = result[i]["AgendaDate"] || "Unknown Date";
+                    swiperWrapper2.append(`
+                <div class="swiper-slide col-lg-3 col-md-3 col-sm-6 col-12">
+                    <div class="meetingcard w-100 p-3">
+                        <div class="text-end mb-3">
+                            <span> <img class="calender-icon" src="/Assets/Images/SVG/calender.svg" /> </span> <span>${agendaDate}</span>
+                        </div>
+                      
+                        <div class="resolutions-detail resolution-detail-fncc p-3">
+                            <h5 class="total-resolution">Total Resolutions Passed: <span>${result[i]['Total']}</span></h5>
+                            <hr class="divider" />
+                            <ul class="list-unstyled mb-0">
+                                ${pivotColumnsHtml}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                `);
+                }
+            },
+            error: function (error) {
+                console.log('An error occurred:', error);
+            }
+        });
+    }
+
+
+
+
+
+
+</script>

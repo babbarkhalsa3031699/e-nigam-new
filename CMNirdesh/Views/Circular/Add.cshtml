@@ -1,0 +1,318 @@
+﻿@model CMNirdesh.Models.Circular
+
+@{
+    int Sr = 1;
+}
+
+<head>
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+
+
+
+    <style>
+        .select-box {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .dropdown {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        .dropdown-options {
+            display: none;
+            border: 1px solid #ccc;
+            background: #fff;
+            position: absolute;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+            .dropdown-options label {
+                display: block;
+                padding: 5px;
+                cursor: pointer;
+            }
+
+            .dropdown-options input {
+                margin-right: 5px;
+            }
+
+        .search-box {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .selected-items {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .selected-item {
+            background: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+            .selected-item span {
+                margin-left: 5px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+                .selected-item span:hover {
+                    color: #ff4d4d;
+                }
+    </style>
+</head>
+
+<div id="main-content" style="margin-top: 20px;">
+
+
+
+
+  
+
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <div>
+
+
+                <h4 id="lblmenuname">Circulars >>   Notices</h4>
+
+                <hr />
+            </div>
+
+
+        </div>
+        <section class="form_dsign">
+            <div class="container-fluid p-0">
+                <div class="inr_frm_dsgn">
+                    <!-- Add Circular Button -->
+                    <div class="widget-box" id="divAction">
+                        <div class="widget-header widget-header-flat rounded-top rounded-0">
+                            <h4 class=""> Circulars/Notices</h4>
+                            <div class="widget-toolbar no-border">
+                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="AddNew()">
+                                    <i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add Circular
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form_lyot">
+                        @if (Model.CircularList.Count > 0)
+                        {
+                            <div class="table-responsive">
+                                <table id="example" class="table table-hover table-bordered" style="font-size:20px;">
+                                    <thead>
+                                        <tr class="table-heading">
+                                            @*<th>Sr. No</th>*@
+                                            <th>Department</th>
+                                            <th>Details</th>
+                                            <th>Circular Date</th>
+                                            <th>PDF</th>
+                                            @*<th>Action</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var items in Model.CircularList)
+                                        {
+                                            <tr>
+                                                @*<td>@Sr</td>*@
+                                                <td>@items.DepartmentName</td>
+                                                <td>@Html.DisplayFor(modelItem => items.Subject)</td>
+                                                <td>@items.CircularDate.ToString("dd/MM/yyyy")</td>
+                                                <td>
+                                                    <a href="@Model.fileacessingUrl/@items.PDFPath" target="_blank"><img src="~/Assets/pdficon.jpg" height="35" width="30"></a>
+                                                </td>
+                                               
+                                            </tr>
+                                            Sr = @Sr + 1;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Circular Modal -->
+            <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Circular Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @using (Html.BeginForm("Add", "Circular", FormMethod.Post, new { enctype = "multipart/form-data", id = "circularForm", @class = "form-horizontal" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.CircularID)
+                                @Html.Hidden("SelectedContacts", null, new { id = "selectedContacts" })
+
+                                @*<div class="form-group">
+                                    @Html.Label("Circular Date")
+                                    @Html.EditorFor(model => model.CircularDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.CircularDate, null, new { @class = "text-danger" })
+                                </div>*@
+
+                                <div class="form-group">
+                                    <label>Select Departments</label>
+                                    <div class="select-box">
+                                        <div class="dropdown">Select Departments</div>
+                                        <div class="dropdown-options">
+                                            <div class="selected-items"></div>
+                                            <label><input type="checkbox" id="select-all"> Select All</label>
+                                            @foreach (var agenda in Model.mDepartmentList)
+                                            {
+                                                <label><input type="checkbox" class="option" value="@agenda.Value">@agenda.Text</label>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Details")
+                                    @Html.TextAreaFor(model => model.Subject, new { @class = "form-control", rows = 5, cols = 40 })
+
+                                    @*@Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control" } })*@
+                                    @Html.ValidationMessageFor(model => model.Subject, null, new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Upload PDF")
+                                    <input type="file" id="PDFFile" name="PDFFile" class="form-control" accept=".pdf" />
+                                    <span class="text-danger" id="fileError"></span>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            }
+                        </div>
+                        <div id="validationErrors" class="text-danger"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+
+
+        $('#example').DataTable({
+            "bLengthChange": false,
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ],
+            //order: [[1, 'desc']], // Sort by Meeting Date
+            //columnDefs: [
+            //    { targets: 1, type: 'date' }
+            //]
+        });
+
+        const dropdown = $('.dropdown');
+        const dropdownOptions = $('.dropdown-options');
+        const selectAll = $('#select-all');
+        const options = $('.option');
+        const selectedItemsContainer = $('.selected-items');
+
+        dropdown.click(function () {
+            dropdownOptions.toggle();
+        });
+
+        selectAll.change(function () {
+            const isChecked = $(this).prop('checked');
+            options.prop('checked', isChecked);
+            updateSelectedContacts();
+        });
+
+        options.change(function () {
+            updateSelectedContacts();
+            const allChecked = options.length === options.filter(':checked').length;
+            selectAll.prop('checked', allChecked);
+        });
+
+        function updateSelectedContacts() {
+            selectedItemsContainer.empty();
+            const selectedContacts = options.filter(':checked').map(function () {
+                const value = $(this).val();
+                const text = $(this).parent().text().trim();
+                const item = $(`<div class="selected-item">${text} <span data-value="${value}">&times;</span></div>`);
+                item.find('span').click(function () {
+                    const value = $(this).data('value');
+                    $(`.option[value="${value}"]`).prop('checked', false);
+                    item.remove();
+                });
+                selectedItemsContainer.append(item);
+                return value;
+            }).get();
+            $('#selectedContacts').val(selectedContacts.join(','));
+        }
+
+        $(document).click(function (e) {
+            if (!dropdown.is(e.target) && dropdown.has(e.target).length === 0 && !dropdownOptions.is(e.target) && dropdownOptions.has(e.target).length === 0) {
+                dropdownOptions.hide();
+            }
+        });
+
+        // Prevent clicks inside the dropdown options from closing it
+        dropdownOptions.click(function (e) {
+            e.stopPropagation();
+        });
+    });
+
+
+
+     // Show modal if there was a validation error
+        var showModal = '@ViewBag.ShowModal';
+        if (showModal === 'True') {
+            var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+            myModal.show();
+        }
+
+        // Reset modal fields when closed
+        var myModalEl = document.getElementById('myModal');
+        myModalEl.addEventListener('hidden.bs.modal', function () {
+            $('#circularForm')[0].reset(); // clear form
+            $('#selectedContacts').val(''); // clear hidden field
+            $('.dropdown-options .option').prop('checked', false); // clear checkboxes
+        });
+
+
+
+</script>

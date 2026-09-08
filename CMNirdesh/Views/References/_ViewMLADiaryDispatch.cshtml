@@ -1,0 +1,51 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+
+        try {
+           
+            $("#loader-wrapper").show();
+          //  $('#MainDiv').html('');
+            $.ajax({
+                async: true,
+                url: "/References/MLADiaryReportDispatch",
+                type: 'GET',
+                success: function (data) {
+                 
+                        LoadDispatchHtml(data);
+                   
+
+
+
+                    //debugger;
+                    
+                   
+
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                    alert(xhr.responseText);
+                    alert(thrownError);
+                }
+            })
+        }
+        catch (e) {
+            alert('error occured' + e);
+           
+        }
+    });
+    function LoadDispatchHtml(data)
+    {
+        //alert("Load Dispatch Called");
+      //  alert(data);
+
+        //debugger;
+        $('#MainDiv').html(data);
+        $("#MainDiv").css("display", "block");
+        //  ClearControls();
+        $("#loader-wrapper").hide();
+    }
+
+
+</script>
+

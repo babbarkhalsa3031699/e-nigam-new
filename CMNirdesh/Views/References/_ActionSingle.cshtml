@@ -1,0 +1,1909 @@
+@model CMNirdesh.Models.Diaries.MlaDiaryData
+
+@using CMNirdesh.Models
+
+@{
+    var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
+    string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/TempFile/";
+    string SiteName = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceName"];
+    System.Globalization.CultureInfo Indian = new System.Globalization.CultureInfo("hi-IN");
+    string BlobPath = CMNirdesh.Models.BlobStorage.GetStorageAcessingPath();
+
+}
+<input type="hidden" id="subjectold" name="subjectold" value="" />
+<input type="hidden" id="subjectdetailold" name="subjectdetailold" value="" />
+
+<link href="~/Content/Layout/style.css" rel="stylesheet" />
+
+@*<script src="~/Scripts/tinymce/tinymce.min.js"></script>*@
+<script src="~/Scripts/jquery.ui.widget.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<script src="~/Content/Layout/jquery.slider.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+<link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+<link href="~/Content/Layout/style.css" rel="stylesheet" />
+
+<style>
+    #myTab .nav-item .active {
+        padding: 8px 16px;
+        border-top-left-radius: 6px !important;
+        border-top-right-radius: 6px !important;
+    }
+
+    input#enablefund {
+        height: 14px;
+    }
+
+    th {
+        background-color: grey;
+    }
+
+    input[type="file" i] {
+        color: #fff;
+    }
+
+    .ui-datepicker {
+        width: 25em;
+        /*padding: .2em .2em 0;*/
+        display: none;
+        border: 1px solid;
+        font-weight: bolder;
+    }
+
+
+    .Mytextarea {
+        font-size: 10px;
+        height: 14px !important;
+        color: #333 !important;
+        font-family: inherit;
+    }
+
+    .profile-info-name {
+        width: 1% !important;
+    }
+
+    .width {
+        width: 76% !important;
+    }
+
+    .fund {
+        width: 11px !important;
+        padding-right: 100px;
+        padding-left: 3px;
+    }
+
+    .tfund {
+        float: left
+    }
+
+    .fundval {
+        padding-right: 20px;
+        font-weight: bold;
+    }
+
+    .tfund {
+        width: 50%;
+    }
+
+    .mar {
+        padding-top: 12px !important;
+    }
+
+    .fundtd {
+        padding: 1px !important;
+        border: 1px solid #ddd;
+        text-align: center;
+        color: green;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .nodelete {
+        display: none;
+    }
+
+    .hand {
+        cursor: pointer;
+    }
+    
+
+    .refhide {
+        display: none;
+    }
+
+    .refshow {
+        display: block;
+    }
+
+    .rotingtxt1 {
+        -webkit-transform: rotate(20deg);
+        -moz-transform: rotate(20deg);
+        -o-transform: rotate(20deg);
+        transform: rotate(20deg);
+        font-size: 3em;
+        color: rgba(255, 5, 5, 0.17);
+        /*position: absolute;*/
+        font-family: 'Denk One', sans-serif;
+        text-transform: uppercase;
+        width: 30px;
+        margin-bottom: -42px !important;
+    }
+
+    .filedraft {
+        text-align: right;
+        font-weight:;
+    }
+
+    .pdfrow1 {
+        position: fixed;
+        width: 90%;
+    }
+    .abc.col-lg-6 {
+        float: right;
+        margin-top: -74px;
+        padding-left: 141px;
+    }
+</style>
+<script>
+
+
+
+
+
+    var menuname = $("#RefMenuName").val();
+
+    var MenuName2 = 'No.:';
+    var MenuName = menuname.concat(" ", MenuName2);
+
+   // $('#myref').text(MenuName);
+    $('#myreff').text(MenuName);
+
+
+
+
+    $(document).ready(function () {
+        $.noConflict();
+
+        
+         
+    //var PannelId = $("#PannelId").val();
+    ////alert(PannelId);
+    //if (PannelId == "") {
+    //    Swipe(2);
+    //} else {
+    //    Swipe(PannelId);
+    //}
+        var refid = @Model.RefId;
+
+
+
+        tinymce.remove("#subjectdetailforedit_" + refid);
+         tinyMCE.init({
+             selector: "#subjectdetailforedit_"+refid,
+             branding: false,
+             content_style:
+                 "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+         });
+
+
+
+
+    getsubjectandsubjectDetails();
+    var refid = '@Model.RefId';
+    $("#subjectboxold_"+ refid).css("display", "block");
+
+    $("#DocumentTypeNameChange").prop("disabled", true);
+    $("#ddlOfficeChange").prop("disabled", true);
+
+    $("#switchbuttondiv").css("display", "block");
+    $("#subjectdetailboxold_"+refid).css("display", "block");
+    //ShowButton();
+
+
+
+
+
+
+
+     var switchStatus = false;
+    $("#switchbutton").click( function () {
+        if ($(this).is(':checked')) {
+            switchStatus = $(this).is(':checked');
+            //$("#DocumentTypeNameChange").prop("disabled", false);
+            $("#ddlOfficeChange").prop("disabled", false);
+            $("#Term").prop("disabled", false);
+            $("#PriorityType").prop("disabled", false);
+            $("#subjectbox").css("display", "block");
+            $("#subjectdetailbox_"+refid).css("display", "block");
+             var refid = '@Model.RefId';
+             $("#subjectboxold_"+ refid).css("display", "none");
+
+            $("#subjectdetailboxold_" + refid).css("display", "none");
+            $("#EditUpdateButton").show();
+
+            S_enable = 1;
+            SD_enable = 1;
+            office_enable = 1;
+        }
+        else {
+            var refid = '@Model.RefId';
+            switchStatus = $(this).is(':checked');
+           // $("#DocumentTypeNameChange").prop("disabled", true);
+            $("#ddlOfficeChange").prop("disabled", true);
+            $("#Term").prop("disabled", true);
+            $("#PriorityType").prop("disabled", true);
+            $("#subjectbox").css("display", "none");
+            $("#subjectdetailbox_"+refid).css("display", "none");
+
+             $("#subjectboxold_"+ refid).css("display", "block");
+
+            $("#subjectdetailboxold_" + refid).css("display", "block");
+            $("#EditUpdateButton").hide();
+            S_enable = 0;
+            SD_enable = 0;
+
+        }
+    });
+
+
+    });
+
+        function getsubjectandsubjectDetails() {
+            var refid = @Model.RefId;
+
+
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("getsubjectandsubjectDetails", "References")',
+                datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: {refid:refid},
+                success: function (response) {
+                    if (response != null) {
+                        $("#subjectforedit_"+refid).val(response[0].subject);
+                         $("#subjectold_"+refid).val(response[0].subject);
+                        $("#subjectdetailforedit_"+refid).val(response[0].SubjectDetails);
+                        $("#subjectdetailold_"+refid).val(response[0].SubjectDetails);
+                        tinymce.get('subjectdetailforedit_'+refid).setContent(response[0].SubjectDetails);
+                    }
+                    else {
+                        $("#loader-wrapper").hide();
+                    }
+                },
+                error: function (error) {
+                }
+            });
+    }
+
+    function EditSubject()
+    {
+        S_enable = 1;
+        var refid = '@Model.RefId';
+       $("#subjectbox_"+refid).css("display", "block");
+        $("#subjectboxold_" + refid).css("display", "none");
+        $("#EditUpdateButton").show();
+        this.addClass('green');
+    }
+
+            function openRes(IDD) {
+
+        var mainRefid= $('#RefId').val();
+        var ID = IDD;
+    $('#SingleModelEditbody').html('');
+     var pathurl = '@Url.Action("EditSingleEntry", "References")';
+      //  var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+            async: true,
+            data: { ID: ID, MainRefId: mainRefid },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //debugger;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#SingleModelEdit").css("display", "block");
+                    $('#SingleModelEditbody').html(data);
+                    $(".yellow-list").animate({ scrollTop: $('ul.yellow-list li:last').offset().top + 30 });
+
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+        //$('#InboxModelbody').html('');
+
+    //closeInboxEdit();
+
+
+
+
+
+}
+
+
+    function EditDetails() {
+            SD_enable = 1;
+             var refid = '@Model.RefId';
+            $("#subjectdetailbox_"+refid).css("display", "block");
+        $("#subjectdetailboxold_" + refid).css("display", "none");
+        $("#EditUpdateButton").show();
+        this.addClass('green');
+    }
+
+    function EditOffice()
+        {
+    office_enable = 1;
+    $("#ddlOfficeChange").prop("disabled", false);
+    $("#EditUpdateButton").show();
+        this.addClass('green');
+    }
+
+    function updatesubject() {
+
+        var refid = @Model.RefId;
+        var subject = $("#subjectforedit_"+refid).val();
+        var subjectold = $("#subjectold_" + refid).val();
+        if (subject == "") {
+            alert("Kindly fill the subject first");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        formData.append("subject", subject);
+        formData.append("subjectold", subjectold);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("updatesubject", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+
+                        $("#Subject").val(subject);
+                        $("#SpanSubject_"+refid).html(subject);
+                       // alert("Subject Updated Succesfully");
+                    }
+                    if (response == "0") {
+                        alert("Subject Updation Failed.");
+                    }
+                }
+            });
+
+    }
+
+
+    function updatesubjectdetail() {
+
+        var refid = @Model.RefId;
+
+        var subjectdetail = tinymce.get('subjectdetailforedit_'+refid).getContent();
+        var subject = $("#subjectforedit_" + refid).val();
+        if (subjectdetail == "" || subjectdetail == null) {
+            alert("Kindly fill the subject detail first");
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("refid", refid);
+        //formData.append("subject", subject);
+        formData.append("subjectdetail", subjectdetail);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("updatesubjectdetails", "References")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                       // alert("Details Updated Succesfully");
+                        //$("#SubjectDetails").val(subjectdetail);
+                        $("#divSubjectDetails_"+refid).html(subjectdetail);
+
+                    }
+                    if (response == "0") {
+                        alert("Details Updation Failed.");
+                    }
+                }
+            });
+
+    }
+
+      function UpdateOffice() {
+      var refid = @Model.RefId;
+       var officeId = $('#ddlOfficeChange').val();
+
+      if (officeId == null || officeId == "" || officeId == undefined) {
+          alert("Please select Office.");
+          return false;
+      }
+      if (refid == null || refid == "" || refid == undefined) {
+          alert("Some Error Occured Try Again");
+          return false;
+      }
+
+      var formData = new FormData();
+      formData.append("refid", refid);
+      formData.append("ToOfficeId", officeId);
+          $.ajax({
+              type: "POST",
+              url: '@Url.Action("UpdateToOffice", "References")',
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function (response) {
+                  if (response == "1") {
+                      alert("Office Updated Successfully. ")
+                     // $("#DocumentTypeName").text($("#doctype option:selected").text());
+                      $("#editDoctypebox").css("display", "none");
+
+                  }
+                  if (response == "0") {
+                      alert("Data Updation Failed.");
+                                 $('#ddlOfficeChange').val( @Model.ToOfficeId);
+
+                  }
+              }
+          });
+
+  }
+
+    function EditUpdate() {
+        if (S_enable) {
+            updatesubject();
+        }
+        if (SD_enable) {
+            updatesubjectdetail();
+        }
+
+        //if (office_enable) {
+        //    UpdateOffice();
+        //}
+
+             var refid = '@Model.RefId';
+        $("#subjectbox_" + refid).css("display", "none");
+        $("#subjectboxold_" + refid).css("display", "block");
+
+        $("#subjectdetailbox_"+refid).css("display", "none");
+        $("#subjectdetailboxold_" + refid).css("display", "block");
+
+        $("#ddlOfficeChange").prop("disabled", true);
+
+        $("#EditUpdateButton").hide();
+        alert("Details Updated Succesfully");
+    }
+
+
+    function updateAct(refid, a) {
+        var actId = $(a).val();
+
+        var formData = new FormData();
+        formData.append("ActId", actId);
+        formData.append("refId", refid);
+        if (actId != "") {
+        if (confirm("Are you sure you want to Save?")) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveAct", "Agenda")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Saved Successfully.");
+
+                    }
+                    if (response == "0") {
+                        alert("Updation Failed.");
+                    }
+                }
+            });
+
+        }
+        }
+}
+</script>
+
+
+
+
+@using (Html.BeginForm("SaveUpdateSingleAction", "References", FormMethod.Post, new { @id = "formActionDiary", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    DateTime crdt = Convert.ToDateTime(Model.CreatedDate);
+    string dt = crdt.ToString("dd/MM/yyyy");
+    string sec = crdt.ToString("hh:mm tt");
+
+<div class="pdfrow1 col-lg-12">
+        <div class="abc col-lg-6">
+            <h4 class="widget-title form_heading mb-0">
+                Annexure:
+            </h4>
+            @foreach (var item1 in Model.MultiFileModel)
+            {
+
+                <a class="btn btn-primary" target="_blank" href="@BlobPath@item1.FileName">@item1.name</a>
+            }
+        </div>
+    </div>
+    <div class="row modal_row">
+
+
+
+        <div class="col-md-12 col-lg-12 col-xl-12 ">
+            <div class="row px-lg-3 align-items-center mb-3">
+                @*<div class="col-md-1 col-sm-2 col-12 ">
+                    <label class="switch" style="display:none;" id="switchbuttondiv">
+                        <input type="checkbox" id="switchbutton">
+                        <span class="slider round"> </span>
+                    </label>
+                </div>*@
+
+                <div class="col-md-12 col-sm-12 col-12 ">
+                    <div class="top-tools ">
+                        <h4 class="widget-title form_heading mb-0">
+                            ID: #@Model.RefId @*| Date: @dt&nbsp;@sec*@
+
+                        </h4>
+
+
+                        @*<div style="display: flex;">
+                                <h4 id="myreff">
+                                </h4>
+                                <h4>
+                                    #@Model.LetterNo
+                                </h4>
+                            </div>*@
+
+
+
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+            <ul class="nav tabtop-space nav-tabs" id="UpdateTab" role="tablist">
+                <li id="ViewTab" class="nav-item hand" role="presentation">
+                    <a class="nav-link active" id="view-tab" data-bs-toggle="tab" data-bs-target="#view_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">Action Taken</a>
+                </li>
+                @if (Model.HideUpdate == "Yes") { }
+                else
+                {
+                    @*<li id="NotingTab" class="nav-item hand" role="presentation">
+                            <a class="nav-link" id="noting-tab" data-bs-toggle="tab" data-bs-target="#noting_@Model.RefId" role="tab" aria-controls="profile" aria-selected="false">Add Noting</a>
+                        </li>*@
+
+                }
+
+
+                @*<li id="RefTab" class="nav-item hand" role="presentation">
+                        <a class="nav-link" id="refupdate-tab" data-bs-toggle="tab" data-bs-target="#UpdateRef_@Model.RefId" role="tab" aria-controls="Update Ref." aria-selected="false">Update Ref. Action</a>
+                    </li>*@
+
+
+
+
+
+                @if (Model.HideUpdate == "Yes") { }
+                else
+                {
+                    @*<li id="SendTab" class="nav-item hand" role="presentation">
+                            <a class="nav-link" id="send-tab" data-bs-toggle="tab" data-bs-target="#Send_@Model.RefId"  role="tab" aria-controls="Send" aria-selected="false">Send</a>
+                        </li>*@
+
+                }
+
+
+            </ul>
+            <div class="tab-content" id="myUpdateContent">
+                <div class="tab-pane fade show active" id="view_@Model.RefId" role="tabpanel" aria-labelledby="home-tab">
+                    @if (Model.ActionDetailsList.ToList().Count > 0)
+                    {
+                        <div id="divDetails">
+
+                            @if (Model.PaperEntryType == "EditEntry")
+                            {
+                                var clss = "";
+                                if (Model.isLetter == "File")
+                                {
+                                    clss = "note-list";
+                                }
+                                else
+                                {
+                                    clss = "yellow-list";
+                                }
+                                <div class="profile_value">
+
+                                    <ul id="ulnoting" class="list-unstyled @clss">
+                                        @foreach (var item1 in Model.ActionDetailsList)
+                                        {
+
+                                            DateTime aDate = Convert.ToDateTime(item1.ActionDate);
+                                            string s1 = aDate.ToString("dd/MM/yyyy");
+                                            string s2 = aDate.ToString("hh:mm tt");
+                                            var dftclss = "";
+                                            if (item1.isDraft == "1")
+                                            {
+                                                dftclss = "Draft-list";
+                                            }
+                                            else
+                                            {
+                                                dftclss = "";
+                                            }
+                                            <li class="voting-list @dftclss">
+
+                                                <div>
+                                                    <div class="row justify-content-between mb-3">
+                                                        <div class="col-md-6 col-sm-12 col-12">
+                                                            <p> <b>Note:</b>    @Html.Raw(item1.NoteId)</p>
+                                                        </div>
+
+                                                        <div class="col-md-6 col-sm-12 col-12 text-right">
+                                                            <p> @Html.Raw(item1.StatusName) </p>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="mb-5">
+                                                        @*@if (item1.isDraft == "1")
+                                                            {
+                                                                <p class='rotingtxt1'>Draft</p>
+                                                            }
+                                                            else
+                                                            {
+
+                                                            }*@
+                                                        <p>@Html.Raw(item1.ActionDescription) </p>
+
+                                                    </div>
+
+
+                                                    <div class="row mb-2">
+                                                        <div class="col-12">
+                                                            @if (item1.Enclosure != null && item1.Enclosure != "")
+                                                            {
+
+                                                                <p class="mb-2">
+                                                                    <b> Enclosure: </b>
+                                                                    <a class="inline" href="@BlobPath@item1.Enclosure" target="_blank" id="actionlink">
+                                                                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                                                    </a>
+                                                                </p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <p></p>
+
+                                                            }
+
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div class="row mb-2">
+                                                        <div class="col-6">
+                                                            <p class="mb-2">@s1, @s2 </p>
+                                                        </div>
+
+                                                        <div class="col-6 text-right">
+                                                            <p>  @item1.ActionBy</p>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+
+
+                                </div>
+                            }
+                        </div>
+
+                    }
+                </div>
+                <div class="tab-pane fade" id="noting_@Model.RefId" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="border_none bg_light right_col taken_col">
+
+                        <div class="updat_box " style="padding-top:12px;">
+                            <div class="row">
+                                <div id="divactkndate" class="col-md-6">
+                                    <div class="fotm_lbl">Action Date:</div>
+
+                                    @Html.TextBoxFor(m => m.CurrentDate, new { @id = "TxtActionTakenDate", @tabindex = "1", @class = "DdlClass" })
+
+                                </div>
+                                <div id="divActiontkn" class="col-md-6">
+                                    <div class="fotm_lbl">Action Type:</div>
+
+                                    @Html.DropDownListFor(m => m.ActionCode, Model.ActionTypeList, "Select Action", new { @id = "DdlActionType", @tabindex = "2", @class = "DdlClass" })
+
+                                </div>
+                            </div>
+
+
+
+
+
+                            @if (Model.isfund == 1)
+                            {
+
+                                <div id="SanctionModal" style="display:none">
+                                    <input type="hidden" id="hdnisfund" name="isfund" value="@Model.isfund" />
+                                    <div id="" class="amount_tab">
+                                        <div class="row">
+
+                                            <div class="fotm_lbl col-7" style="margin-left: 16px;"> Amount Approved(in Rs.):</div>
+                                            <div class="col-4">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" id="enablefund">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        Enable Other Funds
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+
+
+                                        </div>
+
+                                        <div class="amount_tab_1 table-responsive">
+                                            <table class="table table-bordered" id="fundname">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="td-heading">Fund Type</th>
+                                                        <th class="td-heading">Fund Available</th>
+                                                        <th class="td-heading">Amount Approved By CM</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var fund in Model._LstFundReport)
+                                                    {
+
+                                                        if (@Model.DocumentTypeName == @fund.FundType)
+                                                        {
+                                                            <tr>
+                                                                <td class="td-data">@fund.FundType</td>
+                                                                <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
+                                                                <td class="td-data"><input class="form-control tfund" type="text" value="0" max="@fund.FundAvaiable" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
+                                                            </tr>
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td class="td-data">@fund.FundType</td>
+                                                                <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
+                                                                <td class="td-data"><input class="form-control nonfund" type="text" max="@fund.FundAvaiable" value="0" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="" class="row">
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="fotm_lbl">Approved Date:</div>
+                                            <div class="">
+                                                <input type="date" class="form-control txt_value" id="txtApproveDate" name="ApproveDate" required="">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                if (@Model._LstFundSactioned.ToList().Count > 0)
+                                {
+                                    <div id="SanctionAmountModal" style="display:none">
+                                        <input type="hidden" id="hdnisfund" name="isfund" value="@Model.isfund" />
+                                        <div id="" class="amount_tab">
+                                            <div class="fotm_lbl">Amount Approved (in Rs.):</div>
+                                            <div class="amount_tab_1 table-responsive">
+                                                <table class="table" id="fundname">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th class="td-heading">Fund Type</th>
+                                                            <th class="td-heading">Fund Approved</th>
+                                                            <th class="td-heading">Sanctioned Amount</th>
+                                                        </tr>
+                                                        @foreach (var fund in Model._LstFundSactioned)
+                                                        {
+                                                            <tr>
+                                                                <td class="fundtd td-data mar">@fund.FundType</td>
+                                                                <td class="fundtd td-data mar " style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundApproved).Replace(".00",""))</td>
+                                                                <td class="fundtd td-data"><input class="form-control  tfund San_@fund.FundType.Replace(" ", "")" type="text" value="@fund.FundSanctioned" id="txt_@fund.FundSanctionId" name="San_@fund.FundSanctionId" onfocusout="return seteditorSanctionvalue(@fund.FundSanctionId);" max="@fund.FundApproved" @fund.DisableClass /> </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div id="" class="row">
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="fotm_lbl">Sanctioned Date:</div>
+                                                <div class="">
+                                                    <input type="date" class="form-control txt_value" id="txtSanctionDate" name="SanctionDate" required="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                }
+
+                            }
+
+
+                            <div class="col-md-12 col-lg-12 col-xl-12 mb-2 row" style="margin-top:5px;">
+                                <div class="col-md-12 col-lg-12 col-xl-12">
+                                    <div class="fotm_lbl div_inline">Action Attachment:</div>
+
+                                </div>
+                                <div class="input-group col-md-2 col-lg-2 col-xl-2 pull-left">
+                                    <label class="lbl_file">
+                                        <span>
+                                            <input id="fileupload1" type="file" tittle=" " name="fileupload1" accept=".pdf">
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="col-md-6 col-lg-6 col-xl-6">
+                                    <div class="d-flex align-items-center gap-5">
+                                        <div>
+                                            <a href="#" id="afile_nameEn1" target="_blank">
+                                                <span id="file_name1" class="file_name1"></span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <span id="removefileupload1" class="remove-btn" style="display: none; color: red; width:28px;" onclick="removefileupload()"><i class="far fa-times"></i></span>
+                                        </div>
+                                    </div>
+
+                                    <span class="file_size1"></span> &nbsp;
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div id="divRemrks" class="remark_desig" style="margin-top:30px;">
+                                <div class="fotm_lbl">Action Remark: </div>
+
+                                @{ var editorclass = "";}
+                                @if (Model.isLetter == "Letter")
+                                {
+                                    editorclass = "Yellow-editor";
+                                }
+                                else
+                                {
+                                    editorclass = "Green-editor";
+                                }
+                                @*<div class="txt_editor">
+                                    <div class="remark_2 @editorclass">
+                                        @Html.TextAreaFor(m => m.ActionDescription, new { @tabindex = "4", @Class = "form-control" })
+                                    </div>
+                                </div>*@
+
+                                <div class="profile-info-row">
+                                    <input type="button" id="btnActionSave" class="btn btn-primary mt-3" value="Save" onclick="SaveContent()">
+                                </div>
+
+                            </div>
+
+                            <div id="divRemrks" class="remark_1">
+                                <div class="remark_2">
+                                    <div class="fotm_lbl">Send to User:</div>
+
+
+                                    @Html.RadioButtonFor(m => m.SentType, "ToOffice", new { @id = "rbTo", @onclick = "lisfunction();", @checked = "checked" })
+                                    <label for="lblFrom">
+                                        <b>
+                                            @if (Model.ToDeptId == Model.FromDept)
+                                            {@Model.ToOffice}
+                                        else
+                                        { @Model.ToDept}
+                                        </b>
+                                    </label>&nbsp;&nbsp;
+
+                                    <br />
+                                    @Html.RadioButtonFor(m => m.SentType, "FromOffice", new { @id = "rbFrom", @onclick = "lisfunction();" })
+                                    <label for="lblTo">
+                                        <b>
+                                            @if (Model.ToDeptId == Model.FromDept)
+                                            {@Model.FromOffice}
+                                        else
+                                        { @Model.FromDept}
+                                        </b>
+                                    </label>&nbsp;&nbsp;
+
+                                    @Html.DropDownListFor(m => m.SentFromOffice, Model.FromOfficeList, "--Select Office--", new { @id = "ddlfromOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetFromUser()" })
+                                    @Html.DropDownListFor(m => m.SentToOffice, Model.ToOfficeList, "--Select Office--", new { @id = "ddlToOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetToUser()" })
+
+                                    @Html.DropDownListFor(m => m.SentFromUserId, Model.FromUserList, "--Select User--", new { @id = "ddlfromUser", @tabindex = "2", @class = "DdlClass" })
+                                    @Html.DropDownListFor(m => m.SentToUserId, Model.ToUserList, "--Select User--", new { @id = "ddlToUser", @tabindex = "2", @class = "DdlClass" })
+                                </div>
+
+                            </div>
+
+                            <div class="profile-info-row">
+
+
+                                <button class="btn btn-primary mt-3" type="button" id="btnSave" title="Send" onclick="Save()" tabindex="4">
+                                    <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                                    Send
+                                </button>
+                                @Html.HiddenFor(m => m.MoveId)
+                                @Html.HiddenFor(m => m.MultiUpdate)
+                                @Html.HiddenFor(m => m.BtnCaption)
+                                @Html.HiddenFor(m => m.PaperEntryType)
+                                @Html.HiddenFor(m => m.IsEnclosureFile)
+                                @Html.HiddenFor(m => m.IsFile)
+
+                                @Html.HiddenFor(m => m.RefId)
+                                @Html.HiddenFor(m => m.MainRefId)
+                                @Html.HiddenFor(m => m.DeptId, new { id = "spdeptid" })
+                                @Html.HiddenFor(m => m.OfficeId, new { id = "spofcid" })
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+                    @*<div class="tab-pane fade show" id="Send_@Model.RefId" role="tabpanel" aria-labelledby="Send-tab">
+
+                            <div class="border_none bg_light right_col taken_col">
+                                <div class="col-md-12 col-lg-12 mb-2" style="margin-top:15px;">
+
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+
+
+                                <button class="btn btn-primary mt-3" type="button" id="btnSave_Multi" title="Send" onclick="Send()" tabindex="4">
+                                    <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                                    Send
+                                </button>
+
+                                @Html.HiddenFor(m => m.BtnCaption)
+                                @Html.HiddenFor(m => m.PaperEntryType)
+                                @Html.HiddenFor(m => m.IsEnclosureFile)
+                                @Html.HiddenFor(m => m.IsFile)
+                                @Html.HiddenFor(m => m.MultiUpdate)
+                                @Html.HiddenFor(m => m.Remarks);
+                            </div>
+                        </div>*@
+
+                </div>
+                @*<div class="tab-pane fade show" id="UpdateRef_@Model.RefId" role="tabpanel" aria-labelledby="updateRef-tab">
+
+                        <div class="border_none bg_light right_col taken_col">
+
+                            <div class="updat_box " style="padding-top:12px;">
+                                <div class="row">
+                                    <div id="divactkndate" class="col-md-6">
+                                        <div class="fotm_lbl">Action Date:</div>
+
+                                        @Html.TextBoxFor(m => m.CurrentDate, new { @id = "TxtActionTakenDate_Multi", @tabindex = "1", @class = "DdlClass", @readonly = "readonly" })
+
+                                    </div>
+                                    <div id="divActiontkn" class="col-md-6">
+                                        <div class="fotm_lbl">Action Type:</div>
+
+                                        @Html.DropDownListFor(m => m.ActionCodeMulti, Model.ActionTypeList, "Select Action", new { @id = "DdlActionType_Multi", @tabindex = "2", @class = "DdlClass" })
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 col-lg-12 col-xl-12 mb-2 row" style="margin-top:5px;">
+                                    <div class="col-md-12 col-lg-12 col-xl-12">
+                                        <div class="fotm_lbl div_inline">Action Attachment:</div>
+
+                                    </div>
+                                    <div class="input-group col-md-2 col-lg-2 col-xl-2 pull-left">
+                                        <label class="lbl_file">
+                                            <span>
+                                                <input id="fileupload12" type="file" tittle=" " name="fileupload12" accept=".pdf" onclick="fileupload()">
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-6 col-xl-6">
+                                        <div class="d-flex align-items-center gap-5">
+                                            <div>
+                                                <a href="#" id="afile_nameEn12" target="_blank">
+                                                    <span id="file_name12" class="file_name12"></span>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <span id="removefileupload12" class="remove-btn" style="display: none; color: red; width:28px;" onclick="removefileupload2()"><i class="far fa-times"></i></span>
+                                            </div>
+                                        </div>
+
+                                        <span class="file_size12"></span> &nbsp;
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <div id="divRemrks" class="remark_desig" style="margin-top:30px;">
+                                    <div class="fotm_lbl">Action Remark: </div>
+                                    <div class="txt_editor">
+                                        <div class="Yellow-editor">
+                                            @Html.TextAreaFor(m => m.ActionDescriptionMulti, new { @id = "ActionDescription_Multi", @tabindex = "4", @Class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="profile-info-row">
+
+
+                                <button class="btn btn-primary mt-3" type="button" id="btnSave_Multi" title="Send" onclick="return SaveSingle()" tabindex="4">
+                                    <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
+                                    Submit
+                                </button>
+
+                                @Html.HiddenFor(m => m.BtnCaption)
+                                @Html.HiddenFor(m => m.PaperEntryType)
+                                @Html.HiddenFor(m => m.IsEnclosureFile)
+                                @Html.HiddenFor(m => m.IsFile)
+                                @Html.HiddenFor(m => m.MultiUpdate)
+                                @Html.HiddenFor(m => m.Remarks);
+                            </div>
+                        </div>
+
+                    </div>*@
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+            <div class="act_lft_fst bg_light">
+
+                <ul class="nav nav-tabs tabtop-space position-relative" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+
+
+                        @{ var tabname = ""; }
+                        @if (Model.isLetter == "Letter")
+                        {
+                            //tabname = "Reference";
+                            tabname = @Model.DocumentTypeName;
+
+                        }
+                        else
+                        {
+                            tabname = "File";
+                        }
+                        @*<a class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Refdetail_local" role="tab" aria-controls="home" aria-selected="true" onclick="ShowRefTab(0)"><b> ਪੰਜਾਬੀ </b></a>*@
+                    </li>
+                    <li>
+                        <a class="nav-link hand active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Refdetail" role="tab" aria-controls="home" aria-selected="false"><b>Reference</b></a> @*onclick="ShowRefTab(0)"*@
+                    </li>
+                    @if (Model.HideRef == "Yes") { }
+                    else
+                    {
+                        @*<li class="nav-item" role="presentation">
+                                <a class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#Reference" role="tab" aria-controls="profile" aria-selected="false" onclick="ShowRefTab(1)">References</a>
+                            </li>*@
+                    }
+                    @if (Model.isLGoffice == "Y")
+                    {
+                        <li class="tabber-tag">
+                            @Html.HiddenFor(model => model.agendaId, new { @Id = "hdnAgendaID" })
+                            @*<input id="btngetpdf" type="submit" name="getpdf" value="View File Actions PDF" class="btn btn-link" style="display:none" />
+                                <input id="btnget2pdf" type="submit" name="getdown2pdf" value="View File Actions PDF" onclick="openpdf();" class="btn btn-link" />*@
+                        </li>
+                    }
+                    @if (Model.MapId == "2")
+                    {
+                        <li class="tabber-tag">
+                            @Html.HiddenFor(model => model.agendaId, new { @Id = "hdnAgendaID" })
+                            <input id="btngetProceedingpdf" type="submit" name="getProceeding" value="Proceeding letter" class="btn add_btn col-md-4" style="display:none" />
+                            <input id="btngetProceedingpdf2" type="submit" name="getProceedingpdf" value="View Proceeding Letter" onclick="openproceedingpdf();" class="btn btn-link" />
+                        </li>
+                    }
+                    @if (CurrentSession.UserName == "supmsc.lg@punjab.gov.in")
+                    {
+
+                        <li class="nav-item" role="presentation">
+                            <button id="downloadreply" style="font-size:12px">Download Proceddings Reply <i class="fa fa-file-pdf-o"></i></button>
+                        </li>
+
+                    }
+
+                </ul>
+
+
+                @if (Model.PaperEntryType == "NewEntry")
+                {
+                    <h4 class="widget-title form_heading">Diary Detail</h4>
+                }
+
+
+
+
+                @*@if (!(Model.LinkRefID == 0))
+                    {
+                        <h4 class="widget-title">Linked Ref.Id:<a onclick="SearchRefNo('@Model.LinkRefID')"> @Model.LinkRefID</a></h4>
+
+                    }*@
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show" id="Refdetail_local" role="tabpanel" aria-labelledby="det-tab">
+                        <div class="widget-main no-padding-right no-padding-left">
+                            <div class="ref_box mb-3">
+
+                                <div class="mb-2" id="local_subjectboxold_@Model.RefId">
+                                    <div class="fotm_lbl">
+                                        ਵਿਸ਼ਾ:
+                                    </div>
+                                    <div class="txt_value in_txt_area">
+
+                                        <span id="SpanSubject_local"> @Model.SubjectPB</span>
+                                        @Html.HiddenFor(m => m.SubjectPB)
+
+
+                                    </div>
+                                </div>
+
+
+                                <div class="mb-2" id="subjectbox_local11" style="display:none;">
+                                    <div class="fotm_lbl">ਵਿਸ਼ਾ :</div>
+                                    <div class="">
+                                        <input type="text" id="subjectforedit_local" name="subjectforedit_local" />
+                                    </div>
+                                </div>
+
+
+                                @*by Rajeev*@
+
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="">
+                                            <b>ਮਨਜ਼ੂਰਸ਼ੁਦਾ ਚੈੱਕਲਿਸਟ:&nbsp;</b>
+                                            @foreach (var dep in Model.CMApproval)
+                                            {
+                                                <span>@dep.Text,</span>
+                                            }
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="fotm_lbl">ਲਾਗੂ ਕਰਨ ਦੀ ਸਮਾਂ-ਸਾਰਣੀ:&nbsp;</div>
+
+                                        @if (!string.IsNullOrEmpty(Model.StatementImplementation_local))
+                                        {
+                                            var Actionpath2 = @Model.StatementImplementation_local;
+
+
+                                            <a href='@Actionpath2' target="_blank" id="wreqeqwe">
+                                                <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span id="EnclosureFiletxt" style="display: none;">No</span>
+
+                                        }
+
+                                        @Html.HiddenFor(m => m.StatementImplementation_local, new { id = "enclosure" })
+                                    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 mb-2" id="divMember">
+                                            <div class="fotm_lbl">ਦਫਤਰ ਤੋਂ:</div>
+                                            <div class="txt_value">
+                                                @Model.FromDept
+                                                @Html.HiddenFor(m => m.FromDeptId)
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 mb-2" id="divofc">
+                                            <div class="fotm_lbl">ਦਫਤਰ ਦਾ ਵੇਰਵਾ:</div>
+                                            <div class="txt_value">
+
+                                                <div id="divOfficeList">
+                                                    @Model.FromOffice
+
+                                                </div>
+                                                @Html.HiddenFor(m => m.FromOfficeId)
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 mb-2" id="divMember">
+                                            <div class="fotm_lbl">ਦਫ਼ਤਰ ਨੂੰ:</div>
+                                            <div class="txt_value">
+                                                @Model.ToDept
+                                                @Html.HiddenFor(m => m.ToDeptId)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 mb-2">
+                                            <div class="fotm_lbl">
+                                                ਦਫਤਰ ਦਾ ਵੇਰਵਾ:
+                                                @if (Model.HideUpdate == "Yes") { }
+                                                else
+                                                {
+                                                    if (SiteName == "MC")
+                                                    {
+                                                        <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
+                                                    }
+
+                                                }
+                                            </div>
+
+                                            @*@Model.ToOffice*@
+                                            @Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList, "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28", @disabled = "true" })
+
+                                            @Html.HiddenFor(m => m.ToOfficeId)
+
+
+
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
+                                            <div class="fotm_lbl"> ਟਾਈਪ:</div>
+                                            <div>
+                                                <span>
+
+                                                    @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameChange1", @tabindex = "29", })
+
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-md-6 col-lg-6 mb-2 mb-2">
+                                            <div class="fotm_lbl">ਕਿਸਮ:</div>
+                                            <div class="txt_value">
+                                                <span class="">
+                                                    @Model.isLetter
+                                                    @Html.HiddenFor(m => m.isLetter)
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-6 mb-2 mb-2">
+                                            <div class="fotm_lbl" id="myref"> ਨੰ.: </div>
+                                            <div class="txt_value">
+                                                <span class="">
+                                                    @Model.LetterNo
+                                                    @Html.HiddenFor(m => m.LetterNo)
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-6 mb-2" id="divLetterNo">
+                                            <div class="fotm_lbl"> ਮਿਤੀ:</div>
+                                            <div class="txt_value">
+                                                @Model.LetterDateNew
+                                                @Html.HiddenFor(m => m.LetterDate)
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-12 col-lg-12 mt-2 ">
+                                            <div class="fotm_lbl">
+                                                ਪ੍ਰੈਸ ਨੋਟ :
+                                            </div>
+                                            <div class="txt_value in_txt_area">
+                                                <div> @Model.PressNotePun</div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-12 col-lg-12 mb-2" id="local_subjectdetailboxold_@Model.RefId">
+                                            <div class="fotm_lbl">
+                                                ਵਿਸ਼ੇ ਦੇ ਵੇਰਵੇ:
+                                                @if (Model.HideUpdate == "Yes") { }
+                                                else
+                                                {
+                                                    @*<i class="ace-icon fa fa-pencil hand" onclick="EditDetails()"></i>*@
+                                                }
+
+                                            </div>
+                                            <div class="txt_value in_txt_area">
+                                                <div id="divSubjectDetails_local"> @Html.Raw(Model.SubjectDetailsPB)</div>
+                                                @Html.HiddenFor(m => m.SubjectDetailsPB)
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-12 col-lg-12" id="subjectdetailbox_local" style="display:none;">
+                                            <div class="fotm_lbl">ਵਿਸ਼ੇ ਦੇ ਵੇਰਵੇ:</div>
+                                            <div>
+                                                <textarea type="text" id="subjectdetailforedit_local" name="subjectdetailforedit_local" onchange="updatesubjectdetail();">   </textarea>
+                                            </div>
+
+                                        </div>
+
+                                       
+
+                                        @if (SiteName == "MC")
+                                        {
+                                            <div class="col-md-12 col-lg-12 mb-2" id="divLetterNo">
+                                                <div class="fotm_lbl"> Point of Instruction:</div>
+                                                <div class="">
+
+                                                    @if (Model.ActName == "" || Model.ActName == null)
+                                                    {
+
+                                                        @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlactpb", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="txt_value">
+                                                            @Model.ActName
+                                                        </div>
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        }
+
+
+
+                                        @if (!string.IsNullOrEmpty(Model.ApplicantName))
+                                        {
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="fotm_lbl">Applicant Name:</div>
+                                                <div class="txt_value">
+
+                                                    @Html.Raw(Model.ApplicantName)
+                                                    @Html.HiddenFor(m => m.ApplicantName)
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
+
+                                        {
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="fotm_lbl">Applicant Address:</div>
+                                                <div class="txt_value">
+
+                                                    @Html.Raw(Model.ApplicantAddress)
+                                                    @Html.HiddenFor(m => m.ApplicantAddress)
+                                                </div>
+                                            </div>
+
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
+
+                                        {
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="fotm_lbl">Applicant Mobile:</div>
+                                                <div class="txt_value">
+
+                                                    @Html.Raw(Model.ApplicantMobile)
+                                                    @Html.HiddenFor(m => m.ApplicantMobile)
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
+
+                                        {
+
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="fotm_lbl">Applicant Email:</div>
+                                                <div class="txt_value">
+
+                                                    @Html.Raw(Model.ApplicantEmail)
+                                                    @Html.HiddenFor(m => m.ApplicantEmail)
+                                                </div>
+                                            </div>
+                                        }
+
+
+
+                                    </div>
+
+
+
+
+
+                                </div>
+
+
+
+
+
+                            </div>
+
+                    </div>
+                    <div class="tab-pane fade show active" id="Refdetail" role="tabpanel" aria-labelledby="det-tab">
+                        <div class="widget-main no-padding-right no-padding-left">
+
+                            <div class="ref_box mb-3">
+
+                                <div class="mb-2" id="subjectboxold_@Model.RefId" style="display:none;">
+                                    <div class="fotm_lbl">
+                                        Subject:
+                                        @if (Model.HideUpdate == "Yes") { }
+                                        else
+                                        {
+                                            <i class="ace-icon fa fa-pencil hand" onclick="EditSubject()"></i>
+                                        }
+                                    </div>
+                                    <div class="txt_value in_txt_area">
+
+                                        <span id="SpanSubject_@Model.RefId"> @Model.Subject</span>
+                                        @Html.HiddenFor(m => m.Subject)
+
+                                    </div>
+                                </div>
+
+                                @*<div class="mb-2" id="local_subjectboxold_@Model.RefId">
+            <div class="fotm_lbl">
+                Subject in Local:
+            </div>
+            <div class="txt_value in_txt_area">
+
+                <span id="SpanSubject_local"> @Model.SubjectPB</span>
+                @Html.HiddenFor(m => m.SubjectPB)
+
+
+            </div>
+        </div>*@
+                                <div class="mb-2" id="subjectbox_@Model.RefId" style="display:none;">
+                                    <div class="fotm_lbl">Subject:</div>
+                                    <div class="">
+                                        <input type="text" id="subjectforedit_@Model.RefId" name="subjectforedit_@Model.RefId" />
+                                    </div>
+                                </div>
+                                @*<div class="mb-2" id="subjectbox_local" style="display:none;">
+            <div class="fotm_lbl">Subject in Local:</div>
+            <div class="">
+                <input type="text" id="subjectforedit_local" name="subjectforedit_local" />
+            </div>
+        </div>*@
+
+
+                                @*by Rajeev*@
+                                @if (SiteName == "e-Cabinate")
+                                {
+                                    <div class="row" style="margin-top:10px; margin-bottom:10px;">
+                                        <div class="col-6">
+                                            <div class="">
+                                                <b>Approved Checklist:&nbsp;</b>
+                                                @foreach (var dep in Model.CMApproval)
+                                                {
+                                                    <span>@dep.Text,</span>
+                                                }
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="fotm_lbl">Statement of Implementation Schedule:&nbsp;</div>
+
+                                            @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                                            {
+                                                var Actionpath1 = @Model.EnclosureFile;
+
+
+                                                <a href='@Actionpath1' target="_blank" id="wreqeqwe">
+                                                    <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span id="EnclosureFiletxt" style="display: none;">No</span>
+
+                                            }
+
+                                            @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
+                                        </div>
+                                    </div>
+                                }
+
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6 mb-2" id="divMember">
+                                    <div class="fotm_lbl">From Office:</div>
+                                    <div class="txt_value">
+                                        @Model.FromDept
+                                        @Html.HiddenFor(m => m.FromDeptId)
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 mb-2" id="divofc">
+                                    <div class="fotm_lbl">Office Detail:</div>
+                                    <div class="txt_value">
+
+                                        <div id="divOfficeList">
+                                            @Model.FromOffice
+
+                                        </div>
+                                        @Html.HiddenFor(m => m.FromOfficeId)
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 mb-2" id="divMember">
+                                    <div class="fotm_lbl">To Office:</div>
+                                    <div class="txt_value">
+                                        @Model.ToDept
+                                        @Html.HiddenFor(m => m.ToDeptId)
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6 mb-2">
+                                    <div class="fotm_lbl">
+                                        Office Detail:
+                                        @if (Model.HideUpdate == "Yes") { }
+                                        else
+                                        {
+                                            if (SiteName == "MC")
+                                            {
+                                                <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
+                                            }
+
+                                        }
+                                    </div>
+
+                                    @*@Model.ToOffice*@
+                                    @Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList, "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28", @disabled="true" })
+
+                                    @Html.HiddenFor(m => m.ToOfficeId)
+
+
+
+                                </div>
+                                <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
+                                    <div class="fotm_lbl"> Type:</div>
+                                    <div>
+                                        <span>
+
+                                            @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameChange", @tabindex = "29", @disabled="True" })
+
+                                        </span>
+
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-6 col-lg-6 mb-2 mb-2">
+                                    <div class="fotm_lbl">Reference Nature:</div>
+                                    <div class="txt_value">
+                                        <span class="">
+                                            @Model.isLetter
+                                            @Html.HiddenFor(m => m.isLetter)
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-6 mb-2 mb-2">
+                                    <div class="fotm_lbl" id="myref"> No.: </div>
+                                    <div class="txt_value">
+                                        <span class="">
+                                            @Model.LetterNo
+                                            @Html.HiddenFor(m => m.LetterNo)
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-6 mb-2" id="divLetterNo">
+                                    <div class="fotm_lbl"> Date:</div>
+                                    <div class="txt_value">
+                                        @Model.LetterDateNew
+                                        @Html.HiddenFor(m => m.LetterDate)
+
+                                    </div>
+                                </div>
+                                @if (SiteName == "e-Cabinate") { 
+                                    <div class="col-md-12 col-lg-12 mb-2">
+                                        <div class="fotm_lbl">
+                                            Press Note :
+                                        </div>
+                                        <div class="txt_value in_txt_area">
+                                            <div> @Model.PressNoteENG</div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="col-md-12 col-lg-12 mb-2" id="subjectdetailboxold_@Model.RefId" style="display:none;">
+                                    <div class="fotm_lbl">
+                                        Details:
+                                        @if (Model.HideUpdate == "Yes") { }
+                                        else
+                                        {
+                                            <i class="ace-icon fa fa-pencil hand" onclick="EditDetails()"></i>
+                                        }
+
+                                    </div>
+                                    <div class="txt_value in_txt_area">
+                                        <div id="divSubjectDetails_@Model.RefId"> @Html.Raw(Model.SubjectDetails)</div>
+                                        @Html.HiddenFor(m => m.SubjectDetails)
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-md-12 col-lg-12" id="subjectdetailbox_@Model.RefId" style="display:none;">
+                                    <div class="fotm_lbl">Details:</div>
+                                    <div>
+                                        <textarea type="text" id="subjectdetailforedit_@Model.RefId" name="subjectdetailforedit" onchange="updatesubjectdetail();">   </textarea>
+                                    </div>
+
+                                </div>
+
+                                @*<div class="col-md-12 col-lg-12" id="subjectdetailbox_local" style="display:none;">
+            <div class="fotm_lbl">Details in Local:</div>
+            <div>
+                <textarea type="text" id="subjectdetailforedit_local" name="subjectdetailforedit_local" onchange="updatesubjectdetail();">   </textarea>
+            </div>
+
+        </div>*@
+
+                                <div class="col-md-12 col-lg-12" id="EditUpdateButton" style="display:none;">
+                                    <input type="button" class="btn btn-warning" value="Update" id="btnSDUpdate" onclick="EditUpdate()" />
+                                </div>
+
+                                @if (SiteName == "MC")
+                                {
+                                    <div class="col-md-12 col-lg-12 mb-2" id="divLetterNo">
+                                        <div class="fotm_lbl"> Point of Instruction:</div>
+
+                                        @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
+
+                                        @*@if (Model.ActName == "" || Model.ActName == null )
+                                            {
+
+                                                @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
+                                            }
+                                            else
+                                            {
+                                                <div class="txt_value">
+                                                    @Model.ActName
+                                                </div>
+                                            }*@
+
+
+                                    </div>
+
+
+                                }
+
+
+
+
+                                @*<div class="col-md-6 col-lg-6 mb-2">
+
+            <div class="fotm_lbl">
+                Attached Enclosure (File):&nbsp;
+                @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                {
+                    <a href="@CMNirdesh.Models.BlobStorage.GetStorageAcessingPath()@Model.EnclosureFile" target="_blank" id="wreqeqwe">
+                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                    </a>
+                }
+                else
+                {
+                    <span id="EnclosureFiletxt" style="display: none;">No</span>
+
+                }
+
+                @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
+            </div>
+
+        </div>*@
+
+                                @if (!string.IsNullOrEmpty(Model.ApplicantName))
+                                {
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="fotm_lbl">Applicant Name:</div>
+                                        <div class="txt_value">
+
+                                            @Html.Raw(Model.ApplicantName)
+                                            @Html.HiddenFor(m => m.ApplicantName)
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
+
+                                {
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="fotm_lbl">Applicant Address:</div>
+                                        <div class="txt_value">
+
+                                            @Html.Raw(Model.ApplicantAddress)
+                                            @Html.HiddenFor(m => m.ApplicantAddress)
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
+
+                                {
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="fotm_lbl">Applicant Mobile:</div>
+                                        <div class="txt_value">
+
+                                            @Html.Raw(Model.ApplicantMobile)
+                                            @Html.HiddenFor(m => m.ApplicantMobile)
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
+
+                                {
+
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="fotm_lbl">Applicant Email:</div>
+                                        <div class="txt_value">
+
+                                            @Html.Raw(Model.ApplicantEmail)
+                                            @Html.HiddenFor(m => m.ApplicantEmail)
+                                        </div>
+                                    </div>
+                                }
+
+
+
+                            </div>
+
+
+
+
+
+                                </div>
+
+
+
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="tab-pane fade table-responsive" id="Reference11" role="tabpanel" aria-labelledby="Ref-tab">
+
+
+                        <table class="table table-bordered" id="IncludeRefTable11" style="overflow-y: auto; max-height:80%;">
+                            <thead>
+                                <tr class="table-heading">
+                                    <th class="td-heading"><span class="font-weight-bold"><i class='ace-icon fa fa-pencil bigger-150'></i> </span></th>
+                                    <th class="td-heading"><span class="font-weight-bold"> </span></th>
+                                    <th class="td-heading"><span class="font-weight-bold">Item. No.</span></th>
+                                    <th class="td-heading subject-cell-width"><span class="font-weight-bold">Subject</span></th>
+                                    <th class="td-heading "><span class="font-weight-bold ">Release Date </span></th>
+                                    <th class="td-heading"><span class="font-weight-bold">Department </span></th>
+                                    <th class="td-heading"><span class="font-weight-bold">Brief of Last Action Taken</span></th>
+                                    <th class="td-heading"><span class="font-weight-bold">Status</span></th>
+                                    <th class="td-heading"><span class="font-weight-bold">Ref.Id /<br />Date </span></th>
+
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        @*@if (Model.HideUpdate == "Yes") { } else
+                            {
+                                <div class="row">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <input type="button" class="btn btn-primary AgendaRefDetail" id="btnUpdateMultiStatus" onclick="return UpdateMultiStatus();" value="Update Status" />
+                                        </div>
+                                </div>
+                            }*@
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+    }
