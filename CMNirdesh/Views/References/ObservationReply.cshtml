@@ -185,20 +185,8 @@
              data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important ">
             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
                 <div class="modal-content">
-                    <div class="modal-header" id="mainheader1">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <h4 id="InboxHeader1" class="widget-title "></h4>
-                            </div>
-                            <div class="col-lg-3">
-                                <div id="clock1" class="clock"></div>
-                            </div>
-                            <div class="col-1">
-                                <i id="PopRefresh" class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 15px;" title="Session Time Reset"></i>
-                            </div>
-                        </div>
-
-                        <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close" style=""></button>
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="InboxModelbody">
                     </div>
@@ -206,22 +194,7 @@
             </div>
         </div>
         <input type="hidden" id="RefId" name="RefId" />
-        <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="SingleModelEdit"
-             data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important ">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        @*<h4 class="widget-title modal_heading">@Model.RefMenuName</h4>*@
-                        <button type="button" class="btn-close" onclick="closeSingleEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                    </div>
-                    <div class="modal-body" id="SingleModelEditbody">
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
+     
     </div>
 </div>
 
@@ -273,9 +246,8 @@
 }
 
    function EditMlaDispatch(IDD, moveid, mtype) {
-    // closePartFile();
-     var ID = IDD.id;
-     //$('#row_'+ID).removeClass('NewFile');
+    var ID = IDD;
+    //$('#row_'+ID).removeClass('NewFile');
      $('#InboxModelbody').html('');
      $('#InboxModelbody').html('');
      $('#InboxModelBody').html('');
@@ -366,100 +338,7 @@
 
  }
 
-
-
-  @*function EditMlaDispatchOutbox(IDD, ActionId, mtype) {
-   //alert('xzfdzsfd')
-   var ID = IDD.id;
-   $("#mainheader1").Show();
-   $('#row_' + ID).removeClass('NewFile');
-   $('#loginModaldiarybody').html('');
-   $('#loginModalBody').html('');
-   $('#InboxModelbody').html('');
-   if (mtype == "Diary") {
-       var pathurl = '/References/EditMlaDairyForm';
-       $.ajax({
-           type: "GET",
-          url: '@Url.Action("EditMlaDairyForm", "References")',
-
-           data: { ID: ID, ActId: ActionId },
-           beforeSend: function () {
-               $('#loader-wrapper').show();
-           },
-           success: function (data) {
-               $('#InboxModelbody').html('');
-               //debugger;
-               var options = {
-                   "backdrop": "static",
-                   keyboard: true
-               };
-               $("#loader-wrapper").hide();
-               if (data) {
-                   $("#InboxModel").css("display", "block");
-                   $('#InboxModelbody').html(data);
-                   //$("#ulnoting").animate({ scrollTop: $('ul#ulnoting li:last').offset().top + 30 });
-
-               } else { alert("error"); }
-           },
-           error: function (xhr, ajaxOptions, thrownError) {
-               alert(xhr.responseText);
-               alert(thrownError);
-           },
-           complete: function (results) {
-               $('#loader-wrapper').hide();
-           }
-       });
-   } else {
-       var pathurl = '/References/EditMlaDispatchFormOutbox';
-       $.ajax({
-           type: "GET",
-           url: '@Url.Action("EditMlaDispatchFormOutbox", "References")',
-
-           data: { ID: ID, ActId: ActionId },
-           beforeSend: function () {
-               $('#loader-wrapper').show();
-           },
-           success: function (data) {
-               $('#loginModalDispatchbody').html('');
-               //debugger;
-               var options = {
-                   "backdrop": "static",
-                   keyboard: true
-               };
-               $("#loader-wrapper").hide();
-               if (data) {
-                   $("#InboxModel").css("display", "block");
-                   $('#InboxModelbody').html(data);
-
-                   $("#ulnoting").animate({ scrollTop: $('ul#ulnoting li:last').offset().top + 30 });
-
-               } else { alert("error"); }
-           },
-           error: function (xhr, ajaxOptions, thrownError) {
-               alert(xhr.responseText);
-               alert(thrownError);
-           },
-           complete: function (results) {
-               $('#loader-wrapper').hide();
-           }
-       });
-       }
-       var menutype = $("#lblmenuname").html();
-       var heading = $('#inboxlabel').html();
-
-   //var heading = 'Resolutions';
-
-
-
-      //$('#InboxHeader1').html(menutype + ">>" + heading );
-
-       $('#InboxHeader1').html(menutype + ">>" + heading);
-
-
-   }*@
-
-
-    $(document).ready(function () {
+  $(document).ready(function () {
 
     $("#txtMCName").keyup(function () {
 
@@ -534,14 +413,14 @@
 
     });
 
-    function closeInboxEdit() {
+  function closeInboxEdit() {
         $("#InboxModel").css("display", "none");
         $('#InboxModelbody').html('');
        // S_enable = 0, SD_enable = 0, office_enable = 0;
 
     }
 
-    function ViewSingleEdit(IDD, FileID) {
+  function ViewSingleEdit(IDD, FileID) {
         $("#RefId").val(FileID);
         var ID = IDD.id;
         $('#SingleModelEditbody').html('');
@@ -591,16 +470,7 @@
 
  }
 
-     // function closeSingleEdit() {
-
-     //   var mainrefid = $('#MainRefId').val();
-     //   alert(mainrefid);
-     //   $("#SingleModelEdit").css("display", "none");
-     //   $('#SingleModelEditbody').html('');
-     //   GetIncludedRef();
-     //}
-
-       function closeSingleEdit() {
+  function closeSingleEdit() {
 
         var mainrefid = $('#MainRefId').val();
         $("#SingleModelEdit").css("display", "none");
@@ -750,8 +620,7 @@
 
     }
 
-
-   function ShowSDPopUp(id, refid) {
+  function ShowSDPopUp(id, refid) {
 
     var agendaDate = $('#agendaDate').val();
     var popup = document.getElementById("SubjectDetailModal");

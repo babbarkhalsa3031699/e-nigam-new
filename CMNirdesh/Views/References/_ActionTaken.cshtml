@@ -3022,7 +3022,7 @@
                 }
                 else {
                     tinymce.get("ActionDescription").insertContent(table);
-                }                
+                }
             }
         });
     }
@@ -3513,7 +3513,27 @@
             } else {
 
                 LgString = LgString + "<div id='LGShow_" + response.RefId + "' Class='LGShow LG_" + response.RefId + "'>"
-                LgString = LgString + "<div class='row'><p  id='actsts_" + response.RefId + "' class='actionname'>" + response.StatusName + "</p> </br > </div>";
+                //LgString = LgString + "<div class='row'><p  id='actsts_" + response.RefId + "' class='actionname'>" + response.StatusName + "</p> </br > </div>";
+               var currentDeptId = "@CurrentSession.DeptID";
+                var notifyCheckbox = "";
+                //alert(response.StatusName);
+                //alert(currentDeptId);
+                if (currentDeptId == "UDD0001" && response.StatusName == "LG Observations") {
+
+                    notifyCheckbox = "&nbsp;&nbsp;&nbsp;<label>" +
+                        "<input type='checkbox' class='notifyLocalGovt' " +
+                        "data-refid='" + response.RefId + "' " +
+                        "onchange='NotifyLocalGovt(" + response.RefId + ", this.checked)'> " +
+                        "Notify LG</label>";
+                }
+
+                LgString +=
+                    "<div class='row'>" +
+                        "<p id='actsts_" + response.RefId + "' class='actionname'>" +
+                            response.StatusName +
+                            notifyCheckbox +
+                        "</p>" +
+                    "</div>";
                 LgString = LgString + "<div id='lgcom1_" + response.RefId + "' class='col-12 " + drhide + "'>"
                     + stripHtml(response.ad) +
                     "</div> " + atttachment + " ";
@@ -3551,9 +3571,9 @@
                 "<td style='width:5%' ><i class='fa fa-plus-square' title='Expand' id='Icon_" + response.lrid + "' onclick=ShowSD(" + response.lrid + "," + response.RefId + ")></i></td>" +
                 "<td style=''>" + Res + "</br> " + response.CreatedDate + "</td>" +
                 "<td style=''> <b class='hand' onclick=ShowSDPopUp(" + response.lrid + "," + response.RefId + ")>" + response.Subject + "</b> </br>" +
-                "<div class= 'SDHide' id = 'SD_" + response.lrid + "'> <textarea type='text' id='IncludeSB_" + response.lrid + "' name='IncludeSB'></textarea> <br/> <b> House Decision </b> : <p> " + response.HouseDecision +
+                "<div class= 'SDHide' id = 'SD_" + response.lrid + "'> <textarea type='text' id='IncludeSB_" + response.lrid + "' name='IncludeSB'></textarea>" +
                 "</p></br> <b> Specify Under Which Point of Instruction Dated 10.10.2022 this Resolution is covered: - </b><p>" + response.ActName +
-                "</p></br> \n <b>  Comments of Commissioner/EO : </b><p>" + response.commissioner +
+                //"</p></br> \n <b>  Comments of Commissioner/EO : </b><p>" + response.commissioner +
                 "</p></div></td>" +
                 "<td style='width:30%' class='acttd'>" + LgString + "" + TempRemarks + " <b class='hand'  id = 'Act_" + response.RefId + "'> </b> </td>" +
                 "<td style=''>" + response.StatusName + "</br> " + response.ActionTakenDate + "</td>" +
@@ -3563,7 +3583,7 @@
                 "<input type='hidden' id='hdnSubject_" + response.RefId + "' value=\"" + $('<div>').text(response.Subject || '').html() + "\" />" +
                 "<input type='hidden' id='hdnDetail_" + response.RefId + "' value='" + (response.SubjectDetails ? response.SubjectDetails.replace(/'/g, '&#39;') : '') + "' />" +
                 "<i class='fa fa-copy hand' title='Copy' style='color: #0d6efd;' onclick='CopySubjectDetail(" + response.RefId + ")'></i>&nbsp;&nbsp;&nbsp;" +
-                "<i title='View' class='ace-icon fa fa-eye bigger-120 hand " + hideclass + "' style='color: green' id=" + response.RefId + " onclick='ViewSingleEdit(this)'></i>" +
+                 "<i title='View' class='ace-icon fa fa-eye bigger-120 hand " + hideclass + "' style='color: green' id=" + response.RefId + " onclick='ViewSingleEdit(this)'></i>" +
                 "</td>" +
                 "</tr>"
 
@@ -3646,7 +3666,11 @@
                 });
             }, 2000);
         }
-    };
+            };
+
+
+
+
             //console.log("After append:", $('#IncludeRefTableNew tbody tr').length);
 
             //tinymce.remove("#IncludeSB_" + response.lrid);
@@ -3766,8 +3790,26 @@
 
     }
 
-    function ShowSD(id, refid) {
+    function NotifyLocalGovt(refId, isChecked) {
+        //alert(refId);
+        $.ajax({
+            type: "POST",
+           // url: Action.url("NotifyLocalGovt", "References"),
+            url: '@Url.Action("NotifyLocalGovt", "References")',
+            data: {
+                RefId: refId,
+                NotifyTo: isChecked ? 1 : 2
+            },
+            success: function (response) {
+                alert(response.message);
+            },
+            error: function (xhr) {
+                console.log("Error: " + xhr.responseText);
+            }
+        });
+    }
 
+    function ShowSD(id, refid) {
 
      $.ajax({
          type: "GET",
@@ -3775,9 +3817,11 @@
          datatype: "Json",
          contentType: "application/json; charset=utf-8",
          data: { refid: refid },
-             success: function (response) {
+         success: function (response) {
+             //alert(response[0].HouseDecision);
                  if (response.length > 0) {
                      if (response[0].SubjectDetails != null) {
+                         //alert(response[0].SubjectDetails);
                          tinymce.remove("#IncludeSB_" + id);
                          tinyMCE.init({
                              selector: "#IncludeSB_" + id,
@@ -3792,7 +3836,15 @@
                              content_style:
                                  "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
                              init_instance_callback(editor) {
-                                 editor.setContent(stripHtml(response[0].SubjectDetails));
+                                 editor.setContent(
+                                     stripHtml(response[0].SubjectDetails) +
+                                     '<br /><br />' +
+                                     '<strong>House Decision :</strong> ' +
+                                     (response[0].HouseDecision || '') +
+                                      '<br /><br />' +
+                                     '<strong>Comments of Commissioner/EO :  :</strong> ' +
+                                     (response[0].commissioner || '')
+                                 );
                              }
                          });
                      }
@@ -3821,6 +3873,7 @@
     } else {
         $("#Icon_" + id).removeClass("fa fa-minus-square");
         $("#Icon_" + id).addClass("fa fa-plus-square");
+       // ShowActPopUp(id, refid);
         //var actname = "";
         //$(".LG_" + refid).html('<div class="row"><p id="actsts" class="actionname">' + actname +'</p> <br> </div>');
         $(".LG_" + refid).show();
@@ -5638,6 +5691,7 @@
 }
 
     function SaveMulti() {
+       
         //var myContent = tinymce.activeEditor.getContent();
         //$('#ActionDescription').html(myContent);
         tinymce.activeEditor.save();
@@ -10557,6 +10611,14 @@ $(document).off('click', '#noButton').on('click', '#noButton', function (e) {
     $('#DdlActionType_Multi').on('change', function () {
         var selectedValue = $(this).val();
         var selectedText = $("#DdlActionType_Multi option:selected").text();
+
+
+        // FIX: Sync DdlActionType_Multi value to DdlActionType
+        if ($("#DdlActionType").length) {
+            $("#DdlActionType").val(selectedValue);
+        }
+
+
 
         if (selectedValue === "15") {
 

@@ -68,6 +68,7 @@ using WebGrease.Activities;
 using static Azure.Core.HttpHeader;
 using static iTextSharp.text.pdf.PdfDocument;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Web.Razor.Parser.SyntaxConstants;
 using ErrorLog = CMNirdesh.Error.ErrorLog;
 using FundReportModel = CMNirdesh.Models.Diaries.FundReportModel;
 using Login = CMNirdesh.Models.Login;
@@ -3061,7 +3062,33 @@ namespace CMNirdesh.Controllers
                 diaryModel.SubjectDetails = model.SubjectDetails;
                 diaryModel.ToDeptId = model.ToDeptId;
                 diaryModel.ToOfficeId = model.ToOfficeId;
-                diaryModel.ActionCode = model.ActionCode;
+                //diaryModel.ActionCode = model.ActionCode;
+
+                // FIX: Fallback to ActionCodeMulti if ActionCode is null/0 to prevent NULL in mMlaDiary
+
+                if (model.ActionCode.HasValue && model.ActionCode.Value != 0)
+                {
+                    diaryModel.ActionCode = model.ActionCode.Value;
+                }
+                else if (model.ActionCodeMulti.HasValue && model.ActionCodeMulti.Value != 0)
+                {
+                    diaryModel.ActionCode = model.ActionCodeMulti.Value;
+                }
+                else
+                {
+                    ErrorLog.WriteToLog(
+                        "ActionCode and ActionCodeMulti are both NULL or 0."
+                    );
+
+                    return Json(
+                        "Action Code cannot be NULL or 0.",
+                        JsonRequestBehavior.AllowGet
+                    );
+                }
+
+
+                //diaryModel.ActionCode = (model.ActionCode.HasValue && model.ActionCode.Value != 0) ? model.ActionCode : model.ActionCodeMulti;
+
                 diaryModel.ActionAmountSanction = model.ActionAmountSanction;
                 diaryModel.ActionDescription = model.ActionDescription;
                 diaryModel.ActionTakenDate = model.ActiontakenDate;
@@ -15316,9 +15343,6 @@ namespace CMNirdesh.Controllers
 
         }
 
-
-
-
         public ActionResult GetDataDashboardStatType(string financialYear, string DashType, string meetingType)
         {
             string DeptID = @CurrentSession.DeptID;
@@ -18551,16 +18575,28 @@ tr { page-break-inside: avoid }
 
         public ActionResult ObservationReply(string type = null)
         {
+            if (string.IsNullOrEmpty(CurrentSession.UserID))
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
             return View();
         }
 
         public ActionResult ObservationRaised(string type = null)
         {
+            if (string.IsNullOrEmpty(CurrentSession.UserID))
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
             return View();
         }
 
         public ActionResult ObservationReplySearch()
         {
+            if (string.IsNullOrEmpty(CurrentSession.UserID))
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
             StringBuilder sb = new StringBuilder();
 
             try
@@ -18619,7 +18655,7 @@ tr { page-break-inside: avoid }
                     }
 
                     // New Action Column
-                    sb.Append("<th style='white-space:nowrap;background:#1974d2;color:#fff;font-size:12px;font-weight:600;'>Add Comments</th>");
+                    //sb.Append("<th style='white-space:nowrap;background:#1974d2;color:#fff;font-size:12px;font-weight:600;'>Add Comments</th>");
 
                     sb.Append("</tr>");
                     sb.Append("</thead>");
@@ -18642,14 +18678,43 @@ tr { page-break-inside: avoid }
                                 continue;
 
                             // Reply File
+                            //if (col.ColumnName.Equals("Reply File", StringComparison.OrdinalIgnoreCase))
+                            //{
+                            //    string fileNo = row[col] == DBNull.Value ? "" : row[col].ToString();
+
+                            //    sb.AppendFormat(
+                            //        "<td style='font-size:12px;' class='td-data'>{0}</td>",
+                            //        HttpUtility.HtmlEncode(fileNo));
+                            //}
+                            // Reply File if (col.ColumnName.Equals("Reply File", StringComparison.OrdinalIgnoreCase)) { string fileNo = row[col] == DBNull.Value ? "" : row[col].ToString(); if (isReply == "0") { sb.AppendFormat( @"<td style='font-size:12px;' class='td-data'> <a href='javascript:void(0);' class='green' onclick=""EditMlaDispatch(this,0,'Diary')""> {0} </a> </td>", HttpUtility.HtmlEncode(fileNo)); } else { sb.AppendFormat( "<td style='font-size:12px;' class='td-data'>{0}</td>", HttpUtility.HtmlEncode(fileNo)); } }
+
+
+                            // Reply File
                             if (col.ColumnName.Equals("Reply File", StringComparison.OrdinalIgnoreCase))
                             {
                                 string fileNo = row[col] == DBNull.Value ? "" : row[col].ToString();
-
-                                sb.AppendFormat(
-                                    "<td style='font-size:12px;' class='td-data'>{0}</td>",
-                                    HttpUtility.HtmlEncode(fileNo));
+                                isReply = IsReplyExist(fileNo, Convert.ToString(CurrentSession.UserID));
+                                if (isReply == "0")
+                                {
+                                    sb.AppendFormat(
+                                        @"<td style='font-size:12px;' class='td-data'>
+                                        <a href='javascript:void(0);'
+                                           class='green'
+                                           onclick=""EditMlaDispatch('{0}', '0', 'Dispatch')"">
+                                            {0}
+                                        </a>
+                                      </td>",
+                                        HttpUtility.JavaScriptStringEncode(fileNo));
+                                }
+                                else
+                                {
+                                    sb.AppendFormat(
+                                        @"<td style='font-size:12px;' class='td-data'>{0}</td>",
+                                        HttpUtility.HtmlEncode(fileNo));
+                                }
                             }
+
+
                             // Resolution Unique ID
                             else if (col.ColumnName.Equals("Resolution Unique ID", StringComparison.OrdinalIgnoreCase))
                             {
@@ -18661,7 +18726,7 @@ tr { page-break-inside: avoid }
                                 <a href='javascript:void(0);'
                                    class='green'
                                    id='{0}'
-                                   onclick=""ViewSingleEdit(this,{1})"">
+                                   onclick=""EditMlaDispatch('{0}', '0','Diary')"">
                                    {2}
                                 </a>
                                 <input type='hidden' id='hfRefId_{0}' value='{0}' />
@@ -18705,24 +18770,24 @@ tr { page-break-inside: avoid }
                         }
 
                         // ================= ACTION COLUMN =================
-                        if (isReply == "0")
-                        {
-                            string url = Url.Action("Dashboard", "References", new { type = 7 });
+                        //if (isReply == "0")
+                        //{
+                        //    string url = Url.Action("Dashboard", "References", new { type = 7 });
 
-                            sb.AppendFormat(
-                                @"<td style='text-align:center;font-size:12px;'>
-                                    <a href='{0}' class='btn btn-sm btn-primary'>
-                                        Go to Inbox To Add Comments
-                                    </a>
-                                </td>",
-                                url
-                            );
-                        }
-                        else
-                        {
-                            sb.Append(
-                                "<td style='text-align:center;font-size:12px;'>-</td>");
-                        }
+                        //    sb.AppendFormat(
+                        //        @"<td style='text-align:center;font-size:12px;'>
+                        //            <a href='{0}' class='btn btn-sm btn-primary'>
+                        //                Go to Inbox To Add Comments
+                        //            </a>
+                        //        </td>",
+                        //        url
+                        //    );
+                        //}
+                        //else
+                        //{
+                        //    sb.Append(
+                        //        "<td style='text-align:center;font-size:12px;'>-</td>");
+                        //}
 
                         sb.Append("</tr>");
                     }
@@ -18753,10 +18818,37 @@ tr { page-break-inside: avoid }
         }
 
 
+        public string IsReplyExist(string refId, string userId)
+        {
+            try
+            {
+                using (SqlConnection con = ClsConnection.GetConnection())
+                using (SqlCommand cmd = new SqlCommand("GetDiaryMovementByRefId", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@RefId", refId);
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+
+                    if (con.State != ConnectionState.Open)
+                        con.Open();
+
+                    return Convert.ToString(cmd.ExecuteScalar());
+                }
+            }
+            catch
+            {
+                return "1";
+            }
+        }
+
         public ActionResult ObservationRaisedSearch()
         {
             StringBuilder sb = new StringBuilder();
-
+            if (string.IsNullOrEmpty(CurrentSession.UserID))
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
             try
             {
                 DataSet ds = new DataSet();
@@ -18783,218 +18875,218 @@ tr { page-break-inside: avoid }
                     DataTable dt = ds.Tables[0];
 
                     sb.Append(@"
-      <style>
+<style>
 
-    .obs-table-wrapper {
-        width: 100%;
-        background: #fff;
-        border: 1px solid #aeb8c3;
-        border-radius: 10px;
-        box-shadow: 0 3px 12px rgba(0,0,0,.06);
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-    }
+.obs-table-wrapper {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #aeb8c3;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+#ObservationRaisedSearch {
+    width: 100% !important;
+    min-width: 1000px;
+    margin: 0 !important;
+    font-size: 12px;
+    border-collapse: collapse !important;
+    border: 1px solid #aeb8c3 !important;
+}
+
+#ObservationRaisedSearch thead th {
+    background: #1769aa !important;
+    color: #fff !important;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 10px 9px !important;
+    border: 1px solid #0f5a92 !important;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: left;
+}
+
+#ObservationRaisedSearch tbody td {
+    padding: 9px 10px !important;
+    vertical-align: middle;
+    border: 1px solid #c7d0d9 !important;
+    color: #374151;
+    line-height: 1.45;
+    background: #fff;
+}
+
+#ObservationRaisedSearch tbody tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+#ObservationRaisedSearch tbody tr:hover td {
+    background: #eaf4ff !important;
+    border-color: #aebfd0 !important;
+}
+
+.obs-subject {
+    min-width: 350px;
+    max-width: 600px;
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+.obs-resolution {
+    color: #1769aa;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.obs-resolution:hover {
+    color: #0b4f86;
+    text-decoration: underline;
+}
+
+.obs-date {
+    white-space: nowrap;
+    color: #4b5563;
+    font-size: 11px;
+}
+
+.obs-table-wrapper .dataTables_wrapper {
+    width: 100%;
+    padding: 12px;
+}
+
+.obs-table-wrapper .dataTables_filter input {
+    border: 1px solid #c7d0d9;
+    border-radius: 5px;
+    padding: 6px 9px;
+    font-size: 12px;
+    width: 220px;
+    max-width: 100%;
+    outline: none;
+}
+
+.obs-table-wrapper .dataTables_filter input:focus {
+    border-color: #1769aa;
+    box-shadow: 0 0 0 2px rgba(23,105,170,.10);
+}
+
+.obs-table-wrapper .dataTables_length select {
+    border: 1px solid #c7d0d9;
+    border-radius: 5px;
+    padding: 4px 6px;
+    font-size: 12px;
+}
+
+.obs-table-wrapper .dt-button {
+    border: 1px solid #c7d0d9 !important;
+    background: #fff !important;
+    color: #374151 !important;
+    border-radius: 5px !important;
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+    margin-right: 5px !important;
+}
+
+.obs-table-wrapper .dt-button:hover {
+    background: #f1f5f9 !important;
+}
+
+.obs-table-wrapper .dataTables_paginate .paginate_button {
+    padding: 4px 9px !important;
+    font-size: 11px !important;
+    border-radius: 5px !important;
+}
+
+@media (max-width: 992px) {
 
     #ObservationRaisedSearch {
-        width: 100% !important;
         min-width: 900px;
-        margin: 0 !important;
-        font-size: 12px;
-        border-collapse: collapse !important;
-        border: 1px solid #aeb8c3 !important;
-    }
-
-    #ObservationRaisedSearch thead th {
-        background: #1769aa !important;
-        color: #fff !important;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 10px 9px !important;
-        border: 1px solid #0f5a92 !important;
-        white-space: nowrap;
-        vertical-align: middle;
-        text-align: left;
-    }
-
-    #ObservationRaisedSearch tbody td {
-        padding: 9px 10px !important;
-        vertical-align: middle;
-        border: 1px solid #c7d0d9 !important;
-        color: #374151;
-        line-height: 1.45;
-        background: #fff;
-    }
-
-    #ObservationRaisedSearch tbody tr:nth-child(even) td {
-        background: #f8fafc;
-    }
-
-    #ObservationRaisedSearch tbody tr:hover td {
-        background: #eaf4ff !important;
-        border-color: #aebfd0 !important;
     }
 
     .obs-subject {
-        min-width: 350px;
-        max-width: 600px;
-        white-space: normal !important;
-        word-break: break-word;
-        overflow-wrap: anywhere;
-        line-height: 1.5;
+        min-width: 300px;
+        max-width: 450px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .obs-table-wrapper {
+        border-radius: 6px;
+        overflow-x: auto !important;
     }
 
-    .obs-resolution {
-        color: #1769aa;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-        white-space: nowrap;
-    }
-
-    .obs-resolution:hover {
-        color: #0b4f86;
-        text-decoration: underline;
-    }
-
-    .obs-date {
-        white-space: nowrap;
-        color: #4b5563;
+    #ObservationRaisedSearch {
+        min-width: 850px;
         font-size: 11px;
     }
 
+    #ObservationRaisedSearch thead th {
+        font-size: 10px;
+        padding: 8px 7px !important;
+    }
+
+    #ObservationRaisedSearch tbody td {
+        font-size: 11px;
+        padding: 8px 7px !important;
+    }
+
+    .obs-subject {
+        min-width: 280px;
+        max-width: 350px;
+    }
+
     .obs-table-wrapper .dataTables_wrapper {
+        padding: 8px;
+    }
+
+    .obs-table-wrapper .dataTables_filter {
         width: 100%;
-        padding: 12px;
+        text-align: left !important;
+        margin-top: 8px;
     }
 
     .obs-table-wrapper .dataTables_filter input {
-        border: 1px solid #c7d0d9;
-        border-radius: 5px;
-        padding: 6px 9px;
-        font-size: 12px;
-        width: 220px;
-        max-width: 100%;
-        outline: none;
+        width: 100%;
     }
 
-    .obs-table-wrapper .dataTables_filter input:focus {
-        border-color: #1769aa;
-        box-shadow: 0 0 0 2px rgba(23,105,170,.10);
-    }
-
-    .obs-table-wrapper .dataTables_length select {
-        border: 1px solid #c7d0d9;
-        border-radius: 5px;
-        padding: 4px 6px;
-        font-size: 12px;
+    .obs-table-wrapper .dt-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
     }
 
     .obs-table-wrapper .dt-button {
-        border: 1px solid #c7d0d9 !important;
-        background: #fff !important;
-        color: #374151 !important;
-        border-radius: 5px !important;
-        padding: 5px 10px !important;
-        font-size: 11px !important;
-        margin-right: 5px !important;
+        margin-right: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    #ObservationRaisedSearch {
+        min-width: 800px;
     }
 
-    .obs-table-wrapper .dt-button:hover {
-        background: #f1f5f9 !important;
+    #ObservationRaisedSearch thead th {
+        font-size: 9px;
+        padding: 7px 6px !important;
     }
 
-    .obs-table-wrapper .dataTables_paginate .paginate_button {
-        padding: 4px 9px !important;
-        font-size: 11px !important;
-        border-radius: 5px !important;
+    #ObservationRaisedSearch tbody td {
+        font-size: 10px;
+        padding: 7px 6px !important;
     }
 
-    @media (max-width: 992px) {
-
-        #ObservationRaisedSearch {
-            min-width: 850px;
-        }
-
-        .obs-subject {
-            min-width: 300px;
-            max-width: 450px;
-        }
+    .obs-subject {
+        min-width: 250px;
+        max-width: 300px;
     }
-
-    @media (max-width: 768px) {
-
-        .obs-table-wrapper {
-            border-radius: 6px;
-            overflow-x: auto !important;
-        }
-
-        #ObservationRaisedSearch {
-            min-width: 800px;
-            font-size: 11px;
-        }
-
-        #ObservationRaisedSearch thead th {
-            font-size: 10px;
-            padding: 8px 7px !important;
-        }
-
-        #ObservationRaisedSearch tbody td {
-            font-size: 11px;
-            padding: 8px 7px !important;
-        }
-
-        .obs-subject {
-            min-width: 280px;
-            max-width: 350px;
-        }
-
-        .obs-table-wrapper .dataTables_wrapper {
-            padding: 8px;
-        }
-
-        .obs-table-wrapper .dataTables_filter {
-            width: 100%;
-            text-align: left !important;
-            margin-top: 8px;
-        }
-
-        .obs-table-wrapper .dataTables_filter input {
-            width: 100%;
-        }
-
-        .obs-table-wrapper .dt-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .obs-table-wrapper .dt-button {
-            margin-right: 0 !important;
-        }
-    }
-
-    @media (max-width: 480px) {
-
-        #ObservationRaisedSearch {
-            min-width: 750px;
-        }
-
-        #ObservationRaisedSearch thead th {
-            font-size: 9px;
-            padding: 7px 6px !important;
-        }
-
-        #ObservationRaisedSearch tbody td {
-            font-size: 10px;
-            padding: 7px 6px !important;
-        }
-
-        .obs-subject {
-            min-width: 250px;
-            max-width: 300px;
-        }
-    }
+}
 
 </style>
 ");
@@ -19017,6 +19109,9 @@ tr { page-break-inside: avoid }
                                 StringComparison.OrdinalIgnoreCase) ||
                             col.ColumnName.Equals(
                                 "Reply File",
+                                StringComparison.OrdinalIgnoreCase) ||
+                            col.ColumnName.Equals(
+                                "ActionCode",
                                 StringComparison.OrdinalIgnoreCase))
                             continue;
 
@@ -19047,12 +19142,15 @@ tr { page-break-inside: avoid }
 
                         foreach (DataColumn col in dt.Columns)
                         {
-                            // Hide NotifyTo and Reply File
+                            // Hide NotifyTo, Reply File and ActionCode
                             if (col.ColumnName.Equals(
                                     "NotifyTo",
                                     StringComparison.OrdinalIgnoreCase) ||
                                 col.ColumnName.Equals(
                                     "Reply File",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                col.ColumnName.Equals(
+                                    "ActionCode",
                                     StringComparison.OrdinalIgnoreCase))
                                 continue;
 
@@ -19067,33 +19165,30 @@ tr { page-break-inside: avoid }
                                         ? ""
                                         : row[col].ToString();
 
-                                if (CurrentSession.DeptID == "LG00001" || CurrentSession.DeptID == "UDD0001")
+                                if (CurrentSession.DeptID == "LG00001")
                                 {
-
                                     sb.AppendFormat(
-                                    @"<td>
+                                        @"<td>
                                     <a href='javascript:void(0);'
                                        class='obs-resolution'
                                        id='{0}'
-                                       class='obs-resolution'
-                                       onclick=""EditMlaDispatch(this, 0, 'Diary'); return false;"">
+                                       onclick=""ViewSingleEdit(this); return false;"">
                                         {1}
                                     </a>
                                     <input type='hidden'
                                            id='hfRefId_{0}'
                                            value='{0}' />
                                   </td>",
-                                    HttpUtility.HtmlAttributeEncode(referenceId),
-                                    HttpUtility.HtmlEncode(referenceId));
+                                        HttpUtility.HtmlAttributeEncode(referenceId),
+                                        HttpUtility.HtmlEncode(referenceId));
                                 }
                                 else
                                 {
                                     sb.AppendFormat(
-                                    @"<td>
+                                        @"<td>
                                     <a href='javascript:void(0);'
                                        class='obs-resolution'
                                        id='{0}'
-                                       class='obs-resolution'
                                        onclick=""EditMlaDispatch(this, 0, 'Dispatch'); return false;"">
                                         {1}
                                     </a>
@@ -19101,12 +19196,10 @@ tr { page-break-inside: avoid }
                                            id='hfRefId_{0}'
                                            value='{0}' />
                                   </td>",
-                                    HttpUtility.HtmlAttributeEncode(referenceId),
-                                    HttpUtility.HtmlEncode(referenceId));
+                                        HttpUtility.HtmlAttributeEncode(referenceId),
+                                        HttpUtility.HtmlEncode(referenceId));
                                 }
-                                                       
-                            
-                             }
+                            }
 
                             // ================= MEETING DATE =================
 
@@ -19164,6 +19257,24 @@ tr { page-break-inside: avoid }
                                     HttpUtility.HtmlEncode(subject));
                             }
 
+                            // ================= OBSERVATION TYPE =================
+
+                            else if (col.ColumnName.Equals(
+                                "Observation Type",
+                                StringComparison.OrdinalIgnoreCase))
+                            {
+                                string observationType =
+                                    row[col] == DBNull.Value
+                                        ? ""
+                                        : row[col].ToString();
+
+                                // HTML is already generated by SQL.
+                                // Do NOT HtmlEncode it.
+                                sb.AppendFormat(
+                                    "<td style='text-align:center;'>{0}</td>",
+                                    observationType);
+                            }
+
                             // ================= OTHER COLUMNS =================
 
                             else
@@ -19204,11 +19315,11 @@ tr { page-break-inside: avoid }
 
                 sb.AppendFormat(
                     @"<div class='alert alert-danger'
-                    style='margin-top:15px;
-                           border-radius:8px;
-                           border:1px solid #e0a4a4;'>
-                    <i class='fa fa-exclamation-triangle'></i>
-                    &nbsp; {0}
+              style='margin-top:15px;
+                     border-radius:8px;
+                     border:1px solid #e0a4a4;'>
+                <i class='fa fa-exclamation-triangle'></i>
+                &nbsp; {0}
               </div>",
                     HttpUtility.HtmlEncode(ex.Message));
             }
@@ -19303,7 +19414,7 @@ tr { page-break-inside: avoid }
             }
         }
 
- [HttpGet]
+       [HttpGet]
         public JsonResult GetPartFileResolution(long? refid = 0, string isLetter = "File", int AssignedOfficeId = 0, int SessToOfficeId = 0, string Type = "")
         {
             try
@@ -19363,7 +19474,43 @@ tr { page-break-inside: avoid }
             }
         }
 
+        [HttpPost]
+        public JsonResult NotifyLocalGovt(long RefId, int NotifyTo)
+        {
+            try
+            {
+                using (SqlConnection con = ClsConnection.GetConnection())
+                 {
+                    using (SqlCommand cmd = new SqlCommand(@"
+                        UPDATE mNotification
+                        SET NotifyTo = @NotifyTo
+                        WHERE RefId = @RefId", con))
+                            {
+                        cmd.Parameters.AddWithValue("@RefId", RefId);
+                        cmd.Parameters.AddWithValue("@NotifyTo", NotifyTo);
 
+                        con.Open();
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        return Json(new
+                        {
+                            success = rowsAffected > 0,
+                            message = rowsAffected > 0
+                                ? "Notify status updated successfully."
+                                : "Record not found."
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
     }
 
 

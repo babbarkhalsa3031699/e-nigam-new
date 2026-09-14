@@ -228,14 +228,9 @@
                     <div class="modal-header">
                         <div class="row">
                             <div class="col-lg-8">
-                                <h4 id="InboxHeader1" class="widget-title "></h4>
+                                <h4 id="InboxHeader1" class="widget-title ">Observation Raised</h4>
                             </div>
-                            <div class="col-lg-3">
-                                <div id="clock1" class="clock"></div>
-                            </div>
-                            <div class="col-1">
-                                <i id="PopRefresh" class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 15px;" title="Session Time Reset"></i>
-                            </div>
+                          
                         </div>
 
                         <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close" style=""></button>
@@ -452,21 +447,61 @@
 });
     }
 
-    //Rajeev
-
-var menutype = $("#lblmenuname").html();
-
-
-var heading = $('#inboxlabel').html();
-
-
-
-
-$('#InboxHeader1').html(menutype+">>"+heading);
+ 
+     $('#InboxHeader1').html('Observation Raised');
 
    }
 
+    function ViewSingleEdit(IDD) {
 
+        var mainRefid= $('#RefId').val();
+        var ID = IDD.id;
+       $('#SingleModelEditbody').html('');
+     var pathurl = '@Url.Action("EditSingleEntry", "References")';
+      //  var pathurl = '/References/EditMlaDairyForm';
+        $.ajax({
+            type: "GET",
+            url: pathurl,
+            async: true,
+            data: { ID: ID, MainRefId: mainRefid },
+            beforeSend: function () {
+                $('#loader-wrapper').show();
+            },
+            success: function (data) {
+                // //;
+                var options = {
+                    "backdrop": "static",
+                    keyboard: true
+                };
+                $("#loader-wrapper").hide();
+
+                if (data) {
+                    $("#SingleModelEdit").css("display", "block");
+                    $('#SingleModelEditbody').html(data);
+                    $(".yellow-list").animate({ scrollTop: $('ul.yellow-list li:last').offset().top + 30 });
+
+
+
+                } else { alert("error"); }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            },
+            complete: function (results) {
+                $('#loader-wrapper').hide();
+
+            }
+        });
+        //$('#InboxModelbody').html('');
+
+    //closeInboxEdit();
+
+
+
+
+
+}
 
 
     $(document).ready(function () {
@@ -588,6 +623,20 @@ $('#InboxHeader1').html(menutype+">>"+heading);
      $('#InboxModelbody').html('');
      S_enable = 0, SD_enable = 0, office_enable = 0;
 
- }
+    }
+
+    function closeSingleEdit() {
+
+        var mainrefid = $('#MainRefId').val();
+        $("#SingleModelEdit").css("display", "none");
+        $('#SingleModelEditbody').html('');
+        //$('#' + mainrefid).click();
+        setTimeout(function () {
+
+            //$('#myTab li:eq(1) a').tab('show');
+            // $('#myTab li:eq(1) a').click();
+        }, 1000);
+
+    }
 
 </script>
