@@ -3018,7 +3018,7 @@
                     </tbody>
                 </table>`;
                 if (editor) {
-                    editor.setContent(table);
+                    editor.insertContent(table);
                 }
                 else {
                     tinymce.get("ActionDescription").insertContent(table);
@@ -10705,7 +10705,7 @@ function generatePdf() {
 
         if (editor) {
             editor.focus();
-            editor.setContent("");
+            //editor.setContent("");
         }
         // $("#notingList").hide();
         var $button = $('.tox-tbtn').filter(function () {
