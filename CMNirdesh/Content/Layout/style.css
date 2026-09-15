@@ -50,17 +50,15 @@ footer {
 }
 
 .slider {
-    z-index: 9;
-    display: block;
-    position: absolute;
-    width: 5px;
-    background-color: #90A09C;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    overflow: visible;
+    z-index: 99;
+    display: flex;
+    position: relative;
+    width: 14px;
+    background-color: transparent;
+    cursor: col-resize;
     user-select: none;
-    cursor: move;
+    align-items: center;
+    justify-content: center;
 }
 
 .sliderRight {
