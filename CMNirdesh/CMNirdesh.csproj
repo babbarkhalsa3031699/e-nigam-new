@@ -510,6 +510,7 @@
     <Compile Include="Controllers\ZoneController.cs" />
     <Compile Include="Error\ErrorLog.cs" />
     <Compile Include="Extensions\AuditTrailsExtensionMethods.cs" />
+    <Compile Include="Models\ActiveSessionManager.cs" />
     <Compile Include="Models\Agenda.cs" />
     <Compile Include="Models\ASPSession.cs" />
     <Compile Include="Models\AssemblyModel.cs" />
@@ -615,6 +616,7 @@
     <Compile Include="Models\Session\mSessionDate.cs" />
     <Compile Include="Models\Session\mSessionType.cs" />
     <Compile Include="Models\ProjectD.cs" />
+    <Compile Include="Models\Session\UserDraft.cs" />
     <Compile Include="Models\SiteSettings.cs" />
     <Compile Include="Models\SMSMessage.cs" />
     <Compile Include="Models\SMSService.cs" />

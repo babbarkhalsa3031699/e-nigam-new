@@ -578,7 +578,6 @@
             for (var j = 0; j < files2.length; j++) {
                 fileData.append("file2", files2[j]);
             }
-            debugger
             const courseDto = {
                 //  MCName: $("#MCNameDropDown option:selected").text(),
                 //  MCName_local: $("#MCLocalNameDropDown option:selected").text(),
@@ -599,6 +598,7 @@
             Object.entries(courseDto).map(([key, value]) =>
                 fileData.append(key, value)
             );
+            debugger
             // Adding one more key to FormData object
             $.ajax({
                 url: '@Url.Action("UpdateUser", "User")',

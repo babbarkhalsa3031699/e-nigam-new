@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@model CMNirdesh.Models.Diaries.MlaDiaryData
 
 @using CMNirdesh.Models
 
@@ -238,7 +238,7 @@
 
 
 
-        tinymce.activeEditor.remove("textarea");
+        tinymce.remove("#subjectdetailforedit_" + refid);
          tinyMCE.init({
              selector: "#subjectdetailforedit_"+refid,
              branding: false,

@@ -4193,7 +4193,7 @@ namespace CMNirdesh.Models
                 lstagd.Add(fr);
             }
             mdl._LstResolutionActions=lstagd;
-
+            mdl.AgendaId = AgendaId;
             // Table 2: ActionTypeList_Ref
             mdl.ActionTypeList_Ref = new SelectList(ds.Tables[1].AsEnumerable().Select(row => new SelectListItem
             {
@@ -4239,7 +4239,7 @@ namespace CMNirdesh.Models
                 lstagd.Add(fr);
             }
             mdl._LstResolutionActions = lstagd;
-
+            mdl.AgendaId = AgendaId;
             // Table 2: ActionTypeList_Ref
             mdl.ActionTypeList_Ref = new SelectList(ds.Tables[1].AsEnumerable().Select(row => new SelectListItem
             {

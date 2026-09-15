@@ -14,6 +14,89 @@
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <link href="~/Content/responsive_ms.css" rel="stylesheet" />
     <link href="~/Content/font-awesome_ms.min.css" rel="stylesheet" />
+    <style>
+
+        @@media screen and (max-width: 767px) {
+
+            /* 1. Add 35px top space inside the Parichay dark blue box */
+            .login_form_box .reg_box,
+            .reg_box,
+            .inr_reg,
+            .inr_reg_tab {
+                padding-top: 35px !important; /* Creates top space inside the box */
+                margin-top: 0px !important;
+                top: 0px !important;
+                overflow: visible !important;
+                box-sizing: border-box !important;
+            }
+
+            /* 2. Direct Override for Govt of India Logo */
+            img.ind_gov_logo,
+            .login_form_box .ind_gov_logo,
+            .ind_gov_logo {
+                margin-top: 15px !important; /* Pushes logo DOWN into view */
+                margin-bottom: 5px !important;
+                padding-top: 0px !important;
+                top: 0px !important;
+                position: relative !important;
+                display: inline-block !important;
+                vertical-align: top !important;
+                max-width: 55px !important;
+                height: auto !important;
+                transform: none !important;
+                clip-path: none !important;
+            }
+
+            /* 3. NIC Logo below Govt Logo */
+            .login_form_box .nic_logo,
+            .nic_logo {
+                margin-top: 10px !important;
+                margin-bottom: 5px !important;
+                max-width: 115px !important;
+                height: auto !important;
+                display: inline-block !important;
+            }
+
+            /* 4. Reset layout containers */
+            html, body, div#body {
+                margin-top: 0px !important;
+                padding-top: 0px !important;
+            }
+
+            section.reg_sec, .reg_sec {
+                display: block !important;
+                height: auto !important;
+                min-height: auto !important;
+                margin-top: 0px !important;
+                margin-bottom: 15px !important;
+                padding-top: 10px !important;
+                padding-bottom: 15px !important;
+            }
+
+            .login_form_box {
+                display: block !important;
+                max-width: 440px !important;
+                width: 100% !important;
+                margin: 0 auto !important;
+                padding-top: 0px !important;
+            }
+
+                .login_form_box .login_box,
+                form.login_form,
+                .login_box {
+                    display: block !important;
+                    padding: 15px !important;
+                }
+
+            .login_form_child img {
+                max-width: 60px !important;
+                height: auto !important;
+                margin-top: 5px !important;
+                margin-bottom: 6px !important;
+            }
+        }
+    
+    </style>
 
     <title>CMNirdeshPunjab</title>
     <script src="~/Scripts/jquery-3.6.4.min.js"></script>
@@ -91,7 +174,7 @@
       });
 }
 
-      function SubmitForm() {
+        function SubmitForm() {
             var username = document.getElementById("UserName");
             var password = document.getElementById("Password");
             var Captcha = document.getElementById("CaptchaText");
@@ -134,7 +217,7 @@
                 }
             }
             if (isValid) {
-                $('#LoginForm').submit();
+                /*$('#LoginForm').submit();*/
 
                 document.getElementById("Password").value = "";
                 document.getElementById("UserName").value ="";
@@ -546,41 +629,41 @@
                         <div class="login_box login_form">
                             <div class="login_form_child">
                                 @*<form class="login_form">*@
-                                <img src="~/assets/images/punjab_logo.jpg" alt="">
+                                <img src="~/assets/home_images/punjab_logo.jpg" alt="">
                                 @*   <h4>ਮੁੱਖ ਮੰਤਰੀ ਨਿਰਦੇਸ਼ - ਪੰਜਾਬ</h4>
-                                    <h5>CM NIRDESH - Punjab</h5>*@
+        <h5>CM NIRDESH - Punjab</h5>*@
 
                                 <h4 class="mb-3 mt-0">Login</h4>
 
-                                @Html.TextBoxFor(m => m.UserName, new { autocomplete = "off", @class = "loginUsername txt_login form-control", @placeholder = "User Id", oncopy = "return false", onpaste = "return true", onblur = "OnChangeTextBox1(this);", @maxlength = "100" })
+                                @Html.TextBoxFor(m => m.UserName, new { autocomplete = "off", @class = "loginUsername txt_login form-control", @placeholder = "User Id", oncopy = "return false", onpaste = "return true", onblur = "OnChangeTextBox(this);", @maxlength = "100" })
                                 <p><span class="field-validation-error" id="UsernameValidation"></span></p>
 
                                 <input type="hidden" name="MCId" value="1001" />
 
 
-                                  <div style="position:relative;">
-      @Html.PasswordFor(m => m.Password, new
-      {
-          autocomplete = "off",
-          @placeholder = "Password",
-          @class = "txt_login form-control",
-          id = "Password",
-          oncopy = "return false",
-          onpaste = "return false",
-          onblur = "OnChangeTextBox(this);",
-          @maxlength = "20"
-      })
+                                <div style="position:relative;">
+                                    @Html.PasswordFor(m => m.Password, new
+                                    {
+                                        autocomplete = "off",
+                                        @placeholder = "Password",
+                                        @class = "txt_login form-control",
+                                        id = "Password",
+                                        oncopy = "return false",
+                                        onpaste = "return false",
+                                        onblur = "OnChangeTextBox(this);",
+                                        @maxlength = "20"
+                                    })
 
-      <span class="toggle-password"
-            data-target="Password"
-            style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;">
-          <i class="fa fa-eye"></i>
-      </span>
-  </div>
+                                    <span class="toggle-password"
+                                          data-target="Password"
+                                          style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;">
+                                        <i class="fa fa-eye"></i>
+                                    </span>
+                                </div>
 
-  <span class="field-validation-error" id="PasswordValidation"></span>
+                                <span class="field-validation-error" id="PasswordValidation"></span>
 
-                                @using (Html.BeginForm("LoginCMNirdesh", "Account", new { area = "", }, FormMethod.Post, new { onkeypress = "if(e.keyCode==13 || e.which == 13) {return SubmitForm();}", @id = "LoginForm", autocomplete = "off" }))
+                                @using (Html.BeginForm("LoginCMNirdesh", "Account", new { area = "", }, FormMethod.Post, new { onsubmit = "return SubmitForm();", @id = "LoginForm", autocomplete = "off" }))
                                 {
 
 
@@ -600,9 +683,9 @@
 
                                         </div>
                                         @*<div class="editor-field edt_cpha">
-                                            <img src="@Url.Action("GetCaptchaImage", "Account", new { area = "" })" />
-                                            <a id="refresh1" tabindex="6" class="ref_sign" href="@Url.Action("Login", "Account", new { area = "" })"><span class="fa fa-refresh" style="font-size: 17px;"></span></a>
-                                            </div>*@
+                <img src="@Url.Action("GetCaptchaImage", "Account", new { area = "" })" />
+                <a id="refresh1" tabindex="6" class="ref_sign" href="@Url.Action("Login", "Account", new { area = "" })"><span class="fa fa-refresh" style="font-size: 17px;"></span></a>
+                </div>*@
 
                                         <div class="editor-field edt_cpha">
                                             <img id="captchaImage" src="@Url.Action("GetCaptchaImage", "Account")" alt="Captcha" />
@@ -618,11 +701,12 @@
 
                                     </div>
 
-                                }
-                                <div class="form-group">
-                                    <input type="button" name="submit" value="Login" onclick="return SubmitForm();" class="btn_login red_hover">
+                                    <div class="form-group">
+                                        <input type="submit" name="submit" value="Login" class="btn_login red_hover">
 
-                                </div>
+                                    </div>
+                                }
+
                                 @*</form>*@
 
                             </div>

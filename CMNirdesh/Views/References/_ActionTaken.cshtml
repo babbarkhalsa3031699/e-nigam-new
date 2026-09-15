@@ -29,7 +29,7 @@
 <link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
 <link href="~/Content/Layout/style.css" rel="stylesheet" />
 <style>
- @@media print {
+    @@media print {
         @@page {
             margin: 10mm 5mm;
             size: auto;
@@ -141,12 +141,12 @@
                         break-inside: auto !important;
                     }
 
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        color-scheme: light !important;
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-scheme: light !important;
+        }
     }
-}
 
     #resizer {
         width: 10px;
@@ -157,7 +157,8 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-    } 
+    }
+
     #replyChips {
         display: flex;
         gap: 12px;
@@ -251,28 +252,23 @@
         overflow: hidden; /* important */
     }
 
-    /* .panelone {
-        flex: 1;
-        overflow-y: auto;
-        max-height: 100%;
-    }*/
-
-    .panelone {
-        flex: 1;
-        overflow: auto;
-        max-height: 100%;
-        /* Firefox */
-        scrollbar-width: none;
-        /* IE/Edge Legacy */
-        -ms-overflow-style: none;
+    #EditApprovalModal {
+        padding: 20px;
     }
 
-        /* Chrome, Edge, Safari */
-        .panelone::-webkit-scrollbar {
-            display: none;
-            width: 0;
-            height: 0;
+    #EditApprovalModal .modal-dialog {
+        margin-top: 0px;
+        width: 100%;
+    }
+
+        #EditApprovalModal.minimized {
+            height: 70px;
+            overflow: hidden;
         }
+
+    #EditApprovalModal .modal-body {
+        display: inline-block;
+    }
 
 
     .edit-action-section {
@@ -283,74 +279,159 @@
         scroll-behavior: smooth;
     }
 
-    /* Main container */
-    #InboxModel .profile_value {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+    /* Resizing active overlay to block iframes from intercepting mouse events during drag */
+    body.is-resizing {
+        user-select: none !important;
+        -webkit-user-select: none !important;
     }
 
-    .resizer {
-        height: 6px;
-        background: #ccc;
-        cursor: row-resize;
-        display: none; /* 🔴 hidden initially */
-    }
-
-        /* show when active */
-        .resizer.active {
-            display: block;
+        body.is-resizing iframe {
+            pointer-events: none !important;
         }
 
-    /* Noting list (TOP PANEL) */
-    .note-list {
-        max-height: 800px;
-        overflow-y: auto;
-        padding: 0;
-        transition: max-height 0.3s ease;
+    body.is-resizing-h {
+        cursor: col-resize !important;
     }
 
-        /* When Add Noting is open */
-        .note-list.expanded {
-            max-height: 300px;
+    body.is-resizing-v {
+        cursor: row-resize !important;
+    }
+
+    /* Main container */
+    .profile_value,
+    #InboxModel .profile_value {
+        min-height: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        overflow: visible !important;
+        min-width: 0;
+        flex: 1 1 auto;
+        box-sizing: border-box;
+    }
+
+    /* Noting list (TOP PANEL) - Contained Scroll */
+    #notingList {
+        overflow-y: hidden !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 0;
+        flex: 1 1 auto;
+        min-height: 80px;
+        box-sizing: border-box;
+        display: block;
+    }
+
+        #notingList > ul,
+        .note-list,
+        .yellow-list,
+        .note-list1,
+        #ulnoting,
+        #ulnoting1,
+        #ulnoting2 {
+            padding: 0 !important;
+            margin: 0 !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            box-sizing: border-box !important;
+        }
+
+    /* Vertical Divider line (DRAG HANDLE) */
+    #dragBar.resizer,
+    .profile_value > .resizer {
+        height: 8px !important;
+        background: #cbd5e1 !important;
+        border-top: 1px solid #94a3b8;
+        border-bottom: 1px solid #94a3b8;
+        cursor: row-resize !important;
+        flex-shrink: 0 !important;
+        display: none; /* hidden until Add Noting is opened */
+        position: relative !important;
+        z-index: 10 !important;
+        margin: 4px 0 !important;
+        border-radius: 4px !important;
+        box-sizing: border-box !important;
+    }
+
+        #dragBar.resizer:hover,
+        #dragBar.resizer.active,
+        .profile_value > .resizer:hover {
+            background: #64748b !important;
+        }
+
+        #dragBar.resizer.active {
+            display: block !important;
         }
 
     /* Bottom panel (Add Noting) */
+    #addNotingSection,
+    .left-bottom,
     #InboxModel .left-bottom {
-        max-height: 0;
+        display: none;
         overflow-y: auto;
-        transition: max-height 0.3s ease;
+        overflow-x: hidden;
+        flex-shrink: 0;
+        min-height: 0;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
-        /* Show bottom panel */
+        #addNotingSection.active,
+        .left-bottom.active,
         #InboxModel .left-bottom.active {
-            max-height: 550px;
+            display: block !important;
         }
 
-    /* Divider line (DRAG HANDLE) */
-    .resizer {
-        height: 6px;
-        background: #ccc;
-        cursor: row-resize;
-        position: relative;
-    }
-
-        .resizer:hover {
-            background: #999;
+        #addNotingSection *,
+        .left-bottom * {
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
-    /* Optional scrollbar styling */
-    .note-list::-webkit-scrollbar,
-    .left-bottom::-webkit-scrollbar {
-        width: 6px;
-    }
+        /* Optional scrollbar styling */
+        .panelone::-webkit-scrollbar,
+        .paneltwo::-webkit-scrollbar,
+        #notingList::-webkit-scrollbar,
+        #ulnoting::-webkit-scrollbar,
+        #ulnoting1::-webkit-scrollbar,
+        #ulnoting2::-webkit-scrollbar,
+        .note-list::-webkit-scrollbar,
+        .yellow-list::-webkit-scrollbar,
+        .left-bottom::-webkit-scrollbar,
+        #addNotingSection::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    .note-list::-webkit-scrollbar-thumb,
-    .left-bottom::-webkit-scrollbar-thumb {
-        background: #aaa;
-        border-radius: 10px;
-    }
+        .panelone::-webkit-scrollbar-thumb,
+        .paneltwo::-webkit-scrollbar-thumb,
+        #notingList::-webkit-scrollbar-thumb,
+        #ulnoting::-webkit-scrollbar-thumb,
+        #ulnoting1::-webkit-scrollbar-thumb,
+        #ulnoting2::-webkit-scrollbar-thumb,
+        .note-list::-webkit-scrollbar-thumb,
+        .yellow-list::-webkit-scrollbar-thumb,
+        .left-bottom::-webkit-scrollbar-thumb,
+        #addNotingSection::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 6px;
+        }
+
+            .panelone::-webkit-scrollbar-thumb:hover,
+            .paneltwo::-webkit-scrollbar-thumb:hover,
+            #notingList::-webkit-scrollbar-thumb:hover,
+            #ulnoting::-webkit-scrollbar-thumb:hover,
+            #ulnoting1::-webkit-scrollbar-thumb:hover,
+            #ulnoting2::-webkit-scrollbar-thumb:hover,
+            .note-list::-webkit-scrollbar-thumb:hover,
+            .yellow-list::-webkit-scrollbar-thumb:hover,
+            .left-bottom::-webkit-scrollbar-thumb:hover,
+            #addNotingSection::-webkit-scrollbar-thumb:hover {
+                background: #64748b;
+            }
 
 
 
@@ -365,56 +446,11 @@
         padding-left: 25px;
         padding-top: 30px;
     }
-    /* Add Noting panel scroll */
-    .left-bottom {
-        display: none;
-        background: #fff;
-        border-top: 1px solid #ccc;
-        max-height: 200px; /* 👈 control height */
-        overflow-y: auto; /* 👈 enable scroll */
-        padding: 10px;
-    }
-
-        /* Active state */
-        .left-bottom.active {
-            display: block;
-        }
-
-    #InboxModel .left-bottom {
-        max-height: 550px; /* 🔼 increase as needed (300–500px) */
-        overflow-y: auto;
-    }
-
-    .note-list {
-        max-height: 800px;
-        overflow-y: auto;
-        padding: 0;
-        transition: max-height 0.3s ease;
-    }
-
-        /* Expanded state */
-        .note-list.expanded {
-            max-height: 300px;
-        }
-
     /* List style */
     .voting-list {
         padding: 10px;
         border-bottom: 1px solid #ddd;
     }
-
-    /* Bottom panel hidden initially */
-    .left-bottom {
-        display: none;
-        background: #fff;
-        border-top: 1px solid #ccc;
-        padding: 10px;
-    }
-
-        /* Show when active */
-        .left-bottom.active {
-            display: block;
-        }
 
 
     #panelContainer {
@@ -425,103 +461,157 @@
         align-items: stretch !important;
     }
 
-    .resizer-icon
-    {
+    .resizer-icon {
         font-size: 35px;
     }
 
-        #panelContainer > .slider {
+    #panelContainer > .slider {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        width: 16px !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        align-self: stretch !important;
+        background-color: transparent !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        /*z-index: 9999 !important;*/
+        margin: 0 -8px !important;
+        padding: 0 !important;
+    }
+
+        #panelContainer > .slider::before {
+            content: "" !important;
+            position: absolute !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 5px !important;
+            height: 100% !important;
+            background: #90A09C !important;
+            z-index: 1 !important;
+        }
+
+        #panelContainer > .slider .sliderLeft,
+        #panelContainer > .slider .sliderRight {
             position: relative !important;
             left: auto !important;
             right: auto !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            width: 16px !important;
-            height: 100% !important;
-            min-height: 100% !important;
-            align-self: stretch !important;
-            background-color: transparent !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
+            top: auto !important;
+            bottom: auto !important;
+            z-index: 2 !important;
+            font-size: 24px !important;
+            color: #007bff !important;
+            cursor: pointer !important;
+            padding: 5px !important;
+            margin: 4px 0 !important;
+            background: #ffffff !important;
+            border-radius: 50% !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
+            display: inline-flex !important;
             align-items: center !important;
-            z-index: 9999 !important;
-            margin: 0 -8px !important;
-            padding: 0 !important;
+            justify-content: center !important;
+            transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease !important;
         }
 
-            #panelContainer > .slider::before {
-                content: "" !important;
-                position: absolute !important;
-                top: 0 !important;
-                bottom: 0 !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 5px !important;
-                height: 100% !important;
-                background: #90A09C !important;
-                z-index: 1 !important;
-            }
+        #panelContainer > .slider .resizer {
+            position: relative !important;
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: auto !important;
+            z-index: 2 !important;
+            font-size: 24px !important;
+            cursor: pointer !important;
+            padding: 20px 0px !important;
+            margin: 4px 0 !important;
+            background: #ffffff !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease !important;
+        }
 
-            #panelContainer > .slider .sliderLeft,
-            #panelContainer > .slider .sliderRight {
-                position: relative !important;
-                left: auto !important;
-                right: auto !important;
-                top: auto !important;
-                bottom: auto !important;
-                z-index: 2 !important;
-                font-size: 24px !important;
-                color: #007bff !important;
-                cursor: pointer !important;
-                padding: 5px !important;
-                margin: 4px 0 !important;
-                background: #ffffff !important;
-                border-radius: 50% !important;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
-                display: inline-flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease !important;
-            }
-
-            #panelContainer > .slider .resizer {
-                position: relative !important;
-                left: auto !important;
-                right: auto !important;
-                top: auto !important;
-                bottom: auto !important;
-                z-index: 2 !important;
-                font-size: 24px !important;
-                cursor: pointer !important;
-                padding: 20px 0px !important;
-                margin: 4px 0 !important;
-                background: #ffffff !important;
-                display: inline-flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease !important;
-            }
-
-                #panelContainer > .slider .sliderLeft:hover,
-                #panelContainer > .slider .sliderRight:hover {
-                    transform: scale(1.2) !important;
-                    color: #0056b3 !important;
-                    background: #f0f4f9 !important;
-                }
+        #panelContainer > .slider .sliderLeft:hover,
+        #panelContainer > .slider .sliderRight:hover {
+            transform: scale(1.2) !important;
+            color: #0056b3 !important;
+            background: #f0f4f9 !important;
+        }
 
     .panelone {
         width: 45%;
         height: 100vh;
-        /*overflow: hidden;*/ /* ❌ NO scroll on left */
         position: sticky;
         top: 0;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow-y: auto !important; /* Single unified scroller for all left side panel */
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        box-sizing: border-box !important;
     }
 
     .paneltwo {
         width: 55%;
         height: 100vh;
-        overflow-y: auto; /* ✅ ONLY right scroll */
+        min-width: 0 !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+    }
+
+
+    .panelone > div,
+    .panelone > .col-lg-12 {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: 1 1 auto !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .panelone #UpdateTab {
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+        background: #fff !important;
+    }
+
+    .panelone .tab-content,
+    .panelone #myUpdateContent {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: calc(100% - 42px) !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+    }
+
+    .panelone .tab-pane {
+        height: auto !important;
+        min-height: 100% !important;
+        min-width: 0 !important;
+        display: none;
+        flex-direction: column !important;
+        overflow: visible !important;
+        -webkit-overflow-scrolling: touch !important;
+        box-sizing: border-box !important;
     }
 
     #PartFileSubjectModal {
@@ -552,10 +642,10 @@
         min-height: unset;
     }
 
-        #PartFileSubjectModal .modal-dialog-scrollable .modal-content {
-            max-height: 60%;
-            max-width: 60%;
-        }
+    #PartFileSubjectModal .modal-dialog-scrollable .modal-content {
+        max-height: 60%;
+        max-width: 60%;
+    }
 
     .modal-content {
         position: relative;
@@ -570,6 +660,67 @@
         border-radius: var(--bs-modal-border-radius);
         outline: 0;
         padding: 5px;
+    }
+
+    .panelone .tab-pane.active.show,
+    .panelone .tab-pane.show.active {
+        display: flex !important;
+    }
+
+    .panelone #divDetails,
+    .panelone .profile_value {
+        min-height: 100% !important;
+        height: auto !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: visible !important;
+        flex: 1 1 auto !important;
+        box-sizing: border-box !important;
+    }
+
+    .panelone #notingList {
+        min-height: 80px;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+        .panelone #notingList > ul,
+        .panelone .note-list,
+        .panelone .yellow-list,
+        .panelone #ulnoting {
+            box-sizing: border-box;
+        }
+
+    .panelone .edit-action-section,
+    .panelone #EditActionSection {
+        min-height: 100px;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .panelone #addNotingSection,
+    .panelone .left-bottom {
+        min-height: 100px;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .panelone .noting-toolbar-pro {
+        flex-shrink: 0 !important;
+    }
+
+    .ListingDocs {
+        text-align: end;
+        margin-bottom: 5px;
+    }
+
+    .tox-tbtn[aria-label="Add Action"] span {
+        font-weight: 800 !important;
+    }
+
+    #txtSelectNos {
+        margin-bottom: 0px !important;
     }
 </style>
 <style>
@@ -689,9 +840,9 @@
         gap: 10px; /* Uniform gap between buttons */
     }
 
-        .button-container button {
-            margin: 0 5px !important; /* Equal horizontal spacing */
-        }
+        /*.button-container button {
+            margin: 0 5px !important;*/ /* Equal horizontal spacing */
+        /*}*/
 
     .d-none {
         display: none !important;
@@ -1064,8 +1215,7 @@
 
     .Pending {
         border: solid 1px #c8c1c1b2;
-        margin-top: 17px;
-        margin-left: 10px;
+        margin: 5px;
     }
 
     .Aprove {
@@ -1117,6 +1267,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        flex-wrap: wrap;
     }
 
     .range-label {
@@ -1191,7 +1342,9 @@
         .maximized-modal .modal-content {
             height: 100%;
         }
-
+    .notetag-span {
+        display:inline-flex !important;
+    }
 </style>
 <style>
 
@@ -1215,12 +1368,14 @@
 
     .pdf-popup-left.active {
         left: 0;
+        right: auto;
     }
 
     .pdf-popup-left .pdf-content {
         height: 100%;
         display: flex;
         flex-direction: column;
+        width: 100%;
     }
 
     .pdf-popup-left .modal-body {
@@ -1244,12 +1399,14 @@
 
         .pdf-popup-right.active {
             right: 0;
+            left: auto;
         }
 
         .pdf-popup-right .pdf-content {
             height: 100%;
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
 
         .pdf-popup-right .modal-body {
@@ -1267,120 +1424,139 @@
     #SubjectDetailModal {
         min-width: 280px;
         min-height: 180px;
-        box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
         position: fixed;
+        background: #fff !important;
+        background-color: #ffffff !important;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        overflow: hidden;
     }
+
+        #SubjectDetailModal:not(.active) {
+            display: none !important;
+        }
+
+        #SubjectDetailModal .pdf-header {
+            margin: 0;
+            padding: 8px 15px;
+            height: 42px;
+        }
+
+        #SubjectDetailModal .modal-body {
+            padding: 8px !important;
+            margin: 0 !important;
+        }
+
+        #SubjectDetailModal #popuptable {
+            width: 100% !important;
+            margin: 0 !important;
+        }
 
     .popup-resizer {
         position: absolute;
         z-index: 99999 !important;
         touch-action: none;
+        background: transparent !important;
     }
 
-    /* Top Edge (Vertical Drag Up/Down) */
-    .popup-resizer.resizer-t {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 8px;
-        cursor: n-resize;
-        background: rgba(13, 110, 253, 0.2);
-        border-top: 3px solid #0d6efd;
-    }
+        /* Top Edge (Vertical Drag Up/Down) */
+        .popup-resizer.resizer-t {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            cursor: n-resize;
+            border: none !important;
+        }
 
-    /* Bottom Edge (Vertical Drag Up/Down) */
-    .popup-resizer.resizer-b {
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 8px;
-        cursor: s-resize;
-        background: rgba(13, 110, 253, 0.2);
-        border-bottom: 3px solid #0d6efd;
-    }
+        /* Bottom Edge (Vertical Drag Up/Down) */
+        .popup-resizer.resizer-b {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            cursor: s-resize;
+            border: none !important;
+        }
 
-    /* Left Edge (Horizontal Drag Left/Right) */
-    .popup-resizer.resizer-l {
-        top: 0;
-        left: 0;
-        width: 8px;
-        height: 100%;
-        cursor: w-resize;
-        background: rgba(13, 110, 253, 0.2);
-        border-left: 3px solid #0d6efd;
-    }
+        /* Left Edge (Horizontal Drag Left/Right) */
+        .popup-resizer.resizer-l {
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            cursor: w-resize;
+            border: none !important;
+        }
 
-    /* Right Edge (Horizontal Drag Left/Right) */
-    .popup-resizer.resizer-r {
-        top: 0;
-        right: 0;
-        width: 8px;
-        height: 100%;
-        cursor: e-resize;
-        background: rgba(13, 110, 253, 0.2);
-        border-right: 3px solid #0d6efd;
-    }
+        /* Right Edge (Horizontal Drag Left/Right) */
+        .popup-resizer.resizer-r {
+            top: 0;
+            right: 0;
+            width: 6px;
+            height: 100%;
+            cursor: e-resize;
+            border: none !important;
+        }
 
-    /* Corners */
-    .popup-resizer.resizer-tl {
-        top: 0;
-        left: 0;
-        width: 16px;
-        height: 16px;
-        cursor: nw-resize;
-        z-index: 100000 !important;
-        background: #0d6efd;
-        border-bottom-right-radius: 4px;
-    }
+        /* Corners */
+        .popup-resizer.resizer-tl {
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            cursor: nw-resize;
+            z-index: 100000 !important;
+            border: none !important;
+        }
 
-    .popup-resizer.resizer-tr {
-        top: 0;
-        right: 0;
-        width: 16px;
-        height: 16px;
-        cursor: ne-resize;
-        z-index: 100000 !important;
-        background: #0d6efd;
-        border-bottom-left-radius: 4px;
-    }
+        .popup-resizer.resizer-tr {
+            top: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            cursor: ne-resize;
+            z-index: 100000 !important;
+            border: none !important;
+        }
 
-    .popup-resizer.resizer-bl {
-        bottom: 0;
-        left: 0;
-        width: 16px;
-        height: 16px;
-        cursor: sw-resize;
-        z-index: 100000 !important;
-        background: #0d6efd;
-        border-top-right-radius: 4px;
-    }
+        .popup-resizer.resizer-bl {
+            bottom: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            cursor: sw-resize;
+            z-index: 100000 !important;
+            border: none !important;
+        }
 
-    .popup-resizer.resizer-br, .popup-resizer.resizer-corner {
-        bottom: 0;
-        right: 0;
-        width: 22px;
-        height: 22px;
-        cursor: se-resize;
-        z-index: 100000 !important;
-        background: #0d6efd;
-        color: white;
-        border-top-left-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: -1px -1px 4px rgba(0,0,0,0.3);
-    }
+        .popup-resizer.resizer-br, .popup-resizer.resizer-corner {
+            bottom: 0;
+            right: 0;
+            width: 18px;
+            height: 18px;
+            cursor: se-resize;
+            z-index: 100000 !important;
+            background: #0d6efd !important;
+            color: white;
+            border-top-left-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+        }
 
-    .popup-resizer.resizer-br::after, .popup-resizer.resizer-corner::after {
-        content: '⇲';
-        font-size: 13px;
-        font-weight: bold;
-        line-height: 1;
-    }
+            .popup-resizer.resizer-br::after, .popup-resizer.resizer-corner::after {
+                content: '⇲';
+                font-size: 11px;
+                font-weight: bold;
+                line-height: 1;
+            }
 
-    .popup-resizer:hover {
-        background-color: rgba(13, 110, 253, 0.7) !important;
-    }
+            .popup-resizer.resizer-br:hover, .popup-resizer.resizer-corner:hover {
+                opacity: 1;
+            }
 
 
 
@@ -1591,7 +1767,8 @@
 
         // Header Dragging
         $(document).off("mousedown.subjectDrag", "#SubjectDetailModal .pdf-header").on("mousedown.subjectDrag", "#SubjectDetailModal .pdf-header", function (e) {
-            if ($(e.target).closest("button").length) return;
+            if ($(e.target).closest("button, a, input, select, textarea, .pdf-actions, i").length) return;
+            e.preventDefault();
 
             let isDragging = true;
             const rect = popup.getBoundingClientRect();
@@ -1707,84 +1884,85 @@
            $(".draftchk").hide();
        }
 
-       let isDragging = false;
+        let isDragging = false;
 
-       // Main panel column resizer (horizontal split)
-       $("#panelContainer > .slider, #resizer-handle").on("mousedown", function (e) {
-           isDragging = true;
-           $("body").css("user-select", "none");
-           e.preventDefault();
-       });
+        // Main panel column resizer (horizontal split)
+        $(document).off("mousedown.horizSplit", "#panelContainer > .slider, #resizer-handle, #panelContainer > .slider .resizer").on("mousedown.horizSplit", "#panelContainer > .slider, #resizer-handle, #panelContainer > .slider .resizer", function (e) {
+            isDragging = true;
+            $("body").addClass("is-resizing is-resizing-h");
+            e.preventDefault();
+            e.stopPropagation();
+        });
 
-       $(document).on("mousemove", function (e) {
-           if (!isDragging) return;
+        $(document).off("mousemove.horizSplit").on("mousemove.horizSplit", function (e) {
+            if (!isDragging) return;
 
-           let container = $("#panelContainer");
-           let containerLeft = container.offset().left;
-           let containerWidth = container.width();
+            let container = $("#panelContainer");
+            if (!container.length) return;
+            let containerLeft = container.offset().left;
+            let containerWidth = container.width();
 
-           let mouseX = e.pageX - containerLeft;
-           let panelOnePercent = (mouseX / containerWidth) * 100;
+            let mouseX = e.pageX - containerLeft;
+            let panelOnePercent = (mouseX / containerWidth) * 100;
 
-           if (panelOnePercent < 10) panelOnePercent = 10;
-           if (panelOnePercent > 90) panelOnePercent = 90;
+            if (panelOnePercent < 15) panelOnePercent = 15;
+            if (panelOnePercent > 85) panelOnePercent = 85;
 
-           let panelTwoPercent = 100 - panelOnePercent;
+            let panelTwoPercent = 100 - panelOnePercent;
 
-           $(".panelone").css({ "width": panelOnePercent + "%", "max-width": panelOnePercent + "%", "flex": "0 0 " + panelOnePercent + "%" }).show();
-           $(".paneltwo").css({ "width": panelTwoPercent + "%", "max-width": panelTwoPercent + "%", "flex": "0 0 " + panelTwoPercent + "%" }).show();
+            $(".panelone").css({ "width": panelOnePercent + "%", "max-width": panelOnePercent + "%", "flex": "0 0 " + panelOnePercent + "%" }).show();
+            $(".paneltwo").css({ "width": panelTwoPercent + "%", "max-width": panelTwoPercent + "%", "flex": "0 0 " + panelTwoPercent + "%" }).show();
 
-           adjustAllResponsiveElements();
-       });
+            adjustAllResponsiveElements();
+        });
 
-       $(document).on("mouseup", function () {
-           if (isDragging) {
-               isDragging = false;
-               $("body").css("user-select", "");
-               adjustAllResponsiveElements();
-           }
-       });
+        $(document).off("mouseup.horizSplit").on("mouseup.horizSplit", function () {
+            if (isDragging) {
+                isDragging = false;
+                $("body").removeClass("is-resizing is-resizing-h");
+                adjustAllResponsiveElements();
+            }
+        });
 
-       // Vertical Add Noting section drag handle (#dragBar)
-       let isDragBarDragging = false;
-       let startDragY, startTopHeight, startBottomHeight;
+        // Vertical Add Noting / Edit Action section drag handle (#dragBar)
+        let isDragBarDragging = false;
+        let startDragY, startTopHeight, startBottomHeight;
+        let $activeTop, $activeBottom;
 
-       $("#dragBar").on("mousedown", function (e) {
-           isDragBarDragging = true;
-           startDragY = e.pageY;
-           startTopHeight = $(".note-list").height() || 300;
-           startBottomHeight = $("#addNotingSection").height() || 400;
-           $("body").css("user-select", "none");
-           e.preventDefault();
-       });
+        $(document).off("mousedown.dragBar", "#dragBar").on("mousedown.dragBar", "#dragBar", function (e) {
+            isDragBarDragging = true;
+            startDragY = e.pageY;
+            $activeTop = $("#notingList:visible, .note-list:visible").first();
+            $activeBottom = $("#EditActionSection:visible, #addNotingSection:visible, .edit-action-section:visible, .left-bottom:visible").first();
+            startTopHeight = $activeTop.length ? $activeTop.outerHeight() : 250;
+            startBottomHeight = $activeBottom.length ? $activeBottom.outerHeight() : 350;
+            $("body").addClass("is-resizing is-resizing-v");
+            e.preventDefault();
+            e.stopPropagation();
+        });
 
-       $(document).on("mousemove.dragBar", function (e) {
-           if (!isDragBarDragging) return;
-           let deltaY = e.pageY - startDragY;
-           let newTopHeight = startTopHeight + deltaY;
-           let newBottomHeight = startBottomHeight - deltaY;
+        $(document).off("mousemove.dragBar").on("mousemove.dragBar", function (e) {
+            if (!isDragBarDragging || !$activeTop || !$activeBottom || !$activeTop.length || !$activeBottom.length) return;
+            let deltaY = e.pageY - startDragY;
+            let newTopHeight = startTopHeight + deltaY;
+            let newBottomHeight = startBottomHeight - deltaY;
 
-           if (newTopHeight > 90 && newBottomHeight > 90) {
-               $(".note-list").css({ "max-height": newTopHeight + "px", "height": newTopHeight + "px" });
-               $("#addNotingSection, #InboxModel .left-bottom").css({ "max-height": newBottomHeight + "px", "height": newBottomHeight + "px" });
-           }
-       });
+            let minTop = 60;
+            let minBottom = 100;
 
-       $(document).on("mouseup.dragBar", function () {
-           if (isDragBarDragging) {
-               isDragBarDragging = false;
-               $("body").css("user-select", "");
-           }
-       });
+            if (newTopHeight >= minTop && newBottomHeight >= minBottom) {
+                $activeTop.css({ "max-height": "none", "height": newTopHeight + "px", "flex": "0 0 " + newTopHeight + "px", "overflow-y": "auto" });
+                $activeBottom.css({ "max-height": "none", "height": newBottomHeight + "px", "flex": "1 1 " + newBottomHeight + "px", "overflow-y": "auto" });
+            }
+        });
 
-       function adjustAllResponsiveElements() {
-           if ($.fn.DataTable) {
-               $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
-           }
-           $(".dataTables_scrollHeadInner, .dataTables_scrollHeadInner table, .dataTables_scrollBody table").css("width", "100%");
-           $("#addNotingSection, .txt_editor, #FileEditor, .tox-tinymce").css("width", "100%");
-           $(window).trigger("resize");
-       }
+        $(document).off("mouseup.dragBar").on("mouseup.dragBar", function () {
+            if (isDragBarDragging) {
+                isDragBarDragging = false;
+                $("body").removeClass("is-resizing is-resizing-v");
+                adjustAllResponsiveElements();
+            }
+        });
 
        //$(".draftchk").hide();
        var PannelId = $("#PannelId").val();
@@ -2089,7 +2267,7 @@
             plugins: 'fullscreen lists advlist table',
             content_style:
                 "body { font-size: 16px; font-family: Poppins, sans-serif; text-align: justify; } p, div, li, td { text-align: justify; }",
-            toolbar: 'undo redo fontfamily fontsize blocks bold italic underline superscript subscript forecolor backcolor lineheight table alignleft aligncenter alignright alignjustify bullist numlist fullscreen anxbutton mybutton refbutton insertremarks clearall deleterow_confirm addaction defaulttexts asproposed' + ('@(CurrentSession.UserName == "ddir.lg" ? " officeproposal" : "")'),
+            toolbar: 'undo redo fontfamily fontsize blocks bold italic underline superscript subscript forecolor backcolor lineheight table alignleft aligncenter alignright alignjustify bullist numlist fullscreen anxbutton mybutton refbutton insertremarks selectedinsertremarks clearall deleterow_confirm addaction defaulttexts asproposed discuss' + ('@(CurrentSession.UserName == "ddir.lg" ? " officeproposal" : "")'),
             toolbar_mode: 'wrap',
            paste_remove_styles_if_webkit: true,
            paste_webkit_styles: 'color font-size font-family font-weight',
@@ -2172,7 +2350,7 @@
                        //editor.insertContent(value);
                    },
                    fetch: function (callback) {
-                       callback(items);
+                      // callback(items);
                    }
                });
 
@@ -2238,6 +2416,18 @@
                    }
                });
 
+               editor.ui.registry.addButton('selectedinsertremarks', {
+                text: 'Selected Action Remarks',
+                icon: 'table',
+                   onAction: function () {
+                       var val = $('.tox-tbtn').filter(function () {
+                           return $(this).text().trim() === 'Selected Action Remarks';
+                       }).attr('data-value');
+
+                       //var refId = document.getElementById('RefId').value;
+                       AddtoFileNoting(true, val, editor);
+                   }
+               });
                editor.ui.registry.addButton('deleterow_confirm', {
                    text: 'Delete Row',
                    icon: 'close',
@@ -2271,7 +2461,7 @@
                        return;
                    }
 
-                   if (id != 'undefined' || id != null || id.trim() != tinymce || id != '') {
+                   if (id && (id != 'undefined' || id != null || id.trim() != tinymce || id != '')) {
                        if (id.length > 10) {
                            ShowSDPopUp(0,id)
                        } else {
@@ -2319,9 +2509,11 @@
                    if (e.state) {
                        // FULLSCREEN ON → hide paneltwo
                        document.querySelector('.paneltwo').style.display = 'none';
+                       document.querySelector('.slider').style.setProperty('display', 'none', 'important');
                    } else {
                        // FULLSCREEN OFF → show paneltwo
                        document.querySelector('.paneltwo').style.display = '';
+                       document.querySelector('.slider').style.setProperty('display', 'flex', 'important');
                    }
                });
 
@@ -2368,6 +2560,12 @@
                    text: 'As Proposed',
                    onAction: function () {
                        editor.insertContent('As Proposed');
+                   }
+               });
+               editor.ui.registry.addButton('discuss', {
+                   text: 'Please discuss',
+                   onAction: function () {
+                       editor.insertContent('Please discuss');
                    }
                });
 
@@ -2452,7 +2650,10 @@
      //    editor.setContent(savedDraft);
      //} else {
      //    editor.setContent(SDPreText || ""); // fallback initial value
-     //}
+                  //}
+                  $('.tox-tbtn').filter(function () {
+                      return $(this).text().trim() === 'Selected Action Remarks';
+                  }).hide();
      let savedDraft = localStorage.getItem(storageKey);
 
 
@@ -2698,6 +2899,17 @@
         icon.text(icon.text() === '+' ? '-' : '+');
     });
 
+    function adjustAllResponsiveElements() {
+        if ($.fn.DataTable) {
+            try {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            } catch (e) { }
+        }
+        $(".dataTables_scrollHeadInner, .dataTables_scrollHeadInner table, .dataTables_scrollBody table").css("width", "100%");
+        $("#addNotingSection, .txt_editor, #FileEditor, .tox-tinymce, .tox.tox-tinymce").css("width", "100%");
+        $(window).trigger("resize");
+    }
+
     function SelectCheckboxes() {
 
         var input = document.getElementById("txtSelectNos").value;
@@ -2746,13 +2958,13 @@
         });
     }
 
-    function AddtoFileNoting() {
-        var ids = $("#MultiUpdate").val();
+    function AddtoFileNoting(isRequired = false, ids = "", editor = null) {
+        var ids = isRequired ? ids : $("#MultiUpdate").val();
         var refid = '@Model.RefId';
         $.ajax({
             url: '@Url.Action("GetResAndRemarksbyId", "References")' ,
             type: 'POST',
-            data: { ids: ids, FileRefid: refid },
+            data: { ids: ids, FileRefid: refid, IsCombinedRequired: isRequired },
             success: function (res) {
                 let table = `
                 <table border="1" style="width:100%;border-collapse:collapse">
@@ -2764,25 +2976,53 @@
                     </thead>
                     <tbody>`;
 
-                        res.forEach(x => {
-                            table += `
-                    <tr>
-                        <td contenteditable="false">
-                            <span style="color:blue;cursor:pointer"
-                                  class="notetag"
-                                  id="${x.RefId}"
-                                  onclick="ShowSDPopUp(0, ${x.RefId})">
-                                <u>${x.ResNo}</u>
-                            </span>
-                        </td>
-                        <td contenteditable="false">${x.Remakes}</td>
-                    </tr>`;
-                        });
+                let grouped = {};
 
-                        table += `
+                res.forEach(el => {
+                    let remarks = el.Remakes;
+                    if (!grouped[remarks]) {
+                        grouped[remarks] = {
+                            RefIds: [],
+                            ResNos: [],
+                            Remarks: remarks
+                        }
+                    }
+                    grouped[remarks].RefIds.push(el.RefId);
+                    grouped[remarks].ResNos.push(el.ResNo);
+                });
+
+                Object.entries(grouped).forEach(([key, x]) => {
+                    table += `
+                                <tr>
+                                    <td contenteditable="false" style="width: 15%;">`;
+                    var refspans = [];
+
+                    for (var i = 0; i < x.RefIds.length; ++i)
+                    {
+                        refspans.push(`<span style="color:blue;cursor:pointer; display: inline-flex;"
+                                         id="${x.RefIds[i]}"
+                                         onclick="parent.ShowSDPopUp(0, ${x.RefIds[i]})">
+                                     <u>${x.ResNos[i]}</u>
+                                 </span>`);
+                    }
+
+                    table += refspans.join(",");
+
+
+                    table += `</td >
+                        <td contenteditable="false" style="width: 85%;">${x.Remarks}</td>
+                    </tr >`;
+                });
+
+                table += `
                     </tbody>
                 </table>`;
-                tinymce.get("ActionDescription").insertContent(table);
+                if (editor) {
+                    editor.insertContent(table);
+                }
+                else {
+                    tinymce.get("ActionDescription").insertContent(table);
+                }
             }
         });
     }
@@ -2955,7 +3195,7 @@
     var code = "";
     function StatusFilter1(chk) {
 
-        
+
 
         //Code for Single Check box Click
         //var chkval = $(chk).val();
@@ -3144,7 +3384,7 @@
 
 
     function BindInclueRef(tableData) {
-        console.count("BindInclueRef");
+        //console.count("BindInclueRef");
 
         @*var checkedRefs = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.CheckedRefs));*@
         var checkedRefs = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CheckedRefs ?? new List<string>()));
@@ -3273,7 +3513,27 @@
             } else {
 
                 LgString = LgString + "<div id='LGShow_" + response.RefId + "' Class='LGShow LG_" + response.RefId + "'>"
-                LgString = LgString + "<div class='row'><p  id='actsts_" + response.RefId + "' class='actionname'>" + response.StatusName + "</p> </br > </div>";
+                //LgString = LgString + "<div class='row'><p  id='actsts_" + response.RefId + "' class='actionname'>" + response.StatusName + "</p> </br > </div>";
+               var currentDeptId = "@CurrentSession.DeptID";
+                var notifyCheckbox = "";
+                //alert(response.StatusName);
+                //alert(currentDeptId);
+                if (currentDeptId == "UDD0001" && response.StatusName == "LG Observations") {
+
+                    notifyCheckbox = "&nbsp;&nbsp;&nbsp;<label>" +
+                        "<input type='checkbox' class='notifyLocalGovt' " +
+                        "data-refid='" + response.RefId + "' " +
+                        "onchange='NotifyLocalGovt(" + response.RefId + ", this.checked)'> " +
+                        "Notify LG</label>";
+                }
+
+                LgString +=
+                    "<div class='row'>" +
+                        "<p id='actsts_" + response.RefId + "' class='actionname'>" +
+                            response.StatusName +
+                            notifyCheckbox +
+                        "</p>" +
+                    "</div>";
                 LgString = LgString + "<div id='lgcom1_" + response.RefId + "' class='col-12 " + drhide + "'>"
                     + stripHtml(response.ad) +
                     "</div> " + atttachment + " ";
@@ -3300,7 +3560,6 @@
             }
 
 
-
             $("#IncludeRefTableNew tbody").append(
                 "<tr role='row' class='odd Ref_" + response.RefId + " " + rowcolor + " ' id='tr_" + response.lrid + "'  >" +
                 "<td style= 'display:none' class='grab td-data'></td>" +
@@ -3312,9 +3571,9 @@
                 "<td style='width:5%' ><i class='fa fa-plus-square' title='Expand' id='Icon_" + response.lrid + "' onclick=ShowSD(" + response.lrid + "," + response.RefId + ")></i></td>" +
                 "<td style=''>" + Res + "</br> " + response.CreatedDate + "</td>" +
                 "<td style=''> <b class='hand' onclick=ShowSDPopUp(" + response.lrid + "," + response.RefId + ")>" + response.Subject + "</b> </br>" +
-                "<div class= 'SDHide' id = 'SD_" + response.lrid + "'> <textarea type='text' id='IncludeSB_" + response.lrid + "' name='IncludeSB'></textarea> <br/> <b> House Decision </b> : <p> " + response.HouseDecision +
+                "<div class= 'SDHide' id = 'SD_" + response.lrid + "'> <textarea type='text' id='IncludeSB_" + response.lrid + "' name='IncludeSB'></textarea>" +
                 "</p></br> <b> Specify Under Which Point of Instruction Dated 10.10.2022 this Resolution is covered: - </b><p>" + response.ActName +
-                "</p></br> \n <b>  Comments of Commissioner/EO : </b><p>" + response.commissioner +
+                //"</p></br> \n <b>  Comments of Commissioner/EO : </b><p>" + response.commissioner +
                 "</p></div></td>" +
                 "<td style='width:30%' class='acttd'>" + LgString + "" + TempRemarks + " <b class='hand'  id = 'Act_" + response.RefId + "'> </b> </td>" +
                 "<td style=''>" + response.StatusName + "</br> " + response.ActionTakenDate + "</td>" +
@@ -3324,7 +3583,7 @@
                 "<input type='hidden' id='hdnSubject_" + response.RefId + "' value=\"" + $('<div>').text(response.Subject || '').html() + "\" />" +
                 "<input type='hidden' id='hdnDetail_" + response.RefId + "' value='" + (response.SubjectDetails ? response.SubjectDetails.replace(/'/g, '&#39;') : '') + "' />" +
                 "<i class='fa fa-copy hand' title='Copy' style='color: #0d6efd;' onclick='CopySubjectDetail(" + response.RefId + ")'></i>&nbsp;&nbsp;&nbsp;" +
-                "<i title='View' class='ace-icon fa fa-eye bigger-120 hand " + hideclass + "' style='color: green' id=" + response.RefId + " onclick='ViewSingleEdit(this)'></i>" +
+                 "<i title='View' class='ace-icon fa fa-eye bigger-120 hand " + hideclass + "' style='color: green' id=" + response.RefId + " onclick='ViewSingleEdit(this)'></i>" +
                 "</td>" +
                 "</tr>"
 
@@ -3407,7 +3666,11 @@
                 });
             }, 2000);
         }
-    };
+            };
+
+
+
+
             //console.log("After append:", $('#IncludeRefTableNew tbody tr').length);
 
             //tinymce.remove("#IncludeSB_" + response.lrid);
@@ -3527,8 +3790,26 @@
 
     }
 
-    function ShowSD(id, refid) {
+    function NotifyLocalGovt(refId, isChecked) {
+        //alert(refId);
+        $.ajax({
+            type: "POST",
+           // url: Action.url("NotifyLocalGovt", "References"),
+            url: '@Url.Action("NotifyLocalGovt", "References")',
+            data: {
+                RefId: refId,
+                NotifyTo: isChecked ? 1 : 2
+            },
+            success: function (response) {
+                alert(response.message);
+            },
+            error: function (xhr) {
+                console.log("Error: " + xhr.responseText);
+            }
+        });
+    }
 
+    function ShowSD(id, refid) {
 
      $.ajax({
          type: "GET",
@@ -3536,9 +3817,11 @@
          datatype: "Json",
          contentType: "application/json; charset=utf-8",
          data: { refid: refid },
-             success: function (response) {
+         success: function (response) {
+             //alert(response[0].HouseDecision);
                  if (response.length > 0) {
                      if (response[0].SubjectDetails != null) {
+                         //alert(response[0].SubjectDetails);
                          tinymce.remove("#IncludeSB_" + id);
                          tinyMCE.init({
                              selector: "#IncludeSB_" + id,
@@ -3553,7 +3836,15 @@
                              content_style:
                                  "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
                              init_instance_callback(editor) {
-                                 editor.setContent(stripHtml(response[0].SubjectDetails));
+                                 editor.setContent(
+                                     stripHtml(response[0].SubjectDetails) +
+                                     '<br /><br />' +
+                                     '<strong>House Decision :</strong> ' +
+                                     (response[0].HouseDecision || '') +
+                                      '<br /><br />' +
+                                     '<strong>Comments of Commissioner/EO :  :</strong> ' +
+                                     (response[0].commissioner || '')
+                                 );
                              }
                          });
                      }
@@ -3582,6 +3873,7 @@
     } else {
         $("#Icon_" + id).removeClass("fa fa-minus-square");
         $("#Icon_" + id).addClass("fa fa-plus-square");
+       // ShowActPopUp(id, refid);
         //var actname = "";
         //$(".LG_" + refid).html('<div class="row"><p id="actsts" class="actionname">' + actname +'</p> <br> </div>');
         $(".LG_" + refid).show();
@@ -3639,8 +3931,34 @@
 
      $("#loader-wrapper").show();
 
+    var e = (typeof event !== 'undefined' && event) ? event : null;
     var agendaDate = $('#agendaDate').val();
     var popup = document.getElementById("SubjectDetailModal");
+
+    // Keep current position if already open on right/left, so left panel is never covered
+    var openOnRight = true;
+    if (popup && popup.classList.contains("active")) {
+        if (popup.classList.contains("pdf-popup-left")) {
+            openOnRight = false;
+        } else if (popup.classList.contains("pdf-popup-right")) {
+            openOnRight = true;
+        } else if (popup.getBoundingClientRect().left > (window.innerWidth / 3)) {
+            openOnRight = true;
+        } else {
+            openOnRight = false;
+        }
+    } else if (e) {
+        var el = e.target || e.srcElement;
+        if (el && $(el).closest('.paneltwo').length > 0) {
+            openOnRight = false;
+        } else if (el && $(el).closest('.panelone').length > 0) {
+            openOnRight = true;
+        } else if (e.clientX && e.clientX > (window.innerWidth / 2)) {
+            openOnRight = false;
+        } else {
+            openOnRight = true;
+        }
+    }
 
     $.ajax({
         type: "GET",
@@ -3695,11 +4013,53 @@
                 });
 
                 $('#SubjectDetailbody').html(html);
+                if (popup) {
+                    popup.classList.remove("pdf-popup-left", "pdf-popup-right", "active");
+                    if (openOnRight) {
+                        popup.classList.add("pdf-popup-right");
+                        popup.style.left = "auto";
+                        popup.style.right = "0px";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    } else {
+                        popup.classList.add("pdf-popup-left");
+                        popup.style.left = "0px";
+                        popup.style.right = "auto";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    }
+                    popup.style.display = "flex";
+                    popup.classList.add("active");
+                    EnableSubjectPopupResizeAndDrag();
+                }
             }
             else {
                 $('#SubjectDetailbody').html(
                     '<tr><td colspan="3" class="text-center">No data found.</td></tr>'
                 );
+                if (popup) {
+                    popup.classList.remove("pdf-popup-left", "pdf-popup-right", "active");
+                    if (openOnRight) {
+                        popup.classList.add("pdf-popup-right");
+                        popup.style.left = "auto";
+                        popup.style.right = "0px";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    } else {
+                        popup.classList.add("pdf-popup-left");
+                        popup.style.left = "0px";
+                        popup.style.right = "auto";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    }
+                    popup.style.display = "flex";
+                    popup.classList.add("active");
+                    EnableSubjectPopupResizeAndDrag();
+                }
             }
         },   // ✅ Comma required here
 
@@ -3724,19 +4084,26 @@
 
    function ShowSDPopUp(id, refid) {
 
+    var e = (typeof event !== 'undefined' && event) ? event : null;
     var agendaDate = $('#agendaDate').val();
     var popup = document.getElementById("SubjectDetailModal");
 
-    // Remove previous position classes
-    popup.classList.remove("pdf-popup-left", "pdf-popup-right", "active");
-
-    // Decide popup position based on click
-    if (event.clientX > window.innerWidth / 2) {
-        // Clicked on right side -> open on left
-        popup.classList.add("pdf-popup-left");
-    } else {
-        // Clicked on left side -> open on right
-        popup.classList.add("pdf-popup-right");
+    var openOnRight = true; // default: left panel opens on right
+    if (e) {
+        var el = e.target || e.srcElement;
+        if (el && $(el).closest('.paneltwo').length > 0) {
+            // Clicked inside RIGHT panel -> open on LEFT
+            openOnRight = false;
+        } else if (el && $(el).closest('.panelone').length > 0) {
+            // Clicked inside LEFT panel -> open on RIGHT
+            openOnRight = true;
+        } else if (e.clientX && e.clientX > (window.innerWidth / 2)) {
+            // Clicked on right half -> open on LEFT
+            openOnRight = false;
+        } else {
+            // Clicked on left half -> open on RIGHT
+            openOnRight = true;
+        }
     }
 
     $("#loader-wrapper").show();
@@ -3800,19 +4167,53 @@
 
                 $('#SubjectDetailbody').html(html);
 
-                // Reset drag position
-                popup.style.left = "";
-                popup.style.right = "";
-                popup.style.top = "";
-
-                // Show popup
-                popup.classList.add("active");
-                EnableSubjectPopupResizeAndDrag();
+                if (popup) {
+                    popup.classList.remove("pdf-popup-left", "pdf-popup-right", "active");
+                    if (openOnRight) {
+                        popup.classList.add("pdf-popup-right");
+                        popup.style.left = "auto";
+                        popup.style.right = "0px";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    } else {
+                        popup.classList.add("pdf-popup-left");
+                        popup.style.left = "0px";
+                        popup.style.right = "auto";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    }
+                    popup.style.display = "flex";
+                    popup.classList.add("active");
+                    EnableSubjectPopupResizeAndDrag();
+                }
             }
             else {
                 $('#SubjectDetailbody').html(
                     '<tr><td colspan="6" class="text-center">No data found.</td></tr>'
                 );
+                if (popup) {
+                    popup.classList.remove("pdf-popup-left", "pdf-popup-right", "active");
+                    if (openOnRight) {
+                        popup.classList.add("pdf-popup-right");
+                        popup.style.left = "auto";
+                        popup.style.right = "0px";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    } else {
+                        popup.classList.add("pdf-popup-left");
+                        popup.style.left = "0px";
+                        popup.style.right = "auto";
+                        popup.style.top = "0px";
+                        popup.style.width = "50%";
+                        popup.style.height = "100%";
+                    }
+                    popup.style.display = "flex";
+                    popup.classList.add("active");
+                    EnableSubjectPopupResizeAndDrag();
+                }
             }
         },
 
@@ -3828,12 +4229,17 @@
 }
 
     function CloseSubjectPopup() {
-         const popup = document.getElementById("SubjectDetailModal");
-         popup.style.left = "";
-         popup.style.top = "";
-         popup.style.width = "";
-         popup.style.height = "";
-         $('#SubjectDetailModal').removeClass('active');
+        const popup = document.getElementById("SubjectDetailModal");
+        if (popup) {
+            popup.style.display = "none";
+            popup.style.left = "";
+            popup.style.top = "";
+            popup.style.right = "";
+            popup.style.width = "";
+            popup.style.height = "";
+            popup.classList.remove("active");
+        }
+        $('#SubjectDetailModal').removeClass('active').hide();
     }
 
     function closeSubjectDetailModal() {
@@ -4407,48 +4813,60 @@
 
                 });
                 editor.ui.registry.addButton('insertremarks', {
-    text: 'Action Remarks',
-    icon: 'table',
-    onAction: function () {
-        var refId = document.getElementById('RefId').value;
-        fetch('@Url.Action("GetResAndRemarks", "References")?refId=' + refId)
-            .then(res => res.json())
-            .then(data => {
+                    text: 'Action Remarks',
+                    icon: 'table',
+                    onAction: function () {
 
-                let table = `
-         <table border="1" style="width:100%;border-collapse:collapse">
-             <thead>
-                 <tr>
+                        var refId = document.getElementById('RefId').value;
+                        fetch('@Url.Action("GetResAndRemarks", "References")?refId=' + refId)
+                            .then(res => res.json())
+                            .then(data => {
 
-                     <th>\u0a2e\u0a24\u0a3e \u0a28\u0a70:</th>
-                     <th>\u0a26\u0a2b\u0a3c\u0a24\u0a30 \u0a26\u0a3e \u0a38\u0a41\u0a1d\u0a3e\u0a35</th>
-                 </tr>
-             </thead>
-             <tbody>`;
+                                let table = `
+                         <table border="1" style="width:100%;border-collapse:collapse">
+                             <thead>
+                                 <tr>
 
-                data.forEach(x => {
-                    table += `
-                 <tr>
-                     <td>
-                     <span style='color:blue;cursor: pointer;' class='notetag'  id='${x.RefId}' onclick='ShowSDPopUp(${x.RefId})'> <u>${x.ResNo}</u></span>
-                   </td>
-                     <td>${x.Remakes}</td>
-                 </tr>`;
+                                     <th>\u0a2e\u0a24\u0a3e \u0a28\u0a70:</th>
+                                     <th>\u0a26\u0a2b\u0a3c\u0a24\u0a30 \u0a26\u0a3e \u0a38\u0a41\u0a1d\u0a3e\u0a35</th>
+                                 </tr>
+                             </thead>
+                             <tbody>`;
+
+                                data.forEach(x => {
+                                    table += `
+                                 <tr>
+                                     <td>
+                                     <span style='color:blue;cursor: pointer;' class='notetag'  id='${x.RefId}' onclick='ShowSDPopUp(${x.RefId})'> <u>${x.ResNo}</u></span>
+                                   </td>
+                                     <td>${x.Remakes}</td>
+                                 </tr>`;
+                                });
+
+                                table += `
+                             </tbody>
+                         </table>`;
+
+                                editor.insertContent(table);
+                            })
+                            .catch(err => {
+                                alert('Error loading remarks data');
+                                console.error(err);
+                            });
+                    }
                 });
+                editor.ui.registry.addButton('selectedinsertremarks', {
+                text: 'Selected Action Remarks',
+                icon: 'table',
+                    onAction: function (act) {
+                        var val = $('.tox-tbtn').filter(function () {
+                            return $(this).text().trim() === 'Selected Action Remarks';
+                        }).attr('data-value');
 
-                table += `
-             </tbody>
-         </table>`;
-
-                editor.insertContent(table);
-            })
-            .catch(err => {
-                alert('Error loading remarks data');
-                console.error(err);
-            });
-    }
-});
-
+                        //var refId = document.getElementById('RefId').value;
+                        AddtoFileNoting(true, val);
+                        }
+                    });
                 editor.on('click', (e) => {
                     //alert('Editor was clicked: ' + e.target.parentNode);
                     //alert('Editor was clicked: ' + e.target.parentNode.onclick);
@@ -5092,7 +5510,7 @@
         }
         else if (isShowSubjectModal)
         {
-            
+
             OpenPartFileSubjectModal();
         }
         else
@@ -5120,7 +5538,7 @@
                     var file_nameEn = $("#file_nameEn").html();
                     var ActionTaken_name = $("#file_name12").html();
                     var actionlink = $("#actionlink").text();
-                    
+
                     if ($("#formActionDiary").attr("enctype") == "multipart/form-data") {
                         var dataString = new FormData($("#formActionDiary").get(0));
                         var subjectVal = $("#InputPartFileSubjectModal").val().trim();
@@ -5273,6 +5691,7 @@
 }
 
     function SaveMulti() {
+       
         //var myContent = tinymce.activeEditor.getContent();
         //$('#ActionDescription').html(myContent);
         tinymce.activeEditor.save();
@@ -6863,7 +7282,7 @@
 
 
     function Swipe(val) {
-        
+
         if (val == 1 && SwipeId == 0) {
             $(".panelone").css("width", "0%");
             $(".paneltwo").css("width", "100%");
@@ -7001,6 +7420,16 @@
 <script>
     $(document).ready(function () {
         CheckApprovalStatus();
+        if ('@Model.HideUpdate' == 'Yes') {
+            $("#chkCreateApproval").hide();
+            $("#EditDraftOrder").hide();
+            $("#EndorsementArea").hide();
+            $("#generateApproval").hide();
+            $("#approvalOrder").hide();
+            $("#digitalSignatureGroup").hide();
+            $("#previewDraftOrder").show();
+        }
+
         $("#chkCreateApproval").change(function () {
 
             var isChecked = $(this).is(":checked");
@@ -7047,6 +7476,19 @@
 
     function CheckApprovalStatus() {
         var agendaId = '@Model.agendaId';
+        var isHideUpdate = '@Model.HideUpdate';
+
+        if (isHideUpdate == "Yes") {
+            $("#chkCreateApproval").hide();
+            $("#EditDraftOrder").hide();
+            $("#EndorsementArea").hide();
+            $("#generateApproval").hide();
+            $("#approvalOrder").hide();
+            $("#digitalSignatureGroup").hide();
+            $("#previewDraftOrder").show();
+            return;
+        }
+
         $.ajax({
             url: '@Url.Action("GetCreateApprovalStatus", "Approval")',
             type: 'GET',
@@ -7078,52 +7520,6 @@
         });
 
     }
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        dragElement(document.getElementById("SubjectDetailModal"));
-
-        function dragElement(elmnt) {
-
-            const header = elmnt.querySelector(".pdf-header");
-
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-            header.onmousedown = dragMouseDown;
-
-            function dragMouseDown(e) {
-                e = e || window.event;
-                e.preventDefault();
-
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
-            }
-
-            function elementDrag(e) {
-                e = e || window.event;
-                e.preventDefault();
-
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-            }
-
-            function closeDragElement() {
-                document.onmouseup = null;
-                document.onmousemove = null;
-            }
-        }
-
-    });
 </script>
 
 
@@ -7243,7 +7639,7 @@
 
                             <a class="nav-link" id="view-tab" data-bs-toggle="tab" data-bs-target="#Refdetail" role="tab" aria-controls="home" aria-selected="false">@tabname</a> @*onclick="ShowRefTab(0)"*@
                         </li>
-                        @if (Model.filetype == "2")
+                        @if (Model.filetype == "2" && Model.HideUpdate != "Yes")
                         {
                             <li id="MainFileViewTab" class="nav-item hand" role="presentation">
                                 <a class="nav-link" id="view-tab" data-bs-toggle="tab" data-bs-target="#MainFileNoting_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">Main File Notings</a>
@@ -7379,95 +7775,98 @@
                                                 </div>
 
                                             </div>
-                                            <div id="notingList">
-                                                <ul id="ulnoting" class="list-unstyled @clss">
-                                                    @foreach (var item1 in Model.ActionDetailsList)
-                                                    {
-
-                                                        DateTime aDate = Convert.ToDateTime(item1.ActionDate);
-                                                        string s1 = aDate.ToString("dd/MM/yyyy");
-                                                        string s2 = aDate.ToString("hh:mm tt");
-                                                        var dftclss = "";
-                                                        if (item1.isDraft == "1")
-                                                        {
-                                                            dftclss = "Draft-list";
-                                                        }
-                                                        else
-                                                        {
-                                                            dftclss = "";
-                                                        }
-                                                        <li id="note_@item1.Id" class="voting-list @dftclss">
-                                                            <div>
-                                                                <div class="row justify-content-between mb-1">
-                                                                    <div class="col-md-6 col-sm-12 col-12">
-                                                                        <p> <b>Note:</b>    @Html.Raw(item1.NoteId)</p>
-                                                                    </div>
-
-                                                                    <div class="col-md-6 col-sm-12 col-12 text-right">
-                                                                        <p> @Html.Raw(item1.StatusName) </p>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <div class="mb-5">
-                                                                    <p>@Html.Raw(item1.ActionDescription) </p>
-                                                                </div>
-
-
-                                                                <div class="row mb-2">
-                                                                    <div class="col-12">
-                                                                        @if (item1.Enclosure != null && item1.Enclosure != "")
-                                                                        {
-                                                                            <p class="mb-2">
-                                                                                <b> Enclosure: </b>
-                                                                                <a class="inline" href="@BlobPath@item1.Enclosure" target="_blank" id="actionlink">
-                                                                                    <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
-                                                                                </a>
-                                                                            </p>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <p></p>
-
-                                                                        }
-
-
-                                                                    </div>
-
-                                                                </div>
-
-
-                                                                <div class="row mb-2">
-                                                                    <div class="col-6">
-                                                                        <p class="mb-2">@s1, @s2 </p>
-                                                                    </div>
-
-                                                                    <div class="col-6 text-right">
-                                                                        <p class="ActionBySize"><b>  @item1.ActionBy </b></p>
-                                                                    </div>
-                                                                </div>
-
-
-                                                            </div>
-                                                        </li>
-                                                    }
-                                                </ul>
-                                                <div id="addnotingbottom" class="noting-toolbar-pro">
-
-                                                    <div class="noting-actions">
-                                                        @if (Model.HideUpdate == "Yes") { }
-                                                        else
+                                            @if (Model.ActionDetailsList != null && Model.ActionDetailsList.Count > 0)
+                                            {
+                                                <div id="notingList">
+                                                    <ul id="ulnoting" class="list-unstyled @clss">
+                                                        @foreach (var item1 in Model.ActionDetailsList)
                                                         {
 
-                                                            <button type="button" class="btnAddNoting btn btn-primary pdf-btn">
-                                                                + Add Noting
-                                                            </button>
+                                                            DateTime aDate = Convert.ToDateTime(item1.ActionDate);
+                                                            string s1 = aDate.ToString("dd/MM/yyyy");
+                                                            string s2 = aDate.ToString("hh:mm tt");
+                                                            var dftclss = "";
+                                                            if (item1.isDraft == "1")
+                                                            {
+                                                                dftclss = "Draft-list";
+                                                            }
+                                                            else
+                                                            {
+                                                                dftclss = "";
+                                                            }
+                                                            <li id="note_@item1.Id" class="voting-list @dftclss">
+                                                                <div>
+                                                                    <div class="row justify-content-between mb-1">
+                                                                        <div class="col-md-6 col-sm-12 col-12">
+                                                                            <p> <b>Note:</b>    @Html.Raw(item1.NoteId)</p>
+                                                                        </div>
 
+                                                                        <div class="col-md-6 col-sm-12 col-12 text-right">
+                                                                            <p> @Html.Raw(item1.StatusName) </p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="mb-5">
+                                                                        <p>@Html.Raw(item1.ActionDescription) </p>
+                                                                    </div>
+
+
+                                                                    <div class="row mb-2">
+                                                                        <div class="col-12">
+                                                                            @if (item1.Enclosure != null && item1.Enclosure != "")
+                                                                            {
+                                                                                <p class="mb-2">
+                                                                                    <b> Enclosure: </b>
+                                                                                    <a class="inline" href="@BlobPath@item1.Enclosure" target="_blank" id="actionlink">
+                                                                                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                                                                                    </a>
+                                                                                </p>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <p></p>
+
+                                                                            }
+
+
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                    <div class="row mb-2">
+                                                                        <div class="col-6">
+                                                                            <p class="mb-2">@s1, @s2 </p>
+                                                                        </div>
+
+                                                                        <div class="col-6 text-right">
+                                                                            <p class="ActionBySize"><b>  @item1.ActionBy </b></p>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </li>
                                                         }
+                                                    </ul>
+                                                    <div id="addnotingbottom" class="noting-toolbar-pro">
+
+                                                        <div class="noting-actions">
+                                                            @if (Model.HideUpdate == "Yes") { }
+                                                            else
+                                                            {
+
+                                                                <button type="button" class="btnAddNoting btn btn-primary pdf-btn">
+                                                                    + Add Noting
+                                                                </button>
+
+                                                            }
+                                                        </div>
+
                                                     </div>
-
                                                 </div>
-                                            </div>
+                                            }
                                             <div class="resizer" id="dragBar"></div>
                                             <div id="EditActionSection" class="edit-action-section" style="display:none">
                                                 <div class="card mt-2">
@@ -7475,10 +7874,10 @@
 
 
                                                         @*<div class="clearfix">
-                                                                <button type="button" class="close float-right btnCloseActionSection">
-                                                                    ✖
-                                                                </button>
-                                                            </div>*@
+                        <button type="button" class="close float-right btnCloseActionSection">
+                            ✖
+                        </button>
+                    </div>*@
 
                                                         <div id="EditActionSectionBody" class="EditActionSectionBody mt-2"></div>
 
@@ -7494,9 +7893,9 @@
                                             <div class="left-bottom" id="addNotingSection">
                                                 <div class="card mt-2">
                                                     @*<div class="card-header">
-                                                            Add Noting
+                    Add Noting
 
-                                                        </div>*@
+                </div>*@
 
                                                     <div class="card-body">
                                                         <div class="updat_box " style="padding-top:2px;">
@@ -7523,8 +7922,8 @@
                                                                 </div>
 
                                                                 @*<div class="profile-info-row">
-                                                                        <input type="button" id="btnActionSave" class="btn btn-primary" value="Save" onclick="SaveContent()">
-                                                                    </div>*@
+                                <input type="button" id="btnActionSave" class="btn btn-primary" value="Save" onclick="SaveContent()">
+                            </div>*@
 
                                                             </div>
 
@@ -7583,14 +7982,14 @@
                                                                     }
 
                                                                     @*@if (Model.ToDeptId == Model.FromDeptId)
-                                                                        {
-                                                                            @Html.DropDownListFor(m => m.SentMLAOffice, Model.MLAOfficeList, "--Select Office--", new { @id = "ddlmlaOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetMlaUser()" })
-                                                                            @Html.DropDownListFor(m => m.SentFromOffice, Model.FromOfficeList, "--Select Office--", new { @id = "ddlfromOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetFromUser()" })
-                                                                        }
-                                                                        else
-                                                                        {
+                                {
+                                    @Html.DropDownListFor(m => m.SentMLAOffice, Model.MLAOfficeList, "--Select Office--", new { @id = "ddlmlaOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetMlaUser()" })
+                                    @Html.DropDownListFor(m => m.SentFromOffice, Model.FromOfficeList, "--Select Office--", new { @id = "ddlfromOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetFromUser()" })
+                                }
+                                else
+                                {
 
-                                                                        }*@
+                                }*@
 
                                                                     @Html.DropDownListFor(m => m.SentFromOffice, Model.FromOfficeList, "--Select Office--", new { @id = "ddlfromOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetFromUser()" })
                                                                     @Html.DropDownListFor(m => m.SentToOffice, Model.ToOfficeList, "--Select Office--", new { @id = "ddlToOffice", @tabindex = "1", @class = "DdlClass", @onchange = "GetToUser()" })
@@ -8184,6 +8583,48 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="act_lft_fst bg_light">
 
+                        @if (Model.isLGoffice == "Y")
+                        {
+                            <div class="ListingDocs">
+
+
+                                @if (!string.IsNullOrWhiteSpace(@Model.ProceedingPdf))
+                                {
+                                    <a title="House Proceedings" href="@Model.ProceedingPdf"
+                                       target="_blank"
+                                       class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
+                                        <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
+                                        @*<span class="small">House Proceedings</span>*@
+                                    </a>
+                                }
+
+
+                                @*@if (!string.IsNullOrWhiteSpace(@Model.ProceedingCommCommentPdf))
+                                    {
+                                        <a href="@Model.ProceedingCommCommentPdf"
+                                           target="_blank"
+                                           class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
+
+                                            <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
+                                            <span class="small">Proceedings</span>
+                                        </a>
+                                    }*@
+
+
+                                @if (!string.IsNullOrWhiteSpace(@Model.SignedProceedingCommissionerPath))
+                                {
+                                    <a title="Comr/EO Signed Proceedings" href="@Model.SignedProceedingCommissionerPath"
+                                       target="_blank"
+                                       class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
+                                        <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
+                                        @*<span class="small">Comr/EO Signed Proceedings</span>*@
+                                    </a>
+                                }
+
+
+
+                            </div>
+                        }
                         <ul class="nav nav-tabs tabtop-space position-relative" id="myTab" role="tablist">
 
                             @if (Model.HideRef == "Yes") { }
@@ -8215,9 +8656,12 @@
 
                                 </li>
 
-                                <li id="ViewTab" class="nav-item hand" role="presentation">
-                                    <a class="nav-link" id="view-tab" data-bs-toggle="tab" data-bs-target="#view_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">File Notings</a>
-                                </li>
+                                if (Model.HideUpdate != "Yes")
+                                {
+                                    <li id="ViewTab" class="nav-item hand" role="presentation">
+                                        <a class="nav-link" id="view-tab" data-bs-toggle="tab" data-bs-target="#view_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">File Notings</a>
+                                    </li>
+                                }
 
                                 <li class="nav-item" role="presentation">
                                     <a class="nav-link"
@@ -8230,77 +8674,28 @@
                                         Approvals
                                     </a>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link"
-                                       id="partfiles-tab"
-                                       data-bs-toggle="tab"
-                                       href="#partfiles_@Model.RefId"
-                                       role="tab"
-                                       aria-controls="partfiles_@Model.RefId"
-                                       aria-selected="false"
-                                       onclick="LoadPartFilesData('@Model.RefId')">
-                                        Part Files
-                                    </a>
-                                </li>
-
-                                if (Model.isLGoffice == "Y")
+                                if (Model.HideUpdate != "Yes")
                                 {
-                                    <li class="tabber-tag" style="float:right">
-
-
-                                        @if (!string.IsNullOrWhiteSpace(@Model.ProceedingPdf))
-                                        {
-                                            <a title="House Proceedings" href="@Model.ProceedingPdf"
-                                               target="_blank"
-                                               class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
-                                                <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
-                                                @*<span class="small">House Proceedings</span>*@
-                                            </a>
-                                        }
-
-
-                                        @*@if (!string.IsNullOrWhiteSpace(@Model.ProceedingCommCommentPdf))
-                                            {
-                                                <a href="@Model.ProceedingCommCommentPdf"
-                                                   target="_blank"
-                                                   class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
-
-                                                    <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
-                                                    <span class="small">Proceedings</span>
-                                                </a>
-                                            }*@
-
-
-                                        @if (!string.IsNullOrWhiteSpace(@Model.SignedProceedingCommissionerPath))
-                                        {
-                                            <a title="Comr/EO Signed Proceedings" href="@Model.SignedProceedingCommissionerPath"
-                                               target="_blank"
-                                               class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
-                                                <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
-                                                @*<span class="small">Comr/EO Signed Proceedings</span>*@
-                                            </a>
-                                        }
-
-
-
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link"
+                                           id="partfiles-tab"
+                                           data-bs-toggle="tab"
+                                           href="#partfiles_@Model.RefId"
+                                           role="tab"
+                                           aria-controls="partfiles_@Model.RefId"
+                                           aria-selected="false"
+                                           onclick="LoadPartFilesData('@Model.RefId')">
+                                            Part Files
+                                        </a>
                                     </li>
                                 }
+
                                 if (Model.MapId == "2")
                                 {
                                     <li class="tabber-tag">
                                         <a href="@Url.Action("ProceedingsReport", "References",new { RefId = @Model.RefId, agendaId = @Model.agendaId })" class="text-danger float-right" id="lnkProceedingsReportPdf" target="_blank" title="Proceedings Report"><i class="fa fa-file-pdf-o"></i> View Proceedings</a>
                                     </li>
                                 }
-
-
-
-
-
-
-
-
-
-
                             }
                             @if (CurrentSession.UserName == "supmsc.lg@punjab.gov.in")
                             {
@@ -8337,11 +8732,11 @@
                                     {
                                         <div id="filter">
                                             @*<div class="col-sm-6 col-md-3 col-lg-3 mb-3">
-                    <label class="txt_label">Status:</label>
-                    <p class="pera_txt_design">
-                        @Html.DropDownListFor(m => m.LetterNo, Model.ActionTypeList_Ref, "All Status", new { @id = "ddlStatusFilter", @tabindex = "2", @class = "DdlClass", @onchange = "StatusFilter()" })
-                    </p>
-                </div>col-sm-12 col-md-12 col-lg-6 mb-3*@
+                                                    <label class="txt_label">Status:</label>
+                                                    <p class="pera_txt_design">
+                                                        @Html.DropDownListFor(m => m.LetterNo, Model.ActionTypeList_Ref, "All Status", new { @id = "ddlStatusFilter", @tabindex = "2", @class = "DdlClass", @onchange = "StatusFilter()" })
+                                                    </p>
+                                                </div>col-sm-12 col-md-12 col-lg-6 mb-3*@
                                             <label class="txt_label">Total:  <b>(@Model.ResCount)</b></label>
                                             <div class="accordion" style="">
 
@@ -8428,30 +8823,30 @@
                                                         }
                                                     </div>
                                                     @*<div class="row Aprove">
-                            <label class="txt_label">Approved:</label>
-                            @{ var i3 = 0;}
-                            @foreach (var item in Model.ActionListFilter)
-                            {
-                                if (@item.Value == "8" || @item.Value == "9")
-                                {
-                                    <div class="col-3">
+            <label class="txt_label">Approved:</label>
+            @{ var i3 = 0;}
+            @foreach (var item in Model.ActionListFilter)
+            {
+                if (@item.Value == "8" || @item.Value == "9")
+                {
+                    <div class="col-3">
 
-                                        <input type="checkbox"
-                                               name="ChkStatusFilter"
-                                               value="@item.Value"
-                                               onchange="StatusFilter1(this)" />  <label id="txtcom_@item.Value" class="lbltxt">
-                                            @{
+                        <input type="checkbox"
+                               name="ChkStatusFilter"
+                               value="@item.Value"
+                               onchange="StatusFilter1(this)" />  <label id="txtcom_@item.Value" class="lbltxt">
+                            @{
 
-                                                var temp = item.Text.Split(',');
-                                            }
-
-                                            @temp[0] <b>@temp[1]</b>
-                                        </label>
-                                    </div>
-                                }
-
+                                var temp = item.Text.Split(',');
                             }
-                        </div>*@
+
+                            @temp[0] <b>@temp[1]</b>
+                        </label>
+                    </div>
+                }
+
+            }
+        </div>*@
                                                     <input type="hidden" id="hdnlgcom" value="@i" />
                                                     <input type="hidden" id="hdnactionid" value="0" />
                                                     <input type="hidden" id="hdnactionApprovalid" value="0" />
@@ -8462,18 +8857,19 @@
                                         </div>
                                     }
 
-                                    @if (Model.HideUpdate == "Yes") {
-                                    
-                                     <button class="btn btn-info" style="margin-top:12px" id="digitallySignedApprovals" data-bs-toggle="modal" data-bs-target="#ApprovalModal">
-                                        <i class="fa fa-signature me-1"></i> Digitally Signed Approvals
-                                    </button>
-                                    
+                                    @if (Model.HideUpdate == "Yes")
+                                    {
+
+                                        <button class="btn btn-info" style="margin-top:12px" id="digitallySignedApprovals" data-bs-toggle="modal" data-bs-target="#ApprovalModal">
+                                            <i class="fa fa-signature me-1"></i> Digitally Signed Approvals
+                                        </button>
+
                                     }
                                     else
                                     {
-                                         <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap mt-2 mb-2" style="gap: 5px;">
                                             <!-- LEFT SIDE (Textbox + Select) -->
-                                            <div class="d-flex align-items-center gap-2">
+                                            <div class="d-flex align-items-center flex-wrap gap-2 w-100">
                                                 <input type="text"
                                                        id="txtSelectNos"
                                                        class="form-control"
@@ -8486,7 +8882,7 @@
                                                     Select
                                                 </button>
                                                 @*@if (CurrentSession.SubUserTypeID == "20")
-                    {*@
+                                                    {*@
                                                 <a href="javascript:void(0);" id="EditDraftOrderNew" class="btn btn-primary" onclick="OpenEditApprovalNew('@Model.agendaId','0','','')">
                                                     <i class="fa fa-pencil me-1"></i> Action
                                                 </a>
@@ -8494,11 +8890,11 @@
 
 
 
-                                            </div>
+                                            @*</div>*@
 
                                             @if (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "20")
                                             {
-                                                <div class="d-flex align-items-center gap-2 flex-wrap" style="">
+                                                @*<div class="d-flex align-items-center gap-2 flex-wrap">*@
 
 
 
@@ -8521,29 +8917,29 @@
                                                     </div>
 
 
-                                                    @if (Model.isLGoffice == "Y")
+                                                    if (Model.isLGoffice == "Y")
                                                     {
 
 
-                                                        <button class="btn btn-info text-white me-2" id="lnkFileActionsReport" style="float: right; margin-top: 6px;">
+                                                        <button class="btn btn-info text-white" id="lnkFileActionsReport">
                                                             <i class="fa fa-file-pdf me-1"></i>Preview List
                                                         </button>
 
                                                         @*<button class="btn btn-info text-white me-2" onclick="window.open('@Url.Action("PDFPreviewReport", "References", new { refid = @Model.RefId, DocType=@Model.DocumentTypeName })', '_blank');" style="float: right; margin-top: 6px;">
-                                <i class="fa fa-file-pdf me-1"></i>Preview List
-                            </button>*@
+                                                                <i class="fa fa-file-pdf me-1"></i>Preview List
+                                                            </button>*@
 
                                                     }
 
                                                     else
                                                     {
-                                                        <button class="btn btn-info text-white me-2" onclick="window.open('@Url.Action("PDFPreviewReport", "References", new { refid = @Model.RefId, DocType = @Model.DocumentTypeName })', '_blank');" style="float: right; margin-top: 6px;">
+                                                        <button class="btn btn-info text-white" onclick="window.open('@Url.Action("PDFPreviewReport", "References", new { refid = @Model.RefId, DocType = @Model.DocumentTypeName })', '_blank');">
                                                             <i class="fa fa-file-pdf me-1"></i>Preview List
                                                         </button>
                                                     }
 
 
-                                                    <button class="btn btn-info text-white me-2" type="button" id="btnCopy" title="Create Part File" onclick="return SaveCopy(true)" tabindex="4" style="float: right; margin-top: 6px;">
+                                                    <button class="btn btn-info text-white" type="button" id="btnCopy" title="Create Part File" onclick="return SaveCopy(true)" tabindex="4">
                                                         <i class="fas fa-plus me-1"></i>
                                                         Part File
                                                     </button>
@@ -8551,9 +8947,10 @@
 
 
 
-                                                </div>
+                                                @*</div>*@
 
                                             }
+
                                             @if (SiteName == "MC")
                                             {
                                                 if (CurrentSession.DeptID == "LG00001")
@@ -8567,19 +8964,19 @@
                                             }
 
 
-
+                                             </div>
 
 
                                             @*@if (Model.IsMeetingFile == "No" && Model.filetype != "2")
-                {
-                    <div class="col-sm-1 col-md-1 col-lg-1 mb-3" style="margin-left: 63px;">
-                        <button class="btn btn-primary mt-3 d-flex align-items-center justify-content-center" type="button" id="btnCopy" title="Create Part File" onclick="return SaveCopy()" tabindex="4" style="padding: 13px; font-weight: bold;">
-                            <i class="partfileicon fas fa-plus me-2"></i>
-                            Part <br />  File
-                        </button>
+                                                {
+                                                    <div class="col-sm-1 col-md-1 col-lg-1 mb-3" style="margin-left: 63px;">
+                                                        <button class="btn btn-primary mt-3 d-flex align-items-center justify-content-center" type="button" id="btnCopy" title="Create Part File" onclick="return SaveCopy()" tabindex="4" style="padding: 13px; font-weight: bold;">
+                                                            <i class="partfileicon fas fa-plus me-2"></i>
+                                                            Part <br />  File
+                                                        </button>
 
-                    </div>
-                }*@
+                                                    </div>
+                                                }*@
 
 
 
@@ -8588,14 +8985,14 @@
 
 
                                             @*@if (SiteName == "MC")
-                {
-                    <div class="col-sm-2 col-md-2 col-lg-2 mb-3">
-                        <label class="txt_label">Point of Instruction:</label>
-                        <p class="pera_txt_design">
-                            @Html.DropDownListFor(m => m.LetterNo, Model.Act, "All Act", new { @id = "ddlact", @tabindex = "2", @class = "DdlClass", @onchange = "ActFilter()" })
-                        </p>
-                    </div>
-                }*@
+                                                {
+                                                    <div class="col-sm-2 col-md-2 col-lg-2 mb-3">
+                                                        <label class="txt_label">Point of Instruction:</label>
+                                                        <p class="pera_txt_design">
+                                                            @Html.DropDownListFor(m => m.LetterNo, Model.Act, "All Act", new { @id = "ddlact", @tabindex = "2", @class = "DdlClass", @onchange = "ActFilter()" })
+                                                        </p>
+                                                    </div>
+                                                }*@
 
 
                                         </div>
@@ -8618,7 +9015,7 @@
                                                 <th id="refsort" style="display:none; width:1%;" class="td-heading"><span class="font-weight-bold"> <i class="ace-icon fa fa-pencil bigger-120 hand yesdelete" onclick="OpenCheckPopUp()"></i> <input type="checkbox" id="checkall" name="checkall" onchange="CheckAll(1)"> </span> @*<i id="IconShowAll" class="fa fa-plus-square bigger-120 hand" onclick="ShowAllSD()" />*@ </th>
                                                 <th class="td-heading" style="width: 2%"><span class="font-weight-bold"></span></th>
                                                 <th class="td-heading"><span class="font-weight-bold"></span></th>
-                                                <th class="td-heading" style="width: 2%"><span class="font-weight-bold">No. & Date</span></th>
+                                                <th class="td-heading" style="width: 3%"><span class="font-weight-bold">No. & Date</span></th>
                                                 <th class="td-heading" style="width: 15%"><span class="font-weight-bold">@Model.DocumentTypeName Details </span></th>
                                                 <th class="td-heading" style="width: 15%">
                                                     <span class="font-weight-bold ">
@@ -8635,7 +9032,7 @@
                                                     </span>
                                                 </th>
                                                 <th class="td-heading" style="width: 2%"><span class="font-weight-bold">Status</span></th>
-                                                <th class="td-heading" style="width: 10%"><span class="font-weight-bold">Added In Part File</span></th>
+                                                <th class="td-heading" style="width: 1%"><span class="font-weight-bold">Added In Part File</span></th>
                                                 @*<th class="td-heading" style="width: 4%"><span class="font-weight-bold">Act</span></th>*@
                                                 <th class="td-heading" style="width:1%"><span class="font-weight-bold"></span></th>
 
@@ -8646,13 +9043,13 @@
 
 
                                     @*@if (Model.HideUpdate == "Yes") { } else
-        {
-            <div class="row">
-                    <div class="d-flex align-items-center gap-3">
-                        <input type="button" class="btn btn-primary AgendaRefDetail" id="btnUpdateMultiStatus" onclick="return UpdateMultiStatus();" value="Update Status" />
-                    </div>
-            </div>
-        }*@
+                                        {
+                                            <div class="row">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <input type="button" class="btn btn-primary AgendaRefDetail" id="btnUpdateMultiStatus" onclick="return UpdateMultiStatus();" value="Update Status" />
+                                                    </div>
+                                            </div>
+                                        }*@
 
 
 
@@ -8795,7 +9192,7 @@
 
                                     @if (Model.isLGoffice == "Y")
                                     {
-                                        if (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "20")
+                                        if ((Model.HideUpdate != "Yes") && (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "20"))
                                         {
 
                                             <div class="row">
@@ -8804,8 +9201,7 @@
                                                 <div class="col-md-2">
                                                     <label>
                                                         <input type="checkbox"
-                                                               id="chkCreateApproval"
-                                                               onchange="ToggleApprovalSection();" />
+                                                               id="chkCreateApproval" />
                                                         Create Draft :
                                                     </label>
                                                 </div>
@@ -8816,68 +9212,58 @@
 
                                         }
 
-                                        <ul class="nav nav-tabs tabtop-space position-relative" role="tablist">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 my-2" style="max-width: 100%;">
+                                            @if ((Model.HideUpdate != "Yes") && (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "21" || CurrentSession.SubUserTypeID == "20"))
+                                            {
+                                                <!-- Edit Draft -->
+                                                <a href="javascript:void(0);"
+                                                   id="EditDraftOrder"
+                                                   class="btn btn-primary btn-sm"
+                                                   style="max-width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"
+                                                   onclick="OpenEditApproval('@Model.agendaId',
+                                                 '0',
+                                                 '',
+                                                 '')">
 
+                                                    <i class="fa fa-eye me-1"></i> Edit Draft Order
+                                                </a>
+                                            }
+                                            <!-- Preview Draft -->
+                                            <button type="button" id="previewDraftOrder"
+                                                    class="btn btn-primary btn-sm"
+                                                    style="max-width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"
+                                                    onclick="OpenPreviewPdf();">
+                                                <i class="fa fa-eye me-1"></i> Preview Draft Order
+                                            </button>
 
-                                            <li class="tabber-tag float-end">
-
-                                                @if (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "21" || CurrentSession.SubUserTypeID == "20")
-                                                {
-                                                    <!-- Edit Draft -->
-                                                    <a href="javascript:void(0);"
-                                                       id="EditDraftOrder"
-                                                       class="btn btn-primary"
-                                                       onclick="OpenEditApproval('@Model.agendaId',
-                                                     '0',
-                                                     '',
-                                                     '')">
-
-                                                        <i class="fa fa-eye me-1"></i> Edit Draft Order
-                                                    </a>
-                                                }
-                                                <!-- Preview Draft -->
-                                                @*<a href="#" id="previewDraftOrder" target="_blank" class="btn btn-primary">
-                                                        <i class="fa fa-eye me-1"></i> Preview Draft Order
-                                                    </a>*@
-                                                <button type="button" id="previewDraftOrder"
-                                                        class="btn btn-primary"
-                                                        onclick="OpenPreviewPdf();">
-                                                    <i class="fa fa-eye me-1"></i> Preview Draft Order
+                                            @if ((Model.HideUpdate != "Yes") && (CurrentSession.ApprovalAuthority == "1"))
+                                            {
+                                                <!-- Approve Order -->
+                                                <button type="button" class="btn btn-success" id="generateApproval">
+                                                    <i class="fa fa-check-circle me-1"></i> Approve Order
                                                 </button>
 
+                                                <!-- Approval Button (Hidden Initially) -->
+                                                <button type="button" class="btn btn-warning d-none" id="approvalOrder">
+                                                    <i class="fa fa-file-pdf me-1"></i> Approval
+                                                </button>
 
-                                                @if (CurrentSession.ApprovalAuthority == "1")
-                                                {
-                                                    <!-- Approve Order -->
-                                                    <button type="button" class="btn btn-success" id="generateApproval">
-                                                        <i class="fa fa-check-circle me-1"></i> Approve Order
-                                                    </button>
-
-                                                    <!-- Approval Button (Hidden Initially) -->
-                                                    <button type="button" class="btn btn-warning d-none" id="approvalOrder">
-                                                        <i class="fa fa-file-pdf me-1"></i> Approval
-                                                    </button>
-
-                                                    <!-- Digital Signature -->
-                                                    <div class="btn-group d-none" id="digitalSignatureGroup">
-                                                        <a href="javascript:void(0)"
-                                                           id="lnkSignPdf"
-                                                           target="_blank"
-                                                           class="btn btn-success"
-                                                           title="Digital Signature"
-                                                           style="font-size:13px;">
-                                                            <i class="fa fa-pencil-square-o me-1"></i>
-                                                            <span class="small">e-Sign</span>
-                                                        </a>
-                                                    </div>
-                                                }
-
-                                            </li>
-                                        </ul>
-
-                                        <br /><br />
+                                                <!-- Digital Signature -->
+                                                <div class="btn-group d-none" id="digitalSignatureGroup">
+                                                    <a href="javascript:void(0)"
+                                                       id="lnkSignPdf"
+                                                       target="_blank"
+                                                       class="btn btn-success"
+                                                       title="Digital Signature"
+                                                       style="font-size:13px;">
+                                                        <i class="fa fa-pencil-square-o me-1"></i>
+                                                        <span class="small">e-Sign</span>
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
                                     }
-                                    @if (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "20")
+                                    @if ((Model.HideUpdate != "Yes") && (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "20"))
                                     {
                                         <div id="EndorsementArea">
                                             @Html.Partial("_Endorsement", Model)
@@ -8886,31 +9272,32 @@
 
                                 </div>
                                 <div class="tab-pane fade"
-                             id="partfiles_@Model.RefId"
-                             role="tabpanel"
-                             aria-labelledby="partfiles-tab">
-                            <div class="p-2">
-                                <div id="partFilesLoader" class="text-center my-3" style="display:none;">
-                                    <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
-                                    <p class="mt-2 text-muted">Loading Part Files...</p>
+                                     id="partfiles_@Model.RefId"
+                                     role="tabpanel"
+                                     aria-labelledby="partfiles-tab">
+                                    <div class="p-2">
+                                        <div id="partFilesLoader" class="text-center my-3" style="display:none;">
+                                            <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
+                                            <p class="mt-2 text-muted">Loading Part Files...</p>
+                                        </div>
+                                        <div id="partFilesTableContainer" class="table-responsive">
+                                            <table class="table table-bordered display" id="tblPartFiles" style="overflow-y: auto; max-height:80%; width:100%">
+                                                <thead>
+                                                    <tr class="table-heading">
+                                                        <th class="td-heading" style="width: 20%;"><span class="font-weight-bold">Ref ID / Date</span></th>
+                                                        <th class="td-heading" style="width: 60%;"><span class="font-weight-bold">Resolution Subject & Status</span></th>
+                                                        <th class="td-heading" style="width: 20%;"><span class="font-weight-bold">Currently With</span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblPartFilesBody">
+                                                    <tr>
+                                                        <td colspan="3" class="text-center text-muted">Click tab to load Part Files.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div id="partFilesTableContainer" class="table-responsive">
-                                    <table class="table table-bordered display" id="tblPartFiles" style="overflow-y: auto; max-height:80%; width:100%">
-                                        <thead>
-                                            <tr class="table-heading">
-                                                <th class="td-heading" style="width: 40%;"><span class="font-weight-bold">Ref ID / Date</span></th>
-                                                <th class="td-heading" style="width: 60%;"><span class="font-weight-bold">Resolution Subject & Status</span></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tblPartFilesBody">
-                                            <tr>
-                                                <td colspan="2" class="text-center text-muted">Click tab to load Part Files.</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
 
                             }
 
@@ -9069,8 +9456,7 @@
     </div>
 </div>
 
-<div class="pdf-popup"
-     id="EditApprovalModal">
+<div class="pdf-popup" id="EditApprovalModal">
 
     <div class="modal-dialog modal-xl" style="max-width:95%;">
         <div class="modal-content">
@@ -9082,7 +9468,7 @@
 
                     <button type="button" onclick="MinimizePdfPopupEdit()" title="Minimize"><i class="fa fa-minus"></i></button>
 
-                    <button type="button" onclick="ToggleMaximizePdfPopupEdit()" id="btnMaximize" title="Maximize">
+                    <button type="button" onclick="ToggleMaximizePdfPopupEdit()" title="Maximize">
                         <i class="fa fa-square-o"></i>
                     </button>
 
@@ -9361,97 +9747,48 @@
 
 
 <script>
-     $(document).ready(function () {
-
-        let isDragging = false;
-
-        const $resizer = $("#dragBar");
-        const $topPanel = $(".note-list");
-        const $bottomPanel = $("#addNotingSection");
-
-        $resizer.on("mousedown", function (e) {
-            isDragging = true;
-            $("body").css("cursor", "row-resize");
-            e.preventDefault();
-        });
-
-        $(document).on("mousemove", function (e) {
-            if (!isDragging) return;
-
-            let containerTop = $("#divDetails")[0].getBoundingClientRect().top;
-            let pointerY = e.clientY - containerTop;
-
-            // limits
-            let minTop = 200;
-            let maxTop = 900;
-
-            let newTopHeight = Math.max(minTop, Math.min(pointerY, maxTop));
-            let newBottomHeight = 900 - newTopHeight;
-
-            $topPanel.css("max-height", newTopHeight + "px");
-            $bottomPanel.css("max-height", newBottomHeight + "px");
-        });
-
-        $(document).on("mouseup", function () {
-            isDragging = false;
-            $("body").css("cursor", "default");
-        });
-
-        $("#dragBar").on("dblclick", function () {
-            $(".note-list").css("max-height", "300px");
-            $("#addNotingSection").css("max-height", "550px");
-        });
-
-    });
-
-    $(document).on("click", ".btnAddNoting", function () {
+    $(document).off("click", ".btnAddNoting").on("click", ".btnAddNoting", function () {
         var ref = $(this).data("ref");
-
-        $("#addNotingSection").addClass("active");
-        // expand noting list
-        $("#ulnoting").addClass("expanded");
-
-        // 👉 Scroll parent container to bottom
-        var container = $("#divDetails");   // change if needed
-
-        var modalBody = $("#InboxModel .modal-body");
-
-        modalBody.animate({
-            scrollTop: modalBody[0].scrollHeight
-        }, 400);
-
-
-        // 👉 Focus textarea
-        setTimeout(function () {
-            var editor = tinymce.get("ActionDescription");
-
-            if (editor) {
-                editor.focus();
-            }
-        }, 300);
-
-        // 👉 SHOW DRAG BAR
-        $("#dragBar").addClass("active");
-
-
-        // 👉 SET HEIGHTS EXPLICITLY
-        $(".note-list").css("max-height", "300px");
-        $("#addNotingSection").css("max-height", "550px");
+        $(".btnCloseActionSection").click();
+        $("#addNotingSection, .left-bottom").addClass("active").show();
+        $("#ulnoting, #ulnoting1, #ulnoting2").addClass("expanded");
+        $("#dragBar").addClass("active").show();
         $("#addnotingbottom").hide();
 
+        let $top = $("#notingList:visible, .note-list:visible").first();
+        let $bottom = $("#addNotingSection:visible, .left-bottom:visible").first();
+        $top.css({ "height": "40%", "max-height": "none", "flex": "0 0 40%", "overflow-y": "auto" });
+        $bottom.css({ "height": "60%", "max-height": "none", "flex": "1 1 60%", "overflow-y": "auto" });
+
+        // 👉 Scroll parent container to bottom
+        var modalBody = $("#InboxModel .modal-body");
+        if (modalBody.length > 0) {
+            modalBody.animate({
+                scrollTop: modalBody[0].scrollHeight
+            }, 400);
+        }
+
+        adjustAllResponsiveElements();
+
+        // 👉 Focus textarea / editor
+        setTimeout(function () {
+            if (typeof tinymce !== 'undefined' && tinymce.get("ActionDescription")) {
+                tinymce.get("ActionDescription").focus();
+            } else if ($("#ActionDescription").length > 0) {
+                $("#ActionDescription").focus();
+            }
+        }, 300);
     });
 
-    $(document).on("click", ".btnCloseNoting", function () {
+    $(document).off("click", ".btnCloseNoting").on("click", ".btnCloseNoting", function () {
         var ref = $(this).data("ref");
-        $("#addNotingSection").removeClass("active");
-        $("#ulnoting").removeClass("expanded");
-
-        // 👉 force original height
-        $(".note-list").css("max-height", "800px");
-        $("#addNotingSection").css("max-height", "0");
-
-        $("#dragBar").removeClass("active");
+        $("#addNotingSection, .left-bottom").removeClass("active").hide().css({ "height": "", "max-height": "", "flex": "" });
+        $("#ulnoting, #ulnoting1, #ulnoting2").removeClass("expanded");
+        $("#dragBar").removeClass("active").hide();
+        $("#notingList, .note-list").css({ "height": "100%", "max-height": "none", "flex": "1 1 100%", "overflow-y": "auto" });
         $("#addnotingbottom").show();
+
+        adjustAllResponsiveElements();
     });
 
     $(document).on('click', '.btnCloseActionSection', function (e) {
@@ -9470,6 +9807,7 @@
         //$("#dragBar").removeClass("active");
         //$("#addnotingbottom").show();
     });
+
 
     function stripHtml(html) {
         return $("<div>").html(html).text();
@@ -9491,12 +9829,23 @@
         },
 
         success: function (data) {
+            var editors = tinymce.EditorManager.get();
+            editors.forEach(function (editor) {
+                var element = editor.getElement();
 
-            $('#loader-wrapper').hide();
+                if (element && element.closest('#EditApprovalBody')) {
+                    editor.remove();
+                }
+            });
+
+            $('#EditApprovalBody').html('');
             $('#EditApprovalBody').html(data);
-            $('#EditApprovalModal').modal('show');
-            $("#EditApprovalModal").addClass("show");
 
+            setTimeout(function () {
+                $('#loader-wrapper').hide();
+                $('#EditApprovalModal').show();
+                $("#EditApprovalModal").addClass("show");
+            }, 100)
         },
 
         error: function () {
@@ -9531,23 +9880,42 @@
                 if (typeof data === 'object' && data.redirect) {
                     $('#loader-wrapper').hide();
                     window.location.href = data.redirect;
+                    
                     return;
                 }
+                var editors = tinymce.EditorManager.get();
+                editors.forEach(function (editor) {
+                    var element = editor.getElement();
+
+                    if (element && element.closest('#EditActionSectionBody')) {
+                        editor.remove();
+                    }
+                });
+                
                 $('#EditActionSectionBody').html('');
                 $('#EditActionSectionBody').html(data);
-                $('#loader-wrapper').hide();
-                $('#EditActionSection').show();
+                
+                setTimeout(function () {
+                    $('#loader-wrapper').hide();
+                    $('#EditActionSection').show();
+                    $("#dragBar").addClass("active").show();
+                }, 100)
+                
                 // Remove previous editors if any
-                tinymce.remove('.tiny-editor');
+                //tinymce.remove('.tiny-editor');
 
                 // Initialize editors in the loaded HTML
-                tinymce.init({
-                    selector: '#EditActionSectionBody .tiny-editor',
-                    height: 550,
-                    menubar: false,
-                    plugins: 'lists link table code advlist fullscreen',
-                    toolbar: 'fullscreen anxbutton undo redo | bold italic | alignjustify alignleft aligncenter alignright'
-                });
+                //tinymce.init({
+                //    selector: '#EditActionSectionBody .tiny-editor',
+                //    height: 550,
+                //    menubar: false,
+                //    plugins: 'lists link table code advlist fullscreen',
+                //    toolbar: 'fullscreen anxbutton undo redo | bold italic | alignjustify alignleft aligncenter alignright'
+                //}).then(function() 
+                //    {
+                        
+                //    }
+                //);
             },
             error: function (xhr, status, error) {
                 $('#loader-wrapper').hide();
@@ -9651,7 +10019,6 @@
 
         // ⬜ MAXIMIZE
         $("#btnMaximize").click(function () {
-
             if (!isMaximized) {
 
                 modal.classList.remove("minimized-modal");
@@ -10245,6 +10612,14 @@ $(document).off('click', '#noButton').on('click', '#noButton', function (e) {
         var selectedValue = $(this).val();
         var selectedText = $("#DdlActionType_Multi option:selected").text();
 
+
+        // FIX: Sync DdlActionType_Multi value to DdlActionType
+        if ($("#DdlActionType").length) {
+            $("#DdlActionType").val(selectedValue);
+        }
+
+
+
         if (selectedValue === "15") {
 
             $("#chkDraft").prop("checked", true);
@@ -10323,8 +10698,20 @@ function generatePdf() {
         $('.tox-tbtn').filter(function () {
             return $(this).text().trim() === 'Action Remarks';
         }).click();
+    }
 
+    function InsertSelectedRemarksToActionDescription(value) {
+        var editor = tinymce.get("ActionDescription");
 
+        if (editor) {
+            editor.focus();
+            //editor.setContent("");
+        }
+        // $("#notingList").hide();
+        var $button = $('.tox-tbtn').filter(function () {
+            return $(this).text().trim() === 'Selected Action Remarks';
+        });
+        $button.attr('data-value', value).click();
     }
 
    function SaveDraft(storageKey) {
@@ -10391,7 +10778,7 @@ function OpenPartFileRef(refId) {
     $.ajax({
         type: "GET",
         url: '@Url.Action("EditMlaDairyForm", "References")',
-        data: { ID: refId, MoveId: '', forceShowUpdate: 'Yes' },
+        data: { ID: refId, MoveId: 0, forceShowUpdate: 'No' },
         success: function (data) {
             $('#loader-wrapper').hide();
             if ($("#InboxModelbody").length > 0) {
@@ -10460,21 +10847,23 @@ function LoadPartFilesData(refid) {
                     var subject = item.Subject || item.subject || "";
                     var status = item.StatusName || item.statusName || item.Status || "";
                     var createdDate = item.CreatedDate || item.createdDate || item.Date || "";
+                    var currentlyWith = item.CurrentlyWith || item.currentlyWith || item.Currently_With || item.currently_with || item.Currently || item.currently || "";
 
                     html += "<tr role='row' class='" + (i % 2 === 0 ? "odd" : "even") + "'>";
                     html += "<td><a href='javascript:void(0);' class='text-primary font-weight-bold' onclick='OpenPartFileRef(\"" + refId + "\")'>#" + refId + "</a><br/><small class='text-muted'>Date: " + (createdDate ? createdDate : "-") + "</small></td>";
                     html += "<td>" + subject + "<br/><span class='badge bg-info text-dark' style='background-color:#0dcaf0; color:#000; margin-top:4px;'>" + (status ? status : "N/A") + "</span></td>";
+                    html += "<td>" + (currentlyWith ? currentlyWith : "-") + "</td>";
                     html += "</tr>";
                 });
                 $body.html(html);
             } else {
-                $body.html("<tr><td colspan='2' class='text-center text-muted'>No Part Files found.</td></tr>");
+                $body.html("<tr><td colspan='3' class='text-center text-muted'>No Part Files found.</td></tr>");
             }
         },
         error: function (xhr, status, error) {
             $loader.hide();
             console.error("Error loading Part Files:", error, xhr.responseText);
-            $body.html("<tr><td colspan='2' class='text-center text-danger'>Error loading Part Files data.</td></tr>");
+            $body.html("<tr><td colspan='3' class='text-center text-danger'>Error loading Part Files data.</td></tr>");
         }
     });
     }

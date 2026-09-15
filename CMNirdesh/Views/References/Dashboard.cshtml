@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.LstDashboard
+@model CMNirdesh.Models.LstDashboard
 
 @using CMNirdesh.Models
 
@@ -6331,7 +6331,7 @@
                 type: "GET",
                url: '@Url.Action("EditMlaDairyForm", "References")',
 
-                data: { ID: ID, ActId: ActionId },
+                data: { ID: ID, ActId: ActionId, MoveId: 0, forceShowUpdate: 'No' },
                 beforeSend: function () {
                     $('#loader-wrapper').show();
                 },
@@ -6364,7 +6364,7 @@
                 type: "GET",
                 url: '@Url.Action("EditMlaDispatchFormOutbox", "References")',
 
-                data: { ID: ID, ActId: ActionId },
+                data: { ID: ID, ActId: ActionId, MoveId: 0 },
                 beforeSend: function () {
                     $('#loader-wrapper').show();
                 },

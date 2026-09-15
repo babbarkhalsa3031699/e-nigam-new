@@ -3864,7 +3864,10 @@ namespace CMNirdesh.Models
                             diaryActionViewModel.ActionAmount = string.IsNullOrEmpty(row1["ActionAmountSanction"].ToString()) ? 0 : Convert.ToDouble(row1["ActionAmountSanction"].ToString());
                             diaryActionViewModel.Enclosure = Convert.ToString(row1["Enclosure"].ToString());
                             diaryActionViewModel.ActionBy = Convert.ToString(row1["ActionBy"].ToString());
-                            diaryActionViewModel.ActionCode = Convert.ToInt32(row1["ActionId"].ToString());
+                            //diaryActionViewModel.ActionCode = Convert.ToInt32(row1["ActionId"].ToString());
+                            //diaryActionViewModel.ActionCode = int.TryParse(row1["ActionId"]?.ToString(), out int actionCode) && actionCode != 0 ? actionCode: (int?)null;
+                            diaryActionViewModel.ActionCode = int.TryParse(row1["ActionId"]?.ToString(), out int actionCode)  ? actionCode : 0;
+
                             diaryActionViewModel.ActionDate = string.IsNullOrEmpty(row1["createdDate"].ToString()) ? DateTime.Now : Convert.ToDateTime(row1["createdDate"].ToString());
                             diaryActionViewModel.StatusName = Convert.ToString(row1["actionname"].ToString());
                             diaryActionViewModel.NoteId = Convert.ToInt32(row1["NoteId"].ToString());

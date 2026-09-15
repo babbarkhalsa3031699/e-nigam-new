@@ -852,7 +852,7 @@ namespace CMNirdesh.Controllers
                 fr.ActionName = dr["ActionName"].ToString();
                 fr.Type = Convert.ToInt32(dr["Type"].ToString());
                 fr.Count= Convert.ToInt32(dr["TotalCount"].ToString());
-                if (fr.Type > 0 || menuId == 21) {
+                if (fr.Type > 0 || menuId == 21 || menuId == 22) {
                     ////DiaryViewModel dvm = new DiaryViewModel();
                     ////DataTable dtinboxcount = new DataTable();
                     ////dtinboxcount = dvm.SubmenuInboxCount(Convert.ToInt32(fr.Type),Convert.ToString(CurrentSession.UserID),Convert.ToInt32(CurrentSession.MapId));

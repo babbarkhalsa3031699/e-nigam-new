@@ -1114,9 +1114,9 @@
       }
       else {
           // If not on the "otherpage.html," hide the clock
-          document.getElementById('clock').style.display = 'none';
-          document.getElementById('clock1').style.display = 'none';
-          document.getElementById('clockllabel').style.display = 'none';
+          document.getElementById('clock')?.style.setProperty('display', 'none');
+          document.getElementById('clock1')?.style.setProperty('display', 'none');
+          document.getElementById('clockllabel')?.style.setProperty('display', 'none');
           sessionStorage.removeItem('remainingSeconds');
       }
 
