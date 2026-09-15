@@ -34,7 +34,7 @@ namespace CMNirdesh.Models
             //SqlConnection con = new SqlConnection(@"Data Source=10.147.213.80;initial catalog=eNigamMC2;Persist Security Info=True;User ID=sa;Password=admin!123;");
             //SqlConnection con = new SqlConnection(@"Data Source=enigamsqldb01.database.windows.net;initial catalog=eNigamMC;Persist Security Info=True;User ID=saadmin;Password=enigam@@2k50000Z;");
             //SqlConnection con = new SqlConnection(@"Data Source=192.168.2.6;initial catalog=eNigamMCPunjab;Persist Security Info=True;User ID=sa;Password=admin!123;");
-                SqlConnection con = new SqlConnection(@"Data Source=ALL-IN-ONE-PC\SQLEXPRESS01;initial catalog=eNigamMCPunjab;Persist Security Info=True;User ID=sa;Password=admin!123;TrustServerCertificate=True;");
+                SqlConnection con = new SqlConnection(@"Data Source=ALL-IN-ONE-PC\SQLEXPRESS01;initial catalog=eNigamMCPunjab_new;Persist Security Info=True;User ID=sa;Password=admin!123;TrustServerCertificate=True;");
              //SqlConnection con = new SqlConnection(@"Data Source=10.44.86.184;initial catalog=eNigamMCPunjab;Persist Security Info=True;User ID=sa;Password=admin!123;");
             //SqlConnection con = new SqlConnection(@"Data Source=10.44.86.184;initial catalog=eNigamMC2;Persist Security Info=True;User ID=sa;Password=admin!123;");
             //SqlConnection con = new SqlConnection(@"Data Source=10.147.213.39;initial catalog=MC;Persist Security Info=True;User ID=sa;Password=Admin!123;");
