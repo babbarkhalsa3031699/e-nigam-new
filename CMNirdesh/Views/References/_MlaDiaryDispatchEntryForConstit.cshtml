@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@model CMNirdesh.Models.Diaries.MlaDiaryData
 @using CMNirdesh.Models
 
 
@@ -17,12 +17,572 @@
 }
 
 <style>
-    input[type="file" i] {
-        color: #fff;
+    /* ==========================================================================
+       MODERN SAAS DESIGN SYSTEM FOR CREATE PROPOSAL MODAL
+       Preserves 100% of functional IDs, classes, handlers, and behaviors.
+       ========================================================================== */
+
+
+    .dispatch_modal .modal-content,
+    #CreateNewModel .modal-content,
+    #loginModalDispatchNew .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
     }
 
-    .ms-choice > span.placeholder {
-        color: white !important;
+    /* Modal Header & Title */
+    .dispatch_modal .modal-header,
+    #CreateNewModel .modal-header,
+    #loginModalDispatchNew .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .dispatch_modal .modal-header .modal_heading,
+    #CreateNewModel .modal-header .modal_heading,
+    #loginModalDispatchNew .modal-header .modal_heading {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        letter-spacing: -0.01em !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .dispatch_modal .modal-header .modal_heading::before,
+    #CreateNewModel .modal-header .modal_heading::before,
+    #loginModalDispatchNew .modal-header .modal_heading::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .dispatch_modal .modal-header .btn-close,
+    #CreateNewModel .modal-header .btn-close,
+    #loginModalDispatchNew .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .dispatch_modal .modal-header .btn-close:hover,
+    #CreateNewModel .modal-header .btn-close:hover,
+    #loginModalDispatchNew .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* Modal Body & Custom Scrollbar */
+    .dispatch_modal .modal-body,
+    #CreateNewModelBody,
+    #loginModalDispatchbodyNew {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #cbd5e1 transparent !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+    }
+
+    .dispatch_modal .modal-body::-webkit-scrollbar,
+    #CreateNewModelBody::-webkit-scrollbar,
+    #loginModalDispatchbodyNew::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .dispatch_modal .modal-body::-webkit-scrollbar-track,
+    #CreateNewModelBody::-webkit-scrollbar-track,
+    #loginModalDispatchbodyNew::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .dispatch_modal .modal-body::-webkit-scrollbar-thumb,
+    #CreateNewModelBody::-webkit-scrollbar-thumb,
+    #loginModalDispatchbodyNew::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .dispatch_modal .modal-body::-webkit-scrollbar-thumb:hover,
+    #CreateNewModelBody::-webkit-scrollbar-thumb:hover,
+    #loginModalDispatchbodyNew::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
+    /* Form Card Sections */
+    #formDiaryDispatch .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    #formDiaryDispatch .form-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    #formDiaryDispatch .form-section-title i {
+        color: #2563eb;
+        font-size: 13px;
+    }
+
+    #formDiaryDispatch .form-row-group {
+        margin-bottom: 12px;
+    }
+
+    #formDiaryDispatch .form-row-group:last-child {
+        margin-bottom: 0;
+    }
+
+    #formDiaryDispatch .form-group {
+        margin-bottom: 10px;
+    }
+
+    /* Field Labels */
+    #formDiaryDispatch .fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+        letter-spacing: normal !important;
+        width: 100% !important;
+        text-align: left !important;
+    }
+
+    /* Inputs, Selects, Date Pickers */
+    #formDiaryDispatch input[type="text"],
+    #formDiaryDispatch input[type="date"],
+    #formDiaryDispatch select,
+    #formDiaryDispatch .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        box-sizing: border-box !important;
+        line-height: normal !important;
+    }
+
+    #formDiaryDispatch input[type="text"]:hover,
+    #formDiaryDispatch input[type="date"]:hover,
+    #formDiaryDispatch select:hover {
+        border-color: #94a3b8 !important;
+    }
+
+    #formDiaryDispatch input[type="text"]:focus,
+    #formDiaryDispatch input[type="date"]:focus,
+    #formDiaryDispatch select:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    /* Readonly From Office span */
+    #formDiaryDispatch span.form-control {
+        background-color: #f8fafc !important;
+        border-color: #e2e8f0 !important;
+        color: #475569 !important;
+        display: flex !important;
+        align-items: center !important;
+        font-weight: 500 !important;
+    }
+
+    /* Styled Radio Button Pill (Reference Nature) */
+    #formDiaryDispatch .rdo_box {
+        display: flex !important;
+        align-items: center !important;
+        height: 38px !important;
+        background: #eff6ff !important;
+        border: 1px solid #bfdbfe !important;
+        border-radius: 6px !important;
+        padding: 0 14px !important;
+        gap: 8px !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(37, 99, 235, 0.05) !important;
+    }
+
+    #formDiaryDispatch .rdo_box:hover {
+        border-color: #93c5fd !important;
+        background: #dbeafe !important;
+    }
+
+    #formDiaryDispatch .rdo_box input[type="radio"] {
+        margin: 0 !important;
+        cursor: pointer !important;
+        width: 16px !important;
+        height: 16px !important;
+        accent-color: #2563eb !important;
+    }
+
+    #formDiaryDispatch .rdo_box span {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #1e40af !important;
+        cursor: pointer !important;
+        user-select: none !important;
+    }
+
+    /* Template Anchor */
+    #formDiaryDispatch .tamp_ancor {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: #2563eb !important;
+        text-decoration: none !important;
+        margin-top: 6px !important;
+        padding: 4px 10px !important;
+        background: #eff6ff !important;
+        border: 1px solid #bfdbfe !important;
+        border-radius: 6px !important;
+        transition: all 0.15s ease !important;
+    }
+
+    #formDiaryDispatch .tamp_ancor:hover {
+        background: #dbeafe !important;
+        border-color: #93c5fd !important;
+        text-decoration: none !important;
+    }
+
+    /* Subject Textarea */
+    #formDiaryDispatch textarea#TxtSubject {
+        width: 100% !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        line-height: 1.5 !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        resize: vertical !important;
+        height: 65px !important;
+        min-height: 55px !important;
+    }
+
+    #formDiaryDispatch textarea#TxtSubject:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    /* Rich Text Editor (TinyMCE) Container & Chrome */
+    #formDiaryDispatch .tox-tinymce {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        overflow: hidden !important;
+    }
+
+    #formDiaryDispatch .tox .tox-toolbar,
+    #formDiaryDispatch .tox .tox-toolbar__primary {
+        background: #f8fafc !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 4px 8px !important;
+        gap: 2px !important;
+    }
+
+    #formDiaryDispatch .tox .tox-toolbar__group {
+        padding: 0 4px !important;
+        border-right: 1px solid #e2e8f0 !important;
+        margin-right: 4px !important;
+    }
+
+    #formDiaryDispatch .tox .tox-tbtn {
+        border-radius: 4px !important;
+        height: 28px !important;
+        width: 28px !important;
+        margin: 1px !important;
+        transition: all 0.15s ease !important;
+        color: #334155 !important;
+    }
+
+    #formDiaryDispatch .tox .tox-tbtn:hover {
+        background-color: #e2e8f0 !important;
+        color: #0f172a !important;
+    }
+
+    #formDiaryDispatch .tox .tox-tbtn--enabled,
+    #formDiaryDispatch .tox .tox-tbtn:active {
+        background-color: #dbeafe !important;
+        color: #1d4ed8 !important;
+    }
+
+    #formDiaryDispatch .tox .tox-statusbar {
+        background: #f8fafc !important;
+        border-top: 1px solid #e2e8f0 !important;
+        font-size: 11px !important;
+        color: #64748b !important;
+    }
+
+    /* Annexure Modern Dropzone & Card */
+    #formDiaryDispatch #divEnfile,
+    .annexure-upload-zone {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        padding: 14px 18px !important;
+        margin-top: 4px !important;
+        transition: border-color 0.2s ease, background-color 0.2s ease !important;
+    }
+
+    #formDiaryDispatch #divEnfile:hover,
+    .annexure-upload-zone:hover {
+        border-color: #cbd5e1 !important;
+        background-color: #f1f5f9 !important;
+    }
+
+    .annexure-upload-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .annexure-upload-btn {
+        position: relative !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        background: #ffffff !important;
+        border: 1px dashed #93c5fd !important;
+        color: #1e293b !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 7px 16px !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        overflow: hidden !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .annexure-upload-btn:hover {
+        background: #eff6ff !important;
+        border-color: #3b82f6 !important;
+        border-style: solid !important;
+        color: #2563eb !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 5px rgba(37, 99, 235, 0.12) !important;
+    }
+
+    .annexure-upload-btn i {
+        font-size: 14px !important;
+        color: #3b82f6 !important;
+    }
+
+    .annexure-upload-native-input {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        cursor: pointer !important;
+        z-index: 2 !important;
+        font-size: 100px !important;
+    }
+
+    .annexure-upload-hint {
+        font-size: 12px !important;
+        color: #64748b !important;
+        font-style: italic !important;
+    }
+
+    .annexure-file-chips-container {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .annexure-file-chips-container:empty {
+        display: none !important;
+    }
+
+    /* Modern SaaS File Chip */
+    .annexure-file-chip {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 6px 12px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        max-width: 100% !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .annexure-file-chip:hover {
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 3px 6px -1px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .annexure-file-chip .file-chip-icon {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        border-radius: 6px !important;
+        font-size: 14px !important;
+        border: 1px solid transparent !important;
+    }
+
+    .annexure-file-chip .file-chip-info {
+        display: flex !important;
+        flex-direction: column !important;
+        min-width: 0 !important;
+        line-height: 1.25 !important;
+    }
+
+    .annexure-file-chip .file-chip-name {
+        color: #0f172a !important;
+        font-weight: 600 !important;
+        font-size: 12.5px !important;
+        text-decoration: none !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 260px !important;
+        display: block !important;
+        transition: color 0.15s ease !important;
+    }
+
+    .annexure-file-chip .file-chip-name:hover {
+        color: #2563eb !important;
+        text-decoration: underline !important;
+    }
+
+    .annexure-file-chip .file-chip-size {
+        font-size: 11px !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
+        margin-top: 2px !important;
+    }
+
+    .annexure-file-chip .file-chip-size:empty {
+        display: none !important;
+    }
+
+    /* Redesigned Remove Button (Goodbye ugly pink circle with 'X'!) */
+    #formDiaryDispatch .removeUploadEnclosure,
+    .annexure-file-chip .file-chip-remove {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 22px !important;
+        height: 22px !important;
+        min-width: 22px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+        border: 1px solid #fca5a5 !important;
+        cursor: pointer !important;
+        font-size: 11px !important;
+        line-height: 1 !important;
+        margin-left: 4px !important;
+        transition: all 0.15s ease !important;
+    }
+
+    #formDiaryDispatch .removeUploadEnclosure:hover,
+    .annexure-file-chip .file-chip-remove:hover {
+        background: #dc2626 !important;
+        color: #ffffff !important;
+        border-color: #b91c1c !important;
+        transform: scale(1.1) !important;
+        box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25) !important;
+    }
+
+    #formDiaryDispatch .removeUploadEnclosure i,
+    .annexure-file-chip .file-chip-remove i {
+        font-style: normal !important;
+        font-size: 11px !important;
+        line-height: 1 !important;
+    }
+
+    #formDiaryDispatch #chkZeroCost {
+        accent-color: #2563eb;
+        margin-left: 6px;
+        cursor: pointer;
+    }
+
+    /* Footer Action Bar */
+    .dispatch-action-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+        padding-top: 16px;
+        margin-top: 8px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    #formDiaryDispatch #btnDraft {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 24px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+    }
+
+    #formDiaryDispatch #btnDraft:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px);
+    }
+
+    #formDiaryDispatch #btnDraft:active {
+        transform: translateY(0);
     }
 </style>
 
@@ -70,258 +630,188 @@
 
 
 
-    <div class="row col-md-12 col-lg-12 col-xl-12">
-
-        <div class="col-sm-6 col-md-6 col-lg-6 form-group">
-            <span class="fotm_lbl">From Office:</span>
-            <div>
-                <span class="form-control">
-                    @Model.deptname
-                    @Html.HiddenFor(m => m.FromDeptId)
-                </span>
+    <!-- Section 1: Office Routing -->
+    <div class="form-section-card">
+        <div class="form-section-title"><i class="fa fa-building-o"></i> Office Routing</div>
+        <div class="row form-row-group">
+            <div class="col-sm-6 col-md-6 col-lg-6 form-group">
+                <span class="fotm_lbl">From Office:</span>
+                <div>
+                    <span class="form-control">
+                        @Model.deptname
+                        @Html.HiddenFor(m => m.FromDeptId)
+                    </span>
+                </div>
             </div>
 
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-6 form-group">
-            <span class="fotm_lbl">Office Detail:</span>
-            <div>
-                <span>
-                    @*@Model.officename
-                        @Html.HiddenFor(m => m.FromOfficeId)*@
-                    @Html.DropDownListFor(m => m.FromOfficeId, Model.OfficeList, "-- Select --", new { @id = "ddlFromOffice", @class = "DdlClass", @tabindex = "2" })
-
-                </span>
+            <div class="col-sm-6 col-md-6 col-lg-6 form-group">
+                <span class="fotm_lbl">Office Detail:</span>
+                <div>
+                    <span>
+                        @*@Model.officename
+                            @Html.HiddenFor(m => m.FromOfficeId)*@
+                        @Html.DropDownListFor(m => m.FromOfficeId, Model.OfficeList, "-- Select --", new { @id = "ddlFromOffice", @class = "DdlClass", @tabindex = "2" })
+                    </span>
+                </div>
             </div>
         </div>
 
+        <div class="row form-row-group">
+            <div id="divMember" class="col-sm-6 col-md-6 col-lg-6 col-xl-6 form-group">
+                <span class="fotm_lbl">To Office:</span>
+                <div>
+                    <span>
+                        <select id="ToDept" name="@Html.NameFor(x => x.ToDeptId)" class="DdlClass" onchange="getdepdata()">
+                            @*<option value="">--Select--</option>*@
+                            @foreach (var dep in Model.mDepartmentListPbi)
+                            {
+                                <option value="@dep.Value" data-num="@dep.FileNo" data-pbi="@dep.TextPbi" data-sec="@dep.SecPbi">@dep.Text</option>
+                            }
+                        </select>
+                        @Html.HiddenFor(m => m.ToDeptId)
+                    </span>
+                </div>
+            </div>
+
+            <div id="divofc" class="col-sm-6 col-md-6 col-lg-6 col-xl-6 form-group">
+                <span class="fotm_lbl">Office Detail:</span>
+                <div id="divOfficeList">
+                    <span>
+                        @Html.DropDownListFor(m => m.ToOfficeId, Enumerable.Empty<SelectListItem>(),  new { @id = "ddlToOffice", @class = "DdlClass", @tabindex = "2" })
+                    </span>
+                    @Html.HiddenFor(m => m.ToOfficeId)
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="row col-md-12 col-lg-12 col-xl-12">
-
-        <div id="divMember" class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
-            <span class="fotm_lbl">To Office:</span>
-            <div>
-                <span>
-                    <select id="ToDept" name="@Html.NameFor(x => x.ToDeptId)" class="DdlClass" onchange="getdepdata()">
-                        @*<option value="">--Select--</option>*@
-                        @foreach (var dep in Model.mDepartmentListPbi)
-                        {
-                            <option value="@dep.Value" data-num="@dep.FileNo" data-pbi="@dep.TextPbi" data-sec="@dep.SecPbi">@dep.Text</option>
-                        }
-                    </select>
-                    @Html.HiddenFor(m => m.ToDeptId)
-                </span>
-            </div>
-        </div>
-
-        <div id="divofc" class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
-            <span class="fotm_lbl">Office Detail:</span>
-            <div id="divOfficeList">
-                <span>
-                    @Html.DropDownListFor(m => m.ToOfficeId, Enumerable.Empty<SelectListItem>(),  new { @id = "ddlToOffice", @class = "DdlClass", @tabindex = "2" })
-                </span>
-                @Html.HiddenFor(m => m.ToOfficeId)
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row col-md-12 col-lg-12 col-xl-12">
-
-
-
-        <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 letr_box">
-            <span class="fotm_lbl">Reference Nature:</span>
-            <div class="rdo_box">
-
-                @if (Model.dashboardtype == "1")
-                {
-                    @Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();", @checked = "checked" })
-                    <span>Reference</span>
-                }
-
-
-                @if (Model.dashboardtype == "3")
-                {
-                    @*@Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();", @checked = "checked" })
-                        <span>Reference</span>*@
-                    @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();", @checked = "checked" })
-                    <span>File</span>
-                }
-
-
-                @if (Model.dashboardtype == "2")
-                {
-                    @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();", @checked = "checked" })
-                    <span>File</span>
-                    // }
-
-                    @*@if (Model.IsFileCount > 0)
-                        {
-                        @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();" })
-                        <span>File</span>
-                        }*@
-
-
-                    @*@if (Model.RefFileType == "File")
-                        {
-                            @Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();" })
-                            <span>Reference</span>
-                            @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();", @checked = "checked" })
-                            <span>File</span>
-                        }
-                        else
-                        { @Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();", @checked = "checked" })
+    <!-- Section 2: Reference Information -->
+    <div class="form-section-card">
+        <div class="form-section-title"><i class="fa fa-file-text-o"></i> Reference Information</div>
+        <div class="row form-row-group">
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 letr_box form-group">
+                <span class="fotm_lbl">Reference Nature:</span>
+                <div class="rdo_box">
+                    @if (Model.dashboardtype == "1")
+                    {
+                        @Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();", @checked = "checked" })
                         <span>Reference</span>
-                        if (Model.IsFileCount > 0)
+                    }
+
+                    @if (Model.dashboardtype == "3")
+                    {
+                        @*@Html.RadioButtonFor(m => m.isLetter, "Letter", new { @id = "lettertype", @onclick = "letterfile();", @checked = "checked" })
+                            <span>Reference</span>*@
+                        @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();", @checked = "checked" })
+                        <span>File</span>
+                    }
+
+                    @if (Model.dashboardtype == "2")
+                    {
+                        @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();", @checked = "checked" })
+                        <span>File</span>
+                    }
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 form-group">
+                <span class="fotm_lbl"> Type: </span>
+                <div>
+                    <span>
+                        @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, new { @id = "DdlDoctype", @tabindex = "3", @class = "DdlClass" })
+                        @if (Model.IsFileCount > 0)
                         {
-                            @Html.RadioButtonFor(m => m.isLetter, "File", new { @id = "filetype", @onclick = "letterfile();" })
-                            <span>File</span>
-                        }*@
-                }
-
-
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
-            <span class="fotm_lbl"> Type: </span>
-            <div>
-                <span>
-                    @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, new { @id = "DdlDoctype", @tabindex = "3", @class = "DdlClass" })
-                    @if (Model.IsFileCount > 0)
-                    {
-                        @Html.DropDownListFor(m => m.MeetingId, Model.FileDocumentTypelist, new { @id = "ddlFileDocyype", @tabindex = "3", @class = "DdlClass" })
-                    }
-
-                </span>
-            </div>
-        </div>
-
-
-        <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3">
-            <span class="fotm_lbl" id="myref"> No:</span>
-            <div>
-                @Html.TextBoxFor(m => m.LetterNo, new { @id = "TxtLetterNo", @tabindex = "4", @autocomplete = "off", @class = "DdlClass" })
-                @*@Html.HiddenFor(m => m.LetterNo, new { id = "hdLetterNo" })*@
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-md-3 col-lg-3 col-cl-3">
-            <span class="fotm_lbl">Date:</span>
-            <div>
-                @Html.TextBoxFor(m => m.LetterDate, new { @type = "Date", @id = "txtLetterDate", @tabindex = "5", @autocomplete = "off" })
-                @Html.HiddenFor(m => m.LetterDate, new { id = "hdLetterDt" })
-            </div>
-        </div>
-
-    </div>
-
-
-
-    @if (SiteName == "CMNirdesh")
-    {
-        <div class="col-md-12 col-lg-12">
-            <a class="tamp_ancor" href="#" id="atemplate" onclick="ShowTemplate()">Templates:</a>
-        </div>
-
-
-    }
-
-
-
-    <div class="row col-md-12 col-xl-12 col-lg-12">
-        <div class="col-md-6 col-lg-6">
-            <select id="divTemplates" style="display:none;" class="temp_drop" onchange="GetTemplate()">
-                @foreach (var temp in Model.TemplateList)
-                {
-                    <option class="temp_lbls" id="temp_@temp.Id" value="@temp.Id" head="@temp.TemplateHead" subject="@temp.TemplateSubjectEng" body="@temp.BodyTextEng">
-                        @temp.TemplateName
-                    </option>
-                }
-            </select>
-        </div>
-
-        <div class="col-md-6 col-lg-6">
-        </div>
-
-
-    </div>
-
-    <div class="row col-md-12 col-lg-12 col-xl-12">
-        <div class="col-md-12 col-lg-12">
-            <span class="fotm_lbl">Subject:</span>
-            <div>
-                <span>
-                    @Html.TextAreaFor(m => m.Subject, new { @id = "TxtSubject", @tabindex = "6", @class = "DdlClass", @rows = "6", @style = "height: 75px;" })
-                </span>
-            </div>
-        </div>
-
-        @*@if (SiteName == "e-Cabinate" && Model.dashboardtype == "1")
-            {
-                <div class="col-md-6 col-lg-6">
-                    <span class="fotm_lbl">Subject in Punjabi:</span>
-                    <div>
-                        <span>
-                            @Html.TextAreaFor(m => m.SubjectPB, new { @id = "TxtSubjectPB", @tabindex = "6", @class = "DdlClass", @rows = "6", @style = "height: 75px;" })
-                        </span>
-                    </div>
+                            @Html.DropDownListFor(m => m.MeetingId, Model.FileDocumentTypelist, new { @id = "ddlFileDocyype", @tabindex = "3", @class = "DdlClass" })
+                        }
+                    </span>
                 </div>
-            }*@
+            </div>
 
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 form-group">
+                <span class="fotm_lbl" id="myref"> No:</span>
+                <div>
+                    @Html.TextBoxFor(m => m.LetterNo, new { @id = "TxtLetterNo", @tabindex = "4", @autocomplete = "off", @class = "DdlClass" })
+                </div>
+            </div>
 
+            <div class="col-sm-6 col-md-3 col-lg-3 col-cl-3 form-group">
+                <span class="fotm_lbl">Date:</span>
+                <div>
+                    @Html.TextBoxFor(m => m.LetterDate, new { @type = "Date", @id = "txtLetterDate", @tabindex = "5", @autocomplete = "off" })
+                    @Html.HiddenFor(m => m.LetterDate, new { id = "hdLetterDt" })
+                </div>
+            </div>
+        </div>
+
+        @if (SiteName == "CMNirdesh")
+        {
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <a class="tamp_ancor" href="#" id="atemplate" onclick="ShowTemplate()">
+                        <i class="fa fa-bookmark-o"></i> Templates:
+                    </a>
+                </div>
+            </div>
+        }
+
+        <div class="row col-md-12 col-xl-12 col-lg-12">
+            <div class="col-md-6 col-lg-6">
+                <select id="divTemplates" style="display:none;" class="temp_drop" onchange="GetTemplate()">
+                    @foreach (var temp in Model.TemplateList)
+                    {
+                        <option class="temp_lbls" id="temp_@temp.Id" value="@temp.Id" head="@temp.TemplateHead" subject="@temp.TemplateSubjectEng" body="@temp.BodyTextEng">
+                            @temp.TemplateName
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6 col-lg-6">
+            </div>
+        </div>
     </div>
-    <div class="row col-md-12 col-lg-12 mt-4">
-        <div class="col-md-12 col-lg-12">
-            <span class="fotm_lbl">
-                Details
-                @*@if (Model.dashboardtype == "1" && SiteName== "e-Cabinate")
-                    {
-                        @:(Para 2)
-                    }*@
 
-            </span>
+    <!-- Section 3: Subject & Details -->
+    <div class="form-section-card">
+        <div class="form-section-title"><i class="fa fa-align-left"></i> Subject & Details</div>
+        <div class="row form-row-group">
+            <div class="col-md-12 col-lg-12 form-group">
+                <span class="fotm_lbl">Subject:</span>
+                <div>
+                    <span>
+                        @Html.TextAreaFor(m => m.Subject, new { @id = "TxtSubject", @tabindex = "6", @class = "DdlClass", @rows = "6" })
+                    </span>
+                </div>
+            </div>
+        </div>
 
-            <div>
-                <div class="larg_txt_1">
-                    @if (Model.PaperEntryType == "EditEntry")
+        <div class="row form-row-group mt-3">
+            <div class="col-md-12 col-lg-12 form-group">
+                <span class="fotm_lbl">
+                    Details
+                </span>
+
+                <div>
+                    <div class="larg_txt_1">
+                        @if (Model.PaperEntryType == "EditEntry")
+                        {
+                            @Html.Raw(Model.SubjectDetails)
+                        }
+                    </div>
+                    @if (Model.PaperEntryType != "EditEntry")
                     {
-                        @Html.Raw(Model.SubjectDetails)
+                        <div class="larg_txt_2">
+                            @Html.EditorFor(m => m.SubjectDetails, new { @id = "TxtDiarySubjectDetails", @tabindex = "7" })
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="larg_txt_3">
+                            @Html.HiddenFor(m => m.SubjectDetails)
+                        </div>
                     }
                 </div>
-                @if (Model.PaperEntryType != "EditEntry")
-                {
-                    <div class="larg_txt_2">
-
-                        @Html.EditorFor(m => m.SubjectDetails, new { @id = "TxtDiarySubjectDetails", @tabindex = "7" })
-
-                    </div>
-                }
-                else
-                {
-                    <div class="larg_txt_3">
-                        @Html.HiddenFor(m => m.SubjectDetails)
-
-                    </div>
-                }
-
             </div>
         </div>
-        @*@if (SiteName == "e-Cabinate" && Model.dashboardtype == "1")
-            {
-                <div class="col-md-6 col-lg-6">
-                    <span class="fotm_lbl">Details in Punjabi (Para 2):</span>
-                    <div class="larg_txt_2">
-
-                        @Html.EditorFor(m => m.SubjectDetailsPB, new { @id = "TxtDiarySubjectDetailsPB", @tabindex = "7" })
-
-                    </div>
-
-                </div>
-            }*@
-
     </div>
 
 
@@ -342,7 +832,7 @@
                                 <div class="row">
                                     <a href="#" id="sfileUrl" target="_blank"> <span id="sfileName" class="file_nameEn"></span> </a>
                                     <div id="sfileSize" class="file_sizeEn col-6"></div>
-                                    <span id="removeSFile" class="removeUploadEnclosure col-3" onclick="removeStatementfile('')" style="height: 26px;"><i class="far fa-times"></i></span>
+                                    <span id="removeSFile" class="removeUploadEnclosure col-3" onclick="removeStatementfile('')" style="height: 26px;"><i class="fa fa-times"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -360,7 +850,7 @@
                                 <div class="row">
                                     <a href="#" id="sfileUrlPb" target="_blank"> <span id="sfileNamePb" class="file_nameEn"></span> </a>
                                     <div id="sfileSizePb" class="file_sizeEn col-6"></div>
-                                    <span id="removeSFilePb" class="removeUploadEnclosure col-3" onclick="removeStatementfile('Pb')" style="height: 26px;"><i class="far fa-times"></i></span>
+                                    <span id="removeSFilePb" class="removeUploadEnclosure col-3" onclick="removeStatementfile('Pb')" style="height: 26px;"><i class="fa fa-times"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -437,124 +927,99 @@
             </div>
         }
     }
-    <div class="row mt-4">
-
-
-        <div class="col-lg-12">
-
-            <div id="divEnfile">
-                <span class="fotm_lbl">Annexure:</span>
-
-                <div class="row">
-                    <div class="col-auto">
-                        <input style="font-size: 15px;" id="fileuploadEnclosure" type="file" name="fileuploadEnclosure">
-                    </div>
-
-                    <div class="col-lg-10">
-                        <div id="MultipleFile" class="d-flex align-items-center">
-                            @*<div class="row">
-                                    <a href="#" id="afile_nameEn" target="_blank"> <span id="file_nameEn" class="file_nameEn"></span> </a>
-                                    <div class="file_sizeEn col-6"></div>
-                                    <span id="removeUploadEnclosure" class="removeUploadEnclosure col-3" onclick="removefileupload()" style="height: 26px;"><i class="far fa-times"></i></span>
-                                </div>*@
+    <!-- Section 4: Attachments & Additional Details -->
+    <div class="form-section-card">
+        <div class="form-section-title"><i class="fa fa-paperclip"></i> Annexure & Additional Details</div>
+        <div class="row form-row-group">
+            <div class="col-lg-12">
+                <div id="divEnfile" class="annexure-upload-zone">
+                    <span class="fotm_lbl d-block mb-2"><i class="fa fa-paperclip text-primary"></i> Annexure (Attachment):</span>
+                    <div class="annexure-upload-row">
+                        <div class="annexure-upload-btn">
+                            <i class="fa fa-cloud-upload"></i>
+                            <span>Choose File</span>
+                            <input id="fileuploadEnclosure" type="file" name="fileuploadEnclosure" class="annexure-upload-native-input">
                         </div>
+                        <span class="annexure-upload-hint">Upload PDF, DOC, or image files (up to 10MB)</span>
+                    </div>                    
+
+                    <div id="MultipleFile" class="annexure-file-chips-container mt-2">
                     </div>
 
+                    @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                    {
+                        <div class="mt-2">
+                            <div class="annexure-file-chip">
+                                <div class="file-chip-icon" style="background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </div>
+                                <div class="file-chip-info">
+                                    <a href="@FileSettings.SettingValue@Model.EnclosureFile" target="_blank" id="wreqeqwe" class="file-chip-name" title="Attached Enclosure">
+                                        Attached Enclosure (File)
+                                    </a>
+                                    <span class="file-chip-size">Current attachment</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span id="EnclosureFiletxt" style="display: none;">Yes</span>
+                    }
+                    else
+                    {
+                        <span id="EnclosureFiletxt" style="display: none;">No</span>
+                    }
                 </div>
 
-
+                @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
+                @Html.HiddenFor(m => m.StatementImplementation, new { id = "hdnsfile" })
+                @Html.HiddenFor(m => m.StatementImplementation_local, new { id = "hdnsfilePb" })
             </div>
-
-            @if (!string.IsNullOrEmpty(Model.EnclosureFile))
-            {
-                <a href="@FileSettings.SettingValue@Model.EnclosureFile" target="_blank" id="wreqeqwe">Attached Enclosure (File)</a>
-                <span id="EnclosureFiletxt" style="display: none;">Yes</span>
-
-            }
-            else
-            {
-                <span id="EnclosureFiletxt" style="display: none;">No</span>
-            }
-
-            @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
-            @Html.HiddenFor(m => m.StatementImplementation, new { id = "hdnsfile" })
-            @Html.HiddenFor(m => m.StatementImplementation_local, new { id = "hdnsfilePb" })
-
         </div>
 
+        @if (SiteName == "MC")
+        {
+            <div class="row col-md-12 col-lg-12 col-xl-12" style="display:none; margin-top:10px;">
+                <div class=" col-md-12 col-lg-12 col-xl-12 chk_diry">
+                    <span id="spnTitle" class="">
+                        <input type="checkbox" id="chkAct" class="DdlClass" />
+                    </span>
+                    <div class="profile-info-name">
+                        Act Details:
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-row-group mt-3" id="divActDetails">
+                <div class="col-md-6 col-lg-6 form-group">
+                    <span class="fotm_lbl">Act Details:</span>
+                    <div>
+                        @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "txt_design" })
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-6 form-group">
+                    <span class="fotm_lbl">
+                        <span>Proposal Amount:</span>
+                        <label style="font-weight: 500; font-size: 11px; cursor: pointer; color: #64748b; margin: 0;">
+                            <input type="checkbox" id="chkZeroCost" /> Zero Cost
+                        </label>
+                    </span>
+
+                    <div>
+                        @Html.TextBoxFor(
+                            m => m.ProposalAmount,
+                            new
+                            {
+                                @id = "txtProposalAmount",
+                                @autocomplete = "off",
+                                @tabindex = "14",
+                                @class = "DdlClass",
+                                @oninput = "this.value = this.value.replace(/[^0-9.]/g, '')",  @maxlength = "14"
+                            })
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-
-    @*<div class="row  col-md-12 col-lg-12 col-xl-12" style="margin-top:10px;">
-            <div class="col-md-2 col-lg-2 col-xl-2">
-                <span class="fotm_lbl">Enclosure:</span>
-            </div>
-
-            <div class="col-md-4 col-lg-4 col-xl-4">
-                <span>
-                    <input style="font-size: 15px;" id="fileuploadEnclosure" type="file" name="fileuploadEnclosure">
-                </span>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-6">
-
-                <a href="#" id="afile_nameEn" target="_blank">
-                    <span id="file_nameEn" class="file_nameEn"></span>
-                </a> &nbsp;
-                <span class="file_sizeEn"></span> &nbsp;
-                <span id="removeUploadEnclosure"  style="display: none; color: red;" onclick="removefileupload()">X</span>
-            </div></div>
-        @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })*@
-
-    @if (SiteName == "MC")
-    {
-        <div class="row col-md-12 col-lg-12 col-xl-12" style="display:none; margin-top:10px;">
-            <div class=" col-md-12 col-lg-12 col-xl-12 chk_diry">
-                <span id="spnTitle" class="">
-                    <input type="checkbox" id="chkAct" class="DdlClass" />
-                </span>
-                <div class="profile-info-name">
-                    Act Details:
-                </div>
-            </div>
-        </div>
-
-        <div class="row col-md-12 col-lg-12 col-xl-12" style="margin-top:5px;" id="divActDetails">
-            <div class="col-md-3 col-lg-3 col-xl-3">
-                <span class="fotm_lbl">Act Details:</span>
-                <div>
-                    @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "txt_design" })
-                </div>
-            </div>
-
-            <div class="col-md-3 col-lg-3 col-xl-3">
-                <span class="fotm_lbl">
-                    Proposal Amount:   <label>
-                        <input type="checkbox" id="chkZeroCost" />
-                        Zero Cost
-                    </label>
-                </span>
-
-                <div>
-                    @Html.TextBoxFor(
-                        m => m.ProposalAmount,
-                        new
-                        {
-                            @id = "txtProposalAmount",
-                            @autocomplete = "off",
-                            @tabindex = "14",
-                            @class = "DdlClass",
-                            @oninput = "this.value = this.value.replace(/[^0-9.]/g, '')",  @maxlength = "14"
-                        })
-                </div>
-
-                <div class="mt-1">
-                  
-                </div>
-            </div>
-
-        </div>
-
-      
-    }
 
 
     @if (SiteName == "PVS")
@@ -684,22 +1149,13 @@
 
 
     <div class="row">
-        <div class="col-md-9 col-lg-9 col-xl-9">
-        </div>
-        <div class="col-md-3 col-lg-3 col-xl-3">
-            <div class="profile-info-value" style="float: right;">
-                <button class="btn btn-danger" type="button" id="btnDraft" title="Draft" onclick="Save(0)" tabindex="13">
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <div class="dispatch-action-footer">
+                <button class="btn btn-primary" type="button" id="btnDraft" title="Save" onclick="Save(0)" tabindex="13">
                     <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
                     Save
                 </button>
             </div>
-
-            @*<div class="profile-info-value">
-                    <button class="btn btn-primary" type="button" id="btnSave" title="Send" onclick="Save(1)" tabindex="14" style="display:none">
-                        <i class="ace-icon fa fa-send align-top bigger-140"></i>
-                        Submit
-                    </button>
-                </div>*@
         </div>
 
 
@@ -1915,30 +2371,40 @@
             i++;
         }
     }).on('fileuploadprogressall', function (e, data) {
-
         var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('.progressEnclosure').show();
         $('.progressEnclosure .progress-bar').css('width', progress + '%');
         $('#removeUploadEnclosure').css('display', 'none');
     });
     });
 
 
-    function AddToFile(pdfname, path, size,pdfuniquename,i) {
-        var FileString = "<div id='afile_"+i+"' class='row'>";
-        FileString = FileString + "<a href='" + path + "' id='afileUrl_" + i + "' target='_blank'> <span id='afileName_" + i +"' class='file_nameEn'>" + pdfname +" </span> </a>";
-        FileString = FileString + "<div id='afileSize_" + i +"' class='file_sizeEn col-6'>" + size +"</div>";
-        FileString = FileString + "<span id='afileRemove_" + i + "' class='removeUploadEnclosure col-3' onclick='removefileupload(" + i +")' style='height: 26px; '><i class='far fa - times'>X</i></span>";
-        FileString = FileString + "</div></br>";
+    function AddToFile(pdfname, path, size, pdfuniquename, i) {
+        var isPdf = (pdfname || '').toLowerCase().indexOf('.pdf') > -1;
+        var iconClass = isPdf ? 'fa fa-file-pdf-o' : 'fa fa-file-text-o';
+        var iconStyle = isPdf ? 'background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;' : 'background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;';
+
+        var FileString = "<div id='afile_" + i + "' class='annexure-file-chip'>" +
+            "<div class='file-chip-icon' style='" + iconStyle + "'><i class='" + iconClass + "'></i></div>" +
+            "<div class='file-chip-info'>" +
+                "<a href='" + path + "' id='afileUrl_" + i + "' target='_blank' class='file-chip-name' title='" + pdfname + "'>" +
+                    "<span id='afileName_" + i + "' class='file_nameEn'>" + pdfname + "</span>" +
+                "</a>" +
+                "<span id='afileSize_" + i + "' class='file-chip-size file_sizeEn'>" + size + "</span>" +
+            "</div>" +
+            "<button type='button' id='afileRemove_" + i + "' class='file-chip-remove removeUploadEnclosure' onclick='removefileupload(" + i + ")' title='Remove file'>" +
+                "<i class='fa fa-times'></i>" +
+            "</button>" +
+        "</div>";
+
         $('#MultipleFile').append(FileString);
-        $('#afileRemove_' + i).css('display', 'block');
+        $('#afileRemove_' + i).css('display', 'inline-flex');
 
         mlfiles.push({
-            fileid:i,
+            fileid: i,
             name: pdfuniquename,
             FileName: pdfname
         });
-        //console.log(mlfiles);
-
     }
     function hidevalueForwd() {
         $('.progress1 .progress-bar').fadeOut(500);
