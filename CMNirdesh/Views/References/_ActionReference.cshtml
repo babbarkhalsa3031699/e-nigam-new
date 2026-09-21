@@ -19,7 +19,6 @@
 <script src="~/Scripts/tinymce/tinymce.min.js"></script>
 <script src="~/Scripts/jquery.ui.widget.js"></script>
 <script src="~/Scripts/jquery.fileupload.js"></script>
-<script src="~/Content/Layout/jquery.slider.js"></script>
 
 
 <script src="~/Scripts/jquery-3.4.1.js"></script>
@@ -32,202 +31,767 @@
 
 
 <style>
+    /* ==========================================================================
+       MODERN SAAS DESIGN SYSTEM FOR ACTION REFERENCE (Linear / Notion Inspired)
+       Preserves 100% of functional IDs, classes, handlers, and behaviors.
+       ========================================================================== */
 
-
-
-    #myTab .nav-item .active {
-        padding: 8px 16px;
-        border-top-left-radius: 6px !important;
-        border-top-right-radius: 6px !important;
+    /* Typography & Base Reset */
+    #formActionDiary {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: #1e293b;
+        font-size: 13px;
+        background-color: #f8fafc;
+        padding: 4px 8px;
     }
 
-    input#enablefund {
-        height: 14px;
+    #formActionDiary * {
+        box-sizing: border-box;
     }
 
-    th {
-        background-color: grey;
+    /* Top Utility & Header Bar */
+    #formActionDiary .modal_row > .col-md-12 > .row.align-items-center {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        margin: 0 0 16px 0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
-    input[type="file" i] {
-        color: #fff;
+    #formActionDiary .top-tools {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
     }
 
-    .ui-datepicker {
-        width: 25em;
-        /*padding: .2em .2em 0;*/
-        display: none;
-        border: 1px solid;
-        font-weight: bolder;
+    #formActionDiary .top-tools h4.form_heading {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #334155 !important;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 6px 14px;
+        margin: 0 !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: 0.01em;
     }
 
-
-    .Mytextarea {
-        font-size: 10px;
-        height: 14px !important;
-        color: #333 !important;
-        font-family: inherit;
+    /* Refresh Icon Button */
+    #formActionDiary .fa-refresh {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #10b981 !important;
+        font-size: 16px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
     }
 
-    .profile-info-name {
-        width: 1% !important;
+    #formActionDiary .fa-refresh:hover {
+        background: #f0fdf4;
+        border-color: #86efac;
+        color: #059669 !important;
+        transform: rotate(180deg);
     }
 
-    .width {
-        width: 76% !important;
+    /* Annexure Row */
+    #formActionDiary .pdfrow.row {
+        width: 100% !important;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
     }
 
-    .fund {
-        width: 11px !important;
-        padding-right: 100px;
-        padding-left: 3px;
-    }
-
-    .tfund {
-        float: left
-    }
-
-    .fundval {
-        padding-right: 20px;
-        font-weight: bold;
-    }
-
-    .tfund {
-        width: 50%;
-    }
-
-    .mar {
-        padding-top: 12px !important;
-    }
-
-    .fundtd {
-        padding: 1px !important;
-        border: 1px solid #ddd;
-        text-align: center;
-        color: green;
-    }
-
-    .switch {
-        position: relative;
+    #formActionDiary .pdfrow h4.form_heading {
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b !important;
+        margin-bottom: 0 !important;
         display: inline-block;
-        width: 60px;
-        height: 34px;
+        margin-right: 8px;
     }
 
-        /* Hide default HTML checkbox */
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-
-    input:checked + .slider {
-        background-color: #2196F3;
+    #formActionDiary .pdfrow .btn-primary {
+        font-size: 12px !important;
+        padding: 4px 10px !important;
+        border-radius: 6px !important;
+        background: #eff6ff !important;
+        border: 1px solid #bfdbfe !important;
+        color: #1d4ed8 !important;
+        box-shadow: none !important;
+        text-decoration: none;
+        margin-right: 6px;
     }
 
-    input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
+    #formActionDiary .pdfrow .btn-primary:hover {
+        background: #dbeafe !important;
+        border-color: #93c5fd !important;
+        color: #1e40af !important;
     }
 
-    input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
+    /* Two-Column Split Workspace (Panel Container) - Strict Side-by-Side Horizontal Layout */
+    div#formActionDiary div#panelContainer,
+    div#panelContainer,
+    #panelContainer {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        background: transparent !important;
+        /* padding: 0 !important; */
+        margin: 0 !important;
+        overflow-x: hidden !important;
+        gap: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    /* Rounded sliders */
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-        width: 64px;
+    div#formActionDiary #panelContainer.is-resizing,
+    #panelContainer.is-resizing {
+        cursor: col-resize !important;
+        user-select: none !important;
     }
 
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-    .nodelete {
-        display: none;
+    div#formActionDiary div#panelContainer .panel.one,
+    div#panelContainer .panel.one,
+    #panelContainer .panel.one {
+        width: 42%;
+        min-width: 250px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+        padding: 18px 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
-    .hand {
+    div#formActionDiary div#panelContainer .panel.two,
+    div#panelContainer .panel.two,
+    #panelContainer .panel.two {
+        width: 58%;
+        min-width: 260px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+        padding: 18px 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    div#formActionDiary div#panelContainer .panel.one:hover,
+    div#formActionDiary div#panelContainer .panel.two:hover,
+    #panelContainer .panel.one:hover,
+    #panelContainer .panel.two:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Draggable Splitter Divider */
+    div#formActionDiary div#panelContainer .slider,
+    div#panelContainer .slider,
+    .slider {
+        z-index: 100 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+        flex: 0 0 16px !important;
+        width: 16px !important;
+        min-width: 16px !important;
+        max-width: 16px !important;
+        align-self: stretch !important;
+        background-color: transparent !important;
+        cursor: col-resize !important;
+        user-select: none !important;
+        padding: 0 !important;
+        margin: 0 2px !important;
+        box-sizing: border-box !important;
+        transition: background-color 0.15s ease;
+    }
+
+    /* Subtle vertical line in the divider */
+    .slider::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        transition: background-color 0.15s ease, width 0.15s ease;
+    }
+
+    .slider:hover::before,
+    .slider.is-resizing::before,
+    #panelContainer.is-resizing .slider::before {
+        background: #3b82f6 !important;
+        width: 3px !important;
+    }
+
+    /* Floating Arrow Handle Controls */
+    .slider-handle {
+        position: sticky;
+        top: 240px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 20px;
+        padding: 6px 3px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        z-index: 101;
+        cursor: default;
+    }
+
+    .sliderLeft, .sliderRight {
+        color: #64748b;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .sliderLeft:hover {
+        color: #2563eb;
+        background: #eff6ff;
+        transform: scale(1.15);
+    }
+
+    .sliderRight:hover {
+        color: #2563eb;
+        background: #eff6ff;
+        transform: scale(1.15);
+    }
+
+    /* Modern Navigation Tabs */
+    #UpdateTab, #myTab {
+        border-bottom: 1px solid #e2e8f0 !important;
+        margin-bottom: 16px !important;
+        padding-bottom: 0 !important;
+        display: flex !important;
+        gap: 6px !important;
+        background: transparent !important;
+    }
+
+    #UpdateTab .nav-item, #myTab .nav-item, #myTab li {
+        margin-bottom: -1px !important;
+    }
+
+    #UpdateTab .nav-link, #myTab .nav-link {
+        border: none !important;
+        border-bottom: 2px solid transparent !important;
+        border-radius: 6px 6px 0 0 !important;
+        color: #64748b !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        padding: 8px 14px !important;
+        background: transparent !important;
+        transition: all 0.15s ease !important;
         cursor: pointer;
     }
 
-    .refhide {
-        display: none;
+    #UpdateTab .nav-link:hover, #myTab .nav-link:hover {
+        color: #0f172a !important;
+        background: #f8fafc !important;
     }
 
-    .refshow {
-        display: block;
+    #UpdateTab .nav-link.active, #myTab .nav-link.active, #myTab .nav-item .active {
+        color: #2563eb !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #2563eb !important;
+        background: transparent !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        box-shadow: none !important;
     }
 
-    .ColorAdd {
-        background-color: #fdeefd !important;
+    /* Form Labels */
+    .fotm_lbl {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        color: #64748b !important;
+        margin-bottom: 6px !important;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    .table-bordered > :not(caption) > * > * {
-        border-width: 1px !important;
+    /* Form Fields, Inputs & Select Dropdowns */
+    /* .DdlClass, */
+    #formActionDiary select,
+    #formActionDiary input[type="text"],
+    #formActionDiary input[type="date"],
+    #formActionDiary input[type="search"] {
+        width: 100% !important;
+        height: 36px !important;
+        line-height: 36px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        outline: none !important;
     }
 
-    .SDHide {
-        display: none;
+    /* .DdlClass:focus, */
+    #formActionDiary select:focus,
+    #formActionDiary input[type="text"]:focus,
+    #formActionDiary input[type="date"]:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
     }
 
-    .far.fa-comment-dots {
-        font-size: 21px;
+    /* Readonly inputs (e.g. Action Date) */
+    #TxtActionTakenDate[readonly],
+    input[readonly] {
+        background-color: #f8fafc !important;
+        color: #475569 !important;
+        border-color: #e2e8f0 !important;
+        cursor: not-allowed !important;
+    }
+
+    /* Static Field Value Containers (.txt_value) */
+    .txt_value {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 7px 12px;
+        font-size: 13px;
+        color: #1e293b;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        word-break: break-word;
+        transition: border-color 0.15s ease;
+    }
+
+    .txt_value.in_txt_area {
+        min-height: 38px;
+        padding: 8px 12px;
+    }
+
+    /* Inline Edit Icons (Pencil) */
+    .ace-icon.fa-pencil {
+        font-size: 11px !important;
+        color: #94a3b8 !important;
+        padding: 3px 5px !important;
+        border-radius: 4px !important;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
         cursor: pointer;
+        transition: all 0.15s ease;
     }
 
-    .ActionBy {
-        display: block;
-        justify-content: end;
-        text-align: right;
-        margin-top: 10px;
+    .ace-icon.fa-pencil:hover {
+        color: #2563eb !important;
+        background: #eff6ff !important;
+        border-color: #bfdbfe !important;
+        transform: scale(1.08);
     }
 
-    .left {
-        float: right;
+    /* Action Remark & Modern TinyMCE Container */
+    #FileEditor {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #ffffff;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .dotted {
-        border-top: 2px dashed;
-        margin-top: -12px;
+    #FileEditor:focus-within {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* Modern Draft Watermark & Toggle */
+    .Draft-editor .tox .tox-edit-area__iframe {
+        background-image: url("/Assets/draft.png") !important;
+        background-size: 140px !important;
+        background-repeat: no-repeat !important;
+        opacity: 0.95;
+    }
+
+    .filedraft {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        padding: 4px 10px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
         margin-bottom: 8px;
     }
 
-    .ActionBySize {
-        font-size: 14px;
-    }
-
-    .slider::before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
-
-
-    .tox-tinymce-aux {
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
-        z-index: 99999999999 !important;
-    }
-
-    .notetag {
+    .filedraft input[type="checkbox"] {
+        accent-color: #2563eb;
+        width: 15px;
+        height: 15px;
         cursor: pointer;
-        color: blue !important;
     }
-    .pdfrow.row {
-        /*position: fixed;*/
-       /*margin-top: -150px;*/
-        width:80%;
+
+    /* Buttons: View History & Primary Submit */
+    #formActionDiary a.btn-primary[onclick*="openHistoryPopup"] {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        padding: 6px 14px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.15s ease !important;
+        float: right;
     }
+
+    #formActionDiary a.btn-primary[onclick*="openHistoryPopup"]:hover {
+        background: #f8fafc !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    #btnSave, #btnSave_Multi, #btnSDUpdate, #btnActionSave {
+        background: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        padding: 8px 20px !important;
+        box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2) !important;
+        transition: all 0.15s ease !important;
+        cursor: pointer;
+    }
+
+    #btnSave:hover, #btnSave_Multi:hover, #btnSDUpdate:hover, #btnActionSave:hover {
+        background: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3) !important;
+    }
+
+    /* File Attachment Modern Button Appearance */
+    #formActionDiary input[type="file"] {
+        font-size: 12px;
+        color: #64748b;
+    }
+    /* ==========================================================================
+       ACTION ATTACHMENT MODERN REDESIGN
+       ========================================================================== */
+    .action-attachment-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 8px;
+        margin-bottom: 12px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .action-attachment-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .action-attachment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .action-attachment-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+    }
+
+    .action-attachment-hint {
+        font-size: 11px;
+        font-weight: 500;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 2px 8px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .action-attachment-controls {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        min-height: 38px;
+    }
+
+    /* Modern Upload Button */
+    .action-upload-btn-container {
+        position: relative;
+        display: inline-flex;
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    .action-upload-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 14px;
+        background: #f8fafc;
+        color: #1e40af;
+        border: 1px dashed #93c5fd;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        margin: 0;
+    }
+
+    .action-upload-btn:hover {
+        background: #eff6ff;
+        border-color: #3b82f6;
+        border-style: solid;
+        color: #1d4ed8;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .action-upload-btn i {
+        font-size: 14px;
+        color: #3b82f6;
+    }
+
+    .action-upload-native-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+        font-size: 100px;
+    }
+
+    /* "No file chosen" label */
+    .action-no-file-label {
+        font-size: 12px;
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    /* Uploaded File Chip */
+    .action-file-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 5px 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        max-width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .action-file-chip:hover {
+        border-color: #cbd5e1;
+        background: #ffffff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .file-chip-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+        border-radius: 5px;
+        color: #dc2626;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .file-chip-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        line-height: 1.2;
+    }
+
+    .file-chip-name {
+        color: #0f172a !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        text-decoration: none !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 240px;
+        display: block;
+        transition: color 0.15s ease;
+    }
+
+    .file-chip-name:hover {
+        color: #2563eb !important;
+        text-decoration: underline !important;
+    }
+
+    .file-chip-size {
+        font-size: 11px !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
+        margin-top: 2px;
+        display: inline-block;
+    }
+
+    .file-chip-size:empty {
+        display: none !important;
+    }
+
+    /* Redesigned Remove Button (No more ugly pink blob!) */
+    #formActionDiary .remove-btn,
+    .file-chip-remove {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        border-radius: 50% !important;
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+        border: 1px solid #fca5a5 !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        margin: 0 0 0 6px !important;
+        transition: all 0.2s ease !important;
+        line-height: 1 !important;
+        text-align: center !important;
+        flex-shrink: 0;
+    }
+
+    #formActionDiary .remove-btn:hover,
+    .file-chip-remove:hover {
+        background: #dc2626 !important;
+        color: #ffffff !important;
+        border-color: #b91c1c !important;
+        transform: scale(1.08) !important;
+        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3) !important;
+    }
+
+    #formActionDiary .remove-btn i,
+    .file-chip-remove i {
+        font-size: 12px !important;
+        line-height: 1 !important;
+    }
+
+    /* Progress bar styling */
+    .action-upload-progress {
+        height: 3px !important;
+        margin-top: 3px !important;
+        border-radius: 2px !important;
+        overflow: hidden !important;
+        background-color: #e2e8f0 !important;
+        display: none;
+    }
+
+    /* CSS :has dynamic toggles */
+    .action-attachment-controls:has(.file_name1:not(:empty)) #actionFileChip1 {
+        display: inline-flex !important;
+    }
+    .action-attachment-controls:has(.file_name1:not(:empty)) #actionNoFile1 {
+        display: none !important;
+    }
+    .action-attachment-controls:has(.file_name12:not(:empty)) #actionFileChip12 {
+        display: inline-flex !important;
+    }
+    .action-attachment-controls:has(.file_name12:not(:empty)) #actionNoFile12 {
+        display: none !important;
+    }
+
+    /* Preserve Utility Classes & Helpers */
+    .hand { cursor: pointer; }
+    .nodelete { display: none; }
+    .refhide { display: none; }
+    .refshow { display: block; }
+    .ColorAdd { background-color: #fdeefd !important; }
+    .table-bordered > :not(caption) > * > * { border-width: 1px !important; }
+    .SDHide { display: none; }
+    .ActionBy { display: block; justify-content: end; text-align: right; margin-top: 10px; }
+    .left { float: right; }
+    .dotted { border-top: 2px dashed #cbd5e1; margin-top: -12px; margin-bottom: 8px; }
+    .ActionBySize { font-size: 14px; }
+    .notetag { cursor: pointer; color: #2563eb !important; }
+    .tox-tinymce-aux { z-index: 99999999999 !important; }
+
+    /* Switch */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 28px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider.round { border-radius: 28px; }
+    .slider.round:before { border-radius: 50%; }
+    input:checked + .slider { background-color: #2563eb; }
 </style>
 
 <script>
@@ -255,6 +819,8 @@
         } else {
             Swipe(PannelId);
         }
+        initPanelSplitter();
+        initActionAttachmentSync();
 
 
         draftchange()
@@ -1620,7 +2186,7 @@
     })
 
     function Save() {
-        alert('gfdg');
+        // alert('gfdg');
         var radiovalue = document.querySelector('input[name="SentType"]:checked').value;
         var sentto = "";
         if (radiovalue == "FromOffice") {
@@ -3045,20 +3611,190 @@
     window.open('@Url.Action("LGProceddings", "Agenda", new { RefId = Model.RefId })', '_blank');
 });
 
-    function Swipe(val) {
-        if (val == 1) {
-            $(".one").css("width", "0%");
-            $(".two").css("width", "100%");
-            $(".one").hide();
-            $("#floatButton").css("left", "2%");
+    var lastPanelOneWidth = 42;
 
+    function Swipe(val) {
+        var $panelOne = $(".panel.one");
+        var $panelTwo = $(".panel.two");
+
+        if (val == 1) {
+            // Quick-collapse Left panel (snap minimized)
+            $panelOne.css({
+                "width": "0%",
+                "flex-basis": "0%",
+                "min-width": "0",
+                "max-width": "0%",
+                "padding-left": "0",
+                "padding-right": "0",
+                "overflow": "hidden",
+                "border": "none",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $panelTwo.css({
+                "width": "100%",
+                "flex-basis": "100%",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $("#floatButton").css("left", "2%");
+            $("#PannelId").val(1);
         } else {
-            $(".one").css("width", "35%");
-            $(".two").css("width", "65%");
-            $(".one").show();
-            $("#floatButton").css("left", "35%");
+            // Quick-expand / restore Left panel
+            var restoreWidth = lastPanelOneWidth || 42;
+            if (restoreWidth < 20) restoreWidth = 42;
+            if (restoreWidth > 78) restoreWidth = 42;
+            $panelOne.css({
+                "width": restoreWidth + "%",
+                "flex-basis": restoreWidth + "%",
+                "min-width": "",
+                "max-width": "",
+                "padding-left": "",
+                "padding-right": "",
+                "overflow": "",
+                "border": "",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $panelTwo.css({
+                "width": (100 - restoreWidth) + "%",
+                "flex-basis": (100 - restoreWidth) + "%",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $("#floatButton").css("left", restoreWidth + "%");
+            $("#PannelId").val(2);
         }
-        $("#PannelId").val(val);
+    }
+
+    function initPanelSplitter() {
+        var $divider = $("#panelDivider");
+        var $container = $("#panelContainer");
+        var $panelOne = $(".panel.one");
+        var $panelTwo = $(".panel.two");
+
+        // Clean any leftover inline display, height, or flex from panels
+        $panelOne.add($panelTwo).css({ "display": "", "height": "", "flex": "" });
+
+        // Unbind any legacy handlers attached by jquery.slider.js or previous inits
+        $divider.off("mousedown.panelSplitter touchstart.panelSplitter mousedown touchstart");
+        $container.off("mousemove touchmove");
+
+        $divider.on("mousedown.panelSplitter touchstart.panelSplitter", function (e) {
+            // If user clicked directly on quick-collapse arrow buttons, do not drag
+            if ($(e.target).closest(".sliderLeft, .sliderRight").length > 0) {
+                return;
+            }
+
+            e.preventDefault();
+            var isDragging = true;
+
+            $container.addClass("is-resizing");
+            $divider.addClass("is-resizing");
+            $("iframe").css("pointer-events", "none");
+            $("body").css({ "user-select": "none", "cursor": "col-resize" });
+
+            var containerOffset = $container.offset().left;
+            var containerWidth = $container.width();
+
+            function onMove(evt) {
+                if (!isDragging) return;
+
+                var clientX = evt.pageX;
+                if (typeof clientX === "undefined" && evt.originalEvent && evt.originalEvent.touches && evt.originalEvent.touches.length > 0) {
+                    clientX = evt.originalEvent.touches[0].pageX;
+                }
+                if (typeof clientX === "undefined" || isNaN(clientX)) return;
+
+                var relativeX = clientX - containerOffset;
+                var pct = (relativeX / containerWidth) * 100;
+
+                // Enforce reasonable min-width boundaries (min 250px left, min 280px right)
+                var minLeftPct = Math.max(18, (250 / containerWidth) * 100);
+                var maxLeftPct = Math.min(80, ((containerWidth - 280) / containerWidth) * 100);
+
+                if (pct < minLeftPct) pct = minLeftPct;
+                if (pct > maxLeftPct) pct = maxLeftPct;
+
+                // Strictly update width and flex-basis as percentages.
+                // Never write display, height, or flex: 0 0 auto inline.
+                $panelOne.css({
+                    "width": pct + "%",
+                    "flex-basis": pct + "%",
+                    "display": "",
+                    "height": "",
+                    "flex": ""
+                });
+                $panelTwo.css({
+                    "width": (100 - pct) + "%",
+                    "flex-basis": (100 - pct) + "%",
+                    "display": "",
+                    "height": "",
+                    "flex": ""
+                });
+
+                $("#floatButton").css("left", pct + "%");
+                lastPanelOneWidth = pct;
+                $("#PannelId").val(2);
+            }
+
+            function onEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+
+                $container.removeClass("is-resizing");
+                $divider.removeClass("is-resizing");
+                $("iframe").css("pointer-events", "");
+                $("body").css({ "user-select": "", "cursor": "" });
+
+                $(document).off("mousemove.panelSplitter touchmove.panelSplitter", onMove);
+                $(document).off("mouseup.panelSplitter touchend.panelSplitter", onEnd);
+            }
+
+            $(document).on("mousemove.panelSplitter touchmove.panelSplitter", onMove);
+            $(document).on("mouseup.panelSplitter touchend.panelSplitter", onEnd);
+        });
+    }
+
+    function initActionAttachmentSync() {
+        function syncUI(nameId, chipId, noFileId, removeId) {
+            var $name = $('#' + nameId);
+            var $chip = $('#' + chipId);
+            var $noFile = $('#' + noFileId);
+            var hasText = ($name.text() || '').trim().length > 0;
+            if (hasText) {
+                $chip.css('display', 'inline-flex');
+                $noFile.hide();
+            } else {
+                $chip.hide();
+                $noFile.show();
+            }
+        }
+
+        function bindObserver(nameId, chipId, noFileId, removeId) {
+            syncUI(nameId, chipId, noFileId, removeId);
+            var el = document.getElementById(nameId);
+            if (el && window.MutationObserver) {
+                var obs = new MutationObserver(function () {
+                    syncUI(nameId, chipId, noFileId, removeId);
+                });
+                obs.observe(el, { childList: true, characterData: true, subtree: true });
+            }
+            var remEl = document.getElementById(removeId);
+            if (remEl && window.MutationObserver) {
+                var obsRem = new MutationObserver(function () {
+                    syncUI(nameId, chipId, noFileId, removeId);
+                });
+                obsRem.observe(remEl, { attributes: true, attributeFilter: ['style', 'class'] });
+            }
+        }
+
+        bindObserver('file_name1', 'actionFileChip1', 'actionNoFile1', 'removefileupload1');
+        bindObserver('file_name12', 'actionFileChip12', 'actionNoFile12', 'removefileupload12');
     }
 
 
@@ -3623,35 +4359,46 @@
                                     }
 
 
-                                    <div class="col-md-12 col-lg-12 col-xl-12 mb-2 row" style="margin-top:5px;">
-                                        <div class="col-md-12 col-lg-12 col-xl-12">
-                                            <div class="fotm_lbl div_inline">Action Attachment:</div>
-
-                                        </div>
-                                        <div class="input-group col-md-2 col-lg-2 col-xl-2 pull-left">
-                                            <label class="lbl_file">
-                                                <span>
-                                                    <input id="fileupload1" type="file" tittle=" " name="fileupload1" accept=".pdf" onclick="FileNotingUpload()">
+                                    <div class="col-md-12 col-lg-12 col-xl-12" style="padding: 0;">
+                                        <div class="action-attachment-card" id="fileuploadcontant1">
+                                            <div class="action-attachment-header">
+                                                <label class="action-attachment-title">
+                                                    <i class="fa fa-paperclip"></i> Action Attachment:
+                                                </label>
+                                                <span class="action-attachment-hint">
+                                                    <i class="fa fa-info-circle"></i> PDF only
                                                 </span>
-                                            </label>
-                                        </div>
-
-                                        <div class="col-md-6 col-lg-6 col-xl-6">
-                                            <div class="d-flex align-items-center gap-5">
-                                                <div>
-                                                    <a href="#" id="afile_nameEn1" target="_blank">
-                                                        <span id="file_name1" class="file_name1"></span>
-                                                    </a>
+                                            </div>
+                                            <div class="action-attachment-controls">
+                                                <div class="action-upload-btn-container">
+                                                    <label class="action-upload-btn" title="Choose PDF file to attach">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                        <span>Choose File</span>
+                                                        <input id="fileupload1" type="file" title=" " name="fileupload1" accept=".pdf" onclick="FileNotingUpload()" class="action-upload-native-input">
+                                                    </label>
+                                                    <div class="progress progress12 action-upload-progress">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%"></div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <span id="removefileupload1" class="remove-btn" style="display: none; color: red; width:28px;" onclick="removefileupload()"><i class="far fa-times"></i></span>
+
+                                                <span class="action-no-file-label" id="actionNoFile1">No file chosen</span>
+
+                                                <div class="action-file-chip" id="actionFileChip1" style="display: none;">
+                                                    <span class="file-chip-icon">
+                                                        <i class="fa fa-file-pdf-o"></i>
+                                                    </span>
+                                                    <div class="file-chip-info">
+                                                        <a href="#" id="afile_nameEn1" target="_blank" class="file-chip-name" title="View attached document">
+                                                            <span id="file_name1" class="file_name1"></span>
+                                                        </a>
+                                                        <span class="file_size1 file-chip-size"></span>
+                                                    </div>
+                                                    <span id="removefileupload1" class="remove-btn file-chip-remove" style="display: none;" onclick="removefileupload()" title="Remove file">
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </span>
                                                 </div>
                                             </div>
-
-                                            <span class="file_size1"></span> &nbsp;
-
                                         </div>
-
                                     </div>
 
 
@@ -3864,6 +4611,10 @@
 
 
                     </div>
+                </div>
+            </div>
+            <div class="slider" id="panelDivider" title="Drag to resize panels">
+                <div class="slider-handle">
                 </div>
             </div>
             <div class="panel two">
@@ -4733,10 +5484,6 @@
 
 
                 </div>
-                <span class="slider">
-                    <span class="sliderLeft" onclick="Swipe(1)"><i class="fas fa-chevron-circle-left"></i> </span>
-                    <span class="sliderRight" onclick="Swipe(2)"><i class="fas fa-chevron-circle-right"></i></span>
-                </span>
 
             </div>
         </div>
@@ -4803,35 +5550,46 @@
 
                             </div>
                             <div class="row">
-                                <div class="col-md-8 col-lg-8 col-xl-8 mb-2 row" style="margin-top:10px;">
-                                    <div class="col-md-12 col-lg-12 col-xl-12">
-                                        <div class="fotm_lbl div_inline">Action Attachment:</div>
-
-                                    </div>
-                                    <div class="input-group col-md-2 col-lg-2 col-xl-2 pull-left">
-                                        <label class="lbl_file">
-                                            <span>
-                                                <input id="fileupload12" type="file" tittle=" " name="fileupload12" accept=".pdf" onclick="fileupload()">
+                                <div class="col-md-8 col-lg-8 col-xl-8 mb-2" style="margin-top:5px;">
+                                    <div class="action-attachment-card" id="fileuploadcontant12">
+                                        <div class="action-attachment-header">
+                                            <label class="action-attachment-title">
+                                                <i class="fa fa-paperclip"></i> Action Attachment:
+                                            </label>
+                                            <span class="action-attachment-hint">
+                                                <i class="fa fa-info-circle"></i> PDF only
                                             </span>
-                                        </label>
-                                    </div>
-
-                                    <div class="col-md-6 col-lg-6 col-xl-6">
-                                        <div class="d-flex align-items-center gap-5">
-                                            <div>
-                                                <a href="#" id="afile_nameEn12" target="_blank">
-                                                    <span id="file_name12" class="file_name12"></span>
-                                                </a>
+                                        </div>
+                                        <div class="action-attachment-controls">
+                                            <div class="action-upload-btn-container">
+                                                <label class="action-upload-btn" title="Choose PDF file to attach">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                    <span>Choose File</span>
+                                                    <input id="fileupload12" type="file" title=" " name="fileupload12" accept=".pdf" onclick="fileupload()" class="action-upload-native-input">
+                                                </label>
+                                                <div class="progress progress12 action-upload-progress">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%"></div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span id="removefileupload12" class="remove-btn" style="display: none; color: red; width:28px;" onclick="removefileupload2()"><i class="far fa-times"></i></span>
+
+                                            <span class="action-no-file-label" id="actionNoFile12">No file chosen</span>
+
+                                            <div class="action-file-chip" id="actionFileChip12" style="display: none;">
+                                                <span class="file-chip-icon">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </span>
+                                                <div class="file-chip-info">
+                                                    <a href="#" id="afile_nameEn12" target="_blank" class="file-chip-name" title="View attached document">
+                                                        <span id="file_name12" class="file_name12"></span>
+                                                    </a>
+                                                    <span class="file_size12 file-chip-size"></span>
+                                                </div>
+                                                <span id="removefileupload12" class="remove-btn file-chip-remove" style="display: none;" onclick="removefileupload2()" title="Remove file">
+                                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                                </span>
                                             </div>
                                         </div>
-
-                                        <span class="file_size12"></span> &nbsp;
-
                                     </div>
-
                                 </div>
                                 <div class="col-md-4">
                                     <div class="profile-info-row">

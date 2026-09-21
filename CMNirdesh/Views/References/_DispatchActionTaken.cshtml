@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@model CMNirdesh.Models.Diaries.MlaDiaryData
 @using CMNirdesh.Models
 
 
@@ -10,12 +10,164 @@
 
 <script src="~/Scripts/jquery.ui.widget.js"></script>
 <script src="~/Scripts/jquery.fileupload.js"></script>
-<script src="~/Content/Layout/jquery.slider.js"></script>
+@*<script src="~/Content/Layout/jquery.slider.js"></script>*@
 <script src="~/Scripts/jquery-3.4.1.js"></script>
 <link href="~/Content/multiple-select.css" rel="stylesheet" />
 <link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
 <link href="~/Content/Layout/style.css" rel="stylesheet" />
 
+<style>
+    /* Two-Column Split Workspace (Panel Container) - Strict Side-by-Side Horizontal Layout */
+    div#panelContainer,
+    #panelContainer {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: calc(100vh - 160px) !important;
+        background: transparent !important;
+        margin: 0 !important;
+        overflow-x: hidden !important;
+        gap: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    #panelContainer.is-resizing {
+        cursor: col-resize !important;
+        user-select: none !important;
+    }
+
+    #panelContainer > .panel.panelone,
+    #panelContainer > .panelone {
+        width: 40%;
+        min-width: 250px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: none !important;
+    }
+
+    #panelContainer > .panel.paneltwo,
+    #panelContainer > .paneltwo {
+        width: 60%;
+        min-width: 280px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: none !important;
+    }
+
+    /* Draggable Splitter Divider - Explicit Visible Line with Extended Hit-Catch Area */
+    #panelContainer > .slider,
+    #panelContainer > #panelDivider,
+    #panelDivider {
+        z-index: 100 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+        flex: 0 0 5px !important;
+        width: 5px !important;
+        min-width: 5px !important;
+        max-width: 5px !important;
+        align-self: stretch !important;
+        height: auto !important;
+        min-height: 100% !important;
+        background-color: #cbd5e1 !important;
+        border-left: 1px solid #94a3b8 !important;
+        border-right: 1px solid #94a3b8 !important;
+        cursor: col-resize !important;
+        user-select: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transition: background-color 0.2s ease, border-color 0.2s ease, width 0.2s ease;
+    }
+
+    /* Extended 19px Hit-Catch Area around the 5px visible line (eliminates pixel-hunting) */
+    #panelContainer > .slider::after,
+    #panelContainer > #panelDivider::after,
+    #panelDivider::after {
+        content: "" !important;
+        position: absolute !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: -7px !important;
+        right: -7px !important;
+        cursor: col-resize !important;
+        z-index: 101 !important;
+        pointer-events: auto !important;
+        background: transparent !important;
+    }
+
+    /* Highlight visible line on hover or during active resize drag */
+    #panelContainer > .slider:hover,
+    #panelContainer > #panelDivider:hover,
+    #panelDivider:hover,
+    #panelContainer.is-resizing #panelDivider,
+    #panelContainer.is-resizing .slider {
+        background-color: #3b82f6 !important;
+        border-color: #2563eb !important;
+    }
+
+    /* Modern Pill-Shaped Drag Handle (Centered Vertically & Horizontally Over the 5px Line) */
+    #panelDivider .slider-handle,
+    .slider .slider-handle {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 22px !important;
+        height: 44px !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 9999px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+        cursor: col-resize !important;
+        z-index: 102 !important;
+        transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease !important;
+    }
+
+    #panelDivider:hover .slider-handle,
+    .slider:hover .slider-handle,
+    #panelContainer.is-resizing .slider-handle {
+        border-color: #3b82f6 !important;
+        background-color: #eff6ff !important;
+        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.28) !important;
+        transform: translate(-50%, -50%) scale(1.08) !important;
+    }
+
+    .slider-handle .grip-icon {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 3px !important;
+        color: #64748b !important;
+        pointer-events: none !important;
+        transition: color 0.15s ease !important;
+    }
+
+    .slider-handle .grip-icon i {
+        font-size: 8.5px !important;
+        transform: scaleY(1.3) !important;
+    }
+
+    #panelDivider:hover .slider-handle .grip-icon,
+    .slider:hover .slider-handle .grip-icon,
+    #panelContainer.is-resizing .slider-handle .grip-icon {
+        color: #2563eb !important;
+    }
+</style>
 
 <style>
     .lg-comment {
@@ -140,6 +292,9 @@
         padding: 8px 16px;
         border-top-left-radius: 6px !important;
         border-top-right-radius: 6px !important;
+        color: brown;
+        font-size: 18px;
+        font-weight: bold;
     }
 
     .Mytextarea {
@@ -163,8 +318,8 @@
             height: 0;
         }
 
-    /* The slider */
-    .slider {
+    /* The slider for toggle switch */
+    .switch .slider {
         position: absolute;
         cursor: pointer;
         top: 0;
@@ -176,7 +331,7 @@
         transition: .4s;
     }
 
-        .slider:before {
+        .switch .slider:before {
             position: absolute;
             content: "";
             height: 26px;
@@ -188,26 +343,26 @@
             transition: .4s;
         }
 
-    input:checked + .slider {
+    .switch input:checked + .slider {
         background-color: #2196F3;
     }
 
-    input:focus + .slider {
+    .switch input:focus + .slider {
         box-shadow: 0 0 1px #2196F3;
     }
 
-    input:checked + .slider:before {
+    .switch input:checked + .slider:before {
         -webkit-transform: translateX(26px);
         -ms-transform: translateX(26px);
         transform: translateX(26px);
     }
 
-    /* Rounded sliders */
-    .slider.round {
+    /* Rounded switch sliders */
+    .switch .slider.round {
         border-radius: 34px;
     }
 
-        .slider.round:before {
+        .switch .slider.round:before {
             border-radius: 50%;
         }
 
@@ -385,21 +540,452 @@
         color: #fff;
     }
 
-    .slider.round {
+    .switch .slider.round {
         display: none;
     }
 
+    /* ============================================================
+       REFINED FILE COVER DOSSIER STYLING (MATCHING REFERENCE DESIGN)
+       ============================================================ */
     .brownfile {
-        background-color: #d0bc7ff2;
-        border: 1px solid #dee2e6;
-        border: 1px solid #000000;
-        border-width: 3px 3px 3px 3px;
-        padding: 10px;
+        background-color: #ceb87d !important;
+        border: 1.5px solid #2d261a !important;
+        border-radius: 12px !important;
+        padding: 24px 22px !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08) !important;
+        color: #1a1a1a !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        box-sizing: border-box !important;
     }
 
-    #DocumentTypeNameD {
-        background: #d0bc7ff2;
-        color: black;
+    .brownfile .act_lft_fst,
+    .brownfile .widget-header,
+    .brownfile .widget-main {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .brownfile .ref_box {
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* Emblem Logo & Header Spacing */
+    .brownfile img.logo-img_file {
+        display: block !important;
+        margin: 0 auto 10px auto !important;
+        max-height: 64px !important;
+        width: auto !important;
+        padding: 0 !important;
+    }
+
+    .brownfile .Brand-name {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        text-align: center !important;
+        color: #1c1917 !important;
+        letter-spacing: -0.2px !important;
+        margin: 0 !important;
+    }
+
+    .brownfile h2.Brand-name:first-of-type,
+    .brownfile .col-12 h2.Brand-name:first-child {
+        font-size: 22px !important;
+        font-weight: 800 !important;
+        margin-top: 6px !important;
+        margin-bottom: 6px !important;
+        line-height: 1.25 !important;
+    }
+
+    .brownfile .col-12 h2.Brand-name {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        margin-top: 4px !important;
+        margin-bottom: 2px !important;
+        line-height: 1.25 !important;
+    }
+
+    .brownfile .header-block-container {
+        margin-bottom: 24px !important;
+    }
+
+    /* Uppercase Muted Field Labels */
+    .brownfile .fotm_lbl {
+        font-size: 11.5px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.6px !important;
+        color: #3b311b !important;
+        margin-bottom: 4px !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    /* Plain Text Values with Thin Horizontal Dividers (No Boxed Borders) */
+    .brownfile .txt_value {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(60, 48, 20, 0.25) !important;
+        border-radius: 0 !important;
+        padding: 3px 0 7px 0 !important;
+        margin-bottom: 16px !important;
+        font-size: 14.5px !important;
+        font-weight: 600 !important;
+        color: #111827 !important;
+        min-height: 30px !important;
+        height: auto !important;
+        box-shadow: none !important;
+        display: flex !important;
+        align-items: center !important;
+        word-break: break-word !important;
+    }
+
+    /* Subject Section Styling */
+    .brownfile #subjectboxoldD,
+    .brownfile #subjectboxD {
+        margin-bottom: 16px !important;
+    }
+
+    .brownfile #subjectboxoldD .txt_value,
+    .brownfile .txt_value.in_txt_area {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(60, 48, 20, 0.25) !important;
+        border-radius: 0 !important;
+        padding: 3px 0 8px 0 !important;
+        margin-bottom: 16px !important;
+        font-size: 14.5px !important;
+        font-weight: 600 !important;
+        color: #111827 !important;
+        line-height: 1.55 !important;
+        box-shadow: none !important;
+        display: block !important;
+    }
+
+    /* Dropdown Fields (Type) - Minimal & Borderless by default */
+    .brownfile #divdoc .bgcolor {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .brownfile #DocumentTypeNameD,
+    .brownfile select#DocumentTypeNameD {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        border-bottom: 1px solid rgba(60, 48, 20, 0.25) !important;
+        padding: 3px 0 7px 0 !important;
+        margin-bottom: 16px !important;
+        font-size: 14.5px !important;
+        font-weight: 600 !important;
+        color: #111827 !important;
+        width: 100% !important;
+        min-height: 30px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        cursor: pointer !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        transition: background 0.15s ease, border-color 0.15s ease !important;
+    }
+
+    .brownfile #DocumentTypeNameD:hover,
+    .brownfile #DocumentTypeNameD:focus,
+    .brownfile select#DocumentTypeNameD:hover,
+    .brownfile select#DocumentTypeNameD:focus {
+        background: rgba(255, 255, 255, 0.22) !important;
+        border-bottom: 1.5px solid #1a1a1a !important;
+    }
+
+    .brownfile #DocumentTypeNameD option {
+        background: #ffffff !important;
+        color: #111827 !important;
+    }
+
+    /* Clean up text inputs or textareas if shown */
+    .brownfile input[type="text"],
+    .brownfile textarea {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(60, 48, 20, 0.25) !important;
+        border-radius: 0 !important;
+        padding: 3px 0 7px 0 !important;
+        margin-bottom: 16px !important;
+        font-size: 14.5px !important;
+        font-weight: 600 !important;
+        color: #111827 !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .brownfile input[type="text"]:focus,
+    .brownfile textarea:focus {
+        border-bottom: 1.5px solid #1a1a1a !important;
+    }
+
+    /* Attached Enclosure links */
+    .brownfile a#wreqeqwe {
+        color: #1a1a1a !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        text-decoration: underline !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin-top: 4px !important;
+    }
+
+    /* ============================================================
+       AGENDA PANEL TOOLBAR BUTTONS & FILE-CHIP STYLING (SAAS DESIGN)
+       ============================================================ */
+    .paneltwo #Reference .btn,
+    .paneltwo #Reference .AgendaRefDetail,
+    .agenda-toolbar-top .btn,
+    .agenda-toolbar-secondary .btn {
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 0 16px !important;
+        border-radius: 6px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.1px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 7px !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        transition: all 0.15s ease-in-out !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+    }
+
+    .paneltwo #Reference .btn i,
+    .agenda-toolbar-top .btn i,
+    .agenda-toolbar-secondary .btn i {
+        font-size: 13.5px !important;
+        margin: 0 !important;
+    }
+
+    /* Primary Action: Add items from Inbox (Solid Royal Blue) */
+    #includedivbutton,
+    .paneltwo #includedivbutton {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+    }
+
+    #includedivbutton:hover,
+    .paneltwo #includedivbutton:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25) !important;
+        transform: translateY(-1px) !important;
+        color: #ffffff !important;
+    }
+
+    #includedivbutton:active,
+    .paneltwo #includedivbutton:active {
+        background-color: #1e40af !important;
+        transform: translateY(0) !important;
+        box-shadow: none !important;
+    }
+
+    /* Utility Action: List (Ghost/Neutral SaaS Style) */
+    .agenda-btn-list,
+    .paneltwo #Reference a.agenda-btn-list,
+    .paneltwo #Reference a[href*="PDFPreviewReportSttausReportt"] {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+    }
+
+    .agenda-btn-list i,
+    .paneltwo #Reference a[href*="PDFPreviewReportSttausReportt"] i {
+        color: #ef4444 !important;
+    }
+
+    .agenda-btn-list:hover,
+    .paneltwo #Reference a[href*="PDFPreviewReportSttausReportt"]:hover {
+        background-color: #f8fafc !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+        transform: translateY(-1px) !important;
+        text-decoration: none !important;
+    }
+
+    .agenda-btn-list:active,
+    .paneltwo #Reference a[href*="PDFPreviewReportSttausReportt"]:active {
+        background-color: #f1f5f9 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* Secondary Action: Preview Draft Agenda (Soft Emerald Pastel Fill) */
+    #previewGeneratePdf,
+    .paneltwo #previewGeneratePdf {
+        background-color: #ecfdf5 !important;
+        border: 1px solid #a7f3d0 !important;
+        color: #047857 !important;
+    }
+
+    #previewGeneratePdf i,
+    .paneltwo #previewGeneratePdf i {
+        color: #059669 !important;
+    }
+
+    #previewGeneratePdf:hover,
+    .paneltwo #previewGeneratePdf:hover {
+        background-color: #d1fae5 !important;
+        border-color: #6ee7b7 !important;
+        color: #065f46 !important;
+        box-shadow: 0 3px 8px rgba(5, 150, 105, 0.15) !important;
+        transform: translateY(-1px) !important;
+        text-decoration: none !important;
+    }
+
+    #previewGeneratePdf:active,
+    .paneltwo #previewGeneratePdf:active {
+        background-color: #a7f3d0 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* Secondary Action: Generate Covering Letter (Soft Amber Pastel Fill) */
+    #GeneratePdf_Covering,
+    .paneltwo #GeneratePdf_Covering {
+        background-color: #fffbeb !important;
+        border: 1px solid #fde68a !important;
+        color: #b45309 !important;
+    }
+
+    #GeneratePdf_Covering i,
+    .paneltwo #GeneratePdf_Covering i {
+        color: #d97706 !important;
+    }
+
+    #GeneratePdf_Covering:hover,
+    .paneltwo #GeneratePdf_Covering:hover {
+        background-color: #fef3c7 !important;
+        border-color: #fcd34d !important;
+        color: #92400e !important;
+        box-shadow: 0 3px 8px rgba(217, 119, 6, 0.15) !important;
+        transform: translateY(-1px) !important;
+        text-decoration: none !important;
+    }
+
+    #GeneratePdf_Covering:active,
+    .paneltwo #GeneratePdf_Covering:active {
+        background-color: #fde68a !important;
+        transform: translateY(0) !important;
+    }
+
+    /* Approve Agenda Button (Soft Rose Fill) */
+    #GeneratePdf,
+    .paneltwo #GeneratePdf {
+        background-color: #fef2f2 !important;
+        border: 1px solid #fecaca !important;
+        color: #b91c1c !important;
+    }
+
+    #GeneratePdf i,
+    .paneltwo #GeneratePdf i {
+        color: #dc2626 !important;
+    }
+
+    #GeneratePdf:hover,
+    .paneltwo #GeneratePdf:hover {
+        background-color: #fee2e2 !important;
+        border-color: #fca5a5 !important;
+        color: #991b1b !important;
+        box-shadow: 0 3px 8px rgba(220, 38, 38, 0.15) !important;
+        transform: translateY(-1px) !important;
+        text-decoration: none !important;
+    }
+
+    /* Document Tag / File-Chip: Approved Agenda Pdf & Covering Letters */
+    .agenda-file-chip,
+    .paneltwo .custom-cover-btn-sm {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 6px 14px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        text-decoration: none !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+
+    .agenda-file-chip:hover,
+    .paneltwo .custom-cover-btn-sm:hover {
+        background: #eff6ff !important;
+        border-color: #bfdbfe !important;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12) !important;
+        transform: translateY(-1px) !important;
+        text-decoration: none !important;
+    }
+
+    .agenda-file-chip .file-chip-icon,
+    .paneltwo .custom-cover-btn-sm i {
+        font-size: 15px !important;
+        color: #ef4444 !important;
+        margin: 0 !important;
+    }
+
+    .agenda-file-chip .file-chip-title,
+    .paneltwo .custom-cover-btn-sm span {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        line-height: 1 !important;
+    }
+
+    .agenda-file-chip:hover .file-chip-title,
+    .paneltwo .custom-cover-btn-sm:hover span {
+        color: #1d4ed8 !important;
+    }
+
+    .agenda-file-chip .file-chip-badge {
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+        padding: 2px 5px !important;
+        border-radius: 4px !important;
+        letter-spacing: 0.5px !important;
+        line-height: 1 !important;
+    }
+
+    /* Fix empty light-blue bar (.count-header) */
+    .paneltwo .count-header {
+        background: transparent !important;
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 6px 0 12px 0 !important;
+        border: none !important;
+    }
+
+    .paneltwo #btnfreeze {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        height: 34px !important;
+        padding: 0 16px !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
     }
 
     .rotingtxt {
@@ -1104,25 +1690,17 @@
                                                             </div>*@
 
 
-                                                        <div class="row">
-                                                            <div class="col-5">
-
-                                                            </div>
-                                                            <div class="col-2">
-                                                                <img class="logo-img_file" src="~/Assets/Home_Images/punjab-logo.png">
-                                                            </div>
-                                                            <div class="col-12">
-                                                                <h2 class="mb-0 Brand-name fw-bold" style="margin-top: 30px; text-align:center; font-size: 24px;"> <span class=""> Government of Punjab </span> </h2>
-                                                            </div>
-                                                        </div>
-
-
-
-
-                                                        <div class="col-12">
-                                                            <h2 class="mb-0 Brand-name fw-bold" style="margin-top: 10px; text-align:center; font-size: 18px;"> <span class=""> @Model.FromDept </span> </h2>
-                                                            <h2 class="mb-0 Brand-name fw-bold" style="margin-top: 10px; text-align:center; font-size: 18px;"> <span class="">@Model.FromOffice </span> </h2>
-
+                                                        <div class="col-12 text-center header-block-container mb-4">
+                                                            <img class="logo-img_file" src="~/Assets/Home_Images/punjab-logo.png" alt="Emblem of Punjab">
+                                                            <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 22px;">Government of Punjab</h2>
+                                                            @if (!string.IsNullOrEmpty(Model.FromDept))
+                                                            {
+                                                                <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 17px; margin-top: 4px;">@Model.FromDept</h2>
+                                                            }
+                                                            @if (!string.IsNullOrEmpty(Model.FromOffice))
+                                                            {
+                                                                <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 16px; margin-top: 2px;">@Model.FromOffice</h2>
+                                                            }
                                                         </div>
 
 
@@ -1460,6 +2038,13 @@
 
                         </div>
                     </div>
+                    <div id="panelDivider" class="slider" title="Drag to resize panels (Double-click to reset)">
+                        <div class="slider-handle">
+                            <span class="grip-icon">
+                                <i class="fa fa-pause"></i>
+                            </span>
+                        </div>
+                    </div>
                     <div class="panel paneltwo">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3">
 
@@ -1539,175 +2124,110 @@
 
 
 
-                                    <div class="tab-pane fade show table-responsive active" id="Reference" role="tabpanel" aria-labelledby="ref-tab">
+                                    <div class="tab-pane fade p-2 show table-responsive active" id="Reference" role="tabpanel" aria-labelledby="ref-tab">
 
 
 
-                                        <div class="flex-yu" style="margin-left:10px; float:right">
-                                            @if (Model.AgendaApprove == "1" && Model.ProceedingApprove == "0")
-                                            {
-                                                <a href="@Url.Action("PDFPreviewReportSttausReportt", "References", new { refid = @Model.RefId,DocType=@Model.DocumentTypeName  })" class="btn btn-primary" style="font-size: 13px;" target="_blank">
-
-                                                    <i class="fa fa-file-pdf me-1"></i>  List
-                                                </a>
-                                            }
-                                            else
-                                            {
-                                                <a href="@Url.Action("PDFPreviewReportSttausReportt", "References", new { refid = @Model.RefId,DocType=@Model.DocumentTypeName  })" class="btn btn-primary" style="font-size: 13px;" target="_blank">
-
-                                                    <i class="fa fa-file-pdf me-1"></i> List
-                                                </a>
-                                            }
-                                            @if (Model.AgendaApprove == "1" && Model.eBookFile == "1" && Model.LinkList.Count() == 0)
-                                            {
-                                                <button class="btn btn-info text-white me-2" type="button" id="btnCopy" title="Create Proceeding File" onclick="return SaveCopyForProceeding(@Model.RefId)" tabindex="4" style="float: right;">
-                                                    <i class="fas fa-plus me-1"></i>
-                                                    Proceeding File
-                                                </button>
-                                            }
-
-                                            @if (Model.isPartFile == "0")
-                                            {
-                                                <button class="btn btn-info text-white me-2" type="button" id="btnCopy" title="Create Part File" onclick="return SaveCopyFromSent(@Model.RefId)" tabindex="4" style="float: right;">
-                                                    <i class="fas fa-plus me-1"></i>
-                                                    Part File
-                                                </button>
-
-                                            }
-
-
-                                        </div>
-                                        <br />
-
-                                        <div class="row">
-                                            <div class="col-md-4"></div>
-                                            @if (Model.HideUpdate == "Yes")
-                                            {
-
-                                            }
-                                            else
-                                            {
-                                                if (Model.DocmentType == "25")
+                                        <div class="agenda-toolbar-top d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                                @if (Model.HideUpdate != "Yes")
                                                 {
-                                                    <div class="col-md-2">
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <input type="button" class="btn btn-danger AgendaRefDetail" id="includeMeeting" onclick="return IncludeMeeting()" value="Meeting" />
-                                                        </div>
-                                                    </div>
+                                                    if (Model.DocmentType == "25")
+                                                    {
+                                                        <input type="button" class="btn btn-danger AgendaRefDetail" id="includeMeeting" onclick="return IncludeMeeting()" value="Meeting" />
+                                                    }
+                                                    else if (Model.DocmentType == "46")
+                                                    {
+                                                        <input type="button" class="btn btn-danger AgendaRefDetail" id="AddNewLetter" onclick="return addnewletter()" value="Add Audit Para Number" />
+                                                    }
 
+                                                    var usertype = CurrentSession.SubUserTypeID;
+                                                    if (SiteName == "PunjabAssembly" && usertype == "2")
+                                                    {
+                                                        usertype = "1";
+                                                    }
+
+                                                    if (usertype == "1")
+                                                    {
+                                                        <input type="button" class="btn btn-primary AgendaRefDetail" id="includedivbutton" onclick="return Includediv()" value="Add items from Inbox" />
+                                                    }
                                                 }
-                                                else if (Model.DocmentType == "46")
+                                            </div>
+
+                                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                                @if (Model.AgendaApprove == "1" && Model.ProceedingApprove == "0")
                                                 {
-                                                    <div class="col-md-2">
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <input type="button" class="btn btn-danger AgendaRefDetail" id="AddNewLetter" onclick="return addnewletter()" value="Add Audit Para Number" />
-                                                        </div>
-                                                    </div>
-                                                }
-
-                                                var usertype = CurrentSession.SubUserTypeID;
-
-                                                if (SiteName == "PunjabAssembly" && usertype == "2")
-                                                {
-                                                    usertype = "1";
-                                                }
-
-                                                if (usertype == "1")
-                                                {
-                                                    <div class="col-md-3">
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <input type="button" class="btn btn-primary AgendaRefDetail" id="includedivbutton" onclick="return Includediv()" value="Add items from Inbox" />
-
-                                                        </div>
-                                                    </div>
+                                                    <a href="@Url.Action("PDFPreviewReportSttausReportt", "References", new { refid = @Model.RefId,DocType=@Model.DocumentTypeName  })" class="btn btn-primary agenda-btn-list" target="_blank">
+                                                        <i class="fa fa-file-pdf me-1"></i> List
+                                                    </a>
                                                 }
                                                 else
                                                 {
-
-
-
-
-
+                                                    <a href="@Url.Action("PDFPreviewReportSttausReportt", "References", new { refid = @Model.RefId,DocType=@Model.DocumentTypeName  })" class="btn btn-primary agenda-btn-list" target="_blank">
+                                                        <i class="fa fa-file-pdf me-1"></i> List
+                                                    </a>
                                                 }
-
-
-
-                                            }
+                                                @if (Model.AgendaApprove == "1" && Model.eBookFile == "1" && Model.LinkList.Count() == 0)
+                                                {
+                                                    <button class="btn btn-info text-white" type="button" id="btnCopy" title="Create Proceeding File" onclick="return SaveCopyForProceeding(@Model.RefId)" tabindex="4">
+                                                        <i class="fas fa-plus me-1"></i> Proceeding File
+                                                    </button>
+                                                }
+                                                @if (Model.isPartFile == "0")
+                                                {
+                                                    <button class="btn btn-info text-white" type="button" id="btnCopyPart" title="Create Part File" onclick="return SaveCopyFromSent(@Model.RefId)" tabindex="4">
+                                                        <i class="fas fa-plus me-1"></i> Part File
+                                                    </button>
+                                                }
+                                            </div>
                                         </div>
-
-
 
                                         <div class="row">
                                             @if (CurrentSession.ApprovalAuthority == "1")
                                             {
-                                                <br />
-                                                <div id="AgendaPdf" class="" style="display:none">
-
-
+                                                <div id="AgendaPdf" class="agenda-toolbar-secondary d-flex align-items-center flex-wrap gap-2 mb-3" style="display:none">
                                                     @if (Model.AgendaApprove == "0")
                                                     {
-
-                                                        <div>
-
-
-                                                            <a href="@Url.Action("ApprovedAgendaHtmlpreview", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-success" id="previewGeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return PreviewGeneratePdf()">
-                                                                <i class="fa fa-file-pdf me-1"></i> Preview Draft Agenda
-                                                            </a>
-
-                                                            <a href="@Url.Action("ApprovedAgendaHtmlNew", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-warning" id="GeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return GeneratePdf(false)">
-                                                                <i class="fa fa-file-pdf me-1"></i> Approve Agenda
-                                                            </a>
-                                                        </div>
-
-
-
-
-                                                    }
-                                                    else if (Model.AgendaApprove == "1")
-                                                    {
-                                                        <br />
-                                                        <a href="@Url.Action("ApprovedAgendaHtmlpreview", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-success" id="previewGeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return PreviewGeneratePdf()">
+                                                        <a href="@Url.Action("ApprovedAgendaHtmlpreview", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-success" id="previewGeneratePdf" target="_blank" title="View Approved Agenda Report" onclick="return PreviewGeneratePdf()">
                                                             <i class="fa fa-file-pdf me-1"></i> Preview Draft Agenda
                                                         </a>
 
-                                                        @*<a href="@Url.Action("ApprovedAgendaHtmlNew", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-warning" id="GeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return GeneratePdf(false)">
-                            <i class="fa fa-file-pdf me-1"></i> Approve Agenda
-                        </a>*@
+                                                        <a href="@Url.Action("ApprovedAgendaHtmlNew", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-warning" id="GeneratePdf" target="_blank" title="View Approved Agenda Report" onclick="return GeneratePdf(false)">
+                                                            <i class="fa fa-file-pdf me-1"></i> Approve Agenda
+                                                        </a>
+                                                    }
+                                                    else if (Model.AgendaApprove == "1")
+                                                    {
+                                                        <a href="@Url.Action("ApprovedAgendaHtmlpreview", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-success" id="previewGeneratePdf" target="_blank" title="View Approved Agenda Report" onclick="return PreviewGeneratePdf()">
+                                                            <i class="fa fa-file-pdf me-1"></i> Preview Draft Agenda
+                                                        </a>
+
                                                         if (Model.AgendaApprove == "1" && Model.DocmentType == "14")
                                                         {
-
-                                                            <a href="@Url.Action("UpdateCoverLetter", "Agenda", new { AgendaId = Model.agendaId,DocType= @Model.DocumentTypeName})" class="btn btn-warning" id="GeneratePdf_Covering" target="_blank" title="Generate Covering Letter" style="font-size: 13px;">
+                                                            <a href="@Url.Action("UpdateCoverLetter", "Agenda", new { AgendaId = Model.agendaId,DocType= @Model.DocumentTypeName})" class="btn btn-warning" id="GeneratePdf_Covering" target="_blank" title="Generate Covering Letter">
                                                                 <i class="fa fa-file-pdf me-1"></i> Generate Covering Letter
                                                             </a>
                                                         }
-
                                                     }
-                                                    <div class="container my-3">
-                                                        <div class="row">
-                                                            @if (Model._CoveringLetterList != null && Model._CoveringLetterList.Count > 0)
-                                                            {
+
+                                                    @if (Model._CoveringLetterList != null && Model._CoveringLetterList.Count > 0)
+                                                    {
+                                                        <div class="d-flex align-items-center flex-wrap gap-2 mt-2 w-100">
+                                                            @{
                                                                 int i = 1;
                                                                 foreach (var item in Model._CoveringLetterList)
                                                                 {
-                                                                    //var label = $"Covering Letter {i}";
                                                                     var label = string.Format("Covering Letter {0}", i);
-                                                                    <div class="col-auto mb-0">
-                                                                        <a href="@item.PdfPath" target="_blank"
-                                                                           class="d-inline-flex align-items-center shadow-sm rounded custom-cover-btn-sm"
-                                                                           style="text-decoration: none;">
-                                                                            <i class="fa fa-file-pdf-o text-danger mr-2" style="font-size:16px;"></i>
-                                                                            <span class="text-dark small">@label</span>
-                                                                        </a>
-                                                                    </div>
+                                                                    <a href="@item.PdfPath" target="_blank" class="agenda-file-chip" style="text-decoration: none;">
+                                                                        <i class="fa fa-file-pdf-o text-danger mr-1" style="font-size:15px;"></i>
+                                                                        <span class="file-chip-title">@label</span>
+                                                                        <span class="file-chip-badge">PDF</span>
+                                                                    </a>
                                                                     i++;
                                                                 }
                                                             }
-
                                                         </div>
-                                                    </div>
-
-
-
+                                                    }
                                                 </div>
 
                                                 if (Model.AgendaApprove == "1" && (Model.ProceedingApprove == "0" || Model.ProceedingApprove == "1"))
@@ -2012,13 +2532,13 @@
 
                                             else if (CurrentSession.SubUserTypeID == "1")  //House Secretary
                                             {
-                                                <div id="AgendaPdf" class="" style="display:none">
+                                                <div id="AgendaPdf" class="agenda-toolbar-secondary d-flex align-items-center flex-wrap gap-2 mb-3" style="display:none">
 
 
                                                     @if (Model.AgendaApprove == "0")
                                                     {
 
-                                                        <div>
+                                                        <div class="d-flex align-items-center flex-wrap gap-2">
 
 
                                                             <a href="@Url.Action("ApprovedAgendaHtmlpreview", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-success" id="previewGeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return PreviewGeneratePdf()">
@@ -2043,46 +2563,42 @@
                                                     }
                                                     else if (Model.AgendaApprove == "1")
                                                     {
-                                                        <br />
-                                                        <a href="@Url.Action("ApprovedAgendaHtmlpreview", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-success" id="previewGeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return PreviewGeneratePdf()">
-                                                            <i class="fa fa-file-pdf me-1"></i> Preview Draft Agenda
-                                                        </a>
-
-                                                        <a href="@Url.Action("ApprovedAgendaHtmlNew", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-warning" id="GeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return GeneratePdf(false)">
-                                                            <i class="fa fa-file-pdf me-1"></i> Approve Agenda
-                                                        </a>
-                                                        if (Model.AgendaApprove == "1" && Model.DocmentType == "14")
-                                                        {
-
-                                                            <a href="@Url.Action("UpdateCoverLetter", "Agenda", new { AgendaId = Model.agendaId,DocType= @Model.DocumentTypeName})" class="btn btn-warning" id="GeneratePdf_Covering" target="_blank" title="Generate Covering Letter" style="font-size: 13px;">
-                                                                <i class="fa fa-file-pdf me-1"></i> Generate Covering Letter
+                                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                                            <a href="@Url.Action("ApprovedAgendaHtmlpreview", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-success" id="previewGeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return PreviewGeneratePdf()">
+                                                                <i class="fa fa-file-pdf me-1"></i> Preview Draft Agenda
                                                             </a>
-                                                        }
+
+                                                            <a href="@Url.Action("ApprovedAgendaHtmlNew", "Agenda", new { AgendaId = Model.agendaId,DocType=@Model.DocumentTypeName })" class="btn btn-warning" id="GeneratePdf" target="_blank" title="View Approved Agenda Report" style="font-size: 13px;" onclick="return GeneratePdf(false)">
+                                                                <i class="fa fa-file-pdf me-1"></i> Approve Agenda
+                                                            </a>
+                                                            @if (Model.AgendaApprove == "1" && Model.DocmentType == "14")
+                                                            {
+
+                                                                <a href="@Url.Action("UpdateCoverLetter", "Agenda", new { AgendaId = Model.agendaId,DocType= @Model.DocumentTypeName})" class="btn btn-warning" id="GeneratePdf_Covering" target="_blank" title="Generate Covering Letter" style="font-size: 13px;">
+                                                                    <i class="fa fa-file-pdf me-1"></i> Generate Covering Letter
+                                                                </a>
+                                                            }
+                                                        </div>
 
                                                     }
-                                                    <div class="container my-3">
-                                                        <div class="row">
-                                                            @if (Model._CoveringLetterList != null && Model._CoveringLetterList.Count > 0)
-                                                            {
+                                                    @if (Model._CoveringLetterList != null && Model._CoveringLetterList.Count > 0)
+                                                    {
+                                                        <div class="d-flex align-items-center flex-wrap gap-2 mt-2 w-100">
+                                                            @{
                                                                 int i = 1;
                                                                 foreach (var item in Model._CoveringLetterList)
                                                                 {
-                                                                    //var label = $"Covering Letter {i}";
                                                                     var label = string.Format("Covering Letter {0}", i);
-                                                                    <div class="col-auto mb-0">
-                                                                        <a href="@item.PdfPath" target="_blank"
-                                                                           class="d-inline-flex align-items-center shadow-sm rounded custom-cover-btn-sm"
-                                                                           style="text-decoration: none;">
-                                                                            <i class="fa fa-file-pdf-o text-danger mr-2" style="font-size:16px;"></i>
-                                                                            <span class="text-dark small">@label</span>
-                                                                        </a>
-                                                                    </div>
+                                                                    <a href="@item.PdfPath" target="_blank" class="agenda-file-chip" style="text-decoration: none;">
+                                                                        <i class="fa fa-file-pdf-o text-danger mr-1" style="font-size:15px;"></i>
+                                                                        <span class="file-chip-title">@label</span>
+                                                                        <span class="file-chip-badge">PDF</span>
+                                                                    </a>
                                                                     i++;
                                                                 }
                                                             }
-
                                                         </div>
-                                                    </div>
+                                                    }
 
 
 
@@ -2236,12 +2752,13 @@
 
                                             @if (Model.AgendaPdf != "")
                                             {
-                                                <div class="container my-3">
+                                                <div class="agenda-doc-chip-container my-2">
                                                     <a href="@Model.AgendaPdf" target="_blank"
-                                                       class="d-inline-flex align-items-center px-2 py-1 shadow-sm rounded custom-cover-btn-sm"
+                                                       class="agenda-file-chip"
                                                        style="text-decoration: none;">
-                                                        <i class="fa fa-file-pdf-o text-danger mr-2" style="font-size:16px;"></i>
-                                                        <span class="text-dark small">Approved Agenda Pdf</span>
+                                                        <i class="fa fa-file-pdf-o text-danger mr-1" style="font-size:15px;"></i>
+                                                        <span class="file-chip-title">Approved Agenda Pdf</span>
+                                                        <span class="file-chip-badge">PDF</span>
                                                     </a>
                                                 </div>
                                             }
@@ -2288,10 +2805,14 @@
 
                                         }
 
-
-                                        <br />
-
-
+                                        @*
+                                            Agenda Table Title (#DocumentTypename) & Save / Freeze Button (#btnfreeze):
+                                            Previously had an empty light-blue bar artifact because .count-header has a global style in styleheader.css:
+                                            `background: var(--bg-light-blue); min-height: 57px;`.
+                                            When #DocumentTypename is empty and #btnfreeze is hidden via @hideclass, this rendered an empty blue bar.
+                                            Scoped .paneltwo .count-header now sets `background: transparent; min-height: auto;` so it remains invisible
+                                            when empty and displays cleanly without box artifacts when active.
+                                        *@
                                         <div class="count-header p-2 row">
                                             <div class="row align-items-center justify-content-between">
                                                 <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12 p-0">
@@ -2375,10 +2896,6 @@
 
 
                         </div>
-                        <span class="slider">
-                            <span class="sliderLeft" onclick="Swipe(1)"><i class="fas fa-chevron-circle-left"></i> </span>
-                            <span class="sliderRight" onclick="Swipe(2)"><i class="fas fa-chevron-circle-right"></i></span>
-                        </span>
                         <span id="myBtn" onclick="ScrollToTop()"><i class="fas fa-chevron-circle-up"></i></span>
                     </div>
                 </div>
@@ -6382,19 +6899,119 @@ $.ajax({
 
     function Swipe(val) {
         if (val == 1) {
-            $(".panelone").css("width", "0%");
-            $(".paneltwo").css("width", "100%");
-            $(".panelone").hide();
+            $(".panelone").css({ "width": "0%", "flex-basis": "0%", "max-width": "0%" }).hide();
+            $(".paneltwo").css({ "width": "100%", "flex-basis": "100%", "max-width": "100%" }).show();
             $("#floatButton").css("left", "2%");
 
         } else {
-            $(".panelone").css("width", "35%");
-            $(".paneltwo").css("width", "65%");
-            $(".panelone").show();
-            $("#floatButton").css("left", "35%");
+            $(".panelone").css({ "width": "40%", "flex-basis": "40%", "max-width": "40%" }).show();
+            $(".paneltwo").css({ "width": "60%", "flex-basis": "60%", "max-width": "60%" }).show();
+            $("#floatButton").css("left", "40%");
         }
         $("#PannelId").val(val);
     }
+
+    function initDispatchPanelSplitter() {
+        var $divider = $("#panelDivider");
+        var $container = $("#panelContainer");
+        var $panelOne = $container.find(".panel.panelone, .panelone");
+        var $panelTwo = $container.find(".panel.paneltwo, .paneltwo");
+
+        if (!$divider.length || !$container.length) {
+            return;
+        }
+
+        // Clean any leftover inline display, height, or flex from panels
+        $panelOne.add($panelTwo).css({ "display": "", "height": "" });
+
+        // Double-click to reset to default 40% / 60% split
+        $divider.off("dblclick.panelSplitter").on("dblclick.panelSplitter", function (e) {
+            e.preventDefault();
+            $panelOne.css({ "width": "40%", "flex-basis": "40%", "max-width": "40%" }).show();
+            $panelTwo.css({ "width": "60%", "flex-basis": "60%", "max-width": "60%" }).show();
+            $("#floatButton").css("left", "40%");
+            $("#PannelId").val(2);
+        });
+
+        // Unbind any legacy or previous drag handlers
+        $divider.off("mousedown.panelSplitter touchstart.panelSplitter");
+
+        $divider.on("mousedown.panelSplitter touchstart.panelSplitter", function (e) {
+            e.preventDefault();
+            var isDragging = true;
+
+            $container.addClass("is-resizing");
+            $divider.addClass("is-resizing");
+            $("iframe").css("pointer-events", "none");
+            $("body").css({ "user-select": "none", "cursor": "col-resize" });
+
+            var containerOffset = $container.offset().left;
+            var containerWidth = $container.width();
+
+            function onMove(evt) {
+                if (!isDragging) return;
+
+                var clientX = evt.pageX;
+                if (typeof clientX === "undefined" && evt.originalEvent && evt.originalEvent.touches && evt.originalEvent.touches.length > 0) {
+                    clientX = evt.originalEvent.touches[0].pageX;
+                }
+                if (typeof clientX === "undefined" || isNaN(clientX)) return;
+
+                var currentOffset = $container.offset().left;
+                var currentWidth = $container.outerWidth() || containerWidth;
+                var relativeX = clientX - currentOffset;
+                var pct = (relativeX / currentWidth) * 100;
+
+                // Enforce reasonable min-width boundaries (min 18% / 250px left, min 22% / 280px right)
+                var minLeftPct = Math.max(18, (250 / currentWidth) * 100);
+                var maxLeftPct = Math.min(80, ((currentWidth - 280) / currentWidth) * 100);
+
+                if (pct < minLeftPct) pct = minLeftPct;
+                if (pct > maxLeftPct) pct = maxLeftPct;
+
+                // Real-time smooth updates to width and flex-basis
+                $panelOne.css({
+                    "width": pct + "%",
+                    "flex-basis": pct + "%",
+                    "max-width": pct + "%"
+                }).show();
+
+                $panelTwo.css({
+                    "width": (100 - pct) + "%",
+                    "flex-basis": (100 - pct) + "%",
+                    "max-width": (100 - pct) + "%"
+                }).show();
+
+                $("#floatButton").css("left", pct + "%");
+                $("#PannelId").val(2);
+            }
+
+            function onEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+
+                $container.removeClass("is-resizing");
+                $divider.removeClass("is-resizing");
+                $("iframe").css("pointer-events", "");
+                $("body").css({ "user-select": "", "cursor": "" });
+
+                $(document).off("mousemove.dispatchSplitter touchmove.dispatchSplitter", onMove);
+                $(document).off("mouseup.dispatchSplitter touchend.dispatchSplitter", onEnd);
+            }
+
+            $(document).on("mousemove.dispatchSplitter touchmove.dispatchSplitter", onMove);
+            $(document).on("mouseup.dispatchSplitter touchend.dispatchSplitter", onEnd);
+        });
+    }
+
+    $(document).ready(function () {
+        initDispatchPanelSplitter();
+    });
+    // Also initialize immediately and after short delay in case partial view is loaded dynamically via AJAX
+    initDispatchPanelSplitter();
+    setTimeout(function () {
+        initDispatchPanelSplitter();
+    }, 150);
 
 
     function OpenCheckPopUp() {

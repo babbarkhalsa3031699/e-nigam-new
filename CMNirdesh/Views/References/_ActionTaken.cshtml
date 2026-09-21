@@ -148,6 +148,177 @@
         }
     }
 
+    .annx_div {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        padding: 18px 20px;
+        border-radius: 12px;
+        max-width: 520px;
+        width: 100%;
+        margin-top: 14px;
+    }
+
+    .annx_div .annx_header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+
+    .annx_div .annx_header i {
+        color: #2563eb;
+        font-size: 16px;
+    }
+
+    .annx_div input[type="file"] {
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 8px;
+        padding: 8px 12px;
+        background: #f8fafc;
+        width: 100%;
+        font-size: 13px;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .annx_div input[type="file"]:hover {
+        border-color: #3b82f6;
+        background: #f0f7ff;
+    }
+
+    .annx_div .btn-upload {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 7px 18px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+        transition: all 0.2s ease;
+        margin-top: 14px;
+    }
+
+    .annx_div .btn-upload:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    .annexure-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f0f7ff;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s ease;
+    }
+
+    .annexure-chip:hover {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border-color: #93c5fd;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+        text-decoration: none;
+    }
+
+    .annexure-chip i.fa-file-pdf {
+        color: #ef4444;
+        font-size: 14px;
+    }
+
+    #MultipleFile {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    #MultipleFile div[id^="afile_"] {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin: 0 !important;
+        width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    #MultipleFile div[id^="afile_"]:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+
+    #MultipleFile a[id^="afileUrl_"] {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        color: #1e40af;
+        max-width: 60%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #MultipleFile div[id^="afileSize_"] {
+        font-size: 11.5px;
+        color: #64748b;
+        background: #e2e8f0;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+        width: auto !important;
+        margin: 0 8px;
+    }
+
+    #MultipleFile span[id^="afileRemove_"] {
+        width: 22px !important;
+        height: 22px !important;
+        background: #fee2e2;
+        color: #dc2626;
+        border-radius: 50%;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: bold;
+        transition: all 0.15s ease;
+        margin-left: auto;
+        padding: 0 !important;
+        border: none;
+    }
+
+    #MultipleFile span[id^="afileRemove_"]:hover {
+        background: #dc2626;
+        color: #ffffff;
+        transform: scale(1.1);
+    }
+
     #resizer {
         width: 10px;
         cursor: col-resize;
@@ -193,7 +364,7 @@
         top: 0;
         z-index: 1000;
         background: #fff; /* important so content doesn’t overlap visually */
-        padding: 8px;
+        padding: 8px 8px 0px 0px;
         border-bottom: 1px solid #ddd;
     }
 
@@ -462,7 +633,9 @@
     }
 
     .resizer-icon {
-        font-size: 35px;
+        font-size: 13px !important;
+        color: #64748b !important;
+        transition: color 0.2s ease !important;
     }
 
     #panelContainer > .slider {
@@ -471,7 +644,7 @@
         right: auto !important;
         top: 0 !important;
         bottom: 0 !important;
-        width: 16px !important;
+        width: 14px !important;
         height: 100% !important;
         min-height: 100% !important;
         align-self: stretch !important;
@@ -480,9 +653,11 @@
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        /*z-index: 9999 !important;*/
-        margin: 0 -8px !important;
+        z-index: 100 !important;
+        margin: 0 -7px !important;
         padding: 0 !important;
+        cursor: col-resize !important;
+        user-select: none !important;
     }
 
         #panelContainer > .slider::before {
@@ -492,10 +667,18 @@
             bottom: 0 !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
-            width: 5px !important;
+            width: 4px !important;
             height: 100% !important;
-            background: #90A09C !important;
+            background: #cbd5e1 !important;
+            border-radius: 4px !important;
             z-index: 1 !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        #panelContainer > .slider:hover::before {
+            background: #2563eb !important;
+            width: 5px !important;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.45) !important;
         }
 
         #panelContainer > .slider .sliderLeft,
@@ -506,18 +689,19 @@
             top: auto !important;
             bottom: auto !important;
             z-index: 2 !important;
-            font-size: 24px !important;
-            color: #007bff !important;
+            font-size: 18px !important;
+            color: #2563eb !important;
             cursor: pointer !important;
-            padding: 5px !important;
+            padding: 4px !important;
             margin: 4px 0 !important;
             background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
             border-radius: 50% !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12) !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
-            transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease !important;
+            transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
         }
 
         #panelContainer > .slider .resizer {
@@ -527,22 +711,40 @@
             top: auto !important;
             bottom: auto !important;
             z-index: 2 !important;
-            font-size: 24px !important;
-            cursor: pointer !important;
-            padding: 20px 0px !important;
-            margin: 4px 0 !important;
+            width: 20px !important;
+            height: 48px !important;
+            cursor: col-resize !important;
+            padding: 0 !important;
+            margin: 0 !important;
             background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12), 0 1px 2px rgba(15, 23, 42, 0.06) !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
-            transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        #panelContainer > .slider:hover .resizer,
+        #panelContainer > .slider .resizer:hover {
+            transform: scale(1.1) !important;
+            border-color: #2563eb !important;
+            background: #eff6ff !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25), 0 1px 3px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        #panelContainer > .slider:hover .resizer-icon,
+        #panelContainer > .slider .resizer:hover .resizer-icon {
+            color: #2563eb !important;
         }
 
         #panelContainer > .slider .sliderLeft:hover,
         #panelContainer > .slider .sliderRight:hover {
-            transform: scale(1.2) !important;
-            color: #0056b3 !important;
-            background: #f0f4f9 !important;
+            transform: scale(1.15) !important;
+            color: #1d4ed8 !important;
+            background: #eff6ff !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
         }
 
     .panelone {
@@ -605,7 +807,7 @@
 
     .panelone .tab-pane {
         height: auto !important;
-        min-height: 100% !important;
+        /* min-height: 100% !important; */
         min-width: 0 !important;
         display: none;
         flex-direction: column !important;
@@ -781,21 +983,126 @@
 
     .accordion-header {
         background: #f5f5f5;
-        padding: 10px;
+        padding: 8px 12px;
         cursor: pointer;
         font-weight: bold;
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        user-select: none;
+    }
+
+    .accordion-header:hover {
+        background: #eceef1;
     }
 
     .accordion-body {
         display: none;
-        padding: 10px;
+        padding: 10px 12px;
         background: #fff;
     }
 
     .toggle-icon {
         font-size: 18px;
+        line-height: 1;
+        font-weight: bold;
+    }
+
+    /* Status Filter in Pane 2 */
+    #filter {
+        margin-bottom: 10px;
+        width: fit-content;
+        min-width: 360px;
+        max-width: 100%;
+    }
+
+    #filter .accordion {
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        background: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    #filter .accordion-header {
+        background: #f6f8fa;
+        padding: 7px 12px;
+        font-size: 13px;
+        color: #24292f;
+        border-bottom: 1px solid #e1e4e8;
+    }
+
+    #filter .status-top-grid {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    #filter .status-filter-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 2px 0;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    #filter .status-filter-item input[type="checkbox"] {
+        margin: 0;
+        cursor: pointer;
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+    }
+
+    #filter .status-filter-item label.lbltxt {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0;
+        cursor: pointer;
+        font-size: 12px;
+        color: #333;
+        white-space: nowrap;
+        user-select: none;
+        line-height: 1.3;
+    }
+
+    #filter .status-filter-item label.lbltxt b {
+        color: #0969da;
+        font-weight: 600;
+    }
+
+    #filter .status-pending-section {
+        background-color: #fffde7;
+        border: 1px solid #ffe082 !important;
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin-top: 8px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #filter .status-pending-title {
+        font-weight: 700;
+        font-size: 11.5px;
+        color: #8d6e63;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    #filter .status-pending-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 14px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .ms-drop.bottom {
@@ -896,24 +1203,175 @@
     }
 
 
+    /* ============================================================
+       AUTHENTIC E-OFFICE DOSSIER COVER STYLING (MATCHING MOCKUP)
+       ============================================================ */
+    #Refdetail.brownfile,
     .brownfile {
-        background-color: #d0bc7ff2;
-        border: 1px solid #dee2e6;
-        border: 1px solid #000000;
-        border-width: 3px 3px 3px 3px;
+        background-color: #ceb87d !important;
+        border: 2px solid #1c1917 !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08) !important;
+        color: #1a1a1a !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        box-sizing: border-box !important;
     }
 
-    .brownDll {
-        background: #d0bc7ff2;
-        color: black;
+    #Refdetail .ref_box {
+        max-width: 100% !important;
+        margin: 0 auto !important;
     }
 
+    /* Emblem Logo */
+    #Refdetail img.logo-img_file,
     img.logo-img_file {
+        display: block !important;
+        margin: 0 auto 10px auto !important;
+        /* height: 68px !important;
+        width: auto !important; */
+        padding: 0 !important;
+        min-height: 50px;
+        min-width: 50px;
+    }
 
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 5px 5px 5px 5px;
+    /* Header Titles */
+    #Refdetail .Brand-name {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        text-align: center !important;
+        color: #1a1a1a !important;
+        letter-spacing: -0.2px !important;
+    }
+
+    #Refdetail h2.Brand-name:first-of-type {
+        font-size: 24px !important;
+        font-weight: 800 !important;
+    }
+
+    #Refdetail .col-12 h2.Brand-name {
+        font-size: 19px !important;
+        font-weight: 800 !important;
+    }
+
+    /* Field Labels */
+    #Refdetail .fotm_lbl {
+        font-size: 12.5px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.6px !important;
+        color: #4a3e1b !important;
+        margin-bottom: 5px !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    /* Field Values - Underline Style */
+    #Refdetail .txt_value {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1.5px solid #b8a368 !important;
+        border-radius: 0 !important;
+        padding: 4px 0 8px 0 !important;
+        margin-bottom: 20px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #111827 !important;
+        min-height: 34px !important;
+        height: auto !important;
+        box-shadow: none !important;
+        display: flex !important;
+        align-items: center !important;
+        word-break: break-word !important;
+    }
+
+    /* Subject Special Section */
+    #Refdetail #subjectboxold_@Model.RefId,
+    #Refdetail #subjectbox {
+        margin-bottom: 16px !important;
+    }
+
+    #Refdetail #subjectboxold_@Model.RefId .txt_value,
+    #Refdetail .txt_value.in_txt_area {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1.5px solid #b8a368 !important;
+        border-radius: 0 !important;
+        padding: 4px 0 10px 0 !important;
+        margin-bottom: 20px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #111827 !important;
+        line-height: 1.6 !important;
+        box-shadow: none !important;
+        display: block !important;
+    }
+
+    #Refdetail #SpanSubject {
+        border: none !important;
+        border-bottom: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        display: inline !important;
+    }
+
+    /* Inputs and Dropdowns */
+    #Refdetail input[type="text"],
+    #Refdetail select,
+    #Refdetail .brownDll,
+    #Refdetail textarea {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1.5px solid #b8a368 !important;
+        border-radius: 0 !important;
+        padding: 4px 0 8px 0 !important;
+        margin-bottom: 20px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #111827 !important;
+        width: 100% !important;
+        min-height: 34px !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    #Refdetail select,
+    #Refdetail .brownDll {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background: transparent !important;
+        background-image: none !important;
+        cursor: default !important;
+    }
+
+    #Refdetail select::-ms-expand {
+        display: none !important;
+    }
+
+    #Refdetail select option {
+        background: #ffffff !important;
+        color: #111827 !important;
+    }
+
+    #Refdetail input[type="text"]:focus,
+    #Refdetail select:focus,
+    #Refdetail .brownDll:focus,
+    #Refdetail textarea:focus {
+        border-bottom: 2px solid #1a1a1a !important;
+    }
+
+    /* Attached Enclosure link */
+    #Refdetail a#wreqeqwe {
+        color: #1a1a1a !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        text-decoration: underline !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin-top: 4px !important;
     }
 
     a:focus, a:not([href]):not([tabindex]):hover, a:not([href]):not([tabindex]):focus {
@@ -926,6 +1384,9 @@
         padding: 8px 16px;
         border-top-left-radius: 6px !important;
         border-top-right-radius: 6px !important;
+        color: brown;
+        font-size: 18px;
+        font-weight: bold;
     }
 
     input#enablefund {
@@ -1134,7 +1595,10 @@
     }
 
     .lbltxt {
-        display: ruby-base;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 0;
+        cursor: pointer;
     }
 
     .checkbox {
@@ -1259,7 +1723,7 @@
         padding: 8px 12px;
         background: #ffffff;
         border: 1px solid #dcdcdc;
-        border-radius: 8px;
+        border-radius: 8px 8px 0px 0px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
@@ -7018,7 +7482,7 @@
       FileString = FileString + "<a href='" + path + "' id='afileUrl_" + i + "' target='_blank'> <span id='afileName_" + i +"' class='file_nameEn'>" + pdfname +" </span> </a>";
       FileString = FileString + "<div id='afileSize_" + i +"' class='file_sizeEn col-6'>" + size +"</div>";
       FileString = FileString + "<span id='afileRemove_" + i + "' class='removeUploadEnclosure col-3' onclick='removefileupload(" + i +")' style='height: 26px; '><i class='far fa - times'>X</i></span>";
-      FileString = FileString + "</div></br>";
+      FileString = FileString + "</div>";
       $('#MultipleFile').append(FileString);
       $('#afileRemove_' + i).css('display', 'block');
 
@@ -8222,8 +8686,11 @@
                                         <div class="col-5">
 
                                         </div>
-                                        <div class="col-2">
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
                                             <img class="logo-img_file" src="~/Assets/Home_Images/punjab-logo.png">
+                                        </div>
+                                        <div class="col-5">
+
                                         </div>
                                         <div class="col-12">
                                             <h2 class="mb-0 Brand-name fw-bold" style=" text-align:center; font-size: 24px;"> <span class=""> Government of Punjab </span> </h2>
@@ -8233,9 +8700,9 @@
 
 
 
-                                    <div class="col-12">
-                                        <h2 class="mb-0 Brand-name fw-bold" style="margin-top: 10px; text-align:center; font-size: 18px;"> <span class=""> @Model.FromDept </span> </h2>
-                                        <h2 class="mb-0 Brand-name fw-bold" style="margin-top: 10px; text-align:center; font-size: 18px;"> <span class="">@Model.FromOffice</span> </h2>
+                                    <div class="col-12 mb-4">
+                                        <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 18px;"> <span class=""> @Model.FromDept </span> </h2>
+                                        <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 18px;"> <span class="">@Model.FromOffice</span> </h2>
 
                                     </div>
 
@@ -8290,22 +8757,21 @@
                                         <div class="col-md-6 col-lg-6 mb-2">
                                             <div class="fotm_lbl">Office Detail:</div>
 
-                                            <div>
-                                                @*@Model.ToOffice*@
-                                                @Html.DropDownListFor(m => m.ToOfficeId, Model.OfficeList, "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28", @class = "brownDll" })
+                                            <div class="txt_value">
+                                                <span id="spnToOffice">@Model.ToOffice</span>
                                                 @Html.HiddenFor(m => m.ToOfficeId)
-
+                                                <div style="display:none;">
+                                                    @Html.DropDownListFor(m => m.ToOfficeId, Model.OfficeList, "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28", @class = "brownDll" })
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
                                             <div class="fotm_lbl">Type:</div>
-                                            <div>
-                                                <span>
-
+                                            <div class="txt_value">
+                                                <span id="spnDocType">@Model.DocumentTypeName</span>
+                                                <div style="display:none;">
                                                     @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameChange", @tabindex = "29", @class = "brownDll" })
-
-                                                </span>
-
+                                                </div>
                                             </div>
                                         </div>
 
@@ -8468,47 +8934,44 @@
 
                                 <div class="updat_box " style="padding-top:12px;">
 
-                                    <div class="col-md-12 col-lg-12 col-xl-12 mb-2 row" style="margin-top:5px;">
-                                        <div class="row mt-4">
+                                    <div class="col-md-12 col-lg-12 col-xl-12 mb-2">
+                                        <div class="row">
                                             <div class="abc col-lg-12">
                                                 @if (Model.MultiFileModel.Count > 0)
                                                 {
-                                                    <h4 class="widget-title form_heading mb-0">
-                                                        Annexure:
+                                                    <h4 class="widget-title form_heading mb-2" style="font-size: 14px; font-weight: 600; color: #334155;">
+                                                        <i class="fa fa-paperclip me-1 text-primary"></i> Annexure:
                                                     </h4>
-                                                }
-
-                                                @foreach (var item1 in Model.MultiFileModel)
-                                                {
-
-                                                    <a class="btn btn-primary mt-2" target="_blank" href="@BlobPath@item1.FileName">@item1.isDeleted</a>
+                                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                                        @foreach (var item1 in Model.MultiFileModel)
+                                                        {
+                                                            <a class="annexure-chip" target="_blank" href="@BlobPath@item1.FileName" title="View @item1.isDeleted">
+                                                                <i class="fa fa-file-pdf"></i>
+                                                                <span>@item1.isDeleted</span>
+                                                                <i class="fa fa-external-link-alt ms-1 text-muted" style="font-size: 10px;"></i>
+                                                            </a>
+                                                        }
+                                                    </div>
                                                 }
                                             </div>
-                                            <br />
-                                            <div class="col-lg-8 mt-5"></div>
-                                            <div class="col-lg-3 mt-5">
+                                            <div class="annx_div">
 
                                                 <div id="divEnfile">
-                                                    <span class="fotm_lbl">Upload Annexure:</span>
-
-                                                    <div class="row">
-                                                        <div class="col-auto">
-                                                            <input style="font-size: 15px;" id="fileuploadEnclosure" type="file" name="fileuploadEnclosure" onclick="AddAnx()">
-                                                        </div>
-
-                                                        <div class="col-lg-10">
-                                                            <div id="MultipleFile" class="d-flex align-items-center">
-                                                            </div>
-                                                        </div>
-
+                                                    <div class="annx_header">
+                                                        <i class="fa fa-cloud-upload-alt"></i>
+                                                        <span>Upload Annexure</span>
                                                     </div>
 
+                                                    <div>
+                                                        <input class="form-control" id="fileuploadEnclosure" type="file" name="fileuploadEnclosure" onclick="AddAnx()">
+                                                        <div id="MultipleFile"></div>
+                                                    </div>
 
                                                 </div>
 
                                                 @if (!string.IsNullOrEmpty(Model.EnclosureFile))
                                                 {
-                                                    <a href="@FileSettings.SettingValue@Model.EnclosureFile" target="_blank" id="wreqeqwe">Attached Enclosure (File)</a>
+                                                    <a href="@FileSettings.SettingValue@Model.EnclosureFile" target="_blank" id="wreqeqwe" class="mt-2 d-inline-block text-primary small"><i class="fa fa-file-alt me-1"></i> Attached Enclosure (File)</a>
                                                     <span id="EnclosureFiletxt" style="display: none;">Yes</span>
 
                                                 }
@@ -8518,21 +8981,13 @@
                                                 }
 
                                                 @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
-
+                                                <button class="btn-upload" type="button" id="btnUploadAnx" title="Upload" onclick="return SaveAnx()" tabindex="4">
+                                                    <i class="fa fa-upload"></i>
+                                                    Upload
+                                                </button>
                                             </div>
 
                                         </div>
-
-                                    </div>
-
-
-                                    <div class="profile-info-row">
-
-
-                                        <button class="btn btn-primary mt-3" type="button" id="btnUploadAnx" title="Upload" onclick="return SaveAnx()" tabindex="4">
-                                            <i class="ace-icon fa fa-floppy-o align-top bigger-140"></i>
-                                            Upload
-                                        </button>
 
                                     </div>
                                 </div>
@@ -8581,11 +9036,96 @@
 
             <div class="panel paneltwo">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="act_lft_fst bg_light">
+                    <div class="act_lft_fst bg_light row">
+
+                        <div class="col-md-9">
+                            <ul class="nav nav-tabs tabtop-space position-relative" id="myTab" role="tablist">
+
+                                @if (Model.HideRef == "Yes") { }
+                                else
+                                {
+                                    <li class="nav-item " role="presentation">
+                                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#Reference" role="tab" aria-controls="profile" aria-selected="false"> @Model.DocumentTypeName.Replace("File", "") </a>
+
+
+                                        <div style="margin-left:100px;text-align:right">
+                                            <div class="d-flex justify-content-end me-2">
+                                                @if (Model.isLGoffice == "Y")
+                                                {
+
+
+                                                }
+
+                                                else
+                                                {
+                                                    @*<a href="@Url.Action("PDFPreviewReport", "References", new { refid = @Model.RefId,DocType=@Model.DocumentTypeName })" target="_blank">
+                                        Preview
+                                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="File Actions" width="24" height="24" />
+                                    </a>*@
+                                                }
+
+
+                                            </div>
+                                        </div>
+
+                                    </li>
+
+                                    if (Model.HideUpdate != "Yes")
+                                    {
+                                        <li id="ViewTab" class="nav-item hand" role="presentation">
+                                            <a class="nav-link" id="view-tab" data-bs-toggle="tab" data-bs-target="#view_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">File Notings</a>
+                                        </li>
+                                    }
+
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link"
+                                           id="endorse-tab"
+                                           data-bs-toggle="tab"
+                                           href="#endorse_@Model.RefId"
+                                           role="tab"
+                                           aria-controls="endorse_@Model.RefId"
+                                           aria-selected="false">
+                                            Approvals
+                                        </a>
+                                    </li>
+                                    if (Model.HideUpdate != "Yes")
+                                    {
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link"
+                                               id="partfiles-tab"
+                                               data-bs-toggle="tab"
+                                               href="#partfiles_@Model.RefId"
+                                               role="tab"
+                                               aria-controls="partfiles_@Model.RefId"
+                                               aria-selected="false"
+                                               onclick="LoadPartFilesData('@Model.RefId')">
+                                                Part Files
+                                            </a>
+                                        </li>
+                                    }
+
+                                    if (Model.MapId == "2")
+                                    {
+                                        <li class="tabber-tag">
+                                            <a href="@Url.Action("ProceedingsReport", "References",new { RefId = @Model.RefId, agendaId = @Model.agendaId })" class="text-danger float-right" id="lnkProceedingsReportPdf" target="_blank" title="Proceedings Report"><i class="fa fa-file-pdf-o"></i> View Proceedings</a>
+                                        </li>
+                                    }
+                                }
+                                @if (CurrentSession.UserName == "supmsc.lg@punjab.gov.in")
+                                {
+
+                                    <li class="nav-item" role="presentation">
+                                        <button id="downloadreply" style="font-size:12px">Download Proceedings Reply <i class="fa fa-file-pdf-o"></i></button>
+                                    </li>
+
+                                }
+
+                            </ul>
+                        </div>
 
                         @if (Model.isLGoffice == "Y")
                         {
-                            <div class="ListingDocs">
+                            <div class="ListingDocs col-md-3">
 
 
                                 @if (!string.IsNullOrWhiteSpace(@Model.ProceedingPdf))
@@ -8600,15 +9140,15 @@
 
 
                                 @*@if (!string.IsNullOrWhiteSpace(@Model.ProceedingCommCommentPdf))
-                                    {
-                                        <a href="@Model.ProceedingCommCommentPdf"
-                                           target="_blank"
-                                           class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
+                {
+                    <a href="@Model.ProceedingCommCommentPdf"
+                       target="_blank"
+                       class="btn btn-outline-light border text-dark d-inline-flex align-items-center px-3 py-1 shadow-sm text-nowrap">
 
-                                            <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
-                                            <span class="small">Proceedings</span>
-                                        </a>
-                                    }*@
+                        <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
+                        <span class="small">Proceedings</span>
+                    </a>
+                }*@
 
 
                                 @if (!string.IsNullOrWhiteSpace(@Model.SignedProceedingCommissionerPath))
@@ -8625,89 +9165,6 @@
 
                             </div>
                         }
-                        <ul class="nav nav-tabs tabtop-space position-relative" id="myTab" role="tablist">
-
-                            @if (Model.HideRef == "Yes") { }
-                            else
-                            {
-                                <li class="nav-item " role="presentation">
-                                    <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#Reference" role="tab" aria-controls="profile" aria-selected="false"><b> @Model.DocumentTypeName.Replace("File", "") </b></a>
-
-
-                                    <div style="margin-left:100px;text-align:right">
-                                        <div class="d-flex justify-content-end me-2">
-                                            @if (Model.isLGoffice == "Y")
-                                            {
-
-
-                                            }
-
-                                            else
-                                            {
-                                                @*<a href="@Url.Action("PDFPreviewReport", "References", new { refid = @Model.RefId,DocType=@Model.DocumentTypeName })" target="_blank">
-                                                        Preview
-                                                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="File Actions" width="24" height="24" />
-                                                    </a>*@
-                                            }
-
-
-                                        </div>
-                                    </div>
-
-                                </li>
-
-                                if (Model.HideUpdate != "Yes")
-                                {
-                                    <li id="ViewTab" class="nav-item hand" role="presentation">
-                                        <a class="nav-link" id="view-tab" data-bs-toggle="tab" data-bs-target="#view_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">File Notings</a>
-                                    </li>
-                                }
-
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link"
-                                       id="endorse-tab"
-                                       data-bs-toggle="tab"
-                                       href="#endorse_@Model.RefId"
-                                       role="tab"
-                                       aria-controls="endorse_@Model.RefId"
-                                       aria-selected="false">
-                                        Approvals
-                                    </a>
-                                </li>
-                                if (Model.HideUpdate != "Yes")
-                                {
-                                    <li class="nav-item" role="presentation">
-                                        <a class="nav-link"
-                                           id="partfiles-tab"
-                                           data-bs-toggle="tab"
-                                           href="#partfiles_@Model.RefId"
-                                           role="tab"
-                                           aria-controls="partfiles_@Model.RefId"
-                                           aria-selected="false"
-                                           onclick="LoadPartFilesData('@Model.RefId')">
-                                            Part Files
-                                        </a>
-                                    </li>
-                                }
-
-                                if (Model.MapId == "2")
-                                {
-                                    <li class="tabber-tag">
-                                        <a href="@Url.Action("ProceedingsReport", "References",new { RefId = @Model.RefId, agendaId = @Model.agendaId })" class="text-danger float-right" id="lnkProceedingsReportPdf" target="_blank" title="Proceedings Report"><i class="fa fa-file-pdf-o"></i> View Proceedings</a>
-                                    </li>
-                                }
-                            }
-                            @if (CurrentSession.UserName == "supmsc.lg@punjab.gov.in")
-                            {
-
-                                <li class="nav-item" role="presentation">
-                                    <button id="downloadreply" style="font-size:12px">Download Proceedings Reply <i class="fa fa-file-pdf-o"></i></button>
-                                </li>
-
-                            }
-
-                        </ul>
-
 
                         @if (Model.PaperEntryType == "NewEntry")
                         {
@@ -8718,10 +9175,10 @@
 
 
                         @*@if (!(Model.LinkRefID == 0))
-                            {
-                                <h4 class="widget-title">Linked Ref.Id:<a onclick="SearchRefNo('@Model.LinkRefID')"> @Model.LinkRefID</a></h4>
+        {
+            <h4 class="widget-title">Linked Ref.Id:<a onclick="SearchRefNo('@Model.LinkRefID')"> @Model.LinkRefID</a></h4>
 
-                            }*@
+        }*@
                         <div class="tab-content" id="myTabContent">
                             @if (Model.HideRef == "Yes") { }
                             else
@@ -8732,11 +9189,11 @@
                                     {
                                         <div id="filter">
                                             @*<div class="col-sm-6 col-md-3 col-lg-3 mb-3">
-                                                    <label class="txt_label">Status:</label>
-                                                    <p class="pera_txt_design">
-                                                        @Html.DropDownListFor(m => m.LetterNo, Model.ActionTypeList_Ref, "All Status", new { @id = "ddlStatusFilter", @tabindex = "2", @class = "DdlClass", @onchange = "StatusFilter()" })
-                                                    </p>
-                                                </div>col-sm-12 col-md-12 col-lg-6 mb-3*@
+                                <label class="txt_label">Status:</label>
+                                <p class="pera_txt_design">
+                                    @Html.DropDownListFor(m => m.LetterNo, Model.ActionTypeList_Ref, "All Status", new { @id = "ddlStatusFilter", @tabindex = "2", @class = "DdlClass", @onchange = "StatusFilter()" })
+                                </p>
+                            </div>col-sm-12 col-md-12 col-lg-6 mb-3*@
                                             <label class="txt_label">Total:  <b>(@Model.ResCount)</b></label>
                                             <div class="accordion" style="">
 
@@ -8745,108 +9202,59 @@
                                                     <span class="toggle-icon">+</span>
                                                 </div>
                                                 <div class="accordion-body">
-                                                    <div class="row AprovePending">
+                                                    <div class="status-top-grid AprovePending">
                                                         @{ var i = 0; var pendingcount = 0;}
                                                         @foreach (var item in Model.ActionListFilter)
                                                         {
                                                             if (@item.Value == "7" || @item.Value == "4")
                                                             {
-                                                                <div class="col-3">
-
+                                                                var temp = item.Text.Split(',');
+                                                                <div class="status-filter-item">
                                                                     <input type="checkbox"
+                                                                           id="chk_status_@item.Value"
                                                                            name="ChkStatusFilter"
                                                                            value="@item.Value"
-                                                                           onchange="StatusFilter1(this)" />  <label id="txtcom_@item.Value" class="lbltxt">
-                                                                        @{
-
-                                                                            var temp = item.Text.Split(',');
-                                                                        }
-
-                                                                        @temp[0] <b>@temp[1]</b>
-                                                                    </label>
+                                                                           onchange="StatusFilter1(this)" /><label for="chk_status_@item.Value" id="txtcom_@item.Value" class="lbltxt">@temp[0] <b>@temp[1]</b></label>
                                                                 </div>
                                                             }
                                                             if (@item.Value == "13" || @item.Value == "14" || @item.Value == "15" || @item.Value == "5")
                                                             {
                                                                 var temp = item.Text.Split(',');
                                                                 var count = @temp[1].Substring(2, @temp[1].Length - 2);
-                                                                //count = count.Substring(0, 1);
                                                                 count = count.Replace("(", "").Replace(")", "");
                                                                 pendingcount = pendingcount + Convert.ToInt32(count);
                                                             }
-
-                                                            //if (@item.Value == "14")
-                                                            //{
-                                                            //var fltext = item.Text.Substring(13, 1);
-                                                            //if (fltext != "0")
-                                                            //{
-                                                            //i++;
-                                                            //}
-                                                            //}
                                                         }
 
-                                                        <div class="col-3">
-
+                                                        <div class="status-filter-item">
                                                             <input type="checkbox"
+                                                                   id="chk_status_111"
                                                                    name="ChkStatusFilter"
                                                                    value="111"
-                                                                   onchange="StatusFilter1(this)" />  <label id="txtcom_111" class="lbltxt">
-                                                                Pending <b>(@pendingcount)</b>
-                                                            </label>
+                                                                   onchange="StatusFilter1(this)" /><label for="chk_status_111" id="txtcom_111" class="lbltxt">Pending <b>(@pendingcount)</b></label>
                                                         </div>
                                                     </div>
 
-                                                    <div class="row Pending">
-                                                        <label class="txt_label">Pending:</label>
-                                                        @{ var i1 = 0;}
-                                                        @foreach (var item in Model.ActionListFilter)
-                                                        {
-                                                            if (@item.Value == "13" || @item.Value == "14" || @item.Value == "15" || @item.Value == "5")
+                                                    <div class="status-pending-section">
+                                                        <div class="status-pending-title">Pending:</div>
+                                                        <div class="status-pending-grid">
+                                                            @{ var i1 = 0;}
+                                                            @foreach (var item in Model.ActionListFilter)
                                                             {
-
-                                                                <div class="col-3">
-
-                                                                    <input type="checkbox"
-                                                                           name="ChkStatusFilter"
-                                                                           value="@item.Value"
-                                                                           onchange="StatusFilter1(this)" />  <label id="txtcom_@item.Value" class="lbltxt">
-                                                                        @{
-
-                                                                            var temp = item.Text.Split(',');
-                                                                        }
-
-                                                                        @temp[0] <b>@temp[1]</b>
-                                                                    </label>
-                                                                </div>
+                                                                if (@item.Value == "13" || @item.Value == "14" || @item.Value == "15" || @item.Value == "5")
+                                                                {
+                                                                    var temp = item.Text.Split(',');
+                                                                    <div class="status-filter-item">
+                                                                        <input type="checkbox"
+                                                                               id="chk_status_@item.Value"
+                                                                               name="ChkStatusFilter"
+                                                                               value="@item.Value"
+                                                                               onchange="StatusFilter1(this)" /><label for="chk_status_@item.Value" id="txtcom_@item.Value" class="lbltxt">@temp[0] <b>@temp[1]</b></label>
+                                                                    </div>
+                                                                }
                                                             }
-
-                                                        }
+                                                        </div>
                                                     </div>
-                                                    @*<div class="row Aprove">
-            <label class="txt_label">Approved:</label>
-            @{ var i3 = 0;}
-            @foreach (var item in Model.ActionListFilter)
-            {
-                if (@item.Value == "8" || @item.Value == "9")
-                {
-                    <div class="col-3">
-
-                        <input type="checkbox"
-                               name="ChkStatusFilter"
-                               value="@item.Value"
-                               onchange="StatusFilter1(this)" />  <label id="txtcom_@item.Value" class="lbltxt">
-                            @{
-
-                                var temp = item.Text.Split(',');
-                            }
-
-                            @temp[0] <b>@temp[1]</b>
-                        </label>
-                    </div>
-                }
-
-            }
-        </div>*@
                                                     <input type="hidden" id="hdnlgcom" value="@i" />
                                                     <input type="hidden" id="hdnactionid" value="0" />
                                                     <input type="hidden" id="hdnactionApprovalid" value="0" />
@@ -8882,7 +9290,7 @@
                                                     Select
                                                 </button>
                                                 @*@if (CurrentSession.SubUserTypeID == "20")
-                                                    {*@
+                                {*@
                                                 <a href="javascript:void(0);" id="EditDraftOrderNew" class="btn btn-primary" onclick="OpenEditApprovalNew('@Model.agendaId','0','','')">
                                                     <i class="fa fa-pencil me-1"></i> Action
                                                 </a>
@@ -8890,11 +9298,11 @@
 
 
 
-                                            @*</div>*@
+                                                @*</div>*@
 
-                                            @if (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "20")
-                                            {
-                                                @*<div class="d-flex align-items-center gap-2 flex-wrap">*@
+                                                @if (CurrentSession.SubUserTypeID == "4" || CurrentSession.SubUserTypeID == "20")
+                                                {
+                                                    @*<div class="d-flex align-items-center gap-2 flex-wrap">*@
 
 
 
@@ -8926,8 +9334,8 @@
                                                         </button>
 
                                                         @*<button class="btn btn-info text-white me-2" onclick="window.open('@Url.Action("PDFPreviewReport", "References", new { refid = @Model.RefId, DocType=@Model.DocumentTypeName })', '_blank');" style="float: right; margin-top: 6px;">
-                                                                <i class="fa fa-file-pdf me-1"></i>Preview List
-                                                            </button>*@
+                                            <i class="fa fa-file-pdf me-1"></i>Preview List
+                                        </button>*@
 
                                                     }
 
@@ -8947,36 +9355,36 @@
 
 
 
-                                                @*</div>*@
+                                                    @*</div>*@
 
-                                            }
-
-                                            @if (SiteName == "MC")
-                                            {
-                                                if (CurrentSession.DeptID == "LG00001")
-                                                {
-                                                    Model.IsMeetingFile = "No";
                                                 }
-                                                else
+
+                                                @if (SiteName == "MC")
                                                 {
-                                                    Model.IsMeetingFile = "Yes";
+                                                    if (CurrentSession.DeptID == "LG00001")
+                                                    {
+                                                        Model.IsMeetingFile = "No";
+                                                    }
+                                                    else
+                                                    {
+                                                        Model.IsMeetingFile = "Yes";
+                                                    }
                                                 }
-                                            }
 
 
-                                             </div>
+                                            </div>
 
 
                                             @*@if (Model.IsMeetingFile == "No" && Model.filetype != "2")
-                                                {
-                                                    <div class="col-sm-1 col-md-1 col-lg-1 mb-3" style="margin-left: 63px;">
-                                                        <button class="btn btn-primary mt-3 d-flex align-items-center justify-content-center" type="button" id="btnCopy" title="Create Part File" onclick="return SaveCopy()" tabindex="4" style="padding: 13px; font-weight: bold;">
-                                                            <i class="partfileicon fas fa-plus me-2"></i>
-                                                            Part <br />  File
-                                                        </button>
+                            {
+                                <div class="col-sm-1 col-md-1 col-lg-1 mb-3" style="margin-left: 63px;">
+                                    <button class="btn btn-primary mt-3 d-flex align-items-center justify-content-center" type="button" id="btnCopy" title="Create Part File" onclick="return SaveCopy()" tabindex="4" style="padding: 13px; font-weight: bold;">
+                                        <i class="partfileicon fas fa-plus me-2"></i>
+                                        Part <br />  File
+                                    </button>
 
-                                                    </div>
-                                                }*@
+                                </div>
+                            }*@
 
 
 
@@ -8985,14 +9393,14 @@
 
 
                                             @*@if (SiteName == "MC")
-                                                {
-                                                    <div class="col-sm-2 col-md-2 col-lg-2 mb-3">
-                                                        <label class="txt_label">Point of Instruction:</label>
-                                                        <p class="pera_txt_design">
-                                                            @Html.DropDownListFor(m => m.LetterNo, Model.Act, "All Act", new { @id = "ddlact", @tabindex = "2", @class = "DdlClass", @onchange = "ActFilter()" })
-                                                        </p>
-                                                    </div>
-                                                }*@
+                            {
+                                <div class="col-sm-2 col-md-2 col-lg-2 mb-3">
+                                    <label class="txt_label">Point of Instruction:</label>
+                                    <p class="pera_txt_design">
+                                        @Html.DropDownListFor(m => m.LetterNo, Model.Act, "All Act", new { @id = "ddlact", @tabindex = "2", @class = "DdlClass", @onchange = "ActFilter()" })
+                                    </p>
+                                </div>
+                            }*@
 
 
                                         </div>
@@ -9043,13 +9451,13 @@
 
 
                                     @*@if (Model.HideUpdate == "Yes") { } else
-                                        {
-                                            <div class="row">
-                                                    <div class="d-flex align-items-center gap-3">
-                                                        <input type="button" class="btn btn-primary AgendaRefDetail" id="btnUpdateMultiStatus" onclick="return UpdateMultiStatus();" value="Update Status" />
-                                                    </div>
-                                            </div>
-                                        }*@
+                    {
+                        <div class="row">
+                                <div class="d-flex align-items-center gap-3">
+                                    <input type="button" class="btn btn-primary AgendaRefDetail" id="btnUpdateMultiStatus" onclick="return UpdateMultiStatus();" value="Update Status" />
+                                </div>
+                        </div>
+                    }*@
 
 
 
