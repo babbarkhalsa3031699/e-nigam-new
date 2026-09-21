@@ -12460,11 +12460,11 @@ namespace CMNirdesh.Controllers
             if (dt.Rows.Count > 0)
             {
                 int top1 = 0;
-                int top2 = 38; // adjust if header height changes
+                int top2 = 28; // compact header height
 
-                sb.Append("<div style='max-height:500px; overflow-y:auto;'>");
+                sb.Append("<div class='table-responsive' style='max-height:520px; overflow:auto;'>");
                 sb.Append("<table class='table table-bordered table-striped dataTable no-footer' id='StatsDepartment' " +
-                "style='font-size:13px;'>");
+                "style='font-size:12px;'>");
 
                 if (CurrentSession.DeptID == "LG00001")
                 {
@@ -12475,34 +12475,34 @@ namespace CMNirdesh.Controllers
 
                     sb.Append("<tr>");
 
-                    sb.Append("<th rowspan='2' style='position:sticky;top:" + top1 + "px;z-index:9999;" +
-                              "background:#2C3E50;color:#fff;" +
-                              "border:1px solid #dee2e6;text-align:center;" +
+                    sb.Append("<th rowspan='2' style='position:sticky;top:" + top1 + "px;z-index:5;" +
+                              "background:#1e293b;color:#fff;" +
+                              "border:1px solid #334155;text-align:center;" +
                               "vertical-align:middle;font-weight:700;'>MC</th>");
 
-                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:9999;" +
-                              "background:#2874A6;color:#fff;" +
-                              "border:1px solid #dee2e6;text-align:center;" +
+                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:5;" +
+                              "background:#1e40af;color:#fff;" +
+                              "border:1px solid #3b82f6;text-align:center;" +
                               "font-weight:700;'>Cumulative</th>");
 
-                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:9999;" +
-                              "background:#239B56;color:#fff;" +
-                              "border:1px solid #dee2e6;text-align:center;" +
+                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:5;" +
+                              "background:#047857;color:#fff;" +
+                              "border:1px solid #10b981;text-align:center;" +
                               "font-weight:700;'>Approved</th>");
 
-                    sb.Append("<th rowspan='2' style='position:sticky;top:" + top1 + "px;z-index:9999;" +
-                              "background:#D68910;color:#fff;" +
-                              "border:1px solid #dee2e6;text-align:center;" +
-                              "vertical-align:middle;font-weight:700;'>Rejected</th>");
+                    sb.Append("<th rowspan='2' style='position:sticky;top:" + top1 + "px;z-index:5;" +
+                              "background:#b45309;color:#fff;" +
+                              "border:1px solid #f59e0b;text-align:center;" +
+                              "vertical-align:middle;font-weight:700;'>Rejected<br/><span style='font-size:9.5px;font-weight:500;opacity:0.9;display:block;'>Head Office / MC</span></th>");
 
-                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:9999;" +
-                              "background:#8E44AD;color:#fff;" +
-                              "border:1px solid #dee2e6;text-align:center;" +
+                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:5;" +
+                              "background:#6d28d9;color:#fff;" +
+                              "border:1px solid #8b5cf6;text-align:center;" +
                               "font-weight:700;'>LG Observations / Advice</th>");
 
-                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:9999;" +
-                              "background:#CB4335;color:#fff;" +
-                              "border:1px solid #dee2e6;text-align:center;" +
+                    sb.Append("<th colspan='2' style='position:sticky;top:" + top1 + "px;z-index:5;" +
+                              "background:#be123c;color:#fff;" +
+                              "border:1px solid #f43f5e;text-align:center;" +
                               "font-weight:700;'>Branch Comments</th>");
 
                     sb.Append("</tr>");
@@ -12512,66 +12512,37 @@ namespace CMNirdesh.Controllers
 
                     sb.Append("<tr>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#D6EAF8;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>Proceedings</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#eff6ff;color:#1e40af;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>Proceedings<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>Head Office</span></th>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#D6EAF8;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>Resolutions</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#eff6ff;color:#1e40af;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>Resolutions<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>Head Office</span></th>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#D5F5E3;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>Proceedings</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#ecfdf5;color:#047857;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>Proceedings<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>Head Office</span></th>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#D5F5E3;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>Resolutions</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#ecfdf5;color:#047857;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>Resolutions<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>Head Office</span></th>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#EBDEF0;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>Observations</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#f5f3ff;color:#6d28d9;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>Observations<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>HO / Advisor</span></th>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#EBDEF0;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>Advice</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#f5f3ff;color:#6d28d9;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>Advice<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>Head Office</span></th>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#FADBD8;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>In Progress</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#fff1f2;color:#be123c;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>In Progress<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>Head Office</span></th>");
 
-                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:9998;" +
-                              "background:#FADBD8;border:1px solid #dee2e6;" +
-                              "text-align:center;font-weight:600;'>Not Started</th>");
-
-                    sb.Append("</tr>");
-
-                    sb.Append("</thead>");
-
-
-                    // ========================= ROW 3 =========================
-
-                    sb.Append("<tr>");
-
-                    string deptStyle =
-                    "background:#F8F9FA" +
-                    "border:1px solid #dee2e6" +
-                    "text-align:center" +
-                    "font-size:11px" +
-                    "color:#6C757D" +
-                    "font-weight:600" +
-                    "padding:4px";
-
-                    sb.Append("<th style='" + deptStyle + "'></th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office / MC</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office / Advisor</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office</th>");
-                    sb.Append("<th style='" + deptStyle + "'>Head Office</th>");
+                    sb.Append("<th style='position:sticky;top:" + top2 + "px;z-index:4;" +
+                              "background:#fff1f2;color:#be123c;border:1px solid #cbd5e1;" +
+                              "text-align:center;font-weight:600;'>Not Started<br/><span style='font-size:9.5px;font-weight:500;color:#64748b;display:block;'>Head Office</span></th>");
 
                     sb.Append("</tr>");
 
@@ -13473,7 +13444,7 @@ namespace CMNirdesh.Controllers
 
                 using (SqlConnection con = ClsConnection.GetConnection())
                 using (SqlCommand cmd = new SqlCommand(
-                    "usp_GetDiaryFileDetailsTest", con))
+                    "usp_GetDiaryFileDetails", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -13511,83 +13482,91 @@ namespace CMNirdesh.Controllers
                 {
                     DataTable dt = ds.Tables[0];
 
-                    sb.Append("<div class='table-responsive'>");
-
-                    sb.Append(
-                        "<table id='StatsResSearch' " +
-                        "class='table table-bordered table-striped table-hover' " +
-                        "style='width:100%;font-size:12px;" +
-                        "table-layout:fixed;'>");
+                    sb.Append("<div class='table-responsive sr-table-wrap'>");
+                    sb.Append("<table id='StatsResSearch' class='table table-bordered table-hover sr-data-table align-middle' style='width:100%; border:1px solid #cbd5e1 !important; border-collapse:collapse !important;'>");
 
                     // =====================================================
                     // HEADER
                     // =====================================================
-
                     sb.Append("<thead>");
-                    sb.Append("<tr>");
+                    sb.Append("<tr class='sr-table-header-row' style='background-color:#1e3a8a !important;'>");
 
                     foreach (DataColumn col in dt.Columns)
                     {
-                        // Do not display FileType column
-                        if (col.ColumnName.Equals(
-                            "FileType",
-                            StringComparison.OrdinalIgnoreCase))
+                        if (col.ColumnName.Equals("FileType", StringComparison.OrdinalIgnoreCase))
                             continue;
 
-                        // Details Header - 20%
-                        if (col.ColumnName.Equals(
-                            "Details",
-                            StringComparison.OrdinalIgnoreCase))
-                        {
-                            sb.AppendFormat(
-                                "<th style='width:20%;min-width:200px;" +
-                                "white-space:normal;" +
-                                "word-break:break-word;" +
-                                "overflow-wrap:anywhere;" +
-                                "background:#1974d2;color:#fff;" +
-                                "font-size:12px;font-weight:600;'>{0}</th>",
-                                HttpUtility.HtmlEncode(col.ColumnName));
-                        }
+                        string colName = col.ColumnName;
+                        string thClass = "sr-th";
+                        string thStyle = "";
+                        string iconHtml = "";
 
-                        // Subject Header - 40%
-                        else if (col.ColumnName.Equals(
-                            "Subject",
-                            StringComparison.OrdinalIgnoreCase))
+                        if (colName.Equals("MC Name", StringComparison.OrdinalIgnoreCase))
                         {
-                            sb.AppendFormat(
-                                "<th style='width:40%;min-width:400px;" +
-                                "white-space:normal;" +
-                                "word-break:break-word;" +
-                                "overflow-wrap:anywhere;" +
-                                "background:#1974d2;color:#fff;" +
-                                "font-size:12px;font-weight:600;'>{0}</th>",
-                                HttpUtility.HtmlEncode(col.ColumnName));
+                            thStyle = "min-width:130px;";
+                            thClass += " sr-th-mc";
+                            iconHtml = "<i class='fa fa-university me-1' style='color:#93c5fd;'></i>";
                         }
-
-                        // Status Header
-                        else if (col.ColumnName.Equals(
-                            "Status",
-                            StringComparison.OrdinalIgnoreCase))
+                        else if (colName.Equals("Proceedings", StringComparison.OrdinalIgnoreCase))
                         {
-                            sb.AppendFormat(
-                                "<th style='width:40%;min-width:300px;" +
-                                "white-space:normal;" +
-                                "word-break:break-word;" +
-                                "overflow-wrap:anywhere;" +
-                                "background:#1974d2;color:#fff;" +
-                                "font-size:12px;font-weight:600;'>{0}</th>",
-                                HttpUtility.HtmlEncode(col.ColumnName));
+                            thStyle = "min-width:160px;";
+                            thClass += " sr-th-proc";
+                            iconHtml = "<i class='fa fa-folder-open me-1' style='color:#93c5fd;'></i>";
                         }
-
-                        // Other Headers
+                        else if (colName.Equals("Resolution Unique ID", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:150px;";
+                            thClass += " sr-th-uid";
+                            iconHtml = "<i class='fa fa-hashtag me-1' style='color:#93c5fd;'></i>";
+                        }
+                        else if (colName.Equals("Meeting Date", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:115px;white-space:nowrap;";
+                            thClass += " sr-th-date";
+                            iconHtml = "<i class='fa fa-calendar me-1' style='color:#93c5fd;'></i>";
+                        }
+                        else if (colName.Equals("Subject", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:320px;max-width:550px;";
+                            thClass += " sr-th-subject";
+                            iconHtml = "<i class='fa fa-file-text-o me-1' style='color:#93c5fd;'></i>";
+                        }
+                        else if (colName.Equals("Resolution No", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:90px;text-align:center;";
+                            thClass += " sr-th-resno";
+                            iconHtml = "<i class='fa fa-tag me-1' style='color:#93c5fd;'></i>";
+                        }
+                        else if (colName.Equals("Status", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:180px;";
+                            thClass += " sr-th-status";
+                            iconHtml = "<i class='fa fa-info-circle me-1' style='color:#93c5fd;'></i>";
+                        }
+                        else if (colName.Equals("Currently With", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:190px;";
+                            thClass += " sr-th-with";
+                            iconHtml = "<i class='fa fa-user me-1' style='color:#93c5fd;'></i>";
+                        }
+                        else if (colName.Equals("Approvals", StringComparison.OrdinalIgnoreCase) ||
+                                 colName.Equals("Approval Orders", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:130px;";
+                            thClass += " sr-th-approvals";
+                            iconHtml = "<i class='fa fa-check-circle-o me-1' style='color:#93c5fd;'></i>";
+                        }
+                        else if (colName.Equals("Details", StringComparison.OrdinalIgnoreCase))
+                        {
+                            thStyle = "min-width:200px;";
+                            thClass += " sr-th-details";
+                        }
                         else
                         {
-                            sb.AppendFormat(
-                                "<th style='white-space:nowrap;" +
-                                "background:#1974d2;color:#fff;" +
-                                "font-size:12px;font-weight:600;'>{0}</th>",
-                                HttpUtility.HtmlEncode(col.ColumnName));
+                            thStyle = "min-width:110px;";
                         }
+
+                        sb.AppendFormat("<th class='{0}' style='{1} background-color:#1e3a8a !important; color:#ffffff !important; border:1px solid #334155 !important; text-align:center; vertical-align:middle; padding:9px 8px; font-weight:700;'>{2}{3}</th>", thClass, thStyle, iconHtml, HttpUtility.HtmlEncode(colName));
                     }
 
                     sb.Append("</tr>");
@@ -13596,253 +13575,109 @@ namespace CMNirdesh.Controllers
                     // =====================================================
                     // BODY
                     // =====================================================
-
                     sb.Append("<tbody>");
 
                     foreach (DataRow row in dt.Rows)
                     {
-                        sb.Append("<tr>");
+                        sb.Append("<tr class='sr-row'>");
 
                         foreach (DataColumn col in dt.Columns)
                         {
-                            // Do not display FileType
-                            if (col.ColumnName.Equals(
-                                "FileType",
-                                StringComparison.OrdinalIgnoreCase))
+                            if (col.ColumnName.Equals("FileType", StringComparison.OrdinalIgnoreCase))
                                 continue;
 
-                            // =================================================
-                            // PROCEEDINGS
-                            // =================================================
-
-                            if (col.ColumnName.Equals(
-                                "Proceedings",
-                                StringComparison.OrdinalIgnoreCase))
+                            if (col.ColumnName.Equals("Proceedings", StringComparison.OrdinalIgnoreCase))
                             {
-                                string fileNo = row[col] == DBNull.Value
-                                    ? ""
-                                    : row[col].ToString();
-
-                                string fileType = "";
-
-                                if (dt.Columns.Contains("FileType") &&
-                                    row["FileType"] != DBNull.Value)
-                                {
-                                    fileType = row["FileType"].ToString();
-                                }
-
-                                string displayText = fileNo;
-
-                                if (!string.IsNullOrWhiteSpace(fileType))
-                                {
-                                    displayText +=
-                                        " (" + fileType + ")";
-                                }
+                                string fileNo = row[col] == DBNull.Value ? "" : row[col].ToString();
+                                string fileType = (dt.Columns.Contains("FileType") && row["FileType"] != DBNull.Value) ? row["FileType"].ToString() : "";
+                                string typeBadge = !string.IsNullOrWhiteSpace(fileType)
+                                    ? string.Format("<span class='sr-pill-badge sr-badge-filetype'>{0}</span>", HttpUtility.HtmlEncode(fileType))
+                                    : "";
 
                                 sb.AppendFormat(
-                                    "<td style='font-size:12px;" +
-                                    "white-space:normal;" +
-                                    "word-break:break-word;" +
-                                    "overflow-wrap:anywhere;' " +
-                                    "class='td-data'>" +
-
-                                    "<a href='javascript:void(0);' " +
-                                    "class='green' " +
-                                    "id='{0}' " +
-                                    "onclick=\"EditMlaDispatch(" +
-                                    "this,0,'Diary')\">" +
-
-                                    "{1}</a></td>",
-
+                                    "<td class='sr-td sr-td-proc'>" +
+                                    "<a href='javascript:void(0);' class='sr-table-link sr-link-proceedings' id='{0}' onclick=\"EditMlaDispatch(this,0,'Diary')\" title='Open Proceeding Details'>" +
+                                    "<i class='fa fa-folder-open-o me-1 text-primary'></i><span class='sr-link-text'>{1}</span>{2}</a></td>",
                                     HttpUtility.HtmlEncode(fileNo),
-                                    HttpUtility.HtmlEncode(displayText));
+                                    HttpUtility.HtmlEncode(fileNo),
+                                    typeBadge);
                             }
-
-                            // =================================================
-                            // RESOLUTION UNIQUE ID
-                            // =================================================
-
-                            else if (col.ColumnName.Equals(
-                                "Resolution Unique ID",
-                                StringComparison.OrdinalIgnoreCase))
+                            else if (col.ColumnName.Equals("Resolution Unique ID", StringComparison.OrdinalIgnoreCase))
                             {
-                                string referenceId =
-                                    row[col] == DBNull.Value
-                                        ? ""
-                                        : row[col].ToString();
-
+                                string referenceId = row[col] == DBNull.Value ? "" : row[col].ToString();
                                 sb.AppendFormat(
-                                    "<td style='font-size:12px;" +
-                                    "white-space:normal;" +
-                                    "word-break:break-word;" +
-                                    "overflow-wrap:anywhere;' " +
-                                    "class='td-data'>" +
-
-                                    "<a href='javascript:void(0);' " +
-                                    "class='green' " +
-                                    "id='{0}' " +
-                                    "onclick=\"EditMlaDispatch(" +
-                                    "this,0,'Dispatch')\">" +
-
-                                    "{1}</a></td>",
-
+                                    "<td class='sr-td sr-td-uid'>" +
+                                    "<a href='javascript:void(0);' class='sr-table-link sr-link-uid' id='{0}' onclick=\"EditMlaDispatch(this,0,'Dispatch')\" title='Open Resolution Dispatch Details'>" +
+                                    "<i class='fa fa-hashtag me-1 text-success'></i><span class='sr-link-text'>{1}</span></a></td>",
                                     HttpUtility.HtmlEncode(referenceId),
                                     HttpUtility.HtmlEncode(referenceId));
                             }
-
-                            // =================================================
-                            // MEETING DATE
-                            // =================================================
-
-                            else if (col.ColumnName.Equals(
-                                "Meeting Date",
-                                StringComparison.OrdinalIgnoreCase))
+                            else if (col.ColumnName.Equals("MC Name", StringComparison.OrdinalIgnoreCase))
                             {
-                                string meetingDate = "";
-
-                                if (row[col] != DBNull.Value)
-                                {
-                                    meetingDate =
-                                        Convert.ToDateTime(row[col])
-                                        .ToString("dd-MMM-yyyy");
-                                }
-
+                                string mcName = row[col] == DBNull.Value ? "" : row[col].ToString();
                                 sb.AppendFormat(
-                                    "<td style='font-size:12px;" +
-                                    "white-space:nowrap;'>{0}</td>",
+                                    "<td class='sr-td sr-td-mc'><div class='sr-mc-cell'><i class='fa fa-university text-primary me-1'></i><span class='fw-semibold'>{0}</span></div></td>",
+                                    HttpUtility.HtmlEncode(mcName));
+                            }
+                            else if (col.ColumnName.Equals("Meeting Date", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string meetingDate = row[col] != DBNull.Value
+                                    ? Convert.ToDateTime(row[col]).ToString("dd-MMM-yyyy")
+                                    : "";
+                                sb.AppendFormat(
+                                    "<td class='sr-td sr-td-date'><div class='sr-date-pill'><i class='fa fa-calendar-o me-1 text-muted'></i><span>{0}</span></div></td>",
                                     HttpUtility.HtmlEncode(meetingDate));
                             }
-
-                            // =================================================
-                            // STATUS
-                            // HTML IS ALLOWED
-                            // =================================================
-
-                            else if (col.ColumnName.Equals(
-                                "Status",
-                                StringComparison.OrdinalIgnoreCase))
+                            else if (col.ColumnName.Equals("Resolution No", StringComparison.OrdinalIgnoreCase))
                             {
-                                string status =
-                                    row[col] == DBNull.Value
-                                        ? ""
-                                        : row[col].ToString();
-
-                                // Normalize BR tags
-                                status = status
-                                    .Replace("</br>", "<br />")
-                                    .Replace("<br>", "<br />");
-
+                                string resNo = row[col] == DBNull.Value ? "" : row[col].ToString();
                                 sb.AppendFormat(
-                                    "<td style='font-size:12px;" +
-                                    "white-space:normal;" +
-                                    "word-break:break-word;" +
-                                    "overflow-wrap:anywhere;" +
-                                    "line-height:1.5;" +
-                                    "vertical-align:top;'>{0}</td>",
+                                    "<td class='sr-td sr-td-resno text-center'><span class='sr-res-badge'>{0}</span></td>",
+                                    HttpUtility.HtmlEncode(resNo));
+                            }
+                            else if (col.ColumnName.Equals("Status", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string status = row[col] == DBNull.Value ? "" : row[col].ToString();
+                                status = status.Replace("</br>", "<br />").Replace("<br>", "<br />");
+                                sb.AppendFormat(
+                                    "<td class='sr-td sr-td-status'><div class='sr-status-cell'>{0}</div></td>",
                                     status);
                             }
-
-                            // =================================================
-                            // APPROVALS
-                            // HTML IS ALLOWED
-                            // =================================================
-
-                            else if (
-                                col.ColumnName.Equals(
-                                    "Approval Orders",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                col.ColumnName.Equals(
-                                    "Approvals",
-                                    StringComparison.OrdinalIgnoreCase))
+                            else if (col.ColumnName.Equals("Currently With", StringComparison.OrdinalIgnoreCase))
                             {
-                                string approvals =
-                                    row[col] == DBNull.Value
-                                        ? ""
-                                        : row[col].ToString();
-
+                                string withUser = row[col] == DBNull.Value ? "" : row[col].ToString();
                                 sb.AppendFormat(
-                                    "<td style='font-size:12px;" +
-                                    "white-space:normal;" +
-                                    "word-break:break-word;" +
-                                    "overflow-wrap:anywhere;" +
-                                    "line-height:1.5;" +
-                                    "vertical-align:top;'>{0}</td>",
+                                    "<td class='sr-td sr-td-with'><div class='sr-with-cell'><i class='fa fa-user-circle-o text-secondary me-1'></i><span>{0}</span></div></td>",
+                                    HttpUtility.HtmlEncode(withUser));
+                            }
+                            else if (col.ColumnName.Equals("Approval Orders", StringComparison.OrdinalIgnoreCase) ||
+                                     col.ColumnName.Equals("Approvals", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string approvals = row[col] == DBNull.Value ? "" : row[col].ToString();
+                                sb.AppendFormat(
+                                    "<td class='sr-td sr-td-approvals'>{0}</td>",
                                     approvals);
                             }
-
-                            // =================================================
-                            // DETAILS
-                            // 20% WIDTH
-                            // HTML <br/> ALLOWED
-                            // =================================================
-
-                            else if (col.ColumnName.Equals(
-                                "Details",
-                                StringComparison.OrdinalIgnoreCase))
+                            else if (col.ColumnName.Equals("Details", StringComparison.OrdinalIgnoreCase))
                             {
-                                string details =
-                                    row[col] == DBNull.Value
-                                        ? ""
-                                        : row[col].ToString();
-
-                                // Normalize BR tags
-                                details = details
-                                    .Replace("</br>", "<br />")
-                                    .Replace("<br>", "<br />");
-
+                                string details = row[col] == DBNull.Value ? "" : row[col].ToString();
+                                details = details.Replace("</br>", "<br />").Replace("<br>", "<br />");
                                 sb.AppendFormat(
-                                    "<td style='width:20%;" +
-                                    "min-width:200px;" +
-                                    "white-space:normal;" +
-                                    "word-break:break-word;" +
-                                    "overflow-wrap:anywhere;" +
-                                    "font-size:12px;" +
-                                    "vertical-align:top;'>{0}</td>",
+                                    "<td class='sr-td sr-td-details'><div class='sr-details-box'>{0}</div></td>",
                                     details);
                             }
-
-                            // =================================================
-                            // SUBJECT
-                            // 40% WIDTH
-                            // =================================================
-
-                            else if (col.ColumnName.Equals(
-                                "Subject",
-                                StringComparison.OrdinalIgnoreCase))
+                            else if (col.ColumnName.Equals("Subject", StringComparison.OrdinalIgnoreCase))
                             {
-                                string subject =
-                                    row[col] == DBNull.Value
-                                        ? ""
-                                        : row[col].ToString();
-
+                                string subject = row[col] == DBNull.Value ? "" : row[col].ToString();
                                 sb.AppendFormat(
-                                    "<td style='width:40%;" +
-                                    "min-width:400px;" +
-                                    "white-space:normal;" +
-                                    "word-break:break-word;" +
-                                    "overflow-wrap:anywhere;" +
-                                    "font-size:12px;" +
-                                    "vertical-align:top;'>{0}</td>",
+                                    "<td class='sr-td sr-td-subject'><div class='sr-subject-box' title='{0}'>{0}</div></td>",
                                     HttpUtility.HtmlEncode(subject));
                             }
-
-                            // =================================================
-                            // NORMAL COLUMNS
-                            // =================================================
-
                             else
                             {
-                                string value =
-                                    row[col] == DBNull.Value
-                                        ? ""
-                                        : row[col].ToString();
-
+                                string value = row[col] == DBNull.Value ? "" : row[col].ToString();
                                 sb.AppendFormat(
-                                    "<td style='font-size:12px;" +
-                                    "white-space:normal;" +
-                                    "word-break:break-word;" +
-                                    "overflow-wrap:anywhere;" +
-                                    "vertical-align:top;'>{0}</td>",
+                                    "<td class='sr-td'>{0}</td>",
                                     HttpUtility.HtmlEncode(value));
                             }
                         }
@@ -13857,10 +13692,10 @@ namespace CMNirdesh.Controllers
                 else
                 {
                     sb.Append(
-                        "<div class='alert alert-warning " +
-                        "text-center mt-3'>" +
-                        "<i class='fa fa-exclamation-circle'></i> " +
-                        "No Records Found" +
+                        "<div class='sr-no-records text-center py-5 my-3'>" +
+                        "<div class='sr-no-records-icon mb-3'><i class='fa fa-search text-muted' style='font-size:38px;opacity:0.5;'></i></div>" +
+                        "<h5 class='fw-semibold text-dark mb-1'>No Resolution Records Found</h5>" +
+                        "<p class='text-muted small mb-0'>No matching resolution proceedings found for the selected parameters. Please adjust your filters and try again.</p>" +
                         "</div>");
                 }
             }
@@ -18570,6 +18405,10 @@ tr { page-break-inside: avoid }
 
         public ActionResult AdvanceResolutioSearch(string type = null)
         {
+            if (string.IsNullOrEmpty(CurrentSession.UserID))
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
             return View();
         }
 

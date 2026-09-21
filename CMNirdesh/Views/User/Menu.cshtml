@@ -1,209 +1,121 @@
-﻿@model  CMNirdesh.Models.UserMenu
+@model CMNirdesh.Models.UserMenu
 @using CMNirdesh.Models
 
-<head>
-    @*<script src="~/Scripts/sidebar.js"></script>*@
-    <script>
-        $(document).ready(function () {
-            $("#openbtn").click(function () {
-              
-                $("#closebtn").fadeIn("slow");
-                $("#openbtn").fadeOut("slow");
-                $(".menu-item-text").addClass("shown");
-                $(".menu-item-text").removeClass("hidden");
-            });
-
-            $("#closebtn").click(function () {
-               
-                $("#openbtn").fadeIn("slow");
-                $("#closebtn").fadeOut("slow");
-                $(".menu-item-text").removeClass("hidden");
-                $(".sub-nav-list").removeClass("hidden");
-            });
-
-            $(".menu-list-item-link").click(function () {
-                $("#closebtn").fadeIn("slow");
-                $("#openbtn").fadeOut("slow");
-                $(".menu-item-text").addClass("shown");
-                $(".menu-item-text").removeClass("hidden");
-
-            });
-        });
-
-        /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
-        function openNav() {
-            document.getElementById("mySidebar").style.width = "315px";
-            document.getElementById("main-content").style.marginLeft = "315px";
-            
-           
-            document.getElementById("openbtn").style.display = "none";
-            document.getElementById("closebtn").style.display = "initial";
-
-        }
-
-        /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
-        function closeNav() {
-            document.getElementById('mySidebar').style.width = "120px";
-            document.getElementById("main-content").style.marginLeft = "120px";
-            //const elements = document.getElementsByClassName("menu-item-text");
-            //if (elements.length > 0) {
-            //    alert("" + elements.length);
-            //    document.getElementById("menuitemtxt").style.display = "none";
-            //}
-           
-            document.getElementById("openbtn").style.display = "initial";
-            document.getElementById("closebtn").style.display = "none";
-
-
-        }
-
-    </script>
-
-    <style>
-
-        .overlay {
-            height: 100%;
-            width: 0; /* Start hidden */
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.9);
-            overflow-x: hidden;
-            transition: 0.5s;
-        }
-
-        .closebtn {
-            position: absolute;
-            top: 20px;
-            right: 45px;
-            font-size: 40px;
-            color: white;
-        }
-
-        .badge-notification i {
-            width: 10px;
-            display: inline-block;
-            text-align: center;
-            vertical-align: middle;
-            position: relative;
-        }
-
-        .badge-notification .badge:after {
-            content: "100";
-            position: absolute;
-            background: blue;
-            height: 2rem;
-            top: 1rem;
-            right: 1.5rem;
-            width: 2rem;
-            text-align: center;
-            line-height: 2rem;
-            font-size: 1rem;
-            border-radius: 50%;
-            color: white;
-            border: 1px solid blue;
-        }
-
-        .fa-stack[data-count]:after {
-            position: absolute;
-            right: 0%;
-            top: 1%;
-            content: attr(data-count);
-            font-size: 30%;
-            padding: .6em;
-            border-radius: 999px;
-            line-height: .75em;
-            color: white;
-            background: rgba(255,0,0,.85);
-            text-align: center;
-            min-width: 2em;
-            font-weight: bold;
-        }
-
-        .bubble {
-            background-color: red;
-            color: white;
-            font-size: 16px;
-            border-radius: 47px;
-            position: absolute;
-            text-align: center;
-            padding: 3px 12px 1px 10px;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-       .bubble_left
-       {
-            margin-left: -80px !important;
-        }
-            
-       
-    </style>
-
-
-
-</head>
-<body>
-
-
-
-
-
-    <a class="closebtn" id="closebtn" onclick="closeNav()"> <i class="fas fa-bars"></i> </a>
-    <a class="" id="openbtn" onclick="openNav()"> <i class="fas fa-bars"></i> </a>
-
-    @*<a class="closebtn" id="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
-    <a class="" id="openbtn" onclick="openNav()"><i class="fas fa-bars"></i></a>*@
-
-    <div id="myNav" class="overlay">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <!-- Add your navigation links here -->
+<div class="portal-sidebar-wrapper">
+    <!-- Top Header Bar with Navigation Label and Collapse/Expand Toggle Button -->
+    <div class="portal-sidebar-header">
+        <div class="portal-sidebar-title-container">
+            <span class="portal-sidebar-header-badge">
+                <i class="fas fa-layer-group portal-sidebar-header-icon"></i>
+            </span>
+            <span class="portal-sidebar-header-title">Navigation</span>
+        </div>
+        <button type="button"
+                class="portal-sidebar-toggle-button"
+                id="portalSidebarToggleBtn"
+                onclick="toggleSidebarNav();"
+                title="Collapse / Expand Menu">
+            <i class="fas fa-bars portal-sidebar-toggle-icon" id="portalSidebarToggleIcon"></i>
+        </button>
     </div>
 
+    <!-- Legacy Compatibility Anchors -->
+    <a class="closebtn" id="closebtn" onclick="closeNav()" style="display:none !important;"><i class="fas fa-bars"></i></a>
+    <a class="" id="openbtn" onclick="openNav()" style="display:none !important;"><i class="fas fa-bars"></i></a>
 
-    <div class="left-menu-sticky">
-
-
-        <ul class="list-unstyled ps-0">
-
-            @foreach (CMNirdesh.Models.MenuModel menu in Model.MenuList)
+    <!-- Scrollable Navigation Menu List -->
+    <div class="portal-sidebar-scrollable">
+        <ul class="list-unstyled portal-sidebar-nav-list mb-0">
+            @if (Model != null && Model.MenuList != null)
             {
-                <li class="menu-list-item mb-1 " id="@menu.MenuId" label="@menu.MenuName" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="@menu.MenuName">
-                    <a class="menu-list-item-link align-items-center" data-bs-toggle="collapse" data-bs-target="#@menu.MenuName.Replace(" ","")" aria-expanded="false" onclick="openNav()" aria-controls="@menu.MenuName">
-                        <span class="menu-item-icon">
-                            <img src="@Url.Content("~/" + menu.icon)" />
-                        </span>
-                        <span id="menuitemtxt" class="menu-item-text">@menu.MenuName</span>
-                        @if (menu.MenuCount > 0)
-                        {
-                            <span class="bubble" style="">@menu.MenuCount</span>
-                        }
-                    </a>
+                foreach (CMNirdesh.Models.MenuModel menu in Model.MenuList)
+                {
+                    var menuKey = "portal_sub_" + menu.MenuId + "_" + (menu.MenuName ?? "").Replace(" ", "").Replace("/", "").Replace("-", "");
+                    var hasSubmenu = menu._LstSubmenu != null && menu._LstSubmenu.Count > 0;
 
-                    <div class="sub-nav-list collapse  " id="@menu.MenuName.Replace(" ","")">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small" id="menu_@menu.MenuName.Replace(" ","")">
-                            @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                    <li class="portal-sidebar-nav-item"
+                        id="@menu.MenuId"
+                        label="@menu.MenuName"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title="@menu.MenuName">
+
+                        <a class="portal-sidebar-nav-link align-items-center"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#@menuKey"
+                           aria-expanded="false"
+                           aria-controls="@menuKey"
+                           onclick="onSidebarMenuClick(this);">
+
+                            <span class="portal-sidebar-icon-box">
+                                <img class="portal-sidebar-menu-icon" src="@Url.Content("~/" + menu.icon)" alt="@menu.MenuName" />
+                                @if (menu.MenuCount > 0)
+                                {
+                                    <span class="portal-sidebar-mini-dot"></span>
+                                }
+                            </span>
+
+                            <span class="portal-sidebar-item-label">@menu.MenuName</span>
+
+                            @if (menu.MenuCount > 0)
                             {
-                                <li value='@submenu.SubMenuId'>
-                                    <a class="link-dark rounded" href="@Url.Action(submenu.ActionName, submenu.ControllerName,new { type = submenu.Type})">
-
-                                        <span class="submenu-item-text"> @submenu.SubMenuName</span>
-                                        @if (submenu.Count > 0)
-                                        {
-                                            <span class="bubble" style="">@submenu.Count</span>
-                                        }
-
-                                    </a>
-                                </li>
+                                <span class="portal-sidebar-item-badge">@menu.MenuCount</span>
                             }
-                        </ul>
-                    </div>
-                </li>
+
+                            @if (hasSubmenu)
+                            {
+                                <i class="fas fa-chevron-right portal-sidebar-arrow-chevron"></i>
+                            }
+                        </a>
+
+                        @if (hasSubmenu)
+                        {
+                            <div class="collapse portal-sidebar-submenu-collapse" id="@menuKey">
+                                <ul class="list-unstyled portal-sidebar-submenu-list" id="menu_@menuKey">
+                                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                                    {
+                                        <li class="portal-sidebar-submenu-item" value='@submenu.SubMenuId'>
+                                            <a class="portal-sidebar-submenu-link" href="@Url.Action(submenu.ActionName, submenu.ControllerName, new { type = submenu.Type })">
+                                                <span class="portal-sidebar-submenu-bullet"></span>
+                                                <span class="portal-sidebar-submenu-label">@submenu.SubMenuName</span>
+                                                @if (submenu.Count > 0)
+                                                {
+                                                    <span class="portal-sidebar-submenu-badge">@submenu.Count</span>
+                                                }
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </li>
+                }
             }
         </ul>
     </div>
+</div>
 
+<script>
+    function onSidebarMenuClick(el) {
+        var isCollapsed = document.body.classList.contains('portal-sidebar-is-collapsed') ||
+            (document.getElementById('mySidebar') && document.getElementById('mySidebar').classList.contains('portal-sidebar-collapsed'));
 
-</body>
+        if (isCollapsed) {
+            if (typeof setSidebarState === 'function') {
+                setSidebarState(true);
+            }
+        }
+    }
 
-
+    $(document).ready(function () {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+            var tooltipElements = document.querySelectorAll('.portal-sidebar-nav-item[data-bs-toggle="tooltip"]');
+            tooltipElements.forEach(function (el) {
+                new bootstrap.Tooltip(el, {
+                    boundary: document.body,
+                    fallbackPlacements: ['right', 'top']
+                });
+            });
+        }
+    });
+</script>

@@ -20,7 +20,7 @@
     @*<link href="~/Content/bootstrap.css" rel="stylesheet" />*@
     @*<link href="~/Content/font-awesome_ms.min.css" rel="stylesheet" />*@
     <link href="~/Content/ace.css" rel="stylesheet" />
-    <link href="~/Content/style_ms.css" rel="stylesheet" />
+    <link href="~/Content/style_ms.css?v=2.4" rel="stylesheet" />
     @*<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">*@
 
     <title> MC House</title>
@@ -32,10 +32,29 @@
     <script>
         $(document).ready(function () {
 
-            var alertcount = $("#hdnalertCount").val();
-            $("#alertcount").html(alertcount);
-            var messagecount = $("#hdnMessageCount").val();
-            $("#Observationcount").html(messagecount);
+            var alertcount = parseInt($("#hdnalertCount").val()) || 0;
+            if (alertcount > 0) {
+                $("#alertcount").text(alertcount > 99 ? '99+' : alertcount).show().addClass('has-alerts');
+                $("#alertcountMobile").text(alertcount > 99 ? '99+' : alertcount).show();
+            } else {
+                $("#alertcount").text('').hide().removeClass('has-alerts');
+                $("#alertcountMobile").text('').hide();
+            }
+
+            var messagecount = parseInt($("#hdnMessageCount").val()) || 0;
+            if (messagecount > 0) {
+                $("#Observationcount").text(messagecount > 99 ? '99+' : messagecount).show().addClass('has-alerts');
+                $("#ObservationcountMobile").text(messagecount > 99 ? '99+' : messagecount).show();
+            } else {
+                $("#Observationcount").text('').hide().removeClass('has-alerts');
+                $("#ObservationcountMobile").text('').hide();
+            }
+
+            if (alertcount > 0 || messagecount > 0) {
+                $("#mobileMenuDotBadge").show();
+            } else {
+                $("#mobileMenuDotBadge").hide();
+            }
 
             $("#openbtn").click(function () {
                 $("#closebtn").fadeIn("slow");
@@ -73,26 +92,30 @@
                 $("#logoutpic").css("display", "none");
                 $("#homebutton").css("display", "none");
                 $("#notify").css("display", "none");
-
-
+                $("#headerLoginBadge").css("display", "flex");
+                $("#btntoggle").addClass("portal-toggler-hidden").css("display", "none");
             }
             else if (sess == 'no' && HomeButton == 'yes') {
                 $("#loginnn").css("display", "none");
                 $("#logouttt").css("display", "none");
-               $("#navbarSupportedContent").css("display", "none");
+                $("#navbarSupportedContent").css("display", "none");
                 $("#logoutpic").css("display", "none");
                 $("#homebutton").css("display", "block");
                 $("#notify").css("display", "none");
+                $("#headerLoginBadge").css("display", "flex");
+                $("#btntoggle").addClass("portal-toggler-hidden").css("display", "none");
             }
             else if (sess == 'yes') {
                 $("#loginnn").css("display", "none");
                 $("#logouttt").css("display", "block");
                 $("#navbarSupportedContent").css("display", "block");
+                $("#headerLoginBadge").css("display", "none");
                 GetSwitchUser();
                 GetDepartmentNav();
                 //getofficenav();
                 $("#logoutpic").css("display", "block");
                 $("#homebutton").css("display", "none");
+                $("#btntoggle").removeClass("portal-toggler-hidden").css("display", "");
             }
             //else {
             //    $("#loginnn").css("display", "none");
@@ -153,25 +176,253 @@
         //}
 
 
-        /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+        function adjustSidebarLayout() {
+            var isMobile = window.innerWidth < 992;
+            var header = document.querySelector('.portal-header');
+            var sidebar = document.getElementById('mySidebar');
+            var bodyDiv = document.getElementById('body');
+            var isUserLoggedIn = document.body.classList.contains('portal-user-logged-in');
+            var isLoginPage = document.body.classList.contains('portal-login-page') || 
+                              window.location.pathname.toLowerCase().indexOf('/account/login') !== -1;
+            var isExpanded = document.body.classList.contains('portal-sidebar-is-expanded') ||
+                             document.body.classList.contains('menu-open');
+
+            var headerHeight = 0;
+            if (header) {
+                headerHeight = header.offsetHeight;
+            }
+            if (!headerHeight || headerHeight < 30) {
+                headerHeight = isUserLoggedIn ? (isMobile ? 220 : 115) : 0;
+            }
+
+            if (sidebar && isUserLoggedIn) {
+                if (isMobile) {
+                    sidebar.style.setProperty('top', '0px', 'important');
+                    sidebar.style.setProperty('height', '100vh', 'important');
+                    sidebar.style.setProperty('left', '0px', 'important');
+                    sidebar.style.setProperty('transform', isExpanded ? 'translate3d(0, 0, 0)' : 'translate3d(-100%, 0, 0)', 'important');
+                    sidebar.style.setProperty('-webkit-transform', isExpanded ? 'translate3d(0, 0, 0)' : 'translate3d(-100%, 0, 0)', 'important');
+                } else {
+                    sidebar.style.removeProperty('transform');
+                    sidebar.style.removeProperty('-webkit-transform');
+                    sidebar.style.removeProperty('left');
+                    sidebar.style.removeProperty('z-index');
+                    sidebar.style.setProperty('top', headerHeight + 'px', 'important');
+                    sidebar.style.setProperty('height', 'calc(100vh - ' + headerHeight + 'px)', 'important');
+                }
+            }
+
+            if (bodyDiv) {
+                if (isUserLoggedIn && !isLoginPage) {
+                    var finalMarginTop = isMobile ? Math.max(headerHeight, 140) : Math.max(headerHeight, 115);
+                    bodyDiv.style.setProperty('margin-top', finalMarginTop + 'px', 'important');
+                } else {
+                    bodyDiv.style.setProperty('margin-top', '0px', 'important');
+                }
+
+                if (!sidebar || !isUserLoggedIn || isLoginPage || isMobile) {
+                    bodyDiv.style.setProperty('margin-left', '0px', 'important');
+                } else {
+                    bodyDiv.style.setProperty('margin-left', isExpanded ? '260px' : '68px', 'important');
+                }
+
+                if (isLoginPage) {
+                    bodyDiv.style.setProperty('padding', '0px', 'important');
+                }
+            }
+
+            var footer = document.getElementById('portalFooter');
+            if (footer) {
+                if (!sidebar || !isUserLoggedIn || isLoginPage || isMobile) {
+                    footer.style.setProperty('margin-left', '0px', 'important');
+                    footer.style.setProperty('width', '100%', 'important');
+                } else {
+                    footer.style.setProperty('margin-left', isExpanded ? '260px' : '68px', 'important');
+                    footer.style.setProperty('width', isExpanded ? 'calc(100% - 260px)' : 'calc(100% - 68px)', 'important');
+                }
+            }
+        }
+        window.addEventListener('load', adjustSidebarLayout);
+        window.addEventListener('DOMContentLoaded', adjustSidebarLayout);
+        window.addEventListener('resize', adjustSidebarLayout);
+        if (window.ResizeObserver) {
+            var ro = new ResizeObserver(function() {
+                adjustSidebarLayout();
+            });
+            window.addEventListener('DOMContentLoaded', function() {
+                var h = document.querySelector('.portal-header');
+                if (h) ro.observe(h);
+            });
+        }
+
+        /* Portal Sidebar State Management (Desktop: Collapsed 68px/Expanded 260px; Mobile: Responsive Drawer) */
+        function setSidebarState(expand) {
+            var sidebar = document.getElementById('mySidebar');
+            var toggleIcon = document.getElementById('portalSidebarToggleIcon');
+            var toggleBtn = document.getElementById('portalSidebarToggleBtn');
+            var bodyDiv = document.getElementById("body");
+            var mainContent = document.getElementById("main-content");
+            var isUserLoggedIn = document.body.classList.contains('portal-user-logged-in');
+            var isMobile = window.innerWidth < 992;
+
+            var footer = document.getElementById('portalFooter');
+
+            if (!sidebar || !isUserLoggedIn) {
+                document.body.classList.remove('portal-sidebar-is-expanded', 'portal-sidebar-is-collapsed', 'menu-open');
+                if (bodyDiv) bodyDiv.style.setProperty('margin-left', '0px', 'important');
+                if (mainContent) mainContent.style.setProperty('margin-left', '0px', 'important');
+                if (footer) {
+                    footer.style.setProperty('margin-left', '0px', 'important');
+                    footer.style.setProperty('width', '100%', 'important');
+                }
+                return;
+            }
+
+            if (expand) {
+                document.body.classList.remove('portal-sidebar-is-collapsed');
+                document.body.classList.add('portal-sidebar-is-expanded', 'menu-open');
+                sidebar.classList.remove('portal-sidebar-collapsed');
+                sidebar.classList.add('portal-sidebar-expanded');
+                sidebar.style.width = "";
+
+                if (isMobile) {
+                    sidebar.style.setProperty('left', '0px', 'important');
+                    sidebar.style.setProperty('transform', 'translate3d(0, 0, 0)', 'important');
+                    sidebar.style.setProperty('-webkit-transform', 'translate3d(0, 0, 0)', 'important');
+                    sidebar.style.setProperty('z-index', '1060', 'important');
+                    sidebar.style.setProperty('display', 'block', 'important');
+                    sidebar.style.setProperty('visibility', 'visible', 'important');
+                    if (footer) {
+                        footer.style.setProperty('margin-left', '0px', 'important');
+                        footer.style.setProperty('width', '100%', 'important');
+                    }
+                } else {
+                    sidebar.style.removeProperty('transform');
+                    sidebar.style.removeProperty('-webkit-transform');
+                    sidebar.style.removeProperty('left');
+                    sidebar.style.removeProperty('z-index');
+                    if (bodyDiv) bodyDiv.style.setProperty('margin-left', '260px', 'important');
+                    if (footer) {
+                        footer.style.setProperty('margin-left', '260px', 'important');
+                        footer.style.setProperty('width', 'calc(100% - 260px)', 'important');
+                    }
+                }
+
+                if (toggleIcon) toggleIcon.className = isMobile ? 'fas fa-times portal-sidebar-toggle-icon' : 'fas fa-bars portal-sidebar-toggle-icon';
+                if (toggleBtn) toggleBtn.setAttribute('title', isMobile ? 'Close Menu' : 'Collapse Panel (Icon Only)');
+                if (!isMobile) {
+                    try { localStorage.setItem('portal_sidebar_state', 'expanded'); } catch (e) { }
+                }
+            } else {
+                document.body.classList.remove('portal-sidebar-is-expanded', 'menu-open');
+                document.body.classList.add('portal-sidebar-is-collapsed');
+                sidebar.classList.remove('portal-sidebar-expanded');
+                sidebar.classList.add('portal-sidebar-collapsed');
+                sidebar.style.width = "";
+
+                if (isMobile) {
+                    sidebar.style.setProperty('transform', 'translate3d(-100%, 0, 0)', 'important');
+                    sidebar.style.setProperty('-webkit-transform', 'translate3d(-100%, 0, 0)', 'important');
+                    if (footer) {
+                        footer.style.setProperty('margin-left', '0px', 'important');
+                        footer.style.setProperty('width', '100%', 'important');
+                    }
+                } else {
+                    sidebar.style.removeProperty('transform');
+                    sidebar.style.removeProperty('-webkit-transform');
+                    sidebar.style.removeProperty('left');
+                    sidebar.style.removeProperty('z-index');
+                    if (bodyDiv) bodyDiv.style.setProperty('margin-left', '68px', 'important');
+                    if (footer) {
+                        footer.style.setProperty('margin-left', '68px', 'important');
+                        footer.style.setProperty('width', 'calc(100% - 68px)', 'important');
+                    }
+                }
+
+                try {
+                    var openSubmenus = document.querySelectorAll('.portal-sidebar-submenu-collapse.show');
+                    openSubmenus.forEach(function (submenu) {
+                        if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                            var bsCollapse = bootstrap.Collapse.getInstance(submenu) || new bootstrap.Collapse(submenu, { toggle: false });
+                            if (bsCollapse && typeof bsCollapse.hide === 'function') {
+                                bsCollapse.hide();
+                            } else {
+                                submenu.classList.remove('show');
+                            }
+                        } else if (typeof $ !== 'undefined' && $.fn && typeof $.fn.collapse === 'function') {
+                            $(submenu).collapse('hide');
+                        } else {
+                            submenu.classList.remove('show');
+                        }
+                    });
+                } catch (err) { }
+
+                if (toggleIcon) toggleIcon.className = 'fas fa-bars portal-sidebar-toggle-icon';
+                if (toggleBtn) toggleBtn.setAttribute('title', isMobile ? 'Open Menu' : 'Expand Panel (Icon with Name)');
+                if (!isMobile) {
+                    try { localStorage.setItem('portal_sidebar_state', 'collapsed'); } catch (e) { }
+                }
+            }
+            if (!isMobile) {
+                adjustSidebarLayout();
+            }
+        }
+
         function openNav() {
-            document.getElementById('mySidebar').style.width = "300px";
-            document.getElementById("body").style.marginLeft = "300px";
-            document.getElementsByClassName("menu-item-text").style.display = "initial";
-            document.getElementById("openbtn").style.display = "none";
-            document.getElementById("closebtn").style.display = "initial";
-
+            setSidebarState(true);
         }
 
-        /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
         function closeNav() {
-            document.getElementById('#mySidebar').style.width = "88px";
-            document.getElementById("body").style.marginLeft = "88px";
-            document.getElementsByClassName("menu-item-text").style.display = "none";
-            document.getElementById("openbtn").style.display = "initial";
-            document.getElementById("closebtn").style.display = "none";
-
+            setSidebarState(false);
         }
+
+        function toggleSidebarNav() {
+            var isCollapsed = document.body.classList.contains('portal-sidebar-is-collapsed') ||
+                (document.getElementById('mySidebar') && document.getElementById('mySidebar').classList.contains('portal-sidebar-collapsed'));
+            setSidebarState(isCollapsed);
+        }
+
+        window.setSidebarState = setSidebarState;
+        window.openNav = openNav;
+        window.closeNav = closeNav;
+        window.toggleSidebarNav = toggleSidebarNav;
+
+        // Restore user's preferred sidebar state on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            var sidebar = document.getElementById('mySidebar');
+            var isUserLoggedIn = document.body.classList.contains('portal-user-logged-in');
+
+            if (!sidebar || !isUserLoggedIn) {
+                document.body.classList.remove('portal-sidebar-is-expanded', 'portal-sidebar-is-collapsed');
+                var bodyDiv = document.getElementById("body");
+                if (bodyDiv) {
+                    bodyDiv.style.setProperty('margin-left', '0px', 'important');
+                }
+                adjustSidebarLayout();
+                return;
+            }
+
+            var isMobile = window.innerWidth < 992;
+            var savedState = null;
+            try { savedState = localStorage.getItem('portal_sidebar_state'); } catch (e) { }
+            // On mobile view: always default to closed
+            if (isMobile) {
+                setSidebarState(false);
+            } else if (savedState === 'expanded') {
+                setSidebarState(true);
+            } else {
+                setSidebarState(false);
+            }
+            setTimeout(adjustSidebarLayout, 100);
+            setTimeout(adjustSidebarLayout, 500);
+        });
+
+        // Close mobile drawer on Escape key
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && document.body.classList.contains('portal-sidebar-is-expanded')) {
+                closeNav();
+            }
+        });
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
@@ -199,340 +450,2470 @@
     <script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
 
     <style>
-        .notifications-btn {
-            margin-left: 12px;
+        /* ==========================================================================
+           EXECUTIVE CIVIC PORTAL HEADER DESIGN SYSTEM (COMPACT AFTER-LOGIN & GENERAL)
+           Every styled element uses a designated semantic class name.
+           ========================================================================== */
+
+        /* Header Container */
+        .portal-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 1050 !important;
+            background: #ffffff !important;
+            box-shadow: 0 2px 12px -2px rgba(15, 23, 42, 0.07) !important;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
         }
 
-        .profile-dropdown {
-            min-width: 260px;
-            border-radius: 10px;
+        /* Civic Tricolor Accent */
+        .portal-civic-strip {
+            height: 3px !important;
+            width: 100% !important;
+            background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
         }
 
-        .profile-img-wrapper {
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
+        /* Primary Navbar Container */
+        .portal-navbar-container {
+            width: 100% !important;
+            background: #ffffff !important;
         }
 
-        .profile-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: 2px solid #dee2e6;
+        .portal-navbar {
+            background-image: none !important;
+            background: #ffffff !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            padding: 4px 20px !important;
+            min-height: 48px !important;
+            display: flex !important;
+            align-items: center !important;
         }
 
-        .profile-name {
-            font-weight: 600;
-            color: #212529;
+        .portal-navbar-inner {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 0 !important;
+            gap: 12px !important;
         }
 
-        .profile-designation {
-            font-size: 12px;
-            display: block;
+        /* Brand Block */
+        .portal-brand-block {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            text-decoration: none !important;
+            flex-shrink: 0 !important;
         }
 
-        .profile-dropdown .dropdown-item {
-            padding: 10px 16px;
-            font-size: 14px;
+        .portal-brand-logo-frame {
+            width: 36px !important;
+            height: 36px !important;
+            background: #ffffff !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 1px 5px rgba(15, 23, 42, 0.08) !important;
+            border: 1px solid #f1f5f9 !important;
+            flex-shrink: 0 !important;
+            transition: transform 0.2s ease !important;
         }
 
-            .profile-dropdown .dropdown-item:hover {
-                background-color: #f8f9fa;
+        .portal-brand-block:hover .portal-brand-logo-frame {
+            transform: scale(1.05) !important;
+        }
+
+        .portal-brand-logo-img {
+            max-height: 26px !important;
+            max-width: 26px !important;
+            object-fit: contain !important;
+        }
+
+        .portal-brand-text-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+        }
+
+        .portal-brand-title {
+            font-size: 17px !important;
+            font-weight: 800 !important;
+            color: #0b2545 !important;
+            letter-spacing: -0.02em !important;
+            line-height: 1.15 !important;
+            margin: 0 !important;
+        }
+
+        .portal-brand-title span {
+            background: linear-gradient(135deg, #0b2545 0%, #1e40af 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        .portal-brand-subtitle {
+            font-size: 9px !important;
+            font-weight: 600 !important;
+            color: #64748b !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            line-height: 1.2 !important;
+            margin: 1px 0 0 0 !important;
+        }
+
+        /* Top Nav Action Items (shown only after login) */
+        .portal-top-nav-collapse {
+            align-items: center !important;
+        }
+
+        .portal-top-nav-collapse[style*="display: none"],
+        .portal-top-nav-collapse[style*="display:none"] {
+            display: none !important;
+        }
+
+        .portal-top-nav-collapse[style*="display: block"],
+        .portal-top-nav-collapse[style*="display:block"] {
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .portal-subnav-bar[style*="display: none"],
+        .portal-subnav-bar[style*="display:none"] {
+            display: none !important;
+        }
+
+        .portal-subnav-bar[style*="display: block"],
+        .portal-subnav-bar[style*="display:block"] {
+            display: block !important;
+        }
+
+        .portal-nav-actions-wrap {
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .portal-nav-action-list {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            list-style: none !important;
+        }
+
+        .portal-nav-item {
+            display: flex !important;
+            align-items: center !important;
+            position: relative !important;
+        }
+
+        /* Redesigned Notification Action Buttons (Advice & Alerts) */
+        .portal-notify-wrap {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            background: rgba(241, 245, 249, 0.75) !important;
+            padding: 3px 5px !important;
+            border-radius: 11px !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        .header-action-icon-btn {
+            width: 35px !important;
+            height: 35px !important;
+            border-radius: 8px !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #475569 !important;
+            text-decoration: none !important;
+            position: relative !important;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        .header-advice-btn {
+            color: #2563eb !important;
+        }
+
+        .header-advice-btn:hover {
+            background: #eff6ff !important;
+            border-color: #93c5fd !important;
+            color: #1d4ed8 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+        }
+
+        .header-alert-btn {
+            color: #ea580c !important;
+        }
+
+        .header-alert-btn:hover {
+            background: #fff7ed !important;
+            border-color: #fed7aa !important;
+            color: #c2410c !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2) !important;
+        }
+
+        .header-action-icon {
+            font-size: 15px !important;
+            transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+
+        .header-advice-btn:hover .header-action-icon {
+            transform: scale(1.15) !important;
+        }
+
+        .header-alert-btn:hover .header-action-icon {
+            transform: scale(1.18) rotate(12deg) !important;
+        }
+
+        /* Notification & Action Badges */
+        .header-action-badge {
+            position: absolute !important;
+            top: -5px !important;
+            right: -6px !important;
+            color: #ffffff !important;
+            font-size: 9px !important;
+            font-weight: 700 !important;
+            min-width: 17px !important;
+            height: 17px !important;
+            padding: 0 4px !important;
+            border-radius: 9999px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 2px solid #ffffff !important;
+            line-height: 1 !important;
+            z-index: 2 !important;
+        }
+
+        .header-advice-badge {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.45) !important;
+        }
+
+        .header-alert-badge {
+            background: linear-gradient(135deg, #f43f5e 0%, #dc2626 100%) !important;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.45) !important;
+        }
+
+        .header-action-badge.has-alerts {
+            animation: notifBadgePulse 2.4s infinite ease-in-out !important;
+        }
+
+        @@keyframes notifBadgePulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.12);
+            }
+        }
+
+        .header-action-badge:empty {
+            display: none !important;
+        }
+
+        /* Switch User Button (Completely removed from Header as requested) */
+        #Switchbutton,
+        .portal-switch-user-item,
+        .portal-switch-user-btn {
+            display: none !important;
+        }
+
+        /* Session Timer Widget */
+        .portal-session-timer-card {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 3px 8px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .portal-session-timer-card:hover {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .portal-timer-icon-wrap {
+            color: #0284c7 !important;
+            font-size: 12px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .portal-timer-info {
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+
+        .portal-timer-label {
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            color: #64748b !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.03em !important;
+        }
+
+        .portal-session-clock {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: #0369a1 !important;
+            font-family: 'Consolas', 'Courier New', monospace !important;
+            letter-spacing: 0.03em !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            min-width: 38px !important;
+            text-align: center !important;
+            display: inline-block !important;
+            margin: 0 !important;
+        }
+
+        .portal-timer-refresh-btn {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            width: 24px !important;
+            height: 24px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            color: #16a34a !important;
+            transition: all 0.25s ease !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+            padding: 0 !important;
+        }
+
+        .portal-timer-refresh-btn:hover {
+            background: #f0fdf4 !important;
+            border-color: #86efac !important;
+            color: #15803d !important;
+            transform: rotate(180deg) !important;
+        }
+
+        .portal-timer-refresh-icon {
+            font-size: 11px !important;
+        }
+
+        /* User Profile Button */
+        .portal-profile-btn {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding: 3px 10px 3px 4px !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .portal-profile-btn:hover,
+        .portal-profile-btn:focus {
+            background: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.07) !important;
+            transform: translateY(-1px) !important;
+            outline: none !important;
+        }
+
+        .portal-profile-btn-content {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .portal-profile-avatar-frame {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 50% !important;
+            overflow: hidden !important;
+            border: 2px solid #3b82f6 !important;
+            box-shadow: 0 1px 4px rgba(59, 130, 246, 0.18) !important;
+            flex-shrink: 0 !important;
+        }
+
+        .portal-profile-avatar-img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+
+        .portal-profile-text-meta {
+            max-width: 130px !important;
+            text-align: left !important;
+        }
+
+        .portal-profile-user-name {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-profile-user-designation {
+            font-size: 10px !important;
+            font-weight: 500 !important;
+            color: #64748b !important;
+            line-height: 1.15 !important;
+            margin: 1px 0 0 0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-profile-user-department {
+            font-size: 9.5px !important;
+            font-weight: 600 !important;
+            color: #0284c7 !important;
+            line-height: 1.15 !important;
+            margin: 1px 0 0 0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        /* Profile Dropdown Menu */
+        .portal-profile-menu {
+            border-radius: 12px !important;
+            border: 1px solid #e2e8f0 !important;
+            padding: 6px !important;
+            min-width: 250px !important;
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
+            margin-top: 6px !important;
+        }
+
+        .portal-profile-menu-header {
+            padding: 0 !important;
+            list-style: none !important;
+        }
+
+        .portal-profile-summary-card {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 8px 10px !important;
+            background: #f8fafc !important;
+            border-radius: 9px !important;
+            text-decoration: none !important;
+            border: 1px solid #f1f5f9 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .portal-profile-summary-card:hover {
+            background: #eff6ff !important;
+            border-color: #dbeafe !important;
+        }
+
+        .portal-menu-avatar-frame {
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 50% !important;
+            overflow: hidden !important;
+            border: 2px solid #3b82f6 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .portal-menu-avatar-img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        .portal-menu-user-info {
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
+
+        .portal-menu-name {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-menu-role {
+            font-size: 11px !important;
+            color: #64748b !important;
+            line-height: 1.25 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-menu-view-profile {
+            display: inline-flex !important;
+            align-items: center !important;
+            font-size: 10.5px !important;
+            font-weight: 600 !important;
+            color: #2563eb !important;
+            margin-top: 2px !important;
+        }
+
+        .portal-menu-divider {
+            margin: 5px 0 !important;
+            border-color: #f1f5f9 !important;
+            opacity: 1 !important;
+        }
+
+        .portal-profile-menu-item-wrap {
+            list-style: none !important;
+        }
+
+        .portal-menu-logout-btn {
+            padding: 7px 10px !important;
+            border-radius: 7px !important;
+            color: #ef4444 !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            text-decoration: none !important;
+        }
+
+        .portal-menu-logout-btn:hover {
+            background: #fef2f2 !important;
+            color: #dc2626 !important;
+        }
+
+        .portal-menu-logout-icon {
+            font-size: 13px !important;
+        }
+
+        /* Mobile 3-Dot Overflow Menu (Hidden by default on Desktop >= 992px) */
+        .portal-mobile-more-item {
+            display: none !important;
+        }
+
+        @@media screen and (min-width: 992px) {
+            .portal-mobile-more-item {
+                display: none !important;
+            }
+        }
+
+        .portal-mobile-more-btn {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 8px !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #334155 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+        }
+
+        .portal-mobile-more-btn:hover,
+        .portal-mobile-more-btn:focus,
+        .portal-mobile-more-btn[aria-expanded="true"] {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+            outline: none !important;
+        }
+
+        .portal-3dot-icon {
+            font-size: 15px !important;
+        }
+
+        .portal-mobile-dot-badge {
+            position: absolute !important;
+            top: -3px !important;
+            right: -3px !important;
+            width: 8px !important;
+            height: 8px !important;
+            border-radius: 50% !important;
+            background: #ef4444 !important;
+            border: 2px solid #ffffff !important;
+            box-shadow: 0 0 5px rgba(239, 68, 68, 0.6) !important;
+            animation: notifBadgePulse 2s infinite ease-in-out !important;
+        }
+
+        .portal-mobile-dropdown-menu {
+            width: 290px !important;
+            max-width: 92vw !important;
+            padding: 8px !important;
+            border-radius: 14px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.15), 0 5px 15px rgba(0, 0, 0, 0.06) !important;
+            margin-top: 8px !important;
+            z-index: 1060 !important;
+        }
+
+        .portal-mobile-user-card-wrap {
+            list-style: none !important;
+            padding: 0 !important;
+        }
+
+        .portal-mobile-user-card {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 10px !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            cursor: pointer !important;
+            transition: all 0.18s ease !important;
+        }
+
+        .portal-mobile-user-card:hover {
+            background: #eff6ff !important;
+            border-color: #bfdbfe !important;
+        }
+
+        .portal-mobile-avatar-frame {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            overflow: hidden !important;
+            border: 2px solid #3b82f6 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .portal-mobile-avatar-img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+
+        .portal-mobile-user-meta {
+            overflow: hidden !important;
+            flex: 1 1 auto !important;
+        }
+
+        .portal-mobile-user-name {
+            font-size: 12.5px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-mobile-user-desig {
+            font-size: 10.5px !important;
+            color: #64748b !important;
+            line-height: 1.15 !important;
+            margin-top: 1px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-mobile-user-dept {
+            font-size: 9.5px !important;
+            color: #0284c7 !important;
+            font-weight: 600 !important;
+            line-height: 1.15 !important;
+            margin-top: 1px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-mobile-action-link {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 8px 10px !important;
+            border-radius: 8px !important;
+            transition: all 0.15s ease !important;
+            text-decoration: none !important;
+        }
+
+        .portal-mobile-action-link:hover {
+            background: #f1f5f9 !important;
+        }
+
+        .portal-mobile-icon-box {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 13.5px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .portal-mobile-icon-box.advice-box {
+            background: #eff6ff !important;
+            color: #2563eb !important;
+        }
+
+        .portal-mobile-icon-box.alert-box {
+            background: #fff7ed !important;
+            color: #ea580c !important;
+        }
+
+        .portal-mobile-action-text {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 1 auto !important;
+            overflow: hidden !important;
+        }
+
+        .portal-mobile-action-title {
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+            line-height: 1.2 !important;
+        }
+
+        .portal-mobile-action-desc {
+            font-size: 10px !important;
+            color: #64748b !important;
+            line-height: 1.15 !important;
+        }
+
+        .portal-mobile-badge {
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            padding: 2px 7px !important;
+        }
+
+        .portal-mobile-menu-item {
+            display: flex !important;
+            align-items: center !important;
+            padding: 8px 10px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            border-radius: 8px !important;
+            transition: all 0.15s ease !important;
+            text-decoration: none !important;
+        }
+
+        .portal-mobile-menu-item:hover {
+            background: #f8fafc !important;
+        }
+
+        .portal-mobile-logout:hover {
+            background: #fef2f2 !important;
+        }
+
+        /* ==========================================================================
+           SECONDARY NAVIGATION SUB-BAR (DEPARTMENT / OFFICE FILTER BAR - COMPACT)
+           ========================================================================== */
+        .portal-subnav-bar {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03) !important;
+            padding: 5px 20px !important;
+            width: 100% !important;
+        }
+
+        .portal-subnav-container {
+            max-width: 100% !important;
+            margin: 0 auto !important;
+        }
+
+        .portal-subnav-row {
+            width: 100% !important;
+        }
+
+        .portal-subnav-list {
+            margin: 0 !important;
+            padding: 0 !important;
+            list-style: none !important;
+            display: flex !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+            width: 100% !important;
+            position: static !important;
+        }
+
+        .portal-subnav-item {
+            display: flex !important;
+            align-items: center !important;
+            margin: 0 !important;
+            position: static !important;
+        }
+
+        /* Dashboard Link Button */
+        .portal-subnav-dashboard-item {
+            position: static !important;
+        }
+
+        .portal-dashboard-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 5px 12px !important;
+            border-radius: 7px !important;
+            text-decoration: none !important;
+            box-shadow: 0 1px 6px rgba(2, 132, 199, 0.22) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            white-space: nowrap !important;
+            min-height: 30px !important;
+        }
+
+        .portal-dashboard-link:hover,
+        .portal-dashboard-link:focus {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3) !important;
+            text-decoration: none !important;
+        }
+
+        .portal-dashboard-icon-wrap {
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .portal-dashboard-icon-img {
+            width: 13px !important;
+            height: 13px !important;
+            filter: brightness(0) invert(1) !important;
+        }
+
+        .portal-dashboard-link-label {
+            line-height: 1 !important;
+        }
+
+        /* Subnav Filter Items */
+        .portal-subnav-filter-item {
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .portal-filter-group {
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+        }
+
+        .portal-select-container {
+            position: relative !important;
+            min-width: 200px !important;
+        }
+
+        .portal-deptt-select-wrap {
+            min-width: 280px !important;
+        }
+
+        .portal-office-select-wrap {
+            min-width: 200px !important;
+        }
+
+        .portal-offid-select-wrap {
+            min-width: 200px !important;
+        }
+
+        .portal-select-field {
+            width: 100% !important;
+            height: 31px !important;
+            line-height: 31px !important;
+            background: #ffffff !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 7px !important;
+            padding: 0 28px 0 10px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            color: #0f172a !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+        }
+
+        .portal-select-field:hover {
+            border-color: #94a3b8 !important;
+        }
+
+        .portal-select-field:focus {
+            border-color: #2563eb !important;
+            outline: none !important;
+            box-shadow: 0 0 0 2.5px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        .portal-select-chevron {
+            position: absolute !important;
+            right: 10px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            pointer-events: none !important;
+            color: #64748b !important;
+            font-size: 10px !important;
+            transition: transform 0.2s ease !important;
+        }
+
+        .portal-filter-counter-pill {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #ffffff !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            padding: 2px 6px !important;
+            border-radius: 9999px !important;
+            position: static !important;
+            box-shadow: 0 1px 4px rgba(220, 38, 38, 0.28) !important;
+            line-height: 1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .portal-filter-counter-pill:empty {
+            display: none !important;
+        }
+
+        /* ==========================================================================
+           MODERN REDESIGNED LEFT SIDEBAR (DUAL STATE DOCK / DRAWER)
+           When closed: width 68px, icon only
+           When opened: width 260px, icon with name
+           ========================================================================== */
+        
+        /* Floating Button and Backdrop: HIDDEN ON DESKTOP */
+        .portal-floating-sidebar-btn {
+            display: none !important;
+        }
+
+        .portal-sidebar-backdrop {
+            display: none !important;
+        }
+
+        .portal-sidebar {
+            position: fixed !important;
+            top: 94px !important;
+            left: 0 !important;
+            height: calc(100vh - 94px) !important;
+            min-height: calc(100vh - 94px) !important;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 50%, #f8fafc 100%) !important;
+            border-right: 1px solid #e2e8f0 !important;
+            box-shadow: 4px 0 20px rgba(15, 23, 42, 0.05), 1px 0 3px rgba(0, 0, 0, 0.02) !important;
+            z-index: 1040 !important;
+            padding: 10px 8px !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.3s ease !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: #cbd5e1 transparent !important;
+        }
+
+        /* Unique Vertical Gradient Accent Stripe on Right Edge */
+        .portal-sidebar::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            right: 0 !important;
+            width: 3px !important;
+            height: 100% !important;
+            background: linear-gradient(180deg, #2563eb 0%, #3b82f6 25%, #60a5fa 55%, #93c5fd 80%, rgba(203, 213, 225, 0.4) 100%) !important;
+            pointer-events: none !important;
+            opacity: 0.9 !important;
+            border-radius: 0 0 0 2px !important;
+        }
+
+        .portal-sidebar::-webkit-scrollbar {
+            width: 4px !important;
+        }
+
+        .portal-sidebar::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+
+        .portal-sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1 !important;
+            border-radius: 4px !important;
+        }
+
+        .portal-sidebar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8 !important;
+        }
+
+        /* STATE 1: OPENED / EXPANDED (ICON WITH NAME) */
+        .portal-sidebar.portal-sidebar-expanded {
+            width: 260px !important;
+            min-width: 260px !important;
+            max-width: 260px !important;
+            padding: 12px 10px !important;
+        }
+
+        /* STATE 2: CLOSED / COLLAPSED (ICON ONLY) */
+        .portal-sidebar.portal-sidebar-collapsed {
+            width: 68px !important;
+            min-width: 68px !important;
+            max-width: 68px !important;
+            padding: 12px 6px !important;
+        }
+
+        .portal-sidebar-inner,
+        .portal-sidebar-wrapper {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        /* Top Header & Collapse Toggle Button */
+        .portal-sidebar-header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 7px 10px !important;
+            margin-bottom: 10px !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+            min-height: 42px !important;
+            transition: all 0.25s ease !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-header {
+            justify-content: center !important;
+            padding: 4px 0 10px 0 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            margin-bottom: 6px !important;
+        }
+
+        .portal-sidebar-title-container {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            overflow: hidden !important;
+            white-space: nowrap !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-title-container {
+            display: none !important;
+        }
+
+        .portal-sidebar-header-badge {
+            width: 26px !important;
+            height: 26px !important;
+            border-radius: 7px !important;
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 11px !important;
+            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3) !important;
+        }
+
+        .portal-sidebar-header-icon {
+            font-size: 11px !important;
+        }
+
+        .portal-sidebar-header-title {
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.1em !important;
+            color: #1e293b !important;
+        }
+
+        .portal-sidebar-toggle-button {
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 7px !important;
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #475569 !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-toggle-button {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 10px !important;
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        .portal-sidebar-toggle-button:hover {
+            background: #2563eb !important;
+            border-color: #1d4ed8 !important;
+            color: #1557e4ff !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3) !important;
+        }
+
+        .portal-sidebar-toggle-icon {
+            font-size: 12px !important;
+            transition: transform 0.3s ease !important;
+        }
+
+        .portal-sidebar-scrollable {
+            flex: 1 1 auto !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        .portal-sidebar-nav-list {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 4px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .portal-sidebar-nav-item {
+            list-style: none !important;
+            position: relative !important;
+            margin-bottom: 4px !important;
+        }
+
+        .portal-sidebar-nav-link {
+            display: flex !important;
+            align-items: center !important;
+            padding: 7px 9px !important;
+            border-radius: 10px !important;
+            color: #334155 !important;
+            text-decoration: none !important;
+            background: #ffffff !important;
+            border: 1px solid #f1f5f9 !important;
+            border-left: 3.5px solid #cbd5e1 !important;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            cursor: pointer !important;
+            position: relative !important;
+            width: 100% !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02) !important;
+        }
+
+        .portal-sidebar-nav-link:hover {
+            background: linear-gradient(90deg, #f0f7ff 0%, #ffffffff 100%) !important;
+            border-color: #dbeafe !important;
+            border-left-color: #2563eb !important;
+            border-left-width: 4px !important;
+            color: #1e40af !important;
+            transform: translateX(3px) !important;
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.1) !important;
+        }
+
+        .portal-sidebar-nav-link:not(.collapsed) {
+            background: linear-gradient(90deg, #eff6ff 0%, #f8fafc 100%) !important;
+            border-color: #bfdbfe !important;
+            border-left-color: #2563eb !important;
+            border-left-width: 4px !important;
+            color: #1e40af !important;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12) !important;
+        }
+
+        /* Collapsed Mode Item Alignment (Center icon in 68px rail) */
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-nav-link {
+            justify-content: center !important;
+            padding: 7px 0 !important;
+            background: #ffffff !important;
+            border: 1px solid #f1f5f9 !important;
+            border-left: 3px solid transparent !important;
+            border-radius: 11px !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-nav-link:hover {
+            background: #eff6ff !important;
+            border-color: #bfdbfe !important;
+            border-left-color: #2563eb !important;
+            transform: scale(1.04) !important;
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        .portal-sidebar-icon-box {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            border: 1px solid #e2e8f0 !important;
+            transition: all 0.22s ease !important;
+            position: relative !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-icon-box {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 10px !important;
+        }
+
+        .portal-sidebar-nav-link:hover .portal-sidebar-icon-box,
+        .portal-sidebar-nav-link:not(.collapsed) .portal-sidebar-icon-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+            border-color: #93c5fd !important;
+            transform: scale(1.06) !important;
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2) !important;
+        }
+
+        .portal-sidebar-menu-icon {
+            width: 20px !important;
+            height: 20px !important;
+            object-fit: contain !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08)) !important;
+        }
+
+        /* Mini Notification Dot when Collapsed and Count > 0 */
+        .portal-sidebar-mini-dot {
+            display: none !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-mini-dot {
+            display: block !important;
+            position: absolute !important;
+            top: 2px !important;
+            right: 2px !important;
+            width: 9px !important;
+            height: 9px !important;
+            border-radius: 50% !important;
+            background: #ef4444 !important;
+            border: 1.5px solid #ffffff !important;
+            box-shadow: 0 1px 3px rgba(220, 38, 38, 0.4) !important;
+        }
+
+        /* Item Label */
+        .portal-sidebar-item-label {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            margin-left: 9px !important;
+            flex: 1 1 auto !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            letter-spacing: -0.01em !important;
+        }
+
+        .portal-sidebar-nav-link:hover .portal-sidebar-item-label,
+        .portal-sidebar-nav-link:not(.collapsed) .portal-sidebar-item-label {
+            color: #1e40af !important;
+        }
+
+        /* HIDE ITEM LABEL WHEN COLLAPSED */
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-item-label {
+            display: none !important;
+            opacity: 0 !important;
+            width: 0 !important;
+        }
+
+        /* Badge on Item */
+        .portal-sidebar-item-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #ffffff !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            padding: 2px 7px !important;
+            border-radius: 999px !important;
+            line-height: 1 !important;
+            margin-left: 6px !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-item-badge {
+            display: none !important;
+        }
+
+        /* Chevron indicator */
+        .portal-sidebar-arrow-chevron {
+            font-size: 11px !important;
+            color: #94a3b8 !important;
+            margin-left: 6px !important;
+            flex-shrink: 0 !important;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease !important;
+        }
+
+        .portal-sidebar-nav-link:not(.collapsed) .portal-sidebar-arrow-chevron {
+            transform: rotate(90deg) !important;
+            color: #2563eb !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-arrow-chevron {
+            display: none !important;
+        }
+
+        /* Submenu */
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-submenu-collapse {
+            display: none !important;
+        }
+
+        /* Redesigned Submenu Container */
+        .portal-sidebar-submenu-collapse {
+            margin: 3px 2px 8px 12px !important;
+            padding: 6px 6px 6px 10px !important;
+            border-left: 2.5px solid #3b82f6 !important;
+            border-top: 1px solid #e2e8f0 !important;
+            border-right: 1px solid #e2e8f0 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            border-radius: 0 10px 10px 0 !important;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(15, 23, 42, 0.03) !important;
+            transition: all 0.25s ease !important;
+        }
+
+        .portal-sidebar.portal-sidebar-collapsed .portal-sidebar-submenu-collapse {
+            display: none !important;
+        }
+
+        .portal-sidebar-submenu-list {
+            margin: 0 !important;
+            padding: 0 !important;
+            list-style: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3px !important;
+        }
+
+        .portal-sidebar-submenu-item {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .portal-sidebar-submenu-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 6px 10px !important;
+            border-radius: 7px !important;
+            font-size: 12.5px !important;
+            font-weight: 500 !important;
+            color: #475569 !important;
+            text-decoration: none !important;
+            background: transparent !important;
+            border: 1px solid transparent !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .portal-sidebar-submenu-link:hover {
+            background: #ffffff !important;
+            border-color: #bfdbfe !important;
+            color: #1d4ed8 !important;
+            transform: translateX(4px) !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08) !important;
+        }
+
+        .portal-sidebar-submenu-bullet {
+            width: 7px !important;
+            height: 7px !important;
+            border-radius: 50% !important;
+            background: #cbd5e1 !important;
+            border: 1.5px solid #ffffff !important;
+            box-shadow: 0 0 0 1px #cbd5e1 !important;
+            margin-right: 9px !important;
+            flex-shrink: 0 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .portal-sidebar-submenu-link:hover .portal-sidebar-submenu-bullet {
+            background: #2563eb !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 0 1.5px #2563eb, 0 0 6px rgba(37, 99, 235, 0.5) !important;
+            transform: scale(1.25) !important;
+        }
+
+        .portal-sidebar-submenu-label {
+            flex: 1 1 auto !important;
+            white-space: normal !important;
+            line-height: 1.35 !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .portal-sidebar-submenu-badge {
+            background: #fee2e2 !important;
+            color: #dc2626 !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            padding: 1px 6px !important;
+            border-radius: 999px !important;
+            border: 1px solid #fecaca !important;
+            line-height: 1 !important;
+            margin-left: 6px !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Content Area Dynamic Margins for Left Sidebar */
+        .data-section {
+            display: block !important;
+            background-color: #f8fafc !important;
+            padding: 0 !important;
+        }
+
+        /* ==========================================================================
+           FULL-BLEED LOGIN PAGE (ZERO HEADER GAP, ZERO SIDE GAPS, 100% FULL SCREEN)
+           ========================================================================== */
+        body.portal-login-page {
+            overflow-x: hidden !important;
+            background-color: #f1f5f9 !important;
+        }
+
+        body.portal-login-page .data-section,
+        body.portal-login-page section.data-section,
+        body.portal-login-page .container-fluid.data-section {
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            border: none !important;
+            display: block !important;
+        }
+
+        body.portal-login-page div#body,
+        body.portal-login-page #body {
+            /* margin-top: 52px !important; */
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-bottom: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: calc(100vh - 52px) !important;
+            background: transparent !important;
+            border: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        body.portal-login-page section.reg_sec,
+        body.portal-login-page .reg_sec {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: calc(100vh - 52px) !important;
+            margin: 0 !important;
+            padding: 24px 16px !important;
+            flex: 1 1 auto !important;
+        }
+
+        /* Default margin for general body content: only applies for logged in */
+        body.portal-user-logged-in div#body,
+        body.portal-user-logged-in #body {
+            margin-top: 118px !important;
+            padding: 15px 24px !important;
+            width: auto !important;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.2s ease !important;
+        }
+
+        /* When user is NOT logged in and not on login page: NO margin-top */
+        body.portal-user-logged-out div#body,
+        body.portal-login-page div#body,
+        body:not(.portal-user-logged-in) div#body {
+            margin-top: 0 !important;
+            margin-left: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        body.portal-user-logged-out #mySidebar,
+        body.portal-user-logged-out .portal-sidebar,
+        body:not(.portal-user-logged-in) #mySidebar,
+        body:not(.portal-user-logged-in) .portal-sidebar {
+            display: none !important;
+        }
+
+        /* ONLY when user is logged in AND sidebar exists: adjust margin-left */
+        body.portal-user-logged-in.portal-sidebar-is-expanded div#body {
+            margin-left: 260px !important;
+            width: auto !important;
+        }
+
+        body.portal-user-logged-in.portal-sidebar-is-collapsed div#body {
+            margin-left: 68px !important;
+            width: auto !important;
+        }
+
+        body.portal-user-logged-in:not(.portal-sidebar-is-expanded):not(.portal-sidebar-is-collapsed) div#body {
+            margin-left: 68px !important;
+            width: auto !important;
+        }
+
+        /* CRITICAL: Force reset margin-left on internal content wrappers so there is ZERO double-indentation gap! */
+        #main-content,
+        .main-content,
+        div#body #main-content,
+        div#body .main-content,
+        div#body > .main-content,
+        #main {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* ==========================================================================
+           EXECUTIVE CIVIC FOOTER DESIGN SYSTEM
+           ========================================================================== */
+        footer.footer_sec,
+        footer.footer_sec.p_fixd,
+        footer.footer_sec.p_fixd.bg_light_rd,
+        .footer_sec.logn_fotr,
+        .bg_light_rd {
+            background: transparent !important;
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        footer.footer_sec,
+        footer.footer_sec.p_fixd,
+        footer.footer_sec.p_fixd.bg_light_rd,
+        footer.portal-footer,
+        .portal-footer,
+        #portalFooter {
+            position: relative !important;
+            bottom: auto !important;
+            clear: both !important;
+            display: block !important;
+            width: 100% !important;
+            margin-top: 25px !important;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+            border-top: 1px solid #e2e8f0 !important;
+            box-shadow: 0 -2px 12px rgba(15, 23, 42, 0.04) !important;
+            z-index: 10 !important;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Default: full width when logged out or on login page */
+        body.portal-user-logged-out footer.portal-footer,
+        body.portal-user-logged-out .portal-footer,
+        body.portal-login-page footer.portal-footer,
+        body.portal-login-page .portal-footer,
+        body:not(.portal-user-logged-in) footer.portal-footer,
+        body:not(.portal-user-logged-in) .portal-footer {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+
+        /* When logged in on desktop: adjust margin-left and width so it aligns with content and NEVER overlaps with the sidebar */
+        body.portal-user-logged-in.portal-sidebar-is-expanded footer.portal-footer,
+        body.portal-user-logged-in.portal-sidebar-is-expanded .portal-footer {
+            margin-left: 260px !important;
+            width: calc(100% - 260px) !important;
+        }
+
+        body.portal-user-logged-in.portal-sidebar-is-collapsed footer.portal-footer,
+        body.portal-user-logged-in.portal-sidebar-is-collapsed .portal-footer,
+        body.portal-user-logged-in:not(.portal-sidebar-is-expanded) footer.portal-footer,
+        body.portal-user-logged-in:not(.portal-sidebar-is-expanded) .portal-footer {
+            margin-left: 68px !important;
+            width: calc(100% - 68px) !important;
+        }
+
+        /* Mobile & Tablet: Footer is always strictly 100% full width with 0px margin-left, never overlapping content */
+        @@media (max-width: 991px) {
+            body footer.portal-footer,
+            body .portal-footer,
+            body.portal-user-logged-in footer.portal-footer,
+            body.portal-user-logged-in .portal-footer,
+            body.portal-user-logged-in.portal-sidebar-is-collapsed footer.portal-footer,
+            body.portal-user-logged-in.portal-sidebar-is-collapsed .portal-footer,
+            body.portal-user-logged-in.portal-sidebar-is-expanded footer.portal-footer,
+            body.portal-user-logged-in.portal-sidebar-is-expanded .portal-footer,
+            body.portal-user-logged-in:not(.portal-sidebar-is-expanded) footer.portal-footer,
+            body.portal-user-logged-in:not(.portal-sidebar-is-expanded) .portal-footer,
+            footer.footer_sec,
+            footer.footer_sec.p_fixd,
+            footer.footer_sec.p_fixd.bg_light_rd,
+            #portalFooter {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+                position: relative !important;
+                bottom: auto !important;
+                clear: both !important;
+                display: block !important;
             }
 
-        .bubble {
-            background-color: red;
-            color: white;
-            font-size: 16px;
-            border-radius: 47px;
-            position: absolute;
-            text-align: center;
-            padding: 3px 12px 1px 10px;
-            font-weight: bold;
-            margin-left: 5px;
+            body.portal-user-logged-in div#body,
+            body.portal-user-logged-in #body,
+            body.portal-user-logged-in.portal-sidebar-is-collapsed div#body,
+            body.portal-user-logged-in.portal-sidebar-is-expanded div#body,
+            body.portal-user-logged-in:not(.portal-sidebar-is-expanded) div#body,
+            div#body,
+            #body {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+                padding-bottom: 70px !important;
+            }
         }
 
-        .hand {
-            cursor: pointer;
+        div#body,
+        #body {
+            min-height: calc(100vh - 200px) !important;
+            padding-bottom: 70px !important;
+            clear: both !important;
         }
 
-        .dropdown-arrow .ms-parent .ms-drop.bottom {
-            height: 103px;
+        .portal-footer-civic-strip {
+            height: 2.5px !important;
+            width: 100% !important;
+            background: linear-gradient(90deg, #ff9933 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #138808 100%) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
         }
 
-        .form-control1 {
-            position: absolute;
-            margin-top: -20px;
+        .portal-footer-container {
+            width: 100% !important;
+            padding: 10px 24px !important;
         }
 
-        #officeNavcount {
-            position: static !important;
+        .portal-footer-inner {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
         }
 
-        #depcount {
-            position: static !important;
+        /* Left: Brand */
+        .portal-footer-brand-section {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+        }
+
+        .portal-footer-logo-frame {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 50% !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+
+        .portal-footer-logo-img {
+            max-height: 22px !important;
+            max-width: 22px !important;
+            object-fit: contain !important;
+        }
+
+        .portal-footer-brand-text {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .portal-footer-brand-title {
+            font-size: 13.5px !important;
+            font-weight: 800 !important;
+            color: #0b2545 !important;
+            line-height: 1.2 !important;
+            letter-spacing: -0.01em !important;
+        }
+
+        .portal-footer-brand-title span {
+            background: linear-gradient(135deg, #0b2545 0%, #1e40af 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        .portal-footer-brand-sub {
+            font-size: 10px !important;
+            font-weight: 500 !important;
+            color: #64748b !important;
+            line-height: 1.2 !important;
+        }
+
+        /* Center: Copyright & Security */
+        .portal-footer-center-section {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+            gap: 3px !important;
+        }
+
+        .portal-footer-copy-text {
+            font-size: 12px !important;
+            color: #475569 !important;
+            line-height: 1.3 !important;
+            margin: 0 !important;
+        }
+
+        .portal-footer-copy-text strong {
+            color: #0f172a !important;
+            font-weight: 700 !important;
+        }
+
+        .portal-footer-security-pill {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            color: #166534 !important;
+            background: #f0fdf4 !important;
+            border: 1px solid #bbf7d0 !important;
+            padding: 1px 8px !important;
+            border-radius: 9999px !important;
+            line-height: 1.3 !important;
+        }
+
+        /* Right: NIC Accreditation */
+        .portal-footer-nic-section {
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .portal-footer-nic-card {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-end !important;
+            gap: 3px !important;
+        }
+
+        .portal-footer-nic-caption {
+            font-size: 9px !important;
+            font-weight: 600 !important;
+            color: #64748b !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.04em !important;
+        }
+
+        .portal-footer-nic-badge-content {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            background: #eff6ff !important;
+            border: 1px solid #bfdbfe !important;
+            border-radius: 7px !important;
+            padding: 3px 8px !important;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.06) !important;
+        }
+
+        .portal-footer-nic-icon {
+            font-size: 11px !important;
+            color: #2563eb !important;
+        }
+
+        .portal-footer-nic-name {
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            color: #1e40af !important;
+            line-height: 1 !important;
+        }
+
+        .portal-footer-nic-tag {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            font-size: 8.5px !important;
+            font-weight: 800 !important;
+            padding: 1px 5px !important;
+            border-radius: 4px !important;
+            letter-spacing: 0.04em !important;
+            line-height: 1.2 !important;
+        }
+
+        /* Mobile footer adjustments */
+        @@media screen and (max-width: 768px) {
+            .portal-footer-container {
+                padding: 10px 14px !important;
+            }
+
+            .portal-footer-inner {
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 8px !important;
+            }
+
+            .portal-footer-brand-section {
+                justify-content: center !important;
+            }
+
+            .portal-footer-nic-card {
+                align-items: center !important;
+            }
+        }
+
+        /* Responsive Breakpoints */
+        @@media screen and (max-width: 1200px) {
+            .portal-deptt-select-wrap {
+                min-width: 230px !important;
+            }
+
+            .portal-office-select-wrap,
+            .portal-offid-select-wrap {
+                min-width: 170px !important;
+            }
+        }
+
+        @@media screen and (max-width: 991px) {
+            .portal-navbar {
+                padding: 4px 14px !important;
+            }
+
+            .portal-subnav-bar {
+                padding: 5px 14px !important;
+            }
+
+            .portal-subnav-list {
+                gap: 6px !important;
+            }
+
+            .portal-deptt-select-wrap,
+            .portal-office-select-wrap,
+            .portal-offid-select-wrap {
+                min-width: 100% !important;
+                width: 100% !important;
+            }
+
+            .portal-subnav-item {
+                width: 100% !important;
+            }
+
+            .portal-filter-group {
+                width: 100% !important;
+            }
+
+            .portal-select-container {
+                width: 100% !important;
+            }
+
+            .portal-profile-text-meta {
+                display: none !important;
+            }
+
+            /* Header on Mobile: ONLY show Session Timer and 3-Dot Dropdown */
+            #notify,
+            .portal-desktop-notify-item,
+            #logoutpic,
+            .portal-user-nav-item {
+                display: none !important;
+            }
+
+            .portal-session-item {
+                display: flex !important;
+            }
+
+            .portal-mobile-more-item {
+                display: flex !important;
+            }
+
+            .portal-top-nav-collapse {
+                display: flex !important;
+                flex-grow: 0 !important;
+            }
+
+            .portal-nav-action-list {
+                gap: 6px !important;
+            }
+
+            .portal-session-timer-card {
+                padding: 2px 6px !important;
+                gap: 4px !important;
+                border-radius: 6px !important;
+            }
+
+            .portal-timer-label {
+                display: none !important;
+            }
+
+            .portal-session-clock {
+                font-size: 11.5px !important;
+                min-width: 34px !important;
+            }
+
+            .portal-timer-refresh-btn {
+                width: 22px !important;
+                height: 22px !important;
+            }
+
+            .portal-brand-subtitle {
+                display: none !important;
+            }
+
+            /* Remove Hamburger Menu Button from Header for Mobile View */
+            .portal-mobile-menu-toggler {
+                display: none !important;
+            }
+
+            /* Floating Button for Mobile View */
+            .portal-floating-sidebar-btn {
+                display: inline-flex !important;
+                position: fixed !important;
+                left: 0 !important;
+                top: 270px !important;
+                z-index: 1045 !important;
+                align-items: center !important;
+                gap: 6px !important;
+                padding: 8px 12px 8px 9px !important;
+                background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+                color: #ffffff !important;
+                border: 1px solid rgba(255, 255, 255, 0.3) !important;
+                border-left: none !important;
+                border-radius: 0 10px 10px 0 !important;
+                box-shadow: 2px 4px 14px rgba(30, 58, 138, 0.38) !important;
+                cursor: pointer !important;
+                font-family: inherit !important;
+                outline: none !important;
+                transform: translate3d(0, 0, 0) !important;
+                -webkit-transform: translate3d(0, 0, 0) !important;
+                transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+                -webkit-transition: -webkit-transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+                will-change: transform, opacity !important;
+            }
+
+            .portal-floating-sidebar-btn:hover,
+            .portal-floating-sidebar-btn:active {
+                background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+                color: #ffffff !important;
+                transform: translate3d(3px, 0, 0) !important;
+                -webkit-transform: translate3d(3px, 0, 0) !important;
+            }
+
+            .portal-floating-sidebar-btn i {
+                font-size: 13px !important;
+                color: #ffffff !important;
+            }
+
+            .portal-floating-btn-text {
+                font-size: 11px !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.04em !important;
+                color: #ffffff !important;
+                line-height: 1 !important;
+            }
+
+            /* Hide floating button when drawer is open on mobile */
+            body.portal-sidebar-is-expanded .portal-floating-sidebar-btn,
+            body.menu-open .portal-floating-sidebar-btn {
+                opacity: 0 !important;
+                visibility: hidden !important;
+                pointer-events: none !important;
+                transform: translate3d(-100%, 0, 0) !important;
+                -webkit-transform: translate3d(-100%, 0, 0) !important;
+            }
+
+            /* Backdrop Overlay for Mobile Drawer (Lightweight GPU alpha overlay without expensive blur filter) */
+            .portal-sidebar-backdrop {
+                display: block !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: rgba(15, 23, 42, 0.48) !important;
+                z-index: 1050 !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                pointer-events: none !important;
+                transition: opacity 0.22s ease, visibility 0.22s ease !important;
+                will-change: opacity !important;
+            }
+
+            body.portal-sidebar-is-expanded .portal-sidebar-backdrop,
+            body.menu-open .portal-sidebar-backdrop {
+                opacity: 1 !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
+            }
+
+            /* Responsive Off-Canvas Drawer for Mobile View (Hardware Accelerated translate3d) */
+            aside#mySidebar,
+            #mySidebar,
+            .portal-sidebar {
+                top: 0 !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                width: 285px !important;
+                max-width: 85vw !important;
+                min-width: 260px !important;
+                height: 100vh !important;
+                min-height: 100vh !important;
+                z-index: 1060 !important;
+                background: #ffffff !important;
+                box-shadow: none !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                transform: translate3d(-100%, 0, 0) !important;
+                -webkit-transform: translate3d(-100%, 0, 0) !important;
+                transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease !important;
+                -webkit-transition: -webkit-transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease !important;
+                will-change: transform !important;
+            }
+
+            body.portal-sidebar-is-expanded aside#mySidebar,
+            body.portal-sidebar-is-expanded #mySidebar,
+            body.portal-sidebar-is-expanded .portal-sidebar,
+            body.menu-open aside#mySidebar,
+            body.menu-open #mySidebar,
+            body.menu-open .portal-sidebar,
+            aside#mySidebar.portal-sidebar-expanded,
+            #mySidebar.portal-sidebar-expanded,
+            .portal-sidebar.portal-sidebar-expanded {
+                transform: translate3d(0, 0, 0) !important;
+                -webkit-transform: translate3d(0, 0, 0) !important;
+                box-shadow: 10px 0 35px rgba(15, 23, 42, 0.3) !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            /* Display all labels, chevrons, titles and badges inside mobile drawer */
+            aside#mySidebar .portal-sidebar-item-label,
+            #mySidebar .portal-sidebar-item-label,
+            .portal-sidebar .portal-sidebar-item-label {
+                display: block !important;
+                opacity: 1 !important;
+                width: auto !important;
+            }
+
+            aside#mySidebar .portal-sidebar-title-container,
+            #mySidebar .portal-sidebar-title-container,
+            .portal-sidebar .portal-sidebar-title-container {
+                display: flex !important;
+            }
+
+            aside#mySidebar .portal-sidebar-arrow-chevron,
+            #mySidebar .portal-sidebar-arrow-chevron,
+            .portal-sidebar .portal-sidebar-arrow-chevron {
+                display: inline-block !important;
+            }
+
+            aside#mySidebar .portal-sidebar-item-badge,
+            #mySidebar .portal-sidebar-item-badge,
+            .portal-sidebar .portal-sidebar-item-badge {
+                display: inline-block !important;
+            }
+
+            body.portal-sidebar-is-expanded div#body,
+            body.portal-sidebar-is-collapsed div#body,
+            body div#body,
+            #main-content,
+            .main-content {
+                margin-left: 0 !important;
+            }
+
+            body.portal-user-logged-in div#body,
+            body.portal-user-logged-in #body {
+                margin-top: 165px !important;
+            }
+            body.portal-user-logged-out div#body,
+            body.portal-login-page div#body {
+                margin-top: 0 !important;
+            }
+        }
+
+        @@media screen and (max-width: 767px) {
+            .portal-navbar {
+                padding: 4px 10px !important;
+                min-height: 44px !important;
+            }
+
+            .portal-brand-logo-frame {
+                width: 32px !important;
+                height: 32px !important;
+            }
+
+            .portal-brand-logo-img {
+                max-height: 22px !important;
+                max-width: 22px !important;
+            }
+
+            .portal-brand-title {
+                font-size: 15px !important;
+            }
+
+            .portal-brand-subtitle {
+                font-size: 8px !important;
+            }
+
+            .header-action-icon-btn {
+                width: 30px !important;
+                height: 30px !important;
+                border-radius: 7px !important;
+            }
+
+            .portal-session-timer-card {
+                padding: 3px 6px !important;
+                gap: 4px !important;
+            }
+
+            .portal-timer-label {
+                display: none !important;
+            }
+
+            #notify,
+            .portal-desktop-notify-item,
+            #logoutpic,
+            .portal-user-nav-item {
+                display: none !important;
+            }
+
+            .portal-session-item {
+                display: flex !important;
+            }
+
+            .portal-mobile-more-item {
+                display: flex !important;
+            }
+
+            .portal-profile-btn {
+                display: none !important;
+            }
+
+            .portal-subnav-bar {
+                padding: 5px 8px !important;
+            }
+
+            body.portal-user-logged-in div#body,
+            body.portal-user-logged-in #body {
+                margin-top: 165px !important;
+            }
+            body.portal-user-logged-out div#body,
+            body.portal-login-page div#body {
+                margin-top: 0 !important;
+            }
         }
     </style>
+@{
+    bool isUserLoggedIn = !string.IsNullOrEmpty(CurrentSession.UserID);
+    string currentController = ViewContext.RouteData.Values["controller"] != null ? ViewContext.RouteData.Values["controller"].ToString() : "";
+    string currentAction = ViewContext.RouteData.Values["action"] != null ? ViewContext.RouteData.Values["action"].ToString() : "";
+    bool isLoginPage = (currentController.Equals("Account", StringComparison.OrdinalIgnoreCase) && 
+                        currentAction.Equals("Login", StringComparison.OrdinalIgnoreCase)) ||
+                       (Request.Url != null && Request.Url.AbsolutePath.IndexOf("/Account/Login", StringComparison.OrdinalIgnoreCase) >= 0);
+}
 </head>
-
-<body>
-
+<body class="@(isUserLoggedIn ? "portal-user-logged-in" : "portal-user-logged-out") @(isLoginPage ? "portal-login-page" : "")">
 
 
 
 
-    <header class="inner-header">
-        <div class="login-header">
-            <nav class="navbar navbar-expand-lg p-lg-2 p-md-3 p-sm-3 p-2">
-                <div class="container-fluid first-div">
-                    <div class="header-left">
-                        <div>
-                            <img class="logo-img" src="~/Assets/Home_Images/punjab-logo.png">
-                            @*<img  class="logo-img" src="@Model.SiteUrl/@Model.MCLogo" />*@
-                            @*<img class="logo-img" src="~/Assets/Home_Images/punjab-logo.png">*@
+
+    <header class="inner-header portal-header">
+        <div class="header-civic-strip portal-civic-strip"></div>
+        <div class="login-header portal-navbar-container">
+            <nav class="navbar navbar-expand-lg portal-navbar">
+                <div class="container-fluid first-div portal-navbar-inner">
+                    <div class="header-left portal-brand-block">
+                        <div class="header-logo-wrap portal-brand-logo-frame">
+                            <img class="logo-img portal-brand-logo-img" src="~/Assets/Home_Images/punjab-logo.png" alt="Government of Punjab">
                         </div>
-                        <div>
-                            <div class="brand-identity mb-1">
-                                <h2 class="mb-0 Brand-name fw-bold"> <span class=""> Digital-MC House </span> </h2>
-
+                        <div class="header-title-wrap portal-brand-text-wrap">
+                            <div class="brand-identity mb-0">
+                                <h2 class="mb-0 Brand-name fw-bold portal-brand-title"><span>Digital-MC House</span></h2>
                             </div>
-
-                            @*<div class="brand-identity mb-1">
-
-                                    <h2 class="mb-0 Brand-name fw-bold"> <span class=""> @Model.MCName </span> </h2>
-                                </div>*@
-
-                            <p class="full-form mb-0 inititive-tag"> Department of Local Govt. Punjab  </p>
-
+                            <p class="full-form mb-0 inititive-tag portal-brand-subtitle">Department of Local Government &bull; Punjab</p>
                         </div>
                     </div>
-                    @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>*@
+                    <!-- <div class="header-login-badge d-none d-md-flex align-items-center gap-2 ms-auto" id="headerLoginBadge">
+                        <span class="portal-badge-gov">
+                            <span class="badge-dot"></span>
+                            <svg class="badge-shield-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                <path d="M9 12l2 2 4-4"></path>
+                            </svg>
+                            <span>Official Government Portal</span>
+                        </span>
+                    </div> -->
 
+                    <div class="collapse justify-content-end header-navbar portal-top-nav-collapse" id="navbarSupportedContent" style="display:none">
+                        <div class="portal-nav-actions-wrap">
+                            <ul class="list-unstyled d-flex align-items-center justify-content-end mb-0 portal-nav-action-list">
+                                <!-- Observation & Alert Notifications (Redesigned) -->
+                                <li class="nav-item portal-nav-item" id="notify">
+                                    <div class="portal-notify-wrap">
+                                        <a title="Observations & Advice" class="header-action-icon-btn header-advice-btn position-relative" data-bs-toggle="offcanvas" href="#offcanvasObservation" role="button" aria-controls="offcanvasObservation">
+                                            <i class="far fa-envelope header-action-icon"></i>
+                                            <span id="Observationcount" class="notification-count header-action-badge header-advice-badge"></span>
+                                        </a>
 
-                    <div class="collapse justify-content-end header-navbar" id="navbarSupportedContent" style="display:none">
-                        <div>
-                            <ul class="list-unstyled d-flex align-items-center justify-content-end mb-2 mb-lg-0 gap-4 float-right">
-                                <li class="nav-item " id="notify">
-                                    <a title="Observations/Advice" class="notifications-btn position-relative p-0" data-bs-toggle="offcanvas" href="#offcanvasObservation" role="button" aria-controls="offcanvasExample">
-                                        <i class="far fa-envelope"></i>
-                                        <span id="Observationcount" class="notification-count">  </span>
-                                    </a>
-
-                                    <a title="Notifications/Circulars/Approvals" class="notifications-btn position-relative p-0" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
-                                        <i class="far fa-bell"></i>
-                                        <span id="alertcount" class="notification-count">  </span>
-                                    </a>
-
+                                        <a title="Notifications, Circulars & Approvals" class="header-action-icon-btn header-alert-btn position-relative" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                                            <i class="far fa-bell header-action-icon"></i>
+                                            <span id="alertcount" class="notification-count header-action-badge header-alert-badge"></span>
+                                        </a>
+                                    </div>
                                 </li>
-                                <li>
 
-                                    <div id="clock" class="clock"></div>
-                                    @*<script src="script.js"></script>
-                                        <label id="clockllabel">Session Time Out In: </label>*@
-                                </li>
-                                <li>
-                                    <i style="" id="refreshTimerBtn" class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 30px;" title="Session Time Reset" onclick="TimeRefresh();"></i>
+                                <!-- Session Timer & Refresh -->
+                                <li class="nav-item portal-nav-item portal-session-item">
+                                    <div class="portal-session-timer-card">
+                                        <div class="portal-timer-icon-wrap">
+                                            <i class="far fa-clock portal-timer-clock-icon"></i>
+                                        </div>
+                                        <div class="portal-timer-info">
+                                            <span class="portal-timer-label">Session Exp:</span>
+                                            <div id="clock" class="clock portal-session-clock"></div>
+                                        </div>
+                                        <button type="button" class="portal-timer-refresh-btn" title="Reset Session Timer" onclick="TimeRefresh();">
+                                            <i id="refreshTimerBtn" class="ace-icon fa fa-sync-alt portal-timer-refresh-icon" onclick="TimeRefresh();"></i>
+                                        </button>
+                                    </div>
                                 </li>
 
-                                <li class="nav-item">
-                                    <div class="dropdown" id="logoutpic">
-                                        <button class="btn-profile dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <div class="d-inline-flex align-items-center user-section gap-2">
-                                                <div class="user-image">
-                                                    @*<img class="rounded-circle usr_img" src="~/Assets/Home_Images/user.png" alt="user-image">*@
+                                <!-- User Profile Dropdown -->
+                                <li class="nav-item portal-nav-item portal-user-nav-item">
+                                    <div class="dropdown portal-profile-dropdown-wrap" id="logoutpic">
+                                        <button class="btn-profile dropdown-toggle portal-profile-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <div class="d-inline-flex align-items-center user-section portal-profile-btn-content gap-2">
+                                                <div class="user-image portal-profile-avatar-frame">
                                                     <img src="@(
                                                         string.IsNullOrEmpty(CurrentSession.UserPicPath)
                                                         ? Url.Content("~/Assets/Home_Images/user.png")
                                                         : "https://enigambackuprestore.blob.core.windows.net/securefilestructure/" + CurrentSession.UserPicPath
-                                                    )" class="rounded-circle usr_img" alt="user-image">
+                                                    )" class="rounded-circle usr_img portal-profile-avatar-img" alt="user-image">
                                                 </div>
-                                                <div class="user-detail">
-                                                    <p class="mb-0 user-name"> @CurrentSession.Name</p>
-                                                    <p class="mb-0 user-designation" data-bs-toggle="tooltip" data-bs-title="Default tooltip"> @CurrentSession.Designation</p>
-                                                    <p id="userdept" class="mb-0 user-deptname" data-bs-toggle="tooltip" data-bs-title="Default tooltip"> @CurrentSession.DeptNameNew</p>
+                                                <div class="user-detail portal-profile-text-meta">
+                                                    <p class="mb-0 user-name portal-profile-user-name">@CurrentSession.Name</p>
+                                                    <p class="mb-0 user-designation portal-profile-user-designation" data-bs-toggle="tooltip" data-bs-title="@CurrentSession.Designation">@CurrentSession.Designation</p>
+                                                    <p id="userdept" class="mb-0 user-deptname portal-profile-user-department" data-bs-toggle="tooltip" data-bs-title="@CurrentSession.DeptNameNew">@CurrentSession.DeptNameNew</p>
                                                 </div>
                                             </div>
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end profile-dropdown shadow-sm">
-                                            <!-- User Info -->
-                                            <li class="px-3 py-3">
+                                        <ul class="dropdown-menu dropdown-menu-end profile-dropdown portal-profile-menu shadow-lg">
+                                            <!-- User Info Modal Trigger -->
+                                            <li class="portal-profile-menu-header">
                                                 <a href="javascript:void(0);"
-                                                   class="d-flex align-items-center gap-3 text-decoration-none"
+                                                   class="portal-profile-summary-card"
                                                    data-bs-toggle="modal"
                                                    data-bs-target="#exampleModal"
                                                    onclick="getUserProfileDetail();">
-
-                                                    <!-- User Image -->
-                                                    <div class="profile-img-wrapper">
-                                                    <img src="@(
-                                                        string.IsNullOrEmpty(CurrentSession.UserPicPath)
-                                                        ? Url.Content("~/Assets/Home_Images/user.png")
-                                                        : "https://enigambackuprestore.blob.core.windows.net/securefilestructure/" + CurrentSession.UserPicPath
-                                                    )" class="rounded-circle profile-pic mb-2" alt="User Photo">
+                                                    <div class="profile-img-wrapper portal-menu-avatar-frame">
+                                                        <img src="@(
+                                                            string.IsNullOrEmpty(CurrentSession.UserPicPath)
+                                                            ? Url.Content("~/Assets/Home_Images/user.png")
+                                                            : "https://enigambackuprestore.blob.core.windows.net/securefilestructure/" + CurrentSession.UserPicPath
+                                                        )" class="rounded-circle profile-pic portal-menu-avatar-img" alt="User Photo">
                                                     </div>
-
-                                                    
-   
-
-
-
-                                                    <!-- User Details -->
-                                                    <div class="profile-info">
-                                                        <h6 class="mb-0 profile-name">@CurrentSession.Name</h6>
-                                                        <small class="text-muted profile-designation"
+                                                    <div class="profile-info portal-menu-user-info">
+                                                        <h6 class="mb-0 profile-name portal-menu-name">@CurrentSession.Name</h6>
+                                                        <small class="text-muted profile-designation portal-menu-role"
                                                                data-bs-toggle="tooltip"
                                                                data-bs-title="@CurrentSession.Designation">
                                                             @CurrentSession.Designation
                                                         </small>
+                                                        <span class="portal-menu-view-profile"><i class="fa fa-id-badge me-1"></i>View Profile</span>
                                                     </div>
                                                 </a>
                                             </li>
 
-                                            <li><hr class="dropdown-divider"></li>
+                                            <li><hr class="dropdown-divider portal-menu-divider"></li>
 
-                                            <!-- Edit Profile -->
-                                            @*<li>
-                                                <a class="dropdown-item d-flex align-items-center gap-2"
-                                                   href="javascript:void(0);"
-                                                   data-bs-toggle="modal"
-                                                   data-bs-target="#editProfileModal">
-                                                    <i class="fa fa-user-edit text-primary"></i>
-                                                    <span>Edit Profile</span>
-                                                </a>
-                                            </li>*@
-
-                                            <!-- Logout -->
-                                            <li>
-                                                <a class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                            <!-- Logout Link -->
+                                            <li class="portal-profile-menu-item-wrap">
+                                                <a class="dropdown-item portal-menu-logout-btn"
                                                    href="~/Account/LogOff">
-                                                    <i class="fa fa-sign-out-alt"></i>
-                                                    <span>Logout</span>
+                                                    <i class="fa fa-sign-out-alt portal-menu-logout-icon"></i>
+                                                    <span class="portal-menu-logout-text">Logout</span>
                                                 </a>
                                             </li>
                                         </ul>
-
                                     </div>
                                 </li>
-                                <li class="nav-item " id="Switchbutton">
-                                    <a id="subutton" title="Switch User" class="notifications-btn position-relative p-0" data-bs-toggle="offcanvas" href="#SwitchUser" role="button" aria-controls="offcanvasExample">
-                                        <span id="sucount" class="userbubble blink"></span>
-                                        <i class="far fa-user"></i>
+
+                                <!-- Switch User (Removed per user requirement) -->
+                                <li class="nav-item portal-nav-item portal-switch-user-item" id="Switchbutton" style="display:none !important;">
+                                    <a id="subutton" title="Switch User" class="header-action-icon-btn portal-switch-user-btn position-relative" data-bs-toggle="offcanvas" href="#SwitchUser" role="button" aria-controls="offcanvasExample">
+                                        <span id="sucount" class="userbubble blink portal-switch-badge"></span>
+                                        <i class="far fa-user portal-switch-icon"></i>
                                     </a>
                                 </li>
-                                @*<li class="nav-item">
-                                        <a href="~/Account/Login" class="red_hover login_btn_hdr" id="loginnn" style="display:none;"><i class="fa fa-user"></i> login</a>
-                                    </li>*@
 
+                                <!-- Mobile 3-Dot Overflow Menu (Visible ONLY on Mobile <= 991px) -->
+                                <li class="nav-item portal-nav-item portal-mobile-more-item" id="mobileMoreMenu">
+                                    <div class="dropdown portal-mobile-menu-wrap">
+                                        <button class="header-action-icon-btn portal-mobile-more-btn position-relative" 
+                                                type="button" 
+                                                id="portalMobileDropdownBtn" 
+                                                data-bs-toggle="dropdown" 
+                                                aria-expanded="false" 
+                                                title="More Options">
+                                            <i class="fas fa-ellipsis-v portal-3dot-icon"></i>
+                                            <span id="mobileMenuDotBadge" class="portal-mobile-dot-badge" style="display:none;"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end portal-mobile-dropdown-menu shadow-lg" aria-labelledby="portalMobileDropdownBtn">
+                                            <!-- User Card in Mobile Dropdown -->
+                                            <li class="portal-mobile-user-card-wrap">
+                                                <div class="portal-mobile-user-card" onclick="getUserProfileDetail();" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    <div class="portal-mobile-avatar-frame">
+                                                        <img src="@(
+                                                            string.IsNullOrEmpty(CurrentSession.UserPicPath)
+                                                            ? Url.Content("~/Assets/Home_Images/user.png")
+                                                            : "https://enigambackuprestore.blob.core.windows.net/securefilestructure/" + CurrentSession.UserPicPath
+                                                        )" class="rounded-circle portal-mobile-avatar-img" alt="user-image">
+                                                    </div>
+                                                    <div class="portal-mobile-user-meta">
+                                                        <p class="mb-0 portal-mobile-user-name">@CurrentSession.Name</p>
+                                                        <p class="mb-0 portal-mobile-user-desig">@CurrentSession.Designation</p>
+                                                        <p class="mb-0 portal-mobile-user-dept">@CurrentSession.DeptNameNew</p>
+                                                    </div>
+                                                    <i class="fas fa-chevron-right portal-mobile-card-arrow ms-auto text-muted" style="font-size:11px;"></i>
+                                                </div>
+                                            </li>
 
-                                <!-- <li class="nav-item">
-                                  <button class="btn btn-outline-new" type="submit">Login</button>
-                                </li> -->
+                                            <li><hr class="dropdown-divider portal-menu-divider my-2"></li>
+
+                                            <!-- Observations & Advice Link -->
+                                            <li>
+                                                <a class="dropdown-item portal-mobile-action-link" data-bs-toggle="offcanvas" href="#offcanvasObservation" role="button" aria-controls="offcanvasObservation">
+                                                    <div class="portal-mobile-icon-box advice-box">
+                                                        <i class="far fa-envelope"></i>
+                                                    </div>
+                                                    <div class="portal-mobile-action-text">
+                                                        <span class="portal-mobile-action-title">Observations & Advice</span>
+                                                        <span class="portal-mobile-action-desc">Directives & instructions</span>
+                                                    </div>
+                                                    <span id="ObservationcountMobile" class="badge rounded-pill bg-primary portal-mobile-badge" style="display:none;"></span>
+                                                </a>
+                                            </li>
+
+                                            <!-- Notifications & Circulars Link -->
+                                            <li>
+                                                <a class="dropdown-item portal-mobile-action-link" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                                                    <div class="portal-mobile-icon-box alert-box">
+                                                        <i class="far fa-bell"></i>
+                                                    </div>
+                                                    <div class="portal-mobile-action-text">
+                                                        <span class="portal-mobile-action-title">Notifications & Approvals</span>
+                                                        <span class="portal-mobile-action-desc">Alerts & pending approvals</span>
+                                                    </div>
+                                                    <span id="alertcountMobile" class="badge rounded-pill bg-danger portal-mobile-badge" style="display:none;"></span>
+                                                </a>
+                                            </li>
+
+                                            <li><hr class="dropdown-divider portal-menu-divider my-2"></li>
+
+                                            <!-- View Profile Modal Trigger -->
+                                            <li>
+                                                <a class="dropdown-item portal-mobile-menu-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="getUserProfileDetail();">
+                                                    <i class="fa fa-id-badge me-2 text-primary"></i>
+                                                    <span>View Profile</span>
+                                                </a>
+                                            </li>
+
+                                            <!-- Logout -->
+                                            <li>
+                                                <a class="dropdown-item portal-mobile-menu-item portal-mobile-logout" href="~/Account/LogOff">
+                                                    <i class="fa fa-sign-out-alt me-2 text-danger"></i>
+                                                    <span class="text-danger fw-semibold">Logout</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>
-                    <button class="navbar-toggler" id="btntoggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenuExample">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
                 </div>
-
-
             </nav>
             <div>
-                <div class="bg-position2 mb-0 px-2" id="logouttt" style="display:none">
-                    @*<div class="row align-items-center flex-wrap">
-                            <div class="col-lg-2 col-md-4 col-sm-4 col-12 ">
-                                 <a class="my-link" href="~/References/Dashboard?type=0"> <img src="~/Assets/Home_Images/icon/Dashboard.svg" /> &nbsp; Dashboard </a>
-                            </div>
-                            <div class="col-lg-10 col-md-8 col-sm-8 col-12 Select-office">
-                                <div class="col-md-2 selct-label p-2">
-                                    <label class="lbl_ofict mb-0">House/Committee:</label>
-                                </div>
-                                <div class="row w-100 align-items-center px-2">
-
-                                    <div class="col-md-3 col-sm-6 col-xs-6 col-12 p-2 ">
-                                        <div class="dropdown-arrow">
-                                            <select class="form-control" id="depttNav" name="depttNav"></select>
-                                            <i class=" fas fa-chevron-down"></i>
+                <div class="bg-position2 portal-subnav-bar mb-0" id="logouttt" style="display:none">
+                    <div class="portal-subnav-container">
+                        <div class="portal-subnav-row">
+                            <ul class="ul-flex portal-subnav-list">
+                                <li class="portal-subnav-item portal-subnav-dashboard-item">
+                                    <a class="my-link portal-dashboard-link" href="~/References/Dashboard?type=0">
+                                        <span class="portal-dashboard-icon-wrap">
+                                            <img class="portal-dashboard-icon-img" src="~/Assets/Home_Images/icon/Dashboard.svg" alt="Dashboard" />
+                                        </span>
+                                        <span class="portal-dashboard-link-label">Analytics Dashboard</span>
+                                    </a>
+                                </li>
+                                <li class="portal-subnav-item portal-subnav-filter-item">
+                                    <div class="adjust-label portal-filter-group">
+                                        <div class="dropdown-arrow portal-select-container portal-deptt-select-wrap">
+                                            <select class="form-control portal-select-field" id="depttNav" name="depttNav"></select>
+                                            <i class="fas fa-chevron-down portal-select-chevron"></i>
                                         </div>
-                                    </div>
-
-                                    <div class="col-md-3 col-sm-6 col-xs-6 col-12 p-2 ">
-                                        <div class="dropdown-arrow">
-                                            <select class="form-control" id="AssignedOffice" name="AssignedOffice"></select>
-                                            <i class="fas fa-chevron-down"></i>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-md-3 col-sm-6 col-xs-6 col-12 p-2 ">
-                                        <div class="dropdown-arrow">
-                                            <select class="form-control" id="offIdNav" name="offIdNav"></select>
-                                            <i class="fas fa-chevron-down"></i>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-md-2 col-sm-2 col-xs-2 col-12">
-                                        <span id="officecount" class="bubble blink" style="margin-top: -11px;"></span>
-                                    </div>
-                                </div>
-                             </div>
-                        </div>*@
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <ul class="ul-flex">
-                                <li> <a class="my-link" href="~/References/Dashboard?type=0"> <img src="~/Assets/Home_Images/icon/Dashboard.svg" /> &nbsp;Analytics Dashboard </a></li>
-                                <li>
-                                    <div class="adjust-label">
-                                        @*<label class="lbl_ofict mb-0">House/Committee:</label>*@
-                                        <div class="dropdown-arrow">
-                                            <select class="form-control" id="depttNav" name="depttNav"></select>
-                                            <i class=" fas fa-chevron-down"></i>
-                                        </div>
-                                        <span id="depcount" class="bubble blink"></span>
+                                        <span id="depcount" class="bubble blink portal-filter-counter-pill"></span>
                                     </div>
                                 </li>
 
-                                <li>
-                                    <div class="dropdown-arrow">
-                                        <select class="form-control" id="AssignedOffice" name="AssignedOffice"></select>
-                                        <i class="fas fa-chevron-down"></i>
-
+                                <li class="portal-subnav-item portal-subnav-filter-item">
+                                    <div class="portal-filter-group">
+                                        <div class="dropdown-arrow portal-select-container portal-office-select-wrap">
+                                            <select class="form-control portal-select-field" id="AssignedOffice" name="AssignedOffice"></select>
+                                            <i class="fas fa-chevron-down portal-select-chevron"></i>
+                                        </div>
+                                        <span id="officecount" class="bubble blink portal-filter-counter-pill"></span>
                                     </div>
-                                    <span id="officecount" class="bubble blink"></span>
                                 </li>
-
 
                                 @if(CurrentSession.DeptID != "LG00001") { 
-                                <li>
-                                    <div class="dropdown-arrow">
-                                        <select class="form-control" id="offIdNav" name="offIdNav"></select>
-                                        @*<i class="fas fa-chevron-down"></i>*@
-
+                                <li class="portal-subnav-item portal-subnav-filter-item">
+                                    <div class="portal-filter-group">
+                                        <div class="dropdown-arrow portal-select-container portal-offid-select-wrap">
+                                            <select class="form-control portal-select-field" id="offIdNav" name="offIdNav"></select>
+                                            <i class="fas fa-chevron-down portal-select-chevron"></i>
+                                        </div>
+                                        <span id="officeNavcount" class="bubble blink portal-filter-counter-pill"></span>
                                     </div>
-                                    <span id="officeNavcount" class="bubble blink"></span>
                                 </li>
                                 }
                             </ul>
                         </div>
-
-                    </div>`
+                    </div>
                 </div>
             </div>
         </div>
 
-        @if (!string.IsNullOrEmpty(CurrentSession.UserID))
-        {
-            @Html.Action("Alerts", "User")
-        }
-
-
     </header>
+
+    @if (!string.IsNullOrEmpty(CurrentSession.UserID))
+    {
+        @Html.Action("Alerts", "User")
+    }
 
     <section class="container-fluid position-relative data-section">
 
@@ -553,14 +2934,48 @@
 
         @if (!string.IsNullOrEmpty(CurrentSession.UserID))
         {
+            <!-- Mobile Backdrop Overlay -->
+            <div id="portalSidebarBackdrop" class="portal-sidebar-backdrop" onclick="closeNav();"></div>
+
+            <!-- Floating Button for Mobile View -->
+            <button type="button"
+                    id="portalFloatingSidebarBtn"
+                    class="portal-floating-sidebar-btn"
+                    onclick="toggleSidebarNav();"
+                    title="Menu">
+                <i class="fas fa-bars" id="portalFloatBtnIcon"></i>
+                <span class="portal-floating-btn-text">Menu</span>
+            </button>
+
             Html.RenderPartial("~/Views/References/_LeftNavigationMenu.cshtml");
         }
         <div id="body">
             @RenderBody()
         </div>
 
-        <div id="loader-wrapper" style="display: none">
-            <div id="loader"></div>
+        <!-- Executive Civic Loader Overlay -->
+        <div id="loader-wrapper" style="display: none;">
+            <div class="portal-loader-card">
+                <div class="portal-loader-spinner-box">
+                    <div class="portal-loader-orbit-outer"></div>
+                    <div class="portal-loader-orbit-middle"></div>
+                    <div id="loader" class="portal-loader-core"></div>
+                    <div class="portal-loader-emblem-badge">
+                        <img src="~/Assets/Home_Images/punjab-logo.png" alt="Government of Punjab" class="portal-loader-emblem-img" />
+                    </div>
+                </div>
+                <div class="portal-loader-info">
+                    <h5 class="portal-loader-title">Digital MC House</h5>
+                    <p class="portal-loader-subtitle">Government of Punjab &bull; Civic Governance</p>
+                    <div class="portal-loader-status">
+                        <span class="portal-loader-status-dot"></span>
+                        <span class="portal-loader-status-text">Processing request, please wait...</span>
+                    </div>
+                    <div class="portal-loader-progress-track">
+                        <div class="portal-loader-progress-indicator"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -700,31 +3115,48 @@
 
 
     @*Footer START*@
-    <footer class="footer_sec p_fixd bg_light_rd">
-        @*@if (string.IsNullOrEmpty(CurrentSession.UserID))
-            {
-
-                <div class="foot_vistr">
-                    <div class="terms_list">
-                        <ul class="trms_condtion">
-                            <li><a href="#">Terms & Conditions</a></li>
-                            <li><a href="#">Website Policies</a></li>
-                            <li class="footr_txt"><a href="#">Portal Visitors : @ApplicationInstance.Application["NoOfVisitors"] </a></li>
-                        </ul>
+    <footer class="portal-footer footer_sec p_fixd bg_light_rd" id="portalFooter">
+        <div class="portal-footer-civic-strip"></div>
+        <div class="portal-footer-container">
+            <div class="portal-footer-inner">
+                <!-- Left: Punjab Emblem & Brand Identity -->
+                <div class="portal-footer-brand-section">
+                    <div class="portal-footer-logo-frame">
+                        <img class="portal-footer-logo-img" src="~/Assets/Home_Images/punjab-logo.png" alt="Government of Punjab">
                     </div>
-
-
-
-
+                    <div class="portal-footer-brand-text">
+                        <div class="portal-footer-brand-title">
+                            <span>Digital-MC House</span>
+                        </div>
+                        <span class="portal-footer-brand-sub">Department of Local Government &bull; Punjab</span>
+                    </div>
                 </div>
 
-            }*@
+                <!-- Center: Copyright & Security -->
+                <div class="portal-footer-center-section">
+                    <p class="portal-footer-copy-text mb-0">
+                        Copyright &copy; @DateTime.Now.Year <strong>Digital-MC House</strong>. All Rights Reserved.
+                    </p>
+                    <div class="portal-footer-security-pill">
+                        <i class="fas fa-shield-alt text-success me-1"></i>
+                        <span>Official Government of Punjab Portal</span>
+                    </div>
+                </div>
 
-        <div class="footer_sec logn_fotr">
-            <p class="footr_txt">Copyright &copy 2022 Digital-MC House: All Rights Reserved National Informatics Centre, Punjab</p>
+                <!-- Right: NIC Accreditation -->
+                <div class="portal-footer-nic-section">
+                    <div class="portal-footer-nic-card">
+                        <span class="portal-footer-nic-caption">Designed, Developed & Hosted by</span>
+                        <div class="portal-footer-nic-badge-content">
+                            <i class="fas fa-landmark portal-footer-nic-icon"></i>
+                            <span class="portal-footer-nic-name">National Informatics Centre</span>
+                            <span class="portal-footer-nic-tag">NIC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
-
     @*Footer END*@
 
 
@@ -1009,10 +3441,13 @@
       });
 
     $(document).ready(function () {
-
-
-                showclock();
-
+        showclock();
+        $(document).on('click', 'a[href*="Dashboard"], a.portal-dashboard-link', function () {
+            var href = $(this).attr('href');
+            if (href && href !== '#' && !href.startsWith('javascript:')) {
+                $('#loader-wrapper').show();
+            }
+        });
     });
 
       function showclock() {
@@ -1049,8 +3484,10 @@
               const seconds = remainingSeconds % 60;
               // Display the time in the format 00:00
               const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-              document.getElementById('clock').innerText = formattedTime;
-              document.getElementById('clock1').innerText = formattedTime;
+              const elClock = document.getElementById('clock');
+              if (elClock) elClock.innerText = formattedTime;
+              const elClock1 = document.getElementById('clock1');
+              if (elClock1) elClock1.innerText = formattedTime;
               // Decrease remaining seconds
               remainingSeconds--;
               // Store the updated timer state in sessionStorage
@@ -1058,8 +3495,8 @@
                // Stop the clock when it reaches 0 and trigger 30-sec idle warning modal
                if (remainingSeconds < 0) {
                    clearInterval(intervalId);
-                   document.getElementById('clock').innerText = '00:00';
-                   document.getElementById('clock1').innerText = '00:00';
+                   if (elClock) elClock.innerText = '00:00';
+                   if (elClock1) elClock1.innerText = '00:00';
                    sessionStorage.removeItem('remainingSeconds');
                    if (typeof showIdleWarningModal === 'function') {
                        showIdleWarningModal();
@@ -1092,24 +3529,26 @@
                   RefreshSession();
               }
               const refreshBtn = document.getElementById('refreshTimerBtn');
-
-              refreshBtn.addEventListener('click', () => {
-                  remainingSeconds = 30 * 60; // Reset to 30 minutes
-                  sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
-                  updateClock(); // Update immediately on refresh
-                  startTimer();   // Restart interval
-                  RefreshSession();
-              });
+              if (refreshBtn) {
+                  refreshBtn.addEventListener('click', () => {
+                      remainingSeconds = 30 * 60; // Reset to 30 minutes
+                      sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
+                      updateClock(); // Update immediately on refresh
+                      startTimer();   // Restart interval
+                      RefreshSession();
+                  });
+              }
 
                const refreshBtn2 = document.getElementById('PopRefresh');
-               //console.log(refreshBtn2);
-                refreshBtn2.addEventListener('click', () => {
-                   remainingSeconds = 30 * 60; // Reset to 30 minutes
-                   sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
-                   updateClock(); // Update immediately on refresh
-                   startTimer();   // Restart interval
-                   RefreshSession();
-               });
+               if (refreshBtn2) {
+                   refreshBtn2.addEventListener('click', () => {
+                       remainingSeconds = 30 * 60; // Reset to 30 minutes
+                       sessionStorage.setItem('remainingSeconds', remainingSeconds.toString());
+                       updateClock(); // Update immediately on refresh
+                       startTimer();   // Restart interval
+                       RefreshSession();
+                   });
+               }
 
       }
       else {

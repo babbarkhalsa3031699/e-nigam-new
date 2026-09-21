@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.Alerts
+@model CMNirdesh.Models.Alerts
 @using CMNirdesh.Models
 
 <head>
@@ -28,56 +28,145 @@
 
         });
 
-         function ClearAlerts(isAlert) {
-       $.ajax({
-         type: "GET",
+        function updateHeaderBadge(targetId, count) {
+            var $badge = $(targetId);
+            if (count > 0) {
+                $badge.text(count > 99 ? '99+' : count).show().addClass('has-alerts');
+            } else {
+                $badge.text('').hide().removeClass('has-alerts');
+            }
 
-         url: '@Url.Action("ClearAlerts", "User")',
-         async: true,
-           data: { clearalert: isAlert },
-         beforeSend: function () {
-             $('#loader-wrapper').show();
-         },
-         success: function (data) {
-             $("#alertbody").html('');
-             $("#offcanvasExampleLabel").html('<i class="fas fa-bell"></i> &nbsp; Notifications  (0)');
-             $("#alertcount").html('0');
+            if (targetId === "#Observationcount") {
+                var $mob = $("#ObservationcountMobile");
+                if (count > 0) {
+                    $mob.text(count > 99 ? '99+' : count).show();
+                } else {
+                    $mob.text('').hide();
+                }
+            } else if (targetId === "#alertcount") {
+                var $mob = $("#alertcountMobile");
+                if (count > 0) {
+                    $mob.text(count > 99 ? '99+' : count).show();
+                } else {
+                    $mob.text('').hide();
+                }
+            }
 
-             $("#loader-wrapper").hide();
-         },
-         error: function (xhr, ajaxOptions, thrownError) {
-         },
-         complete: function (results) {
-             $('#loader-wrapper').hide();
-         }
-     });
+            var obs = parseInt($("#Observationcount").text()) || 0;
+            var alt = parseInt($("#alertcount").text()) || 0;
+            if (obs > 0 || alt > 0) {
+                $("#mobileMenuDotBadge").show();
+            } else {
+                $("#mobileMenuDotBadge").hide();
+            }
         }
 
+        function ClearAlerts(isAlert) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ClearAlerts", "User")',
+                async: true,
+                data: { clearalert: isAlert },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    if (isAlert == 0 || isAlert == "0") {
+                        $("#offcanvasObservationCount").text('(0)');
+                        updateHeaderBadge("#Observationcount", 0);
+                        $("#observationBody").html(`
+                            <div class="notif-empty-state">
+                                <div class="notif-empty-icon">
+                                    <i class="far fa-envelope-open"></i>
+                                </div>
+                                <h6 class="notif-empty-title">All Caught Up!</h6>
+                                <p class="notif-empty-desc">You have cleared all observations and advice.</p>
+                            </div>
+                        `);
+                    } else {
+                        $("#offcanvasAlertCount").text('(0)');
+                        updateHeaderBadge("#alertcount", 0);
+                        $("#alertBody").html(`
+                            <div class="notif-empty-state">
+                                <div class="notif-empty-icon">
+                                    <i class="far fa-bell-slash"></i>
+                                </div>
+                                <h6 class="notif-empty-title">No New Alerts</h6>
+                                <p class="notif-empty-desc">You have cleared all notifications & circulars.</p>
+                            </div>
+                        `);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.error(thrownError);
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
+                }
+            });
+        }
 
-                function ClearAlertsbyId(NotiId) {
-                      $.ajax({
-                        type: "GET",
+        function ClearAlertsbyId(NotiId, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            var $item = $("#li_" + NotiId);
+            $item.css("opacity", "0.4");
 
-                        url: '@Url.Action("ClearAlertsbyId", "User")',
-                        async: true,
-                          data: { NotiId: NotiId },
-                        beforeSend: function () {
-                            $('#loader-wrapper').show();
-                        },
-                        success: function (data) {
-                            //$("#alertbody").html('');
-                            //$("#offcanvasExampleLabel").html('<i class="fas fa-bell"></i> &nbsp; Notifications  (0)');
-                            //$("#alertcount").html('0');
-                            $("#li_" + NotiId).hide();
-                            $("#loader-wrapper").hide();
-                        },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                        },
-                        complete: function (results) {
-                            $('#loader-wrapper').hide();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ClearAlertsbyId", "User")',
+                async: true,
+                data: { NotiId: NotiId },
+                beforeSend: function () {
+                    $('#loader-wrapper').show();
+                },
+                success: function (data) {
+                    var isObservation = $item.closest("#offcanvasObservation").length > 0;
+                    $item.slideUp(220, function () {
+                        $(this).remove();
+
+                        if (isObservation) {
+                            var remaining = $("#observationBody .notif-card").length;
+                            $("#offcanvasObservationCount").text('(' + remaining + ')');
+                            updateHeaderBadge("#Observationcount", remaining);
+                            if (remaining === 0) {
+                                $("#observationBody").html(`
+                                    <div class="notif-empty-state">
+                                        <div class="notif-empty-icon">
+                                            <i class="far fa-envelope-open"></i>
+                                        </div>
+                                        <h6 class="notif-empty-title">All Caught Up!</h6>
+                                        <p class="notif-empty-desc">No pending observations or advice at this moment.</p>
+                                    </div>
+                                `);
+                            }
+                        } else {
+                            var remaining = $("#alertBody .notif-card").length;
+                            $("#offcanvasAlertCount").text('(' + remaining + ')');
+                            updateHeaderBadge("#alertcount", remaining);
+                            if (remaining === 0) {
+                                $("#alertBody").html(`
+                                    <div class="notif-empty-state">
+                                        <div class="notif-empty-icon">
+                                            <i class="far fa-bell-slash"></i>
+                                        </div>
+                                        <h6 class="notif-empty-title">No New Alerts</h6>
+                                        <p class="notif-empty-desc">You are completely up to date with notifications.</p>
+                                    </div>
+                                `);
+                            }
                         }
                     });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $item.css("opacity", "1");
+                },
+                complete: function (results) {
+                    $('#loader-wrapper').hide();
                 }
+            });
+        }
 
         /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
         function openNav() {
@@ -198,153 +287,616 @@
 
     </script>
     <style>
-      .green{
-          color:darkgreen !important;
-      }
+        /* ==========================================================================
+           MODERN NOTIFICATION DRAWERS (Observations & Alerts)
+           ========================================================================== */
+        .notificationer.notif-drawer,
+        .offcanvas.notif-drawer {
+            width: 440px !important;
+            max-width: 95vw !important;
+            border: none !important;
+            border-radius: 16px 0 0 16px !important;
+            box-shadow: -10px 0 35px rgba(15, 23, 42, 0.16) !important;
+            top: 0 !important;
+            margin-top: 0 !important;
+            height: 100vh !important;
+            background: #f8fafc !important;
+            z-index: 10050 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
 
-        .yellow {
-            color: #d2a00a !important;
+        .offcanvas-backdrop {
+            z-index: 10040 !important;
         }
-        .notification-detail span {
-            color: #16a0ca !important;
+
+        /* Drawer Headers */
+        .notif-drawer-header {
+            padding: 16px 18px !important;
+            color: #ffffff !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+            position: relative !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
         }
-        .clearbtn {
+
+        .notif-header-advice {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%) !important;
+        }
+
+        .notif-header-alert {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #991b1b 100%) !important;
+        }
+
+        .notif-header-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            flex-shrink: 0;
+        }
+
+        .notif-drawer-title {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            margin: 0 !important;
+            color: #ffffff !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            letter-spacing: -0.2px !important;
+        }
+
+        .notif-count-pill {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+        }
+
+        .notif-drawer-subtitle {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.82);
+            display: block;
+            margin-top: 1px;
+            font-weight: 400;
+        }
+
+        .notif-clear-btn {
+            background: rgba(255, 255, 255, 0.16) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+            border-radius: 8px !important;
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            padding: 5px 10px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.2s ease !important;
+            white-space: nowrap !important;
+        }
+
+        .notif-clear-btn:hover {
+            background: rgba(255, 255, 255, 0.28) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .notif-close-btn {
+            filter: brightness(0) invert(1) !important;
+            opacity: 0.85 !important;
+            transition: all 0.2s ease !important;
+            padding: 8px !important;
+            margin: 0 !important;
+        }
+
+        .notif-close-btn:hover {
+            opacity: 1 !important;
+            transform: rotate(90deg) !important;
+        }
+
+        /* Drawer Body & Cards */
+        .notif-drawer-body {
+            flex: 1 1 auto !important;
+            overflow-y: auto !important;
+            background: #f8fafc !important;
+            padding: 14px 16px !important;
+        }
+
+        .notif-drawer-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .notif-drawer-body::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .notif-drawer-body::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .notif-card-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notif-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notif-card::before {
+            content: '';
             position: absolute;
-            top: 11px;
-            right: 1rem;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3.5px;
+        }
+
+        .notif-card-advice::before {
+            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+        }
+
+        .notif-card-alert::before {
+            background: linear-gradient(180deg, #f59e0b, #ef4444);
+        }
+
+        .notif-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .notif-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 7px;
+        }
+
+        .notif-type-tag {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .notif-tag-ref {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .notif-tag-file {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .notif-category-tag {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .notif-timestamp {
+            font-size: 11px;
+            color: #94a3b8;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .notif-dismiss-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .notif-dismiss-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .notif-card-body {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .notif-card-main-icon {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #334155;
+            margin-top: 1px;
+        }
+
+        .notif-card-advice .notif-card-main-icon {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .notif-card-alert .notif-card-main-icon {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .notif-card-content {
+            flex: 1;
+        }
+
+        .notif-card-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.45;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .notif-ref-row {
+            margin-top: 4px;
+        }
+
+        .notif-ref-link {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #2563eb;
+            text-decoration: none;
+            background: #eff6ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.15s ease;
+            border: 1px solid #dbeafe;
+        }
+
+        .notif-ref-link:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .notif-ref-badge {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .notif-card-footer {
+            padding-top: 7px;
+            border-top: 1px dashed #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notif-user-info {
+            font-size: 11px;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .notif-user-role {
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .notif-user-name {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* Empty State */
+        .notif-empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notif-empty-icon {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #94a3b8;
+            margin-bottom: 14px;
+        }
+
+        .notif-empty-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .notif-empty-desc {
+            font-size: 12px;
+            color: #64748b;
+            max-width: 260px;
+            margin: 0;
+            line-height: 1.5;
         }
     </style>
 </head>
 
-<!-- notification offcanvas  start-->
-<div class="offcanvas offcanvas-end notificationer" tabindex="-1" id="offcanvasObservation" aria-labelledby="offcanvasExampleLabel">
-    <div class="offcanvas-header">
-        
-        <h6 class="offcanvas-title " id="offcanvasExampleLabel"> <i class="fas fa-bell"></i> &nbsp; Notifications <br /> Observations/Advice  (@Model.MessageCount)</h6>
-        <button type="button" class="btn text-white" aria-label="Clear" onclick="ClearAlerts(0)">Clear</button>
-        <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+<!-- ==========================================================================
+     OFFCANVAS NOTIFICATION DRAWER: Observations & Advice
+     ========================================================================== -->
+<div class="offcanvas offcanvas-end notificationer notif-drawer" tabindex="-1" id="offcanvasObservation" aria-labelledby="offcanvasObservationLabel">
+    <div class="offcanvas-header notif-drawer-header notif-header-advice">
+        <div class="d-flex align-items-center gap-2">
+            <div class="notif-header-icon-box">
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <div>
+                <h6 class="offcanvas-title notif-drawer-title" id="offcanvasObservationLabel">
+                    Observations & Advice
+                    <span class="notif-count-pill" id="offcanvasObservationCount">(@Model.MessageCount)</span>
+                </h6>
+                <span class="notif-drawer-subtitle">Directives, instructions & observations</span>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn notif-clear-btn" title="Clear all observations" onclick="ClearAlerts(0)">
+                <i class="fas fa-check-double me-1"></i> Clear All
+            </button>
+            <button type="button" class="btn-close notif-close-btn" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
         <input type="hidden" id="hdnMessageCount" value="@Model.MessageCount" />
     </div>
-    <div id="alertbody" class="offcanvas-body p-2">
-        @foreach (CMNirdesh.Models.AlertModel al in Model.MessageList)
+    <div id="observationBody" class="offcanvas-body notif-drawer-body">
+        @if (Model.MessageList != null && Model.MessageList.Any())
         {
-
-            <ul class="list-unstyled notification-list">
-                <li class="notifcation-item position-relative p-2" id="li_@al.NotificationId">
-                    <div class="notification-icon">
-                        <i class="@al.NotificationIcon"></i>
-                    </div>
-                    <div class="notification-detail">
-                        <span>@al.createdDate &nbsp; &nbsp;</span>
-                        @if (al.IsLetter == "Letter")
-                        {
-                            <span class="yellow">Reference</span>
-                        }
-                        else
-                        {
-                            <span class="green">File</span>
-
-                        }
-                        <div class="">
-                            <i class="clearbtn fa fa-close" onclick="ClearAlertsbyId(@al.NotificationId)"></i>
-                            <p class="notification-text">
-                                <b>  @al.alert  </b> <br /> @al.refId
-                            </p>
-                        </div>
-
-                        <span>
-                            @al.alertType
-                            <br />
-                            @if (al.NotificationType == 3 || al.NotificationType == 4)
-                            {
-                                @:From :
-                            }
-                            else
-                            {
-                                @:By :
-                            }
-
-                            @al.UserName
-                        </span>
-                    </div>
-                </li>
-            </ul>
-
-
-
-
-
-
-        }
-
-
-    </div>
-</div>
-
-
-<div class="offcanvas offcanvas-end notificationer" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-    <div class="offcanvas-header">
-        <h6 class="offcanvas-title " id="offcanvasExampleLabel"> <i class="fas fa-bell"></i> &nbsp; Notifications/Circulars/Approvals  <br /> &nbsp;&nbsp; eFiles (@Model.alertCount)</h6>
-        <button type="button" class="btn text-white"  aria-label="Clear" onclick="ClearAlerts(1)">Clear</button>
-        <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        <input type="hidden" id="hdnalertCount" value="@Model.alertCount" />
-    </div>
-    <div id="alertbody" class="offcanvas-body p-2">
-        @foreach (CMNirdesh.Models.AlertModel al in Model.alertList)
-        {
-
-                <ul class="list-unstyled notification-list">
-                    <li class="notifcation-item position-relative p-2" id="li_@al.NotificationId" >
-                        <div class="notification-icon">
-                            <i class="@al.NotificationIcon"></i>
-                        </div>
-                        <div class="notification-detail">
-                            <span>@al.createdDate &nbsp; &nbsp;</span>
-                            @if (al.IsLetter == "Letter")
-                            {
-                                <span class="yellow">Reference</span>
-                            }
-                            else
-                            {
-                                <span class="green">File</span>
-
-                            }
-                            <div class="">
-                                <i class="clearbtn fa fa-close" onclick="ClearAlertsbyId(@al.NotificationId)"></i>
-                                <p class="notification-text">
-                                    <b>  @al.alert  </b> <br /> @al.refId
-                                </p>
-                            </div>
-                           
-                            <span>
-                                @al.alertType
-                                <br />
-                                @if (al.NotificationType == 3 || al.NotificationType == 4)
+            <div class="notif-card-stack">
+                @foreach (CMNirdesh.Models.AlertModel al in Model.MessageList)
+                {
+                    <div class="notif-card notif-card-advice" id="li_@al.NotificationId">
+                        <div class="notif-card-header">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                @if (al.IsLetter == "Letter")
                                 {
-                                    @:From :
+                                    <span class="notif-type-tag notif-tag-ref"><i class="far fa-file-alt me-1"></i> Reference</span>
                                 }
                                 else
                                 {
-                                    @:By :
+                                    <span class="notif-type-tag notif-tag-file"><i class="far fa-folder-open me-1"></i> File</span>
                                 }
-
-                                @al.UserName
-                            </span>
+                                @if (!string.IsNullOrEmpty(al.alertType))
+                                {
+                                    <span class="notif-category-tag">@al.alertType</span>
+                                }
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="notif-timestamp"><i class="far fa-clock me-1"></i>@al.createdDate</span>
+                                <button type="button" class="notif-dismiss-btn" title="Dismiss" onclick="ClearAlertsbyId(@al.NotificationId, event)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </div>
-                    </li>
-                </ul>
-            
-           
 
+                        <div class="notif-card-body">
+                            <div class="notif-card-main-icon">
+                                <i class="@(string.IsNullOrEmpty(al.NotificationIcon) ? "fas fa-info-circle" : al.NotificationIcon)"></i>
+                            </div>
+                            <div class="notif-card-content">
+                                <div class="notif-card-text">@al.alert</div>
+                                @if (al.refId > 0)
+                                {
+                                    <div class="notif-ref-row">
+                                        @if (al.IsLetter == "Letter")
+                                        {
+                                            <a href="javascript:void(0);" onclick="EditMlaDairyalert(@al.refId)" class="notif-ref-link" title="Click to view Reference Diary">
+                                                <i class="fas fa-hashtag me-1"></i>Ref #@al.refId <i class="fas fa-external-link-alt ms-1" style="font-size:10px;"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="notif-ref-badge">
+                                                <i class="fas fa-folder me-1"></i>File #@al.refId
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
 
-
-
+                        @if (!string.IsNullOrEmpty(al.UserName))
+                        {
+                            <div class="notif-card-footer">
+                                <div class="notif-user-info">
+                                    <span class="notif-user-role">
+                                        @(al.NotificationType == 3 || al.NotificationType == 4 ? "From:" : "By:")
+                                    </span>
+                                    <span class="notif-user-name"><i class="far fa-user-circle me-1"></i>@al.UserName</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         }
-
-
+        else
+        {
+            <div class="notif-empty-state">
+                <div class="notif-empty-icon">
+                    <i class="far fa-envelope-open"></i>
+                </div>
+                <h6 class="notif-empty-title">All Caught Up!</h6>
+                <p class="notif-empty-desc">You have no pending observations or advice at this moment.</p>
+            </div>
+        }
     </div>
 </div>
-<!-- notification offcanvas  end -->
+
+<!-- ==========================================================================
+     OFFCANVAS NOTIFICATION DRAWER: Alerts, Circulars & Approvals
+     ========================================================================== -->
+<div class="offcanvas offcanvas-end notificationer notif-drawer" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasAlertLabel">
+    <div class="offcanvas-header notif-drawer-header notif-header-alert">
+        <div class="d-flex align-items-center gap-2">
+            <div class="notif-header-icon-box">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div>
+                <h6 class="offcanvas-title notif-drawer-title" id="offcanvasAlertLabel">
+                    Alerts & Notifications
+                    <span class="notif-count-pill" id="offcanvasAlertCount">(@Model.alertCount)</span>
+                </h6>
+                <span class="notif-drawer-subtitle">Circulars, approvals & e-File notifications</span>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn notif-clear-btn" title="Clear all alerts" onclick="ClearAlerts(1)">
+                <i class="fas fa-check-double me-1"></i> Clear All
+            </button>
+            <button type="button" class="btn-close notif-close-btn" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <input type="hidden" id="hdnalertCount" value="@Model.alertCount" />
+    </div>
+    <div id="alertBody" class="offcanvas-body notif-drawer-body">
+        @if (Model.alertList != null && Model.alertList.Any())
+        {
+            <div class="notif-card-stack">
+                @foreach (CMNirdesh.Models.AlertModel al in Model.alertList)
+                {
+                    <div class="notif-card notif-card-alert" id="li_@al.NotificationId">
+                        <div class="notif-card-header">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                @if (al.IsLetter == "Letter")
+                                {
+                                    <span class="notif-type-tag notif-tag-ref"><i class="far fa-file-alt me-1"></i> Reference</span>
+                                }
+                                else
+                                {
+                                    <span class="notif-type-tag notif-tag-file"><i class="far fa-folder-open me-1"></i> File</span>
+                                }
+                                @if (!string.IsNullOrEmpty(al.alertType))
+                                {
+                                    <span class="notif-category-tag">@al.alertType</span>
+                                }
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="notif-timestamp"><i class="far fa-clock me-1"></i>@al.createdDate</span>
+                                <button type="button" class="notif-dismiss-btn" title="Dismiss" onclick="ClearAlertsbyId(@al.NotificationId, event)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="notif-card-body">
+                            <div class="notif-card-main-icon">
+                                <i class="@(string.IsNullOrEmpty(al.NotificationIcon) ? "fas fa-info-circle" : al.NotificationIcon)"></i>
+                            </div>
+                            <div class="notif-card-content">
+                                <div class="notif-card-text">@al.alert</div>
+                                @if (al.refId > 0)
+                                {
+                                    <div class="notif-ref-row">
+                                        @if (al.IsLetter == "Letter")
+                                        {
+                                            <a href="javascript:void(0);" onclick="EditMlaDairyalert(@al.refId)" class="notif-ref-link" title="Click to view Reference Diary">
+                                                <i class="fas fa-hashtag me-1"></i>Ref #@al.refId <i class="fas fa-external-link-alt ms-1" style="font-size:10px;"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="notif-ref-badge">
+                                                <i class="fas fa-folder me-1"></i>File #@al.refId
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(al.UserName))
+                        {
+                            <div class="notif-card-footer">
+                                <div class="notif-user-info">
+                                    <span class="notif-user-role">
+                                        @(al.NotificationType == 3 || al.NotificationType == 4 ? "From:" : "By:")
+                                    </span>
+                                    <span class="notif-user-name"><i class="far fa-user-circle me-1"></i>@al.UserName</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="notif-empty-state">
+                <div class="notif-empty-icon">
+                    <i class="far fa-bell-slash"></i>
+                </div>
+                <h6 class="notif-empty-title">No New Alerts</h6>
+                <p class="notif-empty-desc">You are completely up to date with notifications & approvals.</p>
+            </div>
+        }
+    </div>
+</div>
+<!-- notification offcanvas end -->
 
 
 <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="loginModaldiary"

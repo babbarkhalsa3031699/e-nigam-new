@@ -1,493 +1,1230 @@
-﻿
+@{
+    ViewBag.Title = "Search Resolution Status";
+}
+
 <head>
     <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
-
     <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
     <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
     <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
     <script src="~/Scripts/datatables/jszip.min.js"></script>
     <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
     <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts-punjabi.js"></script>
     <script src="~/Scripts/datatables/buttons.print.min.js"></script>
     <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
 
     <style>
-        .select-box {
+        /* ==========================================================================
+           SEARCH RESOLUTION COMPACT & RESPONSIVE DESIGN SYSTEM
+           ========================================================================== */
+        
+        :root {
+            --sr-primary: #1d4ed8;
+            --sr-primary-hover: #1e40af;
+            --sr-primary-light: #eff6ff;
+            --sr-secondary: #64748b;
+            --sr-border: #e2e8f0;
+            --sr-border-focus: #3b82f6;
+            --sr-bg-card: #ffffff;
+            --sr-bg-muted: #f8fafc;
+            --sr-text-main: #1e293b;
+            --sr-text-muted: #64748b;
+            --sr-radius: 8px;
+            --sr-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --sr-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --sr-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        }
+
+        .sr-wrapper {
+            padding: 10px 0 45px 0;
+            margin-bottom: 25px;
+            color: var(--sr-text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* --- Header & Breadcrumb --- */
+        .sr-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid var(--sr-border);
+            border-left: 4px solid var(--sr-primary);
+            border-radius: var(--sr-radius);
+            padding: 12px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--sr-shadow-sm);
+        }
+
+        .sr-breadcrumb {
+            display: flex;
+            align-items: center;
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--sr-text-muted);
+            margin-bottom: 3px;
+        }
+
+        .sr-breadcrumb a {
+            color: var(--sr-text-muted);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .sr-breadcrumb a:hover {
+            color: var(--sr-primary);
+        }
+
+        .sr-breadcrumb-sep {
+            margin: 0 6px;
+            color: #cbd5e1;
+            font-size: 10px;
+        }
+
+        .sr-breadcrumb .active {
+            color: var(--sr-primary);
+            font-weight: 600;
+        }
+
+        .sr-page-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.01em;
+        }
+
+        .sr-header-badge {
+            background: var(--sr-primary-light);
+            color: var(--sr-primary);
+            border: 1px solid #bfdbfe;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        /* --- Filter Card --- */
+        .sr-filter-card {
+            background: var(--sr-bg-card);
+            border: 1px solid var(--sr-border);
+            border-radius: var(--sr-radius);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--sr-shadow-sm);
             position: relative;
-            display: inline-block;
-            width: 100%;
         }
 
-        .dropdown {
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: #fff;
+        .sr-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto;
+            gap: 12px;
+            align-items: flex-end;
         }
 
-        .dropdown-options {
-            display: none;
-            border: 1px solid #ccc;
-            background: #fff;
-            position: absolute;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1000;
-            padding: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-            .dropdown-options label {
-                display: block;
-                padding: 5px;
-                cursor: pointer;
+        @@media (min-width: 1200px) {
+            .sr-filter-grid {
+                grid-template-columns: 1.1fr 1.6fr 1fr 1.2fr auto;
             }
+        }
 
-            .dropdown-options input {
-                margin-right: 5px;
+        @@media (max-width: 768px) {
+            .sr-filter-grid {
+                grid-template-columns: 1fr;
             }
+            .sr-filter-actions {
+                display: flex;
+                gap: 8px;
+                width: 100%;
+            }
+            .sr-filter-actions .btn {
+                flex: 1;
+            }
+        }
 
-        .search-box {
-            margin-bottom: 10px;
-            padding: 5px;
+        .sr-form-group {
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .sr-form-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .sr-form-label i {
+            color: var(--sr-primary);
+            font-size: 11px;
+        }
+
+        .sr-input-wrap {
+            position: relative;
+        }
+
+        .sr-input {
+            height: 34px !important;
+            font-size: 12.5px;
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px !important;
+            background-color: #ffffff;
+            color: var(--sr-text-main);
+            transition: all 0.15s ease-in-out;
             width: 100%;
-            box-sizing: border-box;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
         }
 
-        .selected-items {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
+        .sr-input:focus {
+            border-color: var(--sr-border-focus);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            outline: none;
+            background-color: #ffffff;
         }
 
-        .selected-item {
-            background: #007bff;
-            color: #fff;
-            padding: 5px 10px;
-            margin: 2px;
-            border-radius: 15px;
-            display: flex;
+        .sr-input::placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .sr-filter-actions {
+            display: inline-flex;
+            gap: 8px;
             align-items: center;
         }
 
-            .selected-item span {
-                margin-left: 5px;
-                cursor: pointer;
-                font-weight: bold;
-            }
+        .sr-btn {
+            height: 34px;
+            padding: 0 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+            border: none;
+        }
 
-                .selected-item span:hover {
-                    color: #ff4d4d;
-                }
+        .sr-btn-search {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+        }
 
+        .sr-btn-search:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35);
+            transform: translateY(-1px);
+        }
 
-        .compact-filter {
+        .sr-btn-reset {
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 12px 15px;
-            font-size: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            overflow: visible !important;
-        }
-        #showOuterSearchResolution,
-        #filterLG,
-        #filterLG .row,
-        #filterLG .col-md-2,
-        #filterLG .position-relative {
-            overflow: visible !important;
+            color: #475569 !important;
+            border: 1px solid #cbd5e1;
         }
 
+        .sr-btn-reset:hover {
+            background: #f1f5f9;
+            color: #0f172a !important;
+            border-color: #94a3b8;
+        }
+
+        /* --- Autocomplete Dropdown --- */
         #mcSuggestions {
             display: none;
             position: fixed !important;
-            background: #fff;
+            background: #ffffff;
             font-size: 12px;
-            border: 1px solid #ccc;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,.15);
-            max-height: 300px;
+            box-shadow: var(--sr-shadow-lg);
+            max-height: 260px;
             overflow-y: auto;
             z-index: 2147483647 !important;
+            padding: 4px 0;
         }
 
         .mc-item {
-            padding: 8px 10px;
+            padding: 7px 12px;
             cursor: pointer;
-            border-bottom: 1px solid #eee;
+            color: #334155;
+            transition: background 0.1s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-            .mc-item:hover {
-                background: #f5f5f5;
+        .mc-item:last-child {
+            border-bottom: none;
+        }
+
+        .mc-item:hover {
+            background: #eff6ff;
+            color: var(--sr-primary);
+        }
+
+        /* --- Results Container & Card --- */
+        .sr-results-card {
+            background: var(--sr-bg-card);
+            border: 1px solid var(--sr-border);
+            border-radius: var(--sr-radius);
+            padding: 14px 16px;
+            box-shadow: var(--sr-shadow-sm);
+            overflow: hidden;
+        }
+
+        .sr-empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .sr-empty-icon {
+            font-size: 40px;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+        }
+
+        .sr-empty-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+
+        .sr-empty-subtitle {
+            font-size: 12.5px;
+            color: #94a3b8;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        /* --- Loading State --- */
+        .sr-loading-state {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .sr-spinner {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(37, 99, 235, 0.15);
+            border-radius: 50%;
+            border-top-color: var(--sr-primary);
+            animation: sr-spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @@keyframes sr-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- Table Styling & Overrides (Grid borders & visible header) --- */
+        .sr-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0;
+            padding: 0;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+
+        table.sr-data-table,
+        #StatsResSearch {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 0 !important;
+            font-size: 12px;
+            border: 1px solid #cbd5e1 !important;
+        }
+
+        #StatsResSearch thead,
+        .sr-data-table thead {
+            background-color: #1e3a8a !important;
+        }
+
+        #StatsResSearch thead tr,
+        .sr-data-table thead tr,
+        .sr-table-header-row {
+            background-color: #1e3a8a !important;
+            background: #1e3a8a !important;
+        }
+
+        #StatsResSearch thead th,
+        table#StatsResSearch thead th,
+        .sr-data-table thead th,
+        .sr-th {
+            background-color: #1e3a8a !important;
+            background: #1e3a8a !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.02em;
+            padding: 10px 8px !important;
+            border: 1px solid #334155 !important;
+            border-bottom: 2px solid #0f172a !important;
+            white-space: nowrap;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        #StatsResSearch thead th *,
+        .sr-data-table thead th * {
+            color: #ffffff !important;
+        }
+
+        #StatsResSearch thead th i,
+        .sr-data-table thead th i {
+            color: #93c5fd !important;
+            margin-right: 4px;
+        }
+
+        #StatsResSearch tbody td,
+        .sr-data-table tbody td,
+        .sr-td {
+            padding: 8px 10px !important;
+            font-size: 12px;
+            color: #1e293b;
+            border: 1px solid #cbd5e1 !important;
+            vertical-align: middle;
+            line-height: 1.45;
+        }
+
+        #StatsResSearch tbody tr:nth-child(even) td {
+            background-color: #f8fafc !important;
+        }
+
+        #StatsResSearch tbody tr:hover td {
+            background-color: #e0f2fe !important;
+        }
+
+        /* Badges & Links within table */
+        .sr-badge-filetype {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            font-size: 10.5px;
+            font-weight: 600;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .sr-mc-cell {
+            font-weight: 600;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+
+        .sr-link-proceedings, .sr-link-uid {
+            color: var(--sr-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .sr-link-proceedings:hover, .sr-link-uid:hover {
+            color: var(--sr-primary-hover);
+            text-decoration: underline;
+        }
+
+        .sr-date-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .sr-subject-cell {
+            min-width: 320px;
+            max-width: 550px;
+            line-height: 1.4;
+            color: #334155;
+            word-wrap: break-word;
+        }
+
+        .sr-res-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-weight: 700;
+            font-size: 11.5px;
+            white-space: nowrap;
+        }
+
+        /* --- DataTables Controls --- */
+        .sr-dt-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .sr-dt-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .dt-buttons {
+            display: inline-flex !important;
+            gap: 8px !important;
+            margin-bottom: 0 !important;
+        }
+
+        .dt-buttons .dt-button {
+            height: 34px !important;
+            padding: 0 16px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.15s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            margin: 0 !important;
+        }
+
+        .dt-buttons .dt-button:hover {
+            background: #f8fafc !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
+        }
+
+        .dataTables_filter {
+            margin-bottom: 0 !important;
+        }
+
+        .dataTables_filter label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin: 0;
+            width: 100%;
+        }
+
+        .dataTables_filter input {
+            height: 34px !important;
+            padding: 4px 10px !important;
+            font-size: 12.5px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            outline: none !important;
+            transition: border-color 0.15s ease;
+        }
+
+        .dataTables_filter input:focus {
+            border-color: var(--sr-primary) !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        /* Mobile alignment: 2 equal buttons side-by-side, search input below */
+        @@media (max-width: 768px) {
+            .sr-dt-top {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+                width: 100% !important;
             }
 
+            .sr-dt-top > div,
+            .sr-dt-top-left,
+            .sr-dt-top-right {
+                width: 100% !important;
+            }
 
-        /* Labels */
-        .compact-filter label {
-            font-size: 11px;
+            .dt-buttons {
+                display: flex !important;
+                width: 100% !important;
+                gap: 8px !important;
+            }
+
+            .dt-buttons .dt-button {
+                flex: 1 1 50% !important;
+                width: 50% !important;
+                height: 38px !important;
+                font-size: 12px !important;
+                justify-content: center !important;
+                text-align: center !important;
+                margin: 0 !important;
+            }
+
+            .dataTables_filter {
+                width: 100% !important;
+            }
+
+            .dataTables_filter label {
+                display: flex !important;
+                width: 100% !important;
+                gap: 6px !important;
+            }
+
+            .dataTables_filter input {
+                flex: 1 1 auto !important;
+                width: 100% !important;
+                height: 38px !important;
+            }
+
+            .sr-wrapper {
+                padding: 8px 0 55px 0 !important;
+                margin-bottom: 30px !important;
+            }
+
+            .sr-dt-bottom {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 12px !important;
+                margin-top: 14px !important;
+                margin-bottom: 22px !important;
+            }
+        }
+
+        .dataTables_paginate {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .dataTables_paginate .paginate_button {
+            padding: 4px 10px !important;
+            font-size: 11.5px !important;
+            border-radius: 4px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            margin: 0 1px;
+            cursor: pointer;
+        }
+
+        .dataTables_paginate .paginate_button.current,
+        .dataTables_paginate .paginate_button.current:hover {
+            background: var(--sr-primary) !important;
+            color: #ffffff !important;
+            border-color: var(--sr-primary) !important;
             font-weight: 600;
-            margin-bottom: 4px;
-            color: #555;
-            display: block;
         }
 
-        /* Compact Dropdowns (Bootstrap 3 safe) */
-        .compact-filter select.form-control {
-            height: 30px !important;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 6px;
+        .dataTables_paginate .paginate_button:hover {
+            background: #f1f5f9 !important;
+            color: #0f172a !important;
         }
 
-        .compact-filter input.form-control {
-            height: 30px !important;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 6px !important;
+        /* --- Scrollbar Styling --- */
+        .sr-table-wrap::-webkit-scrollbar,
+        #mcSuggestions::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+
+        .sr-table-wrap::-webkit-scrollbar-track,
+        #mcSuggestions::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .sr-table-wrap::-webkit-scrollbar-thumb,
+        #mcSuggestions::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .sr-table-wrap::-webkit-scrollbar-thumb:hover,
+        #mcSuggestions::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
 
-<div id="main-content" style="margin-top: 30px;">
-    <div class="col-md-12 col-lg-12 col-xl-12">
-       
-           <h4 id="breadcrumb">Search Resolution >> Search Resolution Status</h4>
-           <hr />
-       
-            <section class="form_dsign">
-            <div class="container-fluid p-0">
-                <div class="inr_frm_dsgn">
-                    <!-- Add Circular Button -->
-                    <div class="widget-box" id="divAction">
-                        <div class="widget-header widget-header-flat rounded-top rounded-0">
-                            <h4 class=""> Search Resolution</h4>
-                            <div class="widget-toolbar no-border">
-                                @*<button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="AddNew()">
-                                    <i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Select Parameter to Serach resolution
-                                </button>*@
-                            </div>
-                        </div>
-                    </div>
+<div id="main-content" class="container-fluid sr-wrapper">
+    <!-- Header & Breadcrumb -->
+    <div class="sr-page-header">
+        <div class="sr-header-left">
+            <div class="sr-breadcrumb">
+                <a href="@Url.Action("Dashboard", "References")"><i class="fa fa-home"></i> Home</a>
+                <span class="sr-breadcrumb-sep">/</span>
+                <span>Resolutions</span>
+                <span class="sr-breadcrumb-sep">/</span>
+                <span class="active">Search Resolution</span>
+            </div>
+            <h4 class="sr-page-title">
+                <i class="fa fa-search text-primary me-2"></i>Search Resolution Status
+            </h4>
+        </div>
+        <div class="sr-header-right d-none d-sm-block">
+            <span class="sr-header-badge">
+                <i class="fa fa-database"></i> Live Resolution Directory
+            </span>
+        </div>
+    </div>
 
-                    <div class="form_lyot">
-                        <div id="showOuterSearchResolution">
-                            <div class="compact-filter mb-3" id="filterLG">
-                                <div class="row align-items-end">
-
-                                    <div class="col-md-2 col-sm-6">
-                                        <label>Unique/Ref ID</label>
-                                        <input type="text" id="txtRefId" class="form-control" style="border-radius: 6px !important;" />
-                                    </div>
-
-                                    <div class="col-md-2 position-relative">
-                                        <label>MC Name</label>
-                                        <input type="text"
-                                               id="txtMCName"
-                                               class="form-control"
-                                               placeholder="Free Text Search" />
-
-                                        <input type="hidden" id="MCID" />
-                                    </div>
-
-
-
-                                    <div class="col-md-2">
-                                        <label>Resolution No</label>
-                                        <input type="text"
-                                               id="txtResolutionNo"
-                                               class="form-control" />
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label>Meeting Date</label>
-                                        <input type="date"
-                                               id="txtMeetingDate"
-                                               class="form-control" />
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label>&nbsp;</label><br />
-                                        <button type="button"
-                                                onclick="ResolutionSearch();"
-                                                class="btn btn-primary">
-                                            Search
-                                        </button>
-
-                                        <button type="button"
-                                                onclick="clearSearch();"
-                                                class="btn btn-secondary">
-                                            Reset
-                                        </button>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <script>
-                                function clearSearch() {
-                                    $('#txtRefId').val('');
-                                    $('#txtMCName').val('');
-                                    $('#MCID').val('');
-                                    $('#txtResolutionNo').val('');
-                                    $('#txtMeetingDate').val('');
-                                    $('#showOuterSearchResolutionData').html('');
-                                }
-                            </script>
-                            <div id="mcSuggestions"></div>
-                            <div id="showOuterSearchResolutionData">Show Data</div>
-
-
-                        </div>
-                    </div>
+    <!-- Filter Card -->
+    <div class="sr-filter-card" id="filterLG">
+        <div class="sr-filter-grid">
+            <!-- Unique / Ref ID -->
+            <div class="sr-form-group">
+                <label class="sr-form-label" for="txtRefId">
+                    <i class="fa fa-hashtag"></i> Unique / Ref ID
+                </label>
+                <div class="sr-input-wrap">
+                    <input type="text" id="txtRefId" class="form-control sr-input" placeholder="e.g. 10425" />
                 </div>
             </div>
 
+            <!-- MC Name (with Autocomplete) -->
+            <div class="sr-form-group position-relative">
+                <label class="sr-form-label" for="txtMCName">
+                    <i class="fa fa-university"></i> MC Name
+                </label>
+                <div class="sr-input-wrap">
+                    <input type="text"
+                           id="txtMCName"
+                           class="form-control sr-input"
+                           placeholder="Type to search MC..."
+                           autocomplete="off" />
+                    <input type="hidden" id="MCID" />
+                </div>
+            </div>
 
-        </section>
-         <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="InboxModel"
-             data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important ">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <h4 id="InboxHeader1" class="widget-title "></h4>
-                            </div>
-                            <div class="col-lg-3">
-                                <div id="clock1" class="clock"></div>
-                            </div>
-                            <div class="col-1">
-                                <i id="PopRefresh" class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 15px;" title="Session Time Reset"></i>
-                            </div>
-                        </div>
+            <!-- Resolution No -->
+            <div class="sr-form-group">
+                <label class="sr-form-label" for="txtResolutionNo">
+                    <i class="fa fa-file-text-o"></i> Resolution No
+                </label>
+                <div class="sr-input-wrap">
+                    <input type="text"
+                           id="txtResolutionNo"
+                           class="form-control sr-input"
+                           placeholder="e.g. 5" />
+                </div>
+            </div>
 
-                        <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close" style=""></button>
-                    </div>
-                    <div class="modal-body" id="InboxModelbody">
-                    </div>
+            <!-- Meeting Date -->
+            <div class="sr-form-group">
+                <label class="sr-form-label" for="txtMeetingDate">
+                    <i class="fa fa-calendar"></i> Meeting Date
+                </label>
+                <div class="sr-input-wrap">
+                    <input type="date"
+                           id="txtMeetingDate"
+                           class="form-control sr-input" />
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="sr-filter-actions">
+                <button type="button"
+                        id="btnSearch"
+                        onclick="ResolutionSearch();"
+                        class="sr-btn sr-btn-search">
+                    <i class="fa fa-search"></i> Search
+                </button>
+
+                <button type="button"
+                        id="btnReset"
+                        onclick="clearSearch();"
+                        class="sr-btn sr-btn-reset">
+                    <i class="fa fa-undo"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MC Autocomplete Dropdown Container -->
+    <div id="mcSuggestions"></div>
+
+    <!-- Results Card -->
+    <div class="sr-results-card">
+        <div id="showOuterSearchResolutionData">
+            <div class="sr-empty-state">
+                <div class="sr-empty-icon">
+                    <i class="fa fa-file-text-o"></i>
+                </div>
+                <div class="sr-empty-title">Ready to Search Resolutions</div>
+                <div class="sr-empty-subtitle">
+                    Enter Ref ID, MC Name, Resolution No, or Meeting Date above and click <strong>Search</strong> to query live records.
                 </div>
             </div>
         </div>
-    </div></div>
-    <script>
-      function ResolutionSearch() {
+    </div>
+</div>
 
-    $.ajax({
-        url: '@Url.Action("ResolutionSearch", "References")',
-        type: 'GET',
-        data: {
-            RefId: $('#txtRefId').val(),
-            MCID: $('#MCID').val(),
-            ResolutionNo: $('#txtResolutionNo').val(),
-            MeetingDate: $('#txtMeetingDate').val()
-        },
-        success: function (res) {
+<!-- Modal for Viewing / Dispatching Record -->
+<div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="InboxModel"
+     data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row w-100 align-items-center">
+                    <div class="col-lg-8">
+                        <h4 id="InboxHeader1" class="widget-title mb-0"></h4>
+                    </div>
+                    <div class="col-lg-3">
+                        <div id="clock1" class="clock"></div>
+                    </div>
+                    <div class="col-1 text-end">
+                        <i id="PopRefresh" class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 15px; cursor: pointer;" title="Session Time Reset"></i>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="InboxModelbody">
+            </div>
+        </div>
+    </div>
+</div>
 
-            // Load table HTML
-            $("#showOuterSearchResolutionData").html(res).show();
+<script>
+    // --- Clear Filters ---
+    function clearSearch() {
+        $('#txtRefId').val('');
+        $('#txtMCName').val('');
+        $('#MCID').val('');
+        $('#txtResolutionNo').val('');
+        $('#txtMeetingDate').val('');
+        $('#mcSuggestions').hide();
 
-            // Initialize DataTable after HTML is added
-            if ($.fn.DataTable.isDataTable('#StatsResSearch')) {
-                $('#StatsResSearch').DataTable().destroy();
-            }
+        $('#showOuterSearchResolutionData').html(
+            '<div class="sr-empty-state">' +
+            '    <div class="sr-empty-icon"><i class="fa fa-file-text-o"></i></div>' +
+            '    <div class="sr-empty-title">Filters Reset</div>' +
+            '    <div class="sr-empty-subtitle">Enter filter parameters above and click <strong>Search</strong>.</div>' +
+            '</div>'
+        );
+    }
 
-            $('#StatsResSearch').DataTable({
-                pageLength: 100,
-                responsive: true,
-                ordering: false,
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        text: 'Export Excel'
+    // --- Search Resolution Handler ---
+    function ResolutionSearch() {
+        var $btn = $('#btnSearch');
+        var originalBtnHtml = $btn.html();
+
+        // Show loading state
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Searching...');
+        $('#showOuterSearchResolutionData').html(
+            '<div class="sr-loading-state">' +
+            '    <div class="sr-spinner"></div>' +
+            '    <div class="text-muted" style="font-size:13px;font-weight:500;">Searching resolution records...</div>' +
+            '</div>'
+        );
+
+        $.ajax({
+            url: '@Url.Action("ResolutionSearch", "References")',
+            type: 'GET',
+            data: {
+                RefId: $.trim($('#txtRefId').val()),
+                MCID: $('#MCID').val(),
+                ResolutionNo: $.trim($('#txtResolutionNo').val()),
+                MeetingDate: $('#txtMeetingDate').val()
+            },
+            success: function (res) {
+                $btn.prop('disabled', false).html(originalBtnHtml);
+
+                if (!res || $.trim(res) === "" || res.indexOf("No Records Found") > -1) {
+                    $('#showOuterSearchResolutionData').html(
+                        '<div class="sr-empty-state">' +
+                        '    <div class="sr-empty-icon"><i class="fa fa-info-circle text-warning"></i></div>' +
+                        '    <div class="sr-empty-title">No Records Found</div>' +
+                        '    <div class="sr-empty-subtitle">No resolution records matched your search criteria. Try broadening your parameters.</div>' +
+                        '</div>'
+                    );
+                    return;
+                }
+
+                // Render table
+                $("#showOuterSearchResolutionData").html(res).show();
+
+                // Initialize DataTable
+                if ($.fn.DataTable.isDataTable('#StatsResSearch')) {
+                    $('#StatsResSearch').DataTable().destroy();
+                }
+
+                $('#StatsResSearch').DataTable({
+                    pageLength: 50,
+                    lengthMenu: [[25, 50, 100, 250, -1], [25, 50, 100, 250, "All"]],
+                    responsive: false, // Maintain horizontal scroll layout without collapsing columns
+                    ordering: false,
+                    dom: '<"sr-dt-top"<"sr-dt-top-left"B><"sr-dt-top-right"f>>rt<"sr-dt-bottom"<"d-flex align-items-center gap-3"li>p>',
+                    language: {
+                        search: '<i class="fa fa-search text-muted"></i>',
+                        searchPlaceholder: "Search in results...",
+                        lengthMenu: "Show _MENU_ records",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "Showing 0 to 0 of 0 entries",
+                        paginate: {
+                            previous: '<i class="fa fa-angle-left"></i>',
+                            next: '<i class="fa fa-angle-right"></i>'
+                        }
                     },
-                    {
-                        extend: 'pdfHtml5',
-                        text: 'Export PDF'
-                    }
-                ]
-            });
-        },
-        error: function (xhr) {
-            alert(xhr.responseText);
-        }
-    });
-}
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel-o text-success"></i> Export Excel',
+                            className: 'btn btn-sm btn-outline-secondary',
+                            title: 'Resolution_Search_Results'
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="fa fa-file-pdf-o text-danger"></i> Export PDF',
+                            className: 'btn btn-sm btn-outline-secondary',
+                            orientation: 'landscape',
+                            pageSize: 'A4',
+                            title: null,
+                            filename: 'Resolution_Search_Results',
+                            exportOptions: {
+                                format: {
+                                    header: function (data) {
+                                        return $('<div>').html(data).text().trim();
+                                    },
+                                    body: function (data) {
+                                        if (!data) return '';
+                                        var html = data.toString();
+                                        html = html.replace(/<span class=['"]sr-pill-badge[^'"]*['"]>([\s\S]*?)<\/span>/gi, ' ($1)')
+                                                   .replace(/<br\s*[\/]?>/gi, '\n')
+                                                   .replace(/<\/div>/gi, '\n')
+                                                   .replace(/<\/p>/gi, '\n')
+                                                   .replace(/<\/a>/gi, ' </a>')
+                                                   .replace(/<\/span>/gi, ' </span>');
+                                        var txt = $('<div>').html(html).text();
+                                        return txt.split('\n')
+                                                  .map(function (l) { return l.trim(); })
+                                                  .filter(function (l) { return l.length > 0; })
+                                                  .join('\n');
+                                    }
+                                }
+                            },
+                            customize: function (doc) {
+                                // 1. Completely remove Report Title and any extra headers (keep only table)
+                                if (doc.content && doc.content.length) {
+                                    doc.content = doc.content.filter(function (item) {
+                                        return item && item.table;
+                                    });
+                                }
 
-      function EditMlaDispatch(IDD, moveid, mtype) {
-      var ID = IDD.id;
-     $('#row_'+ID).removeClass('NewFile');
-     $('#InboxModelbody').html('');
-     $('#InboxModelbody').html('');
-     $('#InboxModelBody').html('');
-     $('#InboxModelbody').html('');
-     if (mtype == "Diary") {
-         var pathurl = '/References/EditMlaDairyForm';
-          $.ajax({
-              type: "GET",
-              cache: false,
-     url: '@Url.Action("EditMlaDairyForm", "References")',
+                                // 2. Font configuration for Punjabi (Raavi / Gurmukhi)
+                                var selectedFont = null;
+                                if (window.pdfMake && window.pdfMake.vfs && window.pdfMake.vfs['Raavi-Regular.ttf']) {
+                                    window.pdfMake.fonts = window.pdfMake.fonts || {};
+                                    window.pdfMake.fonts.Raavi = {
+                                        normal: 'Raavi-Regular.ttf',
+                                        bold: window.pdfMake.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf',
+                                        italics: 'Raavi-Regular.ttf',
+                                        bolditalics: window.pdfMake.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf'
+                                    };
+                                    selectedFont = 'Raavi';
+                                } else if (window.pdfMake && window.pdfMake.vfs && window.pdfMake.vfs['Gur-Mukhi.ttf']) {
+                                    window.pdfMake.fonts = window.pdfMake.fonts || {};
+                                    window.pdfMake.fonts.GurMukhi = {
+                                        normal: 'Gur-Mukhi.ttf',
+                                        bold: 'Gur-Mukhi.ttf',
+                                        italics: 'Gur-Mukhi.ttf',
+                                        bolditalics: 'Gur-Mukhi.ttf'
+                                    };
+                                    selectedFont = 'GurMukhi';
+                                }
 
-     data: { ID: ID, MoveId: moveid },
-     beforeSend: function () {
-         $('#loader-wrapper').show();
-     },
-     success: function (data) {
-         $('#InboxModelbody').html('');
-         //debugger;
-         var options = {
-             "backdrop": "static",
-             keyboard: true
-         };
-         $("#loader-wrapper").hide();
-         if (data) {
-             $("#InboxModel").css("display", "block");
-             $('#InboxModelbody').html(data);
+                                doc.defaultStyle = doc.defaultStyle || {};
+                                if (selectedFont) {
+                                    doc.defaultStyle.font = selectedFont;
+                                    if (doc.styles) {
+                                        Object.keys(doc.styles).forEach(function (k) {
+                                            doc.styles[k].font = selectedFont;
+                                        });
+                                    }
+                                }
+                                doc.defaultStyle.fontSize = 7.5;
+                                doc.pageMargins = [14, 14, 14, 14];
 
-             //$("#ulnoting").animate({ scrollTop: $('ul#ulnoting li:last').offset().top + 60 });
+                                // 3. Find and format the table
+                                var tableNode = null;
+                                for (var i = 0; i < doc.content.length; i++) {
+                                    if (doc.content[i].table) {
+                                        tableNode = doc.content[i];
+                                        break;
+                                    }
+                                }
 
-         } else { alert("error"); }
-     },
-     error: function (xhr, ajaxOptions, thrownError) {
-         alert(xhr.responseText);
-         alert(thrownError);
-     },
-     complete: function (results) {
-         $('#loader-wrapper').hide();
-     }
- });
-     } else {
-         var pathurl = '/References/EditMlaDispatchFormOutbox';
-          $.ajax({
-              type: "GET",
-              cache: false,
-     url: '@Url.Action("EditMlaDispatchFormOutbox", "References")',
+                                if (tableNode && tableNode.table && tableNode.table.body && tableNode.table.body.length > 0) {
+                                    var table = tableNode.table;
+                                    table.headerRows = 1;
+                                    table.dontBreakRows = true;
+                                    var colCount = table.body[0].length;
 
-     data: { ID: ID, MoveId: moveid },
-     beforeSend: function () {
-         $('#loader-wrapper').show();
-     },
-     success: function (data) {
-         $('#InboxModelbody').html('');
-         //debugger;
-         var options = {
-             "backdrop": "static",
-             keyboard: true
-         };
-         $("#loader-wrapper").hide();
-         if (data) {
-             $("#InboxModel").css("display", "block");
-             $('#InboxModelbody').html(data);
+                                    // Exact point column widths fitting 814pt usable landscape width
+                                    var widths = [];
+                                    for (var c = 0; c < colCount; c++) {
+                                        var hCell = table.body[0][c];
+                                        var hText = (typeof hCell === 'object' && hCell !== null ? (hCell.text || '') : String(hCell || '')).toLowerCase().trim();
 
-             $("#ulnoting").animate({ scrollTop: $('ul#ulnoting li:last').offset().top + 30 });
+                                        if (hText.indexOf('subject') !== -1) {
+                                            widths.push('*'); // Absorbs ~240pt for Punjabi text
+                                        } else if (hText.indexOf('mc') !== -1) {
+                                            widths.push(65);
+                                        } else if (hText.indexOf('proceeding') !== -1) {
+                                            widths.push(78);
+                                        } else if (hText.indexOf('unique') !== -1 || hText.indexOf('ref') !== -1) {
+                                            widths.push(70);
+                                        } else if (hText.indexOf('date') !== -1) {
+                                            widths.push(56);
+                                        } else if (hText.indexOf('res') !== -1 && hText.indexOf('no') !== -1) {
+                                            widths.push(40);
+                                        } else if (hText.indexOf('status') !== -1) {
+                                            widths.push(85);
+                                        } else if (hText.indexOf('with') !== -1) {
+                                            widths.push(115);
+                                        } else if (hText.indexOf('approv') !== -1) {
+                                            widths.push(65);
+                                        } else {
+                                            widths.push('auto');
+                                        }
+                                    }
+                                    table.widths = widths;
 
-         } else { alert("error"); }
-     },
-     error: function (xhr, ajaxOptions, thrownError) {
-         alert(xhr.responseText);
-         alert(thrownError);
-     },
-     complete: function (results) {
-         $('#loader-wrapper').hide();
-     }
- });
-     }
+                                    // Cell formatting and alignment
+                                    for (var r = 0; r < table.body.length; r++) {
+                                        var row = table.body[r];
+                                        for (var colIdx = 0; colIdx < row.length; colIdx++) {
+                                            var cellObj = row[colIdx];
+                                            if (typeof cellObj !== 'object' || cellObj === null) {
+                                                cellObj = { text: String(cellObj || '') };
+                                                row[colIdx] = cellObj;
+                                            }
 
-     //Rajeev
+                                            if (selectedFont) {
+                                                cellObj.font = selectedFont;
+                                            }
 
- var menutype = $("#lblmenuname").html();
+                                            if (r === 0) {
+                                                // Header row
+                                                cellObj.fillColor = '#1e3a8a';
+                                                cellObj.color = '#ffffff';
+                                                cellObj.bold = true;
+                                                cellObj.alignment = 'center';
+                                                cellObj.fontSize = 7.5;
+                                            } else {
+                                                // Data rows
+                                                cellObj.fontSize = 7;
+                                                cellObj.color = '#1e293b';
+                                                cellObj.fillColor = (r % 2 === 0) ? '#f8fafc' : '#ffffff';
 
+                                                var colHeader = (typeof table.body[0][colIdx] === 'object' ? (table.body[0][colIdx].text || '') : '').toLowerCase();
+                                                if (colHeader.indexOf('date') !== -1 || (colHeader.indexOf('res') !== -1 && colHeader.indexOf('no') !== -1) || colHeader.indexOf('unique') !== -1) {
+                                                    cellObj.alignment = 'center';
+                                                } else {
+                                                    cellObj.alignment = 'left';
+                                                }
+                                            }
+                                        }
+                                    }
 
- var heading = $('#inboxlabel').html();
-
-
-
-
- $('#InboxHeader1').html(menutype+">>"+heading);
-
- }
-
-    $(document).ready(function () {
-
-    $("#txtMCName").keyup(function () {
-
-    var term = $(this).val();
-
-    if (term.length < 1) {
-    $("#mcSuggestions").hide();
-    return;
-    }
-
-
-
-    $.getJSON('@Url.Action("GetMCNames","References")',
-    { term: term },
-    function (data) {
-
-    var html = "";
-
-    $.each(data, function (i, item) {
-
-        $.each(data, function (i, item) {
-
-            html += "<div class='mc-item' " +
-                "data-id='" + item.deptId + "' " +
-                "style='padding:8px;cursor:pointer;border-bottom:1px solid #eee;'>" +
-                item.deptname +
-                "</div>";
+                                    // 4. Distinct borders for both rows and columns in PDF
+                                    tableNode.layout = {
+                                        hLineWidth: function (i, node) {
+                                            return (i === 0 || i === 1 || i === node.table.body.length) ? 0.8 : 0.4;
+                                        },
+                                        vLineWidth: function () {
+                                            return 0.4;
+                                        },
+                                        hLineColor: function (i, node) {
+                                            return (i === 0 || i === 1 || i === node.table.body.length) ? '#1e3a8a' : '#cbd5e1';
+                                        },
+                                        vLineColor: function () {
+                                            return '#cbd5e1';
+                                        },
+                                        paddingLeft: function () { return 3.5; },
+                                        paddingRight: function () { return 3.5; },
+                                        paddingTop: function (i) { return i === 0 ? 5 : 3.5; },
+                                        paddingBottom: function (i) { return i === 0 ? 5 : 3.5; }
+                                    };
+                                }
+                            }
+                        }
+                    ]
+                });
+            },
+            error: function (xhr) {
+                $btn.prop('disabled', false).html(originalBtnHtml);
+                $('#showOuterSearchResolutionData').html(
+                    '<div class="sr-empty-state">' +
+                    '    <div class="sr-empty-icon"><i class="fa fa-exclamation-triangle text-danger"></i></div>' +
+                    '    <div class="sr-empty-title">Error Loading Data</div>' +
+                    '    <div class="sr-empty-subtitle">' + (xhr.responseText || 'An error occurred while fetching resolution data.') + '</div>' +
+                    '</div>'
+                );
+            }
         });
-    });
-
-    if (html !== "") {
-
-    var rect = $("#txtMCName")[0].getBoundingClientRect();
-
-    $("#mcSuggestions")
-    .html(html)
-    .css({
-    top: rect.bottom + "px",
-    left: rect.left + "px",
-    width: rect.width + "px",
-    position: "fixed",
-    zIndex: 2147483647
-    })
-    .show();
     }
-    else {
-    $("#mcSuggestions").hide();
+
+    // --- Modal Edit & Dispatch Handler ---
+    function EditMlaDispatch(IDD, moveid, mtype) {
+        var ID = (IDD && IDD.id) ? IDD.id : IDD;
+        $('#row_' + ID).removeClass('NewFile');
+        $('#InboxModelbody').html('');
+
+        var targetUrl = (mtype === "Diary")
+            ? '@Url.Action("EditMlaDairyForm", "References")'
+            : '@Url.Action("EditMlaDispatchFormOutbox", "References")';
+
+        $('#loader-wrapper').show();
+
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: targetUrl,
+            data: { ID: ID, MoveId: moveid },
+            success: function (data) {
+                $('#loader-wrapper').hide();
+                if (data) {
+                    $("#InboxModel").css("display", "block");
+                    $('#InboxModelbody').html(data);
+                    if (mtype !== "Diary") {
+                        if ($("ul#ulnoting li:last").length) {
+                            $("#ulnoting").animate({ scrollTop: $('ul#ulnoting li:last').offset().top + 30 });
+                        }
+                    }
+                } else {
+                    alert("Unable to load details.");
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#loader-wrapper').hide();
+                alert(xhr.responseText || thrownError);
+            }
+        });
+
+        var menutype = $("#lblmenuname").html() || "Resolutions";
+        var heading = $('#inboxlabel').html() || "Details";
+        $('#InboxHeader1').html(menutype + " >> " + heading);
     }
-    });
-    });
-    // Select MC
-    $(document).on("click", ".mc-item", function () {
-
-    $("#txtMCName").val($(this).text());
-    $("#MCID").val($(this).data("id"));
-
-    $("#mcSuggestions").hide();
-    });
-
-    // Hide suggestions when clicking outside
-    $(document).click(function (e) {
-
-    if (!$(e.target).closest("#txtMCName, #mcSuggestions").length) {
-    $("#mcSuggestions").hide();
-    }
-    });
-
-    // Clear MCID when user edits text manually
-    $("#txtMCName").on("input", function () {
-    $("#MCID").val("");
-    });
-
-    });
 
     function closeInboxEdit() {
         $("#InboxModel").css("display", "none");
         $('#InboxModelbody').html('');
-        S_enable = 0, SD_enable = 0, office_enable = 0;
-
+        if (typeof S_enable !== 'undefined') S_enable = 0;
+        if (typeof SD_enable !== 'undefined') SD_enable = 0;
+        if (typeof office_enable !== 'undefined') office_enable = 0;
     }
-    </script>
+
+    // --- Autocomplete Setup & Positioning ---
+    $(document).ready(function () {
+        var mcTimer = null;
+
+        $("#txtMCName").on("input keyup", function () {
+            clearTimeout(mcTimer);
+            var term = $.trim($(this).val());
+
+            if (term.length < 1) {
+                $("#mcSuggestions").hide();
+                $("#MCID").val("");
+                return;
+            }
+
+            mcTimer = setTimeout(function () {
+                $.getJSON('@Url.Action("GetMCNames", "References")', { term: term }, function (data) {
+                    var html = "";
+                    if (data && data.length > 0) {
+                        $.each(data, function (i, item) {
+                            html += "<div class='mc-item' data-id='" + item.deptId + "'>" +
+                                "<i class='fa fa-building-o text-muted me-1'></i> " +
+                                item.deptname +
+                                "</div>";
+                        });
+
+                        var $input = $("#txtMCName");
+                        var rect = $input[0].getBoundingClientRect();
+
+                        $("#mcSuggestions")
+                            .html(html)
+                            .css({
+                                top: (rect.bottom + 2) + "px",
+                                left: rect.left + "px",
+                                width: Math.max(rect.width, 220) + "px",
+                                position: "fixed",
+                                zIndex: 2147483647
+                            })
+                            .show();
+                    } else {
+                        $("#mcSuggestions").hide();
+                    }
+                });
+            }, 250);
+        });
+
+        // Select MC from suggestions
+        $(document).on("click", ".mc-item", function () {
+            $("#txtMCName").val($(this).text().trim());
+            $("#MCID").val($(this).data("id"));
+            $("#mcSuggestions").hide();
+        });
+
+        // Hide suggestions on outside click
+        $(document).on("click", function (e) {
+            if (!$(e.target).closest("#txtMCName, #mcSuggestions").length) {
+                $("#mcSuggestions").hide();
+            }
+        });
+
+        // Enter key in input triggers search
+        $("#txtRefId, #txtMCName, #txtResolutionNo, #txtMeetingDate").on("keypress", function (e) {
+            if (e.which === 13) {
+                ResolutionSearch();
+            }
+        });
+
+        // Reposition suggestions on window resize or scroll
+        $(window).on("resize scroll", function () {
+            if ($("#mcSuggestions").is(":visible") && $("#txtMCName").length) {
+                var rect = $("#txtMCName")[0].getBoundingClientRect();
+                $("#mcSuggestions").css({
+                    top: (rect.bottom + 2) + "px",
+                    left: rect.left + "px",
+                    width: Math.max(rect.width, 220) + "px"
+                });
+            }
+        });
+    });
+</script>

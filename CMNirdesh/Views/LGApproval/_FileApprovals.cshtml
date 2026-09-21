@@ -1,58 +1,134 @@
-﻿
 @model CMNirdesh.Models.LGApproval
 
+<div class="lg-modal-approval-wrapper">
+    @if (Model != null && Model.LGApprovalList != null && Model.LGApprovalList.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-hover lg-modal-table mb-0" id="MeetingTableModal">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Meeting Date</th>
+                        <th style="width: 50%;">Approval Details</th>
+                        <th style="width: 25%; text-align: center;">Document (PDF)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var items in Model.LGApprovalList)
+                    {
+                        var meetingDateDisplay = items.MeetingDate != null
+                            ? Convert.ToDateTime(items.MeetingDate).ToString("dd MMM yyyy")
+                            : "N/A";
 
-<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
-
-<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
-<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
-<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
-<script src="~/Scripts/datatables/jszip.min.js"></script>
-<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
-<script src="~/Scripts/datatables/vfs-fonts.js"></script>
-<script src="~/Scripts/datatables/buttons.print.min.js"></script>
-<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
-
-
-
-<div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
-    <table class="table table-bordered" id="MeetingTable1" aria-describedby="sample-table-3_info" style="border-collapse: collapse;">
-        <thead>
-            <tr style="color: white; font-size:16px; font-weight:bold;margin-left:10px;">
-                <th class="center" style="width:10%" id="tdFrom" rowspan="1" colspan="1">Meeting Date</th>
-                <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">Approved Date</th>
-                <th class="center" style="width:10%" rowspan="1" colspan="1">PDF</th>
-            </tr>
-        </thead>
-
-        <tbody class="bordered" role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
-            @foreach (var items in Model.LGApprovalList)
-            {
-                <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3; padding-left: 20px;">
-                   
-                    <td style="font-size: 16px; border: 1px solid #D3D3D3; color: black; margin-left: 200px;">@Convert.ToDateTime(items.MeetingDate).ToString("dd/MM/yyyy")</td>
-                    <td style="font-size: 16px; border: 1px solid #D3D3D3 ">@Html.Raw(items.ApprovedDate)</td>
-                    <td style="font-size: 16px; border: 1px solid #D3D3D3">
-                     <a href="@Model.fileacessingUrl/@items.PDFPath" target="_blank"><img src="~/Assets/pdficon.jpg" height="35" width="30"></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-
-    </table>
-
+                        <tr>
+                            <td class="align-middle">
+                                <div class="lg-modal-date-badge">
+                                    <i class="far fa-calendar-alt me-1 text-primary"></i>
+                                    <span>@meetingDateDisplay</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="lg-modal-approval-text">
+                                    @Html.Raw(items.ApprovedDate)
+                                </div>
+                            </td>
+                            <td class="align-middle text-center">
+                                @if (!string.IsNullOrEmpty(items.PDFPath))
+                                {
+                                    <a href="@Model.fileacessingUrl/@items.PDFPath"
+                                       target="_blank"
+                                       class="lg-pdf-download-btn"
+                                       title="View Official PDF Document">
+                                        <i class="fas fa-file-pdf text-danger fs-5 me-1"></i>
+                                        <span>View PDF</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-muted border">No PDF</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-4">
+            <i class="fas fa-file-excel text-muted fs-1 mb-2"></i>
+            <h6 class="fw-semibold text-secondary">No Approval Documents Found</h6>
+            <p class="small text-muted mb-0">There are no signed approval records available for this agenda session.</p>
+        </div>
+    }
 </div>
-<script>
-    $(document).ready(function () {
-        $("#MeetingTable1").DataTable({
-                "bLengthChange": false,
-                dom: 'Bfrtip',
-                buttons: [
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5'
-                ],
-              });
-    });
 
-</script>
+<style>
+    .lg-modal-approval-wrapper {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #E2E8F0;
+        background: #FFFFFF;
+    }
+    .lg-modal-table {
+        margin: 0;
+        font-size: 13.5px;
+    }
+    .lg-modal-table thead tr th {
+        background: #F1F5F9;
+        color: #334155;
+        font-weight: 600;
+        font-size: 12.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 18px;
+        border-bottom: 2px solid #CBD5E1;
+    }
+    .lg-modal-table tbody td {
+        padding: 14px 18px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .lg-modal-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .lg-modal-date-badge {
+        display: inline-flex;
+        align-items: center;
+        background: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        color: #0A3871;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 12.5px;
+    }
+    .lg-modal-approval-text {
+        font-weight: 500;
+        color: #1E293B;
+    }
+    .lg-pdf-download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #FEF2F2;
+        border: 1px solid #FECACA;
+        color: #991B1B !important;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: none !important;
+        transition: all 0.15s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    .lg-pdf-download-btn:hover {
+        background: #DC2626;
+        color: #FFFFFF !important;
+        border-color: #DC2626;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(220, 38, 38, 0.25);
+    }
+    .lg-pdf-download-btn:hover i {
+        color: #FFFFFF !important;
+    }
+</style>

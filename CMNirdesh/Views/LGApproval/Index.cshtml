@@ -1,509 +1,926 @@
-﻿@model CMNirdesh.Models.LGApproval
+@model CMNirdesh.Models.LGApproval
 
 @{
-    ViewBag.Title = "LG Approval Dashboard";
+    ViewBag.Title = !string.IsNullOrEmpty(Model.RefMenuName) ? Model.RefMenuName : "LG Approvals";
+    int totalApprovals = Model.LGApprovalList != null ? Model.LGApprovalList.Count : 0;
+    int totalMCs = Model.LGApprovalList != null ? Model.LGApprovalList.Select(x => x.MCName).Distinct().Count() : 0;
+    int totalMeetings = Model.LGApprovalList != null ? Model.LGApprovalList.Select(x => x.MeetingDate).Distinct().Count() : 0;
 }
 
-<head>
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
-
-
-
-    <script>
-
-        $(document).ready(function () {
-
-            // Expand Collapse MC Wise
-
-            $(".toggleBtn").click(function () {
-
-                var target = $(this).data("target");
-
-                $("." + target).slideToggle(250);
-
-                var icon = $(this).find("i");
-
-                if (icon.hasClass("fa-plus")) {
-
-                    icon.removeClass("fa-plus")
-                        .addClass("fa-minus");
-
-                }
-                else {
-
-                    icon.removeClass("fa-minus")
-                        .addClass("fa-plus");
-
-                }
-
-            });
-
-        });
-
-        // Approval Modal
-
-        function SeeApproval(agendaId) {
-
-            if (!agendaId) {
-
-                alert("Agenda ID is missing.");
-                return;
-
-            }
-
-            var url = '@Url.Action("FileApprovals", "LGApproval")';
-
-            $("#ShowApproval").html(
-
-                '<div class="text-center p-5">' +
-                '<div class="spinner-border text-primary"></div>' +
-                '<div class="mt-3 fw-semibold">Loading Approval Details...</div>' +
-                '</div>'
-
-            );
-
-            $.ajax({
-
-                url: url,
-                type: 'GET',
-                data: { AgendaID: agendaId },
-
-                success: function (data) {
-
-                    $("#ShowApproval").html(data);
-
-                    var myModal = new bootstrap.Modal(
-                        document.getElementById('ApprovalModal')
-                    );
-
-                    myModal.show();
-
-                },
-
-                error: function () {
-
-                    $("#ShowApproval").html(
-
-                        '<div class="alert alert-danger">' +
-                        '<i class="fa fa-circle-exclamation me-2"></i>' +
-                        'Unable to load approval details.' +
-                        '</div>'
-
-                    );
-
-                }
-
-            });
-
-        }
-
-    </script>
-
-    <style>
-
-        body {
-            background: #f4f7fb;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        /* Main Card */
-
-        .dashboard-card {
-            background: #ffffff;
-            border-radius: 18px;
-            padding: 24px;
-            margin-top: 20px;
-            border: 1px solid #dbe3ec;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.06);
-        }
-
-        /* Title */
-
-        .dashboard-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 20px;
-        }
-
-            .dashboard-title span {
-                color: #2563eb;
-            }
-
-        /* Table Wrapper */
-
-        .table-wrapper {
-            border: 1px solid #cfd8e3;
-            border-radius: 16px;
-            overflow: hidden;
-            background-color: #ffffff;
-            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-        }
-
-        /* MC Header */
-
-        .mc-header {
-            background: linear-gradient(90deg, #1e3a8a, #2563eb);
-            color: white;
-            border-top: 8px solid #f4f7fb;
-            transition: 0.3s;
-        }
-
-            .mc-header:hover {
-                background: linear-gradient(90deg, #1d4ed8, #2563eb);
-            }
-
-            .mc-header td {
-                padding: 16px;
-                border-bottom: 1px solid rgba(255,255,255,0.15);
-            }
-
-        /* MC Name */
-
-        .mc-name {
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        /* Meeting Rows */
-
-        .meeting-row {
-            background: #ffffff;
-            transition: 0.2s ease-in-out;
-        }
-
-            .meeting-row:hover {
-                background: #f8fbff;
-            }
-
-            .meeting-row td {
-                padding: 18px 16px;
-                border: 1px solid #e8edf3;
-                vertical-align: middle;
-            }
-
-        /* Toggle Button */
-
-        .toggleBtn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: white;
-            color: #2563eb;
-            font-size: 13px;
-            transition: 0.2s;
-        }
-
-            .toggleBtn:hover {
-                transform: scale(1.08);
-                background: #eff6ff;
-            }
-
-        /* Date Badge */
-
-        .meeting-date {
-            display: inline-block;
-            background: #eef4ff;
-            color: #2563eb;
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-weight: 600;
-            border: 1px solid #d7e6ff;
-            font-size: 14px;
-        }
-
-        /* Title */
-
-        .meeting-title {
-            font-weight: 600;
-            color: #1e293b;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        /* Approval Box */
-
-        .approval-box {
-            border: 1px solid #dfe7ef;
-            border-radius: 12px;
-            padding: 10px 14px;
-            background: #fafcff;
-            min-height: 55px;
-        }
-
-            .approval-box a {
-                text-decoration: none;
-                font-weight: 600;
-            }
-
-                .approval-box a:hover {
-                    text-decoration: underline;
-                }
-
-        /* Modal */
-
-        .modal-content {
-            border-radius: 18px;
-            overflow: hidden;
-            border: none;
-        }
-
-        .modal-header {
-            background: linear-gradient(90deg, #1e3a8a, #2563eb);
-            color: white;
-            border: none;
-        }
-
-        /* Empty Data */
-
-        .empty-data {
-            padding: 60px 20px;
-            text-align: center;
-            font-size: 20px;
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-        /* Left Border */
-
-        .section-border {
-            border-left: 5px solid #2563eb;
-            padding-left: 15px;
-        }
-    </style>
-
-</head>
-<div id="main-content">
-    <div class="container-fluid">
-
-        <div class="dashboard-card">
-
-            <!-- Header -->
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <div class="section-border">
-
-                    <div class="dashboard-title">
-
-                        <i class="fa-solid fa-file-signature me-2"></i>
-
-                        <span>Orders</span> >> @Model.RefMenuName
-
-                    </div>
-
-                </div>
-
+<div class="lg-page-wrapper">
+    <!-- Compact Breadcrumb Navigation -->
+    <nav class="lg-breadcrumb" aria-label="breadcrumb">
+        <a href="~/References/Dashboard"><i class="fas fa-home me-1"></i>Home</a>
+        <span class="lg-breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+        <span>Orders</span>
+        <span class="lg-breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+        <span class="text-dark fw-semibold">@(string.IsNullOrEmpty(Model.RefMenuName) ? "LG Approvals" : Model.RefMenuName)</span>
+    </nav>
+
+    <!-- Compact Executive Header Banner -->
+    <div class="lg-header-banner">
+        <div class="lg-header-content">
+            <div class="lg-header-badge">
+                <i class="fas fa-file-signature"></i>
             </div>
-
-            <!-- Table -->
-
-            <div class="table-responsive table-wrapper">
-
-                <table class="table mb-0">
-
-                    <tbody>
-
-                        @if (Model.LGApprovalList != null && Model.LGApprovalList.Count > 0)
-                        {
-
-                            var groupedData = Model.LGApprovalList
-
-                                .OrderBy(x => x.MCName)
-                                .ThenByDescending(x => x.MeetingDate)
-
-                                .GroupBy(x => x.MCName);
-
-                            foreach (var mc in groupedData)
-                            {
-
-                                string mcId = "mc_" + Guid.NewGuid().ToString("N");
-
-                                <!-- MC Header -->
-
-                                <tr class="mc-header">
-
-                                    <td colspan="4">
-
-                                        <div class="d-flex align-items-center justify-content-between">
-
-                                            <div class="d-flex align-items-center">
-
-                                                <button type="button"
-                                                        class="toggleBtn me-3"
-                                                        data-target="@mcId">
-
-                                                    <i class="fa-solid fa-plus"></i>
-
-                                                </button>
-
-                                                <div class="mc-name">
-
-                                                    <i class="fa-solid fa-building-columns me-2"></i>
-
-                                                    @mc.Key
-
-                                                </div>
-
-                                            </div>
-
-                                            <div>
-
-                                                <span class="badge bg-light text-primary fs-6">
-
-                                                    @mc.Count() Approvals
-
-                                                </span>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                                <!-- Meeting Rows -->
-
-                                foreach (var item in mc)
-                                {
-
-                                    <tr class="@mcId meeting-row"
-                                        style="display:none;">
-
-                                        <!-- ULB -->
-
-                                        @*<td width="22%">
-
-                                            <div class="fw-semibold text-dark">
-
-                                                <i class="fa-solid fa-city text-primary me-2"></i>
-
-                                                @item.MCName
-
-                                            </div>
-
-                                        </td>*@
-
-                                        <!-- Date -->
-
-                                        <td width="16%">
-
-                                            <span class="meeting-date">
-
-                                                <i class="fa-regular fa-calendar-days me-1"></i>
-
-                                               Meeting Date: @Convert.ToDateTime(item.MeetingDate).ToString("dd/MM/yyyy")
-
-                                            </span>
-
-                                        </td>
-
-                                        <!-- Title -->
-
-                                        <td width="32%">
-
-                                            <div class="meeting-title">
-
-                                                @item.MeetingTitle
-
-                                            </div>
-
-                                        </td>
-
-                                        <!-- Approval -->
-
-                                        <td width="30%">
-
-                                            <div class="approval-box">
-
-                                             Approval Date:  @Html.Raw(item.ApprovedDate)
-
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
-
-                                }
-
-                            }
-
-                        }
-                        else
-                        {
-
-                            <tr>
-
-                                <td colspan="4">
-
-                                    <div class="empty-data">
-
-                                        <i class="fa-solid fa-circle-exclamation me-2"></i>
-
-                                        No Record Found
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-                        }
-
-                    </tbody>
-
-                </table>
-
+            <div>
+                <h1 class="lg-header-title">@(string.IsNullOrEmpty(Model.RefMenuName) ? "LG Approvals" : Model.RefMenuName)</h1>
+                <p class="lg-header-subtitle">Orders &amp; Sanctions Overview across Municipal Councils</p>
             </div>
-
         </div>
-
+        <div class="lg-header-status">
+            <span class="lg-live-dot"></span>
+            <span>Live Records</span>
+        </div>
     </div>
 
-    <!-- Approval Modal -->
-
-    <div class="modal fade"
-         id="ApprovalModal"
-         tabindex="-1"
-         aria-hidden="true">
-
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-
-                    <h5 class="modal-title">
-
-                        <i class="fa-solid fa-circle-info me-2"></i>
-
-                        Approval Details
-
-                    </h5>
-
-                    <button type="button"
-                            class="btn-close btn-close-white"
-                            data-bs-dismiss="modal">
-                    </button>
-
-                </div>
-
-                <div class="modal-body"
-                     id="ShowApproval">
-
-                    Loading...
-
-                </div>
-
+    <!-- Compact Metric Summary Bar -->
+    <div class="lg-metrics-row">
+        <div class="lg-metric-card">
+            <div class="lg-metric-icon bg-primary-subtle text-primary">
+                <i class="fas fa-landmark"></i>
             </div>
+            <div class="lg-metric-info">
+                <div class="lg-metric-value" id="statTotalMCs">@totalMCs</div>
+                <div class="lg-metric-label">Municipal Councils</div>
+            </div>
+        </div>
+        <div class="lg-metric-card">
+            <div class="lg-metric-icon bg-success-subtle text-success">
+                <i class="fas fa-stamp"></i>
+            </div>
+            <div class="lg-metric-info">
+                <div class="lg-metric-value" id="statTotalApprovals">@totalApprovals</div>
+                <div class="lg-metric-label">Total Approvals</div>
+            </div>
+        </div>
+        <div class="lg-metric-card">
+            <div class="lg-metric-icon bg-warning-subtle text-warning">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="lg-metric-info">
+                <div class="lg-metric-value" id="statTotalMeetings">@totalMeetings</div>
+                <div class="lg-metric-label">Recorded Meetings</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Compact Interactive Control / Filter Bar -->
+    <div class="lg-toolbar">
+        <div class="input-group input-group-sm lg-search-group">
+            <span class="input-group-text lg-search-addon"><i class="fa fa-search"></i></span>
+            <input type="text"
+                   id="mcSearchInput"
+                   class="form-control lg-search-input"
+                   placeholder="Search by Council name or Meeting title..."
+                   autocomplete="off" />
+            <button type="button" class="btn btn-outline-secondary lg-search-clear" id="btnSearchClear" style="display: none;" title="Clear Search">
+                <i class="fa fa-times"></i>
+            </button>
         </div>
 
-    </div> </div>
+        <div class="lg-toolbar-actions">
+            <button type="button" class="lg-btn-action" id="btnExpandAll" title="Expand all councils">
+                <i class="fas fa-angles-down me-1 text-primary"></i>
+                <span>Expand All</span>
+            </button>
+            <button type="button" class="lg-btn-action" id="btnCollapseAll" title="Collapse all councils">
+                <i class="fas fa-angles-up me-1 text-secondary"></i>
+                <span>Collapse All</span>
+            </button>
+            <button type="button" class="lg-btn-action" onclick="window.location.reload();" title="Refresh records">
+                <i class="fas fa-sync-alt me-1 text-success"></i>
+                <span>Refresh</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main List Container -->
+    <div class="lg-list-container" id="mcListContainer">
+        @if (Model.LGApprovalList != null && Model.LGApprovalList.Count > 0)
+        {
+            var groupedData = Model.LGApprovalList
+                .OrderBy(x => x.MCName)
+                .ThenByDescending(x => x.MeetingDate)
+                .GroupBy(x => x.MCName);
+
+            foreach (var mc in groupedData)
+            {
+                var mcKeyLower = (mc.Key ?? "").ToLower().Trim();
+                var mcId = "mc_" + Guid.NewGuid().ToString("N");
+
+                <div class="lg-mc-card is-open" data-mc-name="@mcKeyLower">
+                    <!-- Compact Council Header -->
+                    <div class="lg-mc-header" data-target="@mcId">
+                        <div class="lg-mc-header-left">
+                            <span class="lg-toggle-btn">
+                                <i class="fa fa-chevron-down lg-toggle-icon"></i>
+                            </span>
+                            <div class="lg-mc-title-group">
+                                <i class="fa fa-university text-primary lg-mc-name-icon"></i>
+                                <h3 class="lg-mc-name">@mc.Key</h3>
+                                <span class="lg-mc-count-badge">
+                                    <i class="fa fa-file-text-o me-1"></i>@mc.Count() Approvals
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="lg-mc-header-right">
+                            <span class="lg-badge-indicator">Toggle</span>
+                        </div>
+                    </div>
+
+                    <!-- Compact Council Meetings Body -->
+                    <div class="lg-mc-body" id="@mcId">
+                        <div class="table-responsive">
+                            <table class="table lg-meeting-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%;">Meeting Date</th>
+                                        <th style="width: 52%;">Meeting Agenda &amp; Title</th>
+                                        <th style="width: 28%;">Approval Status &amp; Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in mc)
+                                    {
+                                        var meetingTitleLower = (item.MeetingTitle ?? "").ToLower();
+                                        var meetingDateFormatted = item.MeetingDate != null
+                                            ? Convert.ToDateTime(item.MeetingDate).ToString("dd/MM/yyyy")
+                                            : "N/A";
+                                        var meetingDateDisplay = item.MeetingDate != null
+                                            ? Convert.ToDateTime(item.MeetingDate).ToString("dd MMM yyyy")
+                                            : "N/A";
+
+                                        <tr class="lg-meeting-item"
+                                            data-meeting-title="@meetingTitleLower"
+                                            data-meeting-date="@meetingDateFormatted">
+                                            <!-- Date Column -->
+                                            <td class="align-middle">
+                                                <div class="lg-date-badge">
+                                                    <i class="far fa-calendar-alt me-1 text-primary"></i>
+                                                    <span>@meetingDateDisplay</span>
+                                                </div>
+                                            </td>
+
+                                            <!-- Title Column -->
+                                            <td class="align-middle">
+                                                <div class="lg-meeting-title">
+                                                    @item.MeetingTitle
+                                                </div>
+                                            </td>
+
+                                            <!-- Approval Date / Action Column -->
+                                            <td class="align-middle">
+                                                <div class="lg-approval-box">
+                                                    <span class="lg-approval-label">Approval:</span>
+                                                    <div class="lg-approval-content">
+                                                        @Html.Raw(item.ApprovedDate)
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="lg-empty-card">
+                <div class="lg-empty-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h4 class="lg-empty-title">No Approvals Found</h4>
+                <p class="lg-empty-desc">Currently there are no approval records available under this section.</p>
+            </div>
+        }
+
+        <!-- Search No Match Placeholder -->
+        <div class="lg-empty-card" id="noSearchResult" style="display: none;">
+            <div class="lg-empty-icon text-muted">
+                <i class="fas fa-search"></i>
+            </div>
+            <h4 class="lg-empty-title">No Matching Records</h4>
+            <p class="lg-empty-desc">No councils or meetings match your search query. Try typing another keyword.</p>
+            <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="$('#mcSearchInput').val('').trigger('input');">
+                Clear Search Filter
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modern Approval Details Modal -->
+<div class="modal fade lg-modal"
+     id="ApprovalModal"
+     tabindex="-1"
+     aria-labelledby="ApprovalModalLabel"
+     aria-hidden="true"
+     data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content lg-modal-content">
+            <div class="modal-header lg-modal-header">
+                <div class="d-flex align-items-center">
+                    <div class="lg-modal-badge me-2">
+                        <i class="fas fa-file-signature"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title lg-modal-title" id="ApprovalModalLabel">Approval Documents &amp; Details</h5>
+                        <p class="lg-modal-subtitle mb-0">Official file sanction and signed order records</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body lg-modal-body" id="ShowApproval">
+                <!-- AJAX Injected Content -->
+            </div>
+            <div class="modal-footer lg-modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ==========================================================================
+       COMPACT EXECUTIVE CIVIC STYLING FOR LG APPROVALS
+       ========================================================================== */
+    .lg-page-wrapper {
+        padding: 8px 12px 24px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: #1E293B;
+    }
+
+    /* Compact Breadcrumb */
+    .lg-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        color: #64748B;
+        margin-bottom: 8px;
+    }
+    .lg-breadcrumb a {
+        color: #0A3871;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s ease;
+    }
+    .lg-breadcrumb a:hover {
+        color: #1E40AF;
+        text-decoration: underline;
+    }
+    .lg-breadcrumb-sep {
+        color: #CBD5E1;
+        font-size: 9px;
+    }
+
+    /* Compact Executive Header Banner */
+    .lg-header-banner {
+        background: linear-gradient(135deg, #0A3871 0%, #1E40AF 100%);
+        color: #FFFFFF;
+        border-radius: 10px;
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 14px -2px rgba(10, 56, 113, 0.2);
+        margin-bottom: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    .lg-header-banner::after {
+        content: "";
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 153, 51, 0.22) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .lg-header-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 1;
+    }
+    .lg-header-badge {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(6px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        flex-shrink: 0;
+    }
+    .lg-header-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.2;
+        letter-spacing: 0.2px;
+    }
+    .lg-header-subtitle {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.85);
+        margin: 2px 0 0 0;
+    }
+    .lg-header-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        backdrop-filter: blur(4px);
+        z-index: 1;
+    }
+    .lg-live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #10B981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+        animation: lgPulseDot 1.8s infinite;
+    }
+
+    /* Compact Metric Summary Cards */
+    .lg-metrics-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .lg-metric-card {
+        background: #FFFFFF;
+        border-radius: 10px;
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .lg-metric-card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(10, 56, 113, 0.06);
+    }
+    .lg-metric-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+    .bg-primary-subtle { background-color: #EFF6FF !important; }
+    .bg-success-subtle { background-color: #ECFDF5 !important; }
+    .bg-warning-subtle { background-color: #FFFBEB !important; }
+    .text-primary { color: #0A3871 !important; }
+    .text-success { color: #059669 !important; }
+    .text-warning { color: #D97706 !important; }
+
+    .lg-metric-value {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0F172A;
+        line-height: 1.1;
+    }
+    .lg-metric-label {
+        font-size: 11px;
+        font-weight: 500;
+        color: #64748B;
+        margin-top: 1px;
+    }
+
+    /* Compact Toolbar & Search */
+    .lg-toolbar {
+        background: #FFFFFF;
+        border-radius: 10px;
+        padding: 6px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+    .lg-search-group {
+        max-width: 420px;
+        flex: 1;
+    }
+    .lg-search-addon {
+        background: #F8FAFC !important;
+        border: 1px solid #CBD5E1 !important;
+        border-right: none !important;
+        color: #64748B !important;
+        font-size: 11px !important;
+        padding: 0 10px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 7px 0 0 7px !important;
+    }
+    .lg-search-input {
+        border: 1px solid #CBD5E1 !important;
+        border-left: none !important;
+        border-radius: 0 7px 7px 0 !important;
+        height: 30px !important;
+        font-size: 12px !important;
+        padding: 4px 10px 4px 0 !important;
+        background: #FFFFFF !important;
+        color: #1E293B !important;
+        box-shadow: none !important;
+    }
+    .lg-search-input:focus {
+        border-color: #0A3871 !important;
+        box-shadow: none !important;
+    }
+    .lg-search-group:focus-within .lg-search-addon,
+    .lg-search-group:focus-within .lg-search-input {
+        border-color: #0A3871 !important;
+    }
+    .lg-search-clear {
+        border: 1px solid #CBD5E1 !important;
+        border-left: none !important;
+        border-radius: 0 7px 7px 0 !important;
+        font-size: 11px !important;
+        padding: 0 9px !important;
+        color: #64748B !important;
+        background: #FFFFFF !important;
+        line-height: 1;
+    }
+    .lg-search-clear:hover {
+        color: #EF4444 !important;
+        background: #FEF2F2 !important;
+    }
+
+    .lg-toolbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .lg-btn-action {
+        background: #F8FAFC;
+        border: 1px solid #CBD5E1;
+        border-radius: 7px;
+        height: 30px;
+        padding: 4px 10px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #334155;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.15s ease;
+    }
+    .lg-btn-action:hover {
+        background: #EFF6FF;
+        border-color: #93C5FD;
+        color: #0A3871;
+    }
+
+    /* Compact MC Accordion Cards */
+    .lg-mc-card {
+        background: #FFFFFF;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+        margin-bottom: 8px;
+        overflow: hidden;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .lg-mc-card.is-open {
+        border-color: #BFDBFE;
+        box-shadow: 0 2px 8px rgba(10, 56, 113, 0.05);
+    }
+    .lg-mc-header {
+        background: #F8FAFC;
+        padding: 7px 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        user-select: none;
+        transition: background-color 0.15s ease;
+        border-bottom: 1px solid transparent;
+    }
+    .lg-mc-card.is-open .lg-mc-header {
+        background: #F1F5F9;
+        border-bottom-color: #E2E8F0;
+    }
+    .lg-mc-header:hover {
+        background: #EFF6FF;
+    }
+    .lg-mc-header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .lg-toggle-btn {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: #FFFFFF;
+        border: 1px solid #CBD5E1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        color: #0A3871;
+        transition: transform 0.2s ease, background 0.15s;
+    }
+    .lg-mc-card.is-open .lg-toggle-icon {
+        transform: rotate(0deg);
+    }
+    .lg-mc-card:not(.is-open) .lg-toggle-icon {
+        transform: rotate(-90deg);
+    }
+    .lg-mc-name-icon {
+        font-size: 13px;
+        color: #0A3871 !important;
+        margin-right: 2px;
+    }
+    .lg-mc-title-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .lg-mc-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0F172A;
+        margin: 0;
+        letter-spacing: 0.1px;
+    }
+    .lg-mc-count-badge {
+        background: #EFF6FF;
+        color: #0A3871;
+        border: 1px solid #BFDBFE;
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 1px 7px;
+        border-radius: 999px;
+    }
+    .lg-badge-indicator {
+        font-size: 10.5px;
+        color: #94A3B8;
+        font-weight: 500;
+    }
+
+    /* Compact Meetings Body & Table */
+    .lg-mc-body {
+        background: #FFFFFF;
+    }
+    .lg-meeting-table {
+        margin: 0;
+        font-size: 12.5px;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .lg-meeting-table thead tr th {
+        background: #F8FAFC;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        border-bottom: 1px solid #E2E8F0;
+        padding: 6px 12px;
+    }
+    .lg-meeting-table tbody tr {
+        transition: background-color 0.12s ease;
+    }
+    .lg-meeting-table tbody tr:hover {
+        background-color: #F8FAFC;
+    }
+    .lg-meeting-table tbody td {
+        padding: 7px 12px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .lg-meeting-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Compact Meeting Items */
+    .lg-date-badge {
+        display: inline-flex;
+        align-items: center;
+        background: #F1F5F9;
+        border: 1px solid #E2E8F0;
+        padding: 2px 7px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 11.5px;
+        color: #1E293B;
+        white-space: nowrap;
+    }
+    .lg-meeting-title {
+        font-weight: 500;
+        color: #1E293B;
+        font-size: 12px;
+        line-height: 1.35;
+    }
+    .lg-approval-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .lg-approval-label {
+        font-size: 11px;
+        color: #64748B;
+        font-weight: 500;
+    }
+    .lg-approval-content a {
+        display: inline-flex;
+        align-items: center;
+        background: #EFF6FF;
+        color: #0A3871 !important;
+        border: 1px solid #BFDBFE;
+        padding: 2px 8px;
+        border-radius: 5px;
+        font-size: 11.5px;
+        font-weight: 600;
+        text-decoration: none !important;
+        transition: all 0.12s ease;
+    }
+    .lg-approval-content a:hover {
+        background: #0A3871;
+        color: #FFFFFF !important;
+        border-color: #0A3871;
+    }
+
+    /* Compact Empty States */
+    .lg-empty-card {
+        background: #FFFFFF;
+        border-radius: 10px;
+        border: 1px dashed #CBD5E1;
+        padding: 32px 18px;
+        text-align: center;
+        margin: 14px 0;
+    }
+    .lg-empty-icon {
+        font-size: 32px;
+        color: #94A3B8;
+        margin-bottom: 8px;
+    }
+    .lg-empty-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1E293B;
+        margin-bottom: 4px;
+    }
+    .lg-empty-desc {
+        font-size: 12px;
+        color: #64748B;
+        margin: 0;
+    }
+
+    /* Modal Styling */
+    .lg-modal-content {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 20px 40px -10px rgba(10, 56, 113, 0.3);
+        overflow: hidden;
+    }
+    .lg-modal-header {
+        background: linear-gradient(135deg, #0A3871 0%, #1E40AF 100%);
+        color: #FFFFFF;
+        border: none;
+        padding: 12px 18px;
+    }
+    .lg-modal-badge {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+    .lg-modal-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0;
+        color: #FFFFFF;
+    }
+    .lg-modal-subtitle {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.82);
+    }
+    .lg-modal-body {
+        padding: 16px;
+        background: #FFFFFF;
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+    .lg-modal-footer {
+        background: #F8FAFC;
+        border-top: 1px solid #E2E8F0;
+        padding: 8px 18px;
+    }
+
+    /* Keyframes */
+    @@keyframes lgPulseDot {
+        0%, 100% { transform: scale(0.9); opacity: 0.8; }
+        50% { transform: scale(1.15); opacity: 1; }
+    }
+
+    /* Responsive Mobile Media Queries */
+    @@media (max-width: 768px) {
+        .lg-page-wrapper {
+            padding: 8px 10px 20px;
+        }
+        .lg-header-banner {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+        }
+        .lg-header-title {
+            font-size: 15px;
+        }
+        .lg-metrics-row {
+            grid-template-columns: 1fr 1fr;
+        }
+        .lg-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .lg-toolbar-actions {
+            justify-content: space-between;
+        }
+        .lg-mc-header {
+            padding: 8px 10px;
+        }
+        .lg-badge-indicator {
+            display: none;
+        }
+        .lg-meeting-table thead {
+            display: none;
+        }
+        .lg-meeting-table,
+        .lg-meeting-table tbody,
+        .lg-meeting-table tr,
+        .lg-meeting-table td {
+            display: block;
+            width: 100% !important;
+        }
+        .lg-meeting-table tbody td {
+            padding: 5px 10px;
+            border-bottom: none;
+        }
+        .lg-meeting-table tbody tr {
+            border-bottom: 1px solid #E2E8F0;
+            padding: 6px 0;
+        }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        // Toggle Individual Council Accordion
+        $(document).on('click', '.lg-mc-header', function () {
+            var targetId = $(this).data('target');
+            var card = $(this).closest('.lg-mc-card');
+            var body = $('#' + targetId);
+
+            body.slideToggle(200, function () {
+                card.toggleClass('is-open', body.is(':visible'));
+            });
+        });
+
+        // Expand All
+        $('#btnExpandAll').on('click', function () {
+            $('.lg-mc-body').slideDown(180);
+            $('.lg-mc-card').addClass('is-open');
+        });
+
+        // Collapse All
+        $('#btnCollapseAll').on('click', function () {
+            $('.lg-mc-body').slideUp(180);
+            $('.lg-mc-card').removeClass('is-open');
+        });
+
+        // Live Search Filter
+        $('#mcSearchInput').on('input', function () {
+            var query = $(this).val().toLowerCase().trim();
+
+            if (query.length > 0) {
+                $('#btnSearchClear').show();
+            } else {
+                $('#btnSearchClear').hide();
+            }
+
+            if (!query) {
+                $('.lg-mc-card').show();
+                $('.lg-meeting-item').show();
+                $('#noSearchResult').hide();
+                return;
+            }
+
+            var visibleCount = 0;
+
+            $('.lg-mc-card').each(function () {
+                var mcName = ($(this).data('mc-name') || '').toString();
+                var matchesMC = mcName.indexOf(query) > -1;
+                var matchingMeetings = 0;
+
+                $(this).find('.lg-meeting-item').each(function () {
+                    var title = ($(this).data('meeting-title') || '').toString();
+                    var date = ($(this).data('meeting-date') || '').toString();
+
+                    if (matchesMC || title.indexOf(query) > -1 || date.indexOf(query) > -1) {
+                        $(this).show();
+                        matchingMeetings++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                if (matchesMC || matchingMeetings > 0) {
+                    $(this).show();
+                    $(this).find('.lg-mc-body').slideDown(150);
+                    $(this).addClass('is-open');
+                    visibleCount++;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            if (visibleCount === 0) {
+                $('#noSearchResult').show();
+            } else {
+                $('#noSearchResult').hide();
+            }
+        });
+
+        // Clear Search Button
+        $('#btnSearchClear').on('click', function () {
+            $('#mcSearchInput').val('').trigger('input').focus();
+        });
+    });
+
+    // Global Approval Details AJAX Function
+    function SeeApproval(agendaId) {
+        if (!agendaId) {
+            alert("Agenda ID is missing.");
+            return;
+        }
+
+        var url = '@Url.Action("FileApprovals", "LGApproval")';
+
+        $("#ShowApproval").html(
+            '<div class="text-center py-4">' +
+            '  <div class="spinner-border text-primary" style="width: 2rem; height: 2rem;" role="status"></div>' +
+            '  <div class="mt-2 fw-semibold text-secondary small">Loading Approval Details...</div>' +
+            '</div>'
+        );
+
+        var modalEl = document.getElementById('ApprovalModal');
+        var myModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        myModal.show();
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { AgendaID: agendaId },
+            success: function (data) {
+                $("#ShowApproval").html(data);
+            },
+            error: function () {
+                $("#ShowApproval").html(
+                    '<div class="alert alert-danger d-flex align-items-center m-2 py-2 px-3">' +
+                    '  <i class="fas fa-circle-exclamation me-2 fs-6"></i>' +
+                    '  <div class="small">Unable to load approval details. Please try again.</div>' +
+                    '</div>'
+                );
+            }
+        });
+    }
+</script>

@@ -1,4 +1,4 @@
-﻿@using CMNirdesh.Models;
+@using CMNirdesh.Models;
 @{
     var Menu = (CMNirdesh.Models.SubMenuModel)ViewBag.Menu;
     var Menu1 = (CMNirdesh.Models.SubMenuModel)ViewData["Menu"];
@@ -15,26 +15,13 @@
 
 
 
-@if (devicetype == "mobile")
+@if (!isLoginScreen && !string.IsNullOrEmpty(CurrentSession.UserID))
 {
-    <aside id="mySidebar" class="sidebar responsive">
-        <div class="cm_left_menu">
-
-
+    <aside id="mySidebar" class="sidebar responsive portal-sidebar portal-sidebar-collapsed">
+        <div class="cm_left_menu portal-sidebar-inner">
+            @Html.Action("Menu", "User")
         </div>
     </aside>
-}
-else
-{
-    if (!isLoginScreen) // Add this condition
-    {
-        <aside id="mySidebar" class="sidebar responsive">
-            <div class="cm_left_menu">
-                @Html.Action("Menu", "User")
-
-            </div>
-        </aside>
-    }
 }
 
 

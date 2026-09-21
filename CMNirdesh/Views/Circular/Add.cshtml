@@ -1,318 +1,1537 @@
-﻿@model CMNirdesh.Models.Circular
+@model CMNirdesh.Models.Circular
+@using CMNirdesh.Models
 
 @{
-    int Sr = 1;
+    ViewBag.Title = "LG Circulars & Notices";
+    int srNo = 1;
+    var circularCount = Model != null && Model.CircularList != null ? Model.CircularList.Count : 0;
+    var latestCircular = Model != null && Model.CircularList != null && Model.CircularList.Count > 0
+        ? Model.CircularList.OrderByDescending(x => x.CircularDate).FirstOrDefault()?.CircularDate.ToString("dd-MMM-yyyy")
+        : "N/A";
+    var distinctDepts = Model != null && Model.CircularList != null
+        ? Model.CircularList.Select(x => x.DepartmentName).Where(d => !string.IsNullOrEmpty(d)).Distinct().Count()
+        : 0;
 }
 
 <head>
     <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
-
     <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
     <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
     <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
     <script src="~/Scripts/datatables/jszip.min.js"></script>
     <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
     <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts-punjabi.js"></script>
     <script src="~/Scripts/datatables/buttons.print.min.js"></script>
     <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
 
-
-
-
     <style>
-        .select-box {
-            position: relative;
-            display: inline-block;
-            width: 100%;
+        /* ==========================================================================
+           EXECUTIVE CIVIC DESIGN SYSTEM: LG CIRCULARS & NOTICES
+           ========================================================================== */
+        
+        :root {
+            --cir-primary: #1d4ed8;
+            --cir-primary-hover: #1e40af;
+            --cir-primary-light: #eff6ff;
+            --cir-navy: #0f172a;
+            --cir-navy-accent: #1e3a8a;
+            --cir-border: #e2e8f0;
+            --cir-border-strong: #cbd5e1;
+            --cir-text-main: #1e293b;
+            --cir-text-muted: #64748b;
+            --cir-radius: 8px;
+            --cir-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+            --cir-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
         }
 
-        .dropdown {
+        .cir-container {
+            padding: 10px 0 50px 0;
+            margin-bottom: 25px;
+            color: var(--cir-text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* --- Header & Breadcrumb --- */
+        .cir-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid var(--cir-border);
+            border-left: 4px solid var(--cir-primary);
+            border-radius: var(--cir-radius);
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--cir-shadow);
+        }
+
+        .cir-breadcrumb {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--cir-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .cir-page-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--cir-navy);
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cir-page-desc {
+            font-size: 12.5px;
+            color: var(--cir-text-muted);
+            margin: 3px 0 0 0;
+        }
+
+        .cir-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cir-btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 12.5px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #1d4ed8;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ccc;
+            text-decoration: none;
+        }
+
+        .cir-btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            box-shadow: 0 3px 6px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .cir-btn-secondary {
+            background: #ffffff;
+            color: #334155 !important;
+            font-weight: 600;
+            font-size: 12.5px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--cir-border-strong);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cir-btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a !important;
+        }
+
+        /* --- Metric Summary Cards --- */
+        .cir-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .cir-metric-card {
+            background: #ffffff;
+            border: 1px solid var(--cir-border);
+            border-radius: var(--cir-radius);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--cir-shadow);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .cir-metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--cir-shadow-md);
+        }
+
+        .cir-metric-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .cir-icon-blue {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+
+        .cir-icon-green {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .cir-icon-purple {
+            background: #faf5ff;
+            color: #9333ea;
+            border: 1px solid #e9d5ff;
+        }
+
+        .cir-metric-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cir-metric-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cir-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .cir-metric-val {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--cir-navy);
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+
+        /* --- Main Results Card --- */
+        .cir-main-card {
+            background: #ffffff;
+            border: 1px solid var(--cir-border);
+            border-radius: var(--cir-radius);
+            box-shadow: var(--cir-shadow-md);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .cir-card-header {
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 1px solid var(--cir-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .cir-card-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--cir-navy);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cir-badge-count {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .cir-card-body {
+            padding: 16px;
+        }
+
+        /* --- Table Styling --- */
+        .cir-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+        }
+
+        #circularsTable {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 0 !important;
+            font-size: 12.5px;
+        }
+
+        #circularsTable thead tr {
+            background-color: #1e3a8a !important;
+            background: #1e3a8a !important;
+        }
+
+        #circularsTable thead th {
+            background-color: #1e3a8a !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            padding: 10px 12px !important;
+            border: 1px solid #334155 !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        #circularsTable thead th i {
+            color: #93c5fd !important;
+            margin-right: 4px;
+        }
+
+        #circularsTable tbody td {
+            padding: 9px 12px !important;
+            font-size: 12.5px;
+            color: #1e293b;
+            border: 1px solid #cbd5e1 !important;
+            vertical-align: middle;
+            line-height: 1.45;
+        }
+
+        #circularsTable tbody tr:nth-child(even) td {
+            background-color: #f8fafc !important;
+        }
+
+        #circularsTable tbody tr:hover td {
+            background-color: #e0f2fe !important;
+        }
+
+        /* Column Elements */
+        .cir-sr-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .cir-dept-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .cir-subject-cell {
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #334155;
+            line-height: 1.5;
+            min-width: 280px;
+            word-break: break-word;
+        }
+
+        .cir-date-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .cir-pdf-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 4px 12px;
+            font-size: 11.5px;
+            font-weight: 600;
             border-radius: 5px;
-            background: #fff;
+            background: #ffffff;
+            color: #dc2626 !important;
+            border: 1px solid #fecaca;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(220, 38, 38, 0.06);
+            white-space: nowrap;
         }
 
-        .dropdown-options {
-            display: none;
-            border: 1px solid #ccc;
-            background: #fff;
-            position: absolute;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1000;
-            padding: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .cir-pdf-action-btn:hover {
+            background: #dc2626;
+            color: #ffffff !important;
+            border-color: #dc2626;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+            transform: translateY(-1px);
         }
 
-            .dropdown-options label {
-                display: block;
-                padding: 5px;
-                cursor: pointer;
-            }
+        /* --- DataTables Controls Toolbar --- */
+        .cir-dt-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
 
-            .dropdown-options input {
-                margin-right: 5px;
-            }
+        .cir-dt-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #64748b;
+        }
 
-        .search-box {
+        .dt-buttons {
+            display: inline-flex !important;
+            gap: 8px !important;
+            margin-bottom: 0 !important;
+        }
+
+        .dt-buttons .dt-button {
+            height: 34px !important;
+            padding: 0 14px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.15s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            margin: 0 !important;
+        }
+
+        .dt-buttons .dt-button:hover {
+            background: #f8fafc !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
+        }
+
+        .dataTables_filter {
+            margin-bottom: 0 !important;
+        }
+
+        .dataTables_filter label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin: 0;
+        }
+
+        .dataTables_filter input {
+            height: 34px !important;
+            padding: 4px 10px !important;
+            font-size: 12.5px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            outline: none !important;
+            transition: border-color 0.15s ease;
+        }
+
+        .dataTables_filter input:focus {
+            border-color: var(--cir-primary) !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        .dataTables_paginate {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .dataTables_paginate .paginate_button {
+            padding: 4px 10px !important;
+            font-size: 11.5px !important;
+            border-radius: 4px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            margin: 0 1px;
+            cursor: pointer;
+        }
+
+        .dataTables_paginate .paginate_button.current {
+            background: var(--cir-primary) !important;
+            color: #ffffff !important;
+            border-color: var(--cir-primary) !important;
+            font-weight: 700;
+        }
+
+        /* --- Empty State --- */
+        .cir-empty-state {
+            padding: 45px 20px;
+            text-align: center;
+        }
+
+        .cir-empty-icon {
+            font-size: 40px;
+            color: #94a3b8;
             margin-bottom: 10px;
-            padding: 5px;
+        }
+
+        .cir-empty-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .cir-empty-desc {
+            font-size: 12.5px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* ==========================================================================
+           MODAL REDESIGN: ISSUE NEW CIRCULAR
+           ========================================================================== */
+        
+        .cir-modal .modal-dialog {
+            max-width: 680px !important;
+            width: 100% !important;
+            margin: 1.75rem auto !important;
+        }
+
+        @@media (max-width: 768px) {
+            .cir-modal .modal-dialog {
+                max-width: 95% !important;
+                width: 95% !important;
+                margin: 15px auto !important;
+            }
+        }
+
+        .cir-modal .modal-content {
+            border-radius: 12px;
+            border: 1px solid var(--cir-border);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: visible !important;
+        }
+
+        .cir-modal .modal-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 14px 20px;
+            border-bottom: none;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+        }
+
+        .cir-modal .modal-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cir-modal .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+
+        .cir-modal .modal-body {
+            padding: 20px 24px;
+            background: #ffffff;
+            overflow: visible !important;
+        }
+
+        .cir-form-group {
+            margin-bottom: 16px;
+        }
+
+        .cir-form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .cir-form-control,
+        textarea.cir-form-control,
+        #Subject {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            border: 1px solid var(--cir-border-strong);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        .cir-form-control:focus,
+        textarea.cir-form-control:focus,
+        #Subject:focus {
+            border-color: var(--cir-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Multi-select department dropdown styling */
+        .cir-dept-select-wrap {
+            position: relative;
             width: 100%;
+            z-index: 1060;
+        }
+
+        .cir-dept-dropdown-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 9px 12px;
+            border: 1px solid var(--cir-border-strong);
+            border-radius: 6px;
+            background: #ffffff;
+            font-size: 13px;
+            color: #475569;
+            user-select: none;
+            transition: border-color 0.15s ease;
+        }
+
+        .cir-dept-dropdown-toggle:hover {
+            border-color: var(--cir-primary);
+        }
+
+        .cir-dept-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 1070;
+            padding: 10px;
+            max-height: 280px;
+            overflow: hidden; /* No double scrollbar - only inner options list scrolls */
+        }
+
+        .cir-dept-search {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            outline: none;
             box-sizing: border-box;
         }
 
-        .selected-items {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
+        .cir-dept-search:focus {
+            border-color: var(--cir-primary);
         }
 
-        .selected-item {
-            background: #007bff;
-            color: #fff;
-            padding: 5px 10px;
-            margin: 2px;
-            border-radius: 15px;
+        .cir-dept-select-all {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e40af;
+            background: #eff6ff;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .cir-dept-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-height: 180px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 2px;
+        }
+
+        .cir-dept-option-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            font-size: 12.5px;
+            color: #334155;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+            user-select: none;
+        }
+
+        .cir-dept-option-item:hover {
+            background: #f1f5f9;
+        }
+
+        /* Enforce checkboxes to stay statically locked to their row text */
+        .cir-dept-checkbox,
+        .cir-dept-select-all input[type="checkbox"],
+        .cir-dept-option-item input[type="checkbox"],
+        .cir-dept-option-item .option {
+            position: static !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 15px !important;
+            height: 15px !important;
+            min-width: 15px !important;
+            flex-shrink: 0 !important;
+            cursor: pointer !important;
+            vertical-align: middle !important;
+        }
+
+        .cir-selected-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .cir-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .cir-chip-remove {
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0284c7;
             display: flex;
             align-items: center;
         }
 
-            .selected-item span {
-                margin-left: 5px;
-                cursor: pointer;
-                font-weight: bold;
+        .cir-chip-remove:hover {
+            color: #dc2626;
+        }
+
+        /* File Upload Box */
+        .cir-upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .cir-upload-box:hover {
+            border-color: var(--cir-primary);
+            background: #f0f7ff;
+        }
+
+        .cir-upload-icon {
+            font-size: 26px;
+            color: var(--cir-primary);
+            margin-bottom: 6px;
+        }
+
+        .cir-upload-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .cir-upload-subtext {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .cir-file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .cir-selected-file-display {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #166534;
+        }
+
+        /* Modal Footer */
+        .cir-modal .modal-footer {
+            background: #f8fafc;
+            border-top: 1px solid var(--cir-border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* --- Alert Messages --- */
+        .cir-alert {
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .cir-alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .cir-alert-danger {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* --- Responsive Viewports --- */
+        @@media (max-width: 768px) {
+            .cir-container {
+                padding: 6px 0 65px 0 !important;
+                margin-bottom: 35px !important;
             }
 
-                .selected-item span:hover {
-                    color: #ff4d4d;
-                }
+            .cir-page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 12px 14px;
+            }
+
+            .cir-header-actions {
+                width: 100%;
+                display: flex;
+                gap: 8px;
+            }
+
+            .cir-btn-primary, .cir-btn-secondary {
+                flex: 1 1 auto;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .cir-dt-top {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+
+            .cir-dt-top > div {
+                width: 100% !important;
+            }
+
+            .dt-buttons {
+                display: flex !important;
+                width: 100% !important;
+                gap: 8px !important;
+            }
+
+            .dt-buttons .dt-button {
+                flex: 1 1 50% !important;
+                width: 50% !important;
+                justify-content: center !important;
+                padding: 0 8px !important;
+                font-size: 11.5px !important;
+            }
+
+            .dataTables_filter {
+                width: 100% !important;
+            }
+
+            .dataTables_filter label {
+                display: flex !important;
+                width: 100% !important;
+            }
+
+            .dataTables_filter input {
+                flex: 1 1 auto !important;
+                width: 100% !important;
+            }
+
+            .cir-dt-bottom {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 10px !important;
+                margin-bottom: 20px !important;
+            }
+        }
     </style>
 </head>
 
-<div id="main-content" style="margin-top: 20px;">
+<div class="cir-container" id="main-content">
 
-
-
-
-  
-
-        <div class="col-md-12 col-lg-12 col-xl-12">
-            <div>
-
-
-                <h4 id="lblmenuname">Circulars >>   Notices</h4>
-
-                <hr />
+    <!-- Civic Breadcrumb & Header Bar -->
+    <div class="cir-page-header">
+        <div>
+            <div class="cir-breadcrumb">
+                <i class="fa fa-folder-open-o"></i> Orders &nbsp;&bull;&nbsp; LG Circulars & Notices
             </div>
-
-
+            <h1 class="cir-page-title">
+                <i class="fa fa-bullhorn text-primary"></i> LG Circulars & Public Notices
+            </h1>
+            <p class="cir-page-desc">
+                Official directives, executive instructions, and circulars issued by the Department of Local Government, Punjab
+            </p>
         </div>
-        <section class="form_dsign">
-            <div class="container-fluid p-0">
-                <div class="inr_frm_dsgn">
-                    <!-- Add Circular Button -->
-                    <div class="widget-box" id="divAction">
-                        <div class="widget-header widget-header-flat rounded-top rounded-0">
-                            <h4 class=""> Circulars/Notices</h4>
-                            <div class="widget-toolbar no-border">
-                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="AddNew()">
-                                    <i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add Circular
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        <div class="cir-header-actions">
+            <button type="button" class="cir-btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="AddNew()">
+                <i class="fa fa-plus-circle"></i> Issue New Circular
+            </button>
+            <a href="javascript:location.reload();" class="cir-btn-secondary" title="Refresh records">
+                <i class="fa fa-refresh"></i> Refresh
+            </a>
+        </div>
+    </div>
 
-                    <div class="form_lyot">
-                        @if (Model.CircularList.Count > 0)
-                        {
-                            <div class="table-responsive">
-                                <table id="example" class="table table-hover table-bordered" style="font-size:20px;">
-                                    <thead>
-                                        <tr class="table-heading">
-                                            @*<th>Sr. No</th>*@
-                                            <th>Department</th>
-                                            <th>Details</th>
-                                            <th>Circular Date</th>
-                                            <th>PDF</th>
-                                            @*<th>Action</th>*@
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var items in Model.CircularList)
-                                        {
-                                            <tr>
-                                                @*<td>@Sr</td>*@
-                                                <td>@items.DepartmentName</td>
-                                                <td>@Html.DisplayFor(modelItem => items.Subject)</td>
-                                                <td>@items.CircularDate.ToString("dd/MM/yyyy")</td>
-                                                <td>
-                                                    <a href="@Model.fileacessingUrl/@items.PDFPath" target="_blank"><img src="~/Assets/pdficon.jpg" height="35" width="30"></a>
-                                                </td>
-                                               
-                                            </tr>
-                                            Sr = @Sr + 1;
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
-                    </div>
-                </div>
+    <!-- Alert Messages (if any) -->
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div class="cir-alert cir-alert-success alert-dismissible fade show" role="alert">
+            <div>
+                <i class="fa fa-check-circle me-1"></i> @ViewBag.SuccessMessage
             </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-            <!-- Add Circular Modal -->
-            <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add Circular Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @using (Html.BeginForm("Add", "Circular", FormMethod.Post, new { enctype = "multipart/form-data", id = "circularForm", @class = "form-horizontal" }))
+    @if (TempData["Message"] != null)
+    {
+        <div class="cir-alert cir-alert-success alert-dismissible fade show" role="alert">
+            <div>
+                <i class="fa fa-check-circle me-1"></i> @TempData["Message"]
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="cir-alert cir-alert-danger alert-dismissible fade show" role="alert">
+            <div>
+                <i class="fa fa-exclamation-triangle me-1"></i> @TempData["Error"]
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Quick Metric Cards -->
+    <div class="cir-metrics-grid">
+        <div class="cir-metric-card">
+            <div class="cir-metric-icon-wrap cir-icon-blue">
+                <i class="fa fa-files-o"></i>
+            </div>
+            <div class="cir-metric-info">
+                <span class="cir-metric-label">Total Circulars</span>
+                <span class="cir-metric-val">@circularCount</span>
+            </div>
+        </div>
+
+        <div class="cir-metric-card">
+            <div class="cir-metric-icon-wrap cir-icon-green">
+                <i class="fa fa-calendar-check-o"></i>
+            </div>
+            <div class="cir-metric-info">
+                <span class="cir-metric-label">Latest Issued</span>
+                <span class="cir-metric-val" style="font-size: 16px;">@latestCircular</span>
+            </div>
+        </div>
+
+        <div class="cir-metric-card">
+            <div class="cir-metric-icon-wrap cir-icon-purple">
+                <i class="fa fa-university"></i>
+            </div>
+            <div class="cir-metric-info">
+                <span class="cir-metric-label">Issuing Department</span>
+                <span class="cir-metric-val" style="font-size: 15px; font-weight:700;">Local Government</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Table Card -->
+    <div class="cir-main-card">
+        <div class="cir-card-header">
+            <div class="cir-card-title">
+                <i class="fa fa-list-alt text-primary"></i> Published Directives & Notices
+                <span class="cir-badge-count">@circularCount Records</span>
+            </div>
+        </div>
+
+        <div class="cir-card-body">
+            @if (Model != null && Model.CircularList != null && Model.CircularList.Count > 0)
+            {
+                <div class="cir-table-wrap">
+                    <table id="circularsTable" class="table table-hover table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; text-align: center;"><i class="fa fa-hashtag"></i> #</th>
+                                <th style="width: 220px;"><i class="fa fa-university"></i> Issuing Department</th>
+                                <th><i class="fa fa-file-text-o"></i> Subject / Order Details</th>
+                                <th style="width: 130px; text-align: center;"><i class="fa fa-calendar"></i> Circular Date</th>
+                                <th style="width: 120px; text-align: center;"><i class="fa fa-paperclip"></i> Attachment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var items in Model.CircularList)
                             {
-                                @Html.AntiForgeryToken()
-                                @Html.HiddenFor(model => model.CircularID)
-                                @Html.Hidden("SelectedContacts", null, new { id = "selectedContacts" })
-
-                                @*<div class="form-group">
-                                    @Html.Label("Circular Date")
-                                    @Html.EditorFor(model => model.CircularDate, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.CircularDate, null, new { @class = "text-danger" })
-                                </div>*@
-
-                                <div class="form-group">
-                                    <label>Select Departments</label>
-                                    <div class="select-box">
-                                        <div class="dropdown">Select Departments</div>
-                                        <div class="dropdown-options">
-                                            <div class="selected-items"></div>
-                                            <label><input type="checkbox" id="select-all"> Select All</label>
-                                            @foreach (var agenda in Model.mDepartmentList)
-                                            {
-                                                <label><input type="checkbox" class="option" value="@agenda.Value">@agenda.Text</label>
-                                            }
+                                <tr>
+                                    <td class="text-center">
+                                        <span class="cir-sr-pill">@srNo</span>
+                                    </td>
+                                    <td>
+                                        <div class="cir-dept-badge">
+                                            <i class="fa fa-building-o text-primary"></i>
+                                            <span>@(string.IsNullOrEmpty(items.DepartmentName) ? "Local Government Punjab" : items.DepartmentName)</span>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <div class="cir-subject-cell">
+                                            @Html.DisplayFor(modelItem => items.Subject)
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="cir-date-pill">
+                                            <i class="fa fa-calendar-o text-muted"></i>
+                                            <span>@items.CircularDate.ToString("dd-MMM-yyyy")</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(items.PDFPath))
+                                        {
+                                            <a href="@Model.fileacessingUrl/@items.PDFPath" target="_blank" class="cir-pdf-action-btn" title="View / Download PDF Document">
+                                                <i class="fa fa-file-pdf-o"></i> View PDF
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted"><i class="fa fa-minus"></i></span>
+                                        }
+                                    </td>
+                                </tr>
+                                srNo++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="cir-empty-state">
+                    <div class="cir-empty-icon">
+                        <i class="fa fa-folder-open-o"></i>
+                    </div>
+                    <div class="cir-empty-title">No Circulars or Public Notices Found</div>
+                    <div class="cir-empty-desc">There are currently no active circulars or notices issued for your department.</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Issue New Circular Modal -->
+    <div class="modal fade cir-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">
+                        <i class="fa fa-plus-circle"></i> Issue New Circular / Notice
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                @using (Html.BeginForm("Add", "Circular", FormMethod.Post, new { enctype = "multipart/form-data", id = "circularForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.CircularID)
+                    @Html.Hidden("SelectedContacts", null, new { id = "selectedContacts" })
+
+                    <div class="modal-body">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+                        <!-- Department Multi-Select -->
+                        <div class="cir-form-group">
+                            <label class="cir-form-label">
+                                Target Departments <span class="text-danger">*</span>
+                            </label>
+                            
+                            <div class="cir-dept-select-wrap">
+                                <div class="cir-dept-dropdown-toggle" id="deptDropdownToggle">
+                                    <span id="deptToggleText">Select Target Departments</span>
+                                    <i class="fa fa-chevron-down text-muted" style="font-size: 11px;"></i>
+                                </div>
+
+                                <div class="cir-dept-dropdown-menu" id="deptDropdownMenu">
+                                    <input type="text" id="deptSearchInput" class="cir-dept-search" placeholder="Search departments..." />
+                                    
+                                    <label class="cir-dept-select-all">
+                                        <input type="checkbox" id="select-all" class="cir-dept-checkbox" />
+                                        <span>Select All Departments</span>
+                                    </label>
+
+                                    <div class="cir-dept-options-list" id="deptOptionsList">
+                                        @if (Model != null && Model.mDepartmentList != null)
+                                        {
+                                            foreach (var agenda in Model.mDepartmentList)
+                                            {
+                                                <label class="cir-dept-option-item">
+                                                    <input type="checkbox" class="option cir-dept-checkbox" value="@agenda.Value" />
+                                                    <span>@agenda.Text</span>
+                                                </label>
+                                            }
+                                        }
                                     </div>
                                 </div>
-
-                                <div class="form-group">
-                                    @Html.Label("Details")
-                                    @Html.TextAreaFor(model => model.Subject, new { @class = "form-control", rows = 5, cols = 40 })
-
-                                    @*@Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control" } })*@
-                                    @Html.ValidationMessageFor(model => model.Subject, null, new { @class = "text-danger" })
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.Label("Upload PDF")
-                                    <input type="file" id="PDFFile" name="PDFFile" class="form-control" accept=".pdf" />
-                                    <span class="text-danger" id="fileError"></span>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            }
+                            </div>
+                            <!-- Selected Department Chips Displayed Directly Below Dropdown -->
+                            <div class="cir-selected-chips" id="selectedItemsContainer"></div>
+                            <span class="text-danger" id="deptError" style="font-size: 11.5px;"></span>
                         </div>
-                        <div id="validationErrors" class="text-danger"></div>
+
+                        <!-- Subject / Order Details -->
+                        <div class="cir-form-group">
+                            <label class="cir-form-label" for="Subject">
+                                Circular Subject / Order Details <span class="text-danger">*</span>
+                            </label>
+                            @Html.TextAreaFor(model => model.Subject, new {
+                                @class = "cir-form-control",
+                                rows = 4,
+                                placeholder = "Enter full subject, order details, and instructions...",
+                                required = "required",
+                                style = "width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; min-height: 100px;"
+                            })
+                            @Html.ValidationMessageFor(model => model.Subject, null, new { @class = "text-danger", style = "font-size: 11.5px;" })
+                        </div>
+
+                        <!-- PDF Attachment Upload -->
+                        <div class="cir-form-group mb-0">
+                            <label class="cir-form-label">
+                                Upload Official PDF Document <span class="text-danger">*</span>
+                            </label>
+
+                            <div class="cir-upload-box" id="uploadDropZone">
+                                <i class="fa fa-cloud-upload cir-upload-icon"></i>
+                                <div class="cir-upload-text">Click or drag PDF file here to upload</div>
+                                <div class="cir-upload-subtext">Accepted format: <strong>.PDF</strong> (Maximum file size: <strong>5 MB</strong>)</div>
+                                <input type="file" id="PDFFile" name="PDFFile" class="cir-file-input" accept=".pdf" required />
+                            </div>
+
+                            <div class="cir-selected-file-display" id="selectedFileDisplay">
+                                <div>
+                                    <i class="fa fa-file-pdf-o text-danger me-2"></i>
+                                    <span id="selectedFileName">filename.pdf</span>
+                                </div>
+                                <i class="fa fa-check-circle text-success" title="Valid file selected"></i>
+                            </div>
+
+                            <span class="text-danger mt-1 d-block" id="fileError" style="font-size: 11.5px;"></span>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="cir-btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-times me-1"></i> Close
+                        </button>
+                        <button type="submit" class="cir-btn-primary" id="btnSave">
+                            <i class="fa fa-paper-plane me-1"></i> Publish Circular
+                        </button>
+                    </div>
+                }
             </div>
-        </section>
-    
+        </div>
+    </div>
+
 </div>
 
 <script>
     $(document).ready(function () {
+        // 1. Initialize Department Dropdown
+        initDepartmentDropdown();
 
+        // 2. Initialize PDF Upload
+        initFileUpload();
 
-        $('#example').DataTable({
-            "bLengthChange": false,
-            dom: 'Bfrtip',
-            buttons: [
-                'excelHtml5',
-                'csvHtml5',
-                'pdfHtml5'
-            ],
-            //order: [[1, 'desc']], // Sort by Meeting Date
-            //columnDefs: [
-            //    { targets: 1, type: 'date' }
-            //]
-        });
+        // 3. Initialize Circular Form & Validation
+        initCircularForm();
 
-        const dropdown = $('.dropdown');
-        const dropdownOptions = $('.dropdown-options');
-        const selectAll = $('#select-all');
-        const options = $('.option');
-        const selectedItemsContainer = $('.selected-items');
+        // 4. Initialize DataTables (Safely wrapped)
+        initCircularsTable();
 
-        dropdown.click(function () {
-            dropdownOptions.toggle();
-        });
-
-        selectAll.change(function () {
-            const isChecked = $(this).prop('checked');
-            options.prop('checked', isChecked);
-            updateSelectedContacts();
-        });
-
-        options.change(function () {
-            updateSelectedContacts();
-            const allChecked = options.length === options.filter(':checked').length;
-            selectAll.prop('checked', allChecked);
-        });
-
-        function updateSelectedContacts() {
-            selectedItemsContainer.empty();
-            const selectedContacts = options.filter(':checked').map(function () {
-                const value = $(this).val();
-                const text = $(this).parent().text().trim();
-                const item = $(`<div class="selected-item">${text} <span data-value="${value}">&times;</span></div>`);
-                item.find('span').click(function () {
-                    const value = $(this).data('value');
-                    $(`.option[value="${value}"]`).prop('checked', false);
-                    item.remove();
-                });
-                selectedItemsContainer.append(item);
-                return value;
-            }).get();
-            $('#selectedContacts').val(selectedContacts.join(','));
+        // Re-show modal if validation error returned from server
+        var showModal = '@ViewBag.ShowModal';
+        if (showModal === 'True') {
+            var m = new bootstrap.Modal(document.getElementById('myModal'));
+            m.show();
         }
+    });
 
-        $(document).click(function (e) {
-            if (!dropdown.is(e.target) && dropdown.has(e.target).length === 0 && !dropdownOptions.is(e.target) && dropdownOptions.has(e.target).length === 0) {
-                dropdownOptions.hide();
+    // ==========================================================================
+    // DEPARTMENT MULTI-SELECT DROPDOWN
+    // ==========================================================================
+    function initDepartmentDropdown() {
+        // Toggle dropdown open / close
+        $(document).off('click', '#deptDropdownToggle').on('click', '#deptDropdownToggle', function (e) {
+            e.stopPropagation();
+            var $menu = $('#deptDropdownMenu');
+            $menu.toggle();
+            if ($menu.is(':visible')) {
+                $('#deptSearchInput').focus();
             }
         });
 
-        // Prevent clicks inside the dropdown options from closing it
-        dropdownOptions.click(function (e) {
+        // Close dropdown on outside click
+        $(document).off('click.deptDropdown').on('click.deptDropdown', function (e) {
+            if (!$(e.target).closest('#deptDropdownToggle, #deptDropdownMenu').length) {
+                $('#deptDropdownMenu').hide();
+            }
+        });
+
+        // Prevent clicks inside dropdown menu from closing it
+        $(document).off('click', '#deptDropdownMenu').on('click', '#deptDropdownMenu', function (e) {
             e.stopPropagation();
         });
-    });
 
-
-
-     // Show modal if there was a validation error
-        var showModal = '@ViewBag.ShowModal';
-        if (showModal === 'True') {
-            var myModal = new bootstrap.Modal(document.getElementById('myModal'));
-            myModal.show();
-        }
-
-        // Reset modal fields when closed
-        var myModalEl = document.getElementById('myModal');
-        myModalEl.addEventListener('hidden.bs.modal', function () {
-            $('#circularForm')[0].reset(); // clear form
-            $('#selectedContacts').val(''); // clear hidden field
-            $('.dropdown-options .option').prop('checked', false); // clear checkboxes
+        // Search departments in dropdown
+        $(document).off('input', '#deptSearchInput').on('input', '#deptSearchInput', function () {
+            var val = $(this).val().toLowerCase().trim();
+            $('.cir-dept-option-item').each(function () {
+                var text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(val) !== -1);
+            });
         });
 
+        // Select all departments toggle
+        $(document).off('change', '#select-all').on('change', '#select-all', function () {
+            var isChecked = $(this).prop('checked');
+            $('.cir-dept-option-item .option').prop('checked', isChecked);
+            updateSelectedDepartments();
+        });
 
+        // Individual department option toggle
+        $(document).off('change', '.cir-dept-option-item .option').on('change', '.cir-dept-option-item .option', function () {
+            updateSelectedDepartments();
+            var total = $('.cir-dept-option-item .option').length;
+            var checked = $('.cir-dept-option-item .option:checked').length;
+            $('#select-all').prop('checked', total > 0 && total === checked);
+        });
 
+        // Remove chip handler
+        $(document).off('click', '.cir-chip-remove').on('click', '.cir-chip-remove', function (e) {
+            e.stopPropagation();
+            var val = $(this).data('value');
+            $('.cir-dept-option-item .option[value="' + val + '"]').prop('checked', false);
+            $('#select-all').prop('checked', false);
+            updateSelectedDepartments();
+        });
+    }
+
+    function updateSelectedDepartments() {
+        var $chipsContainer = $('#selectedItemsContainer');
+        $chipsContainer.empty();
+        var selectedIds = [];
+        var selectedNames = [];
+
+        $('.cir-dept-option-item .option:checked').each(function () {
+            var value = $(this).val();
+            var text = $(this).closest('.cir-dept-option-item').find('span').text().trim();
+            selectedIds.push(value);
+            selectedNames.push(text);
+
+            var $chip = $('<div class="cir-chip">' + text + ' <span class="cir-chip-remove" data-value="' + value + '">&times;</span></div>');
+            $chipsContainer.append($chip);
+        });
+
+        $('#selectedContacts').val(selectedIds.join(','));
+        $('#deptError').text('');
+
+        if (selectedIds.length === 0) {
+            $('#deptToggleText').text('Select Target Departments');
+        } else if (selectedIds.length === 1) {
+            $('#deptToggleText').text(selectedNames[0]);
+        } else {
+            $('#deptToggleText').text(selectedIds.length + ' Departments Selected');
+        }
+    }
+
+    // ==========================================================================
+    // FILE UPLOAD HANDLING
+    // ==========================================================================
+    function initFileUpload() {
+        $(document).off('change', '#PDFFile').on('change', '#PDFFile', function () {
+            var file = this.files && this.files[0];
+            if (file) {
+                var ext = file.name.split('.').pop().toLowerCase();
+                if (ext !== 'pdf') {
+                    $('#fileError').text('Only .pdf files are allowed.');
+                    $('#selectedFileDisplay').hide();
+                    $(this).val('');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    $('#fileError').text('File size must be less than 5 MB.');
+                    $('#selectedFileDisplay').hide();
+                    $(this).val('');
+                    return;
+                }
+                $('#fileError').text('');
+                $('#selectedFileName').text(file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)');
+                $('#selectedFileDisplay').css('display', 'flex');
+            } else {
+                $('#selectedFileDisplay').hide();
+            }
+        });
+    }
+
+    // ==========================================================================
+    // FORM VALIDATION & MODAL RESET
+    // ==========================================================================
+    function initCircularForm() {
+        $('#circularForm').off('submit').on('submit', function (e) {
+            var valid = true;
+            if (!$('#selectedContacts').val()) {
+                $('#deptError').text('Please select at least one department.');
+                valid = false;
+            }
+            if (!$('#PDFFile').val() && !$('#CircularID').val()) {
+                $('#fileError').text('Please upload an official PDF document.');
+                valid = false;
+            }
+            if (!valid) {
+                e.preventDefault();
+                return false;
+            }
+            $('#btnSave').prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i> Publishing...');
+        });
+
+        var modalEl = document.getElementById('myModal');
+        if (modalEl) {
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                AddNew();
+            });
+        }
+    }
+
+    function AddNew() {
+        $('#circularForm')[0].reset();
+        $('#CircularID').val('0');
+        $('#selectedContacts').val('');
+        $('.cir-dept-option-item .option').prop('checked', false);
+        $('#select-all').prop('checked', false);
+        $('#selectedItemsContainer').empty();
+        $('#deptDropdownMenu').hide();
+        $('#selectedFileDisplay').hide();
+        $('#deptToggleText').text('Select Target Departments');
+        $('#deptError').text('');
+        $('#fileError').text('');
+        $('#btnSave').prop('disabled', false).html('<i class="fa fa-paper-plane me-1"></i> Publish Circular');
+    }
+
+    // ==========================================================================
+    // DATATABLE INITIALIZATION
+    // ==========================================================================
+    function initCircularsTable() {
+        var $table = $('#circularsTable');
+        if (!$table.length) return;
+
+        try {
+            $table.DataTable({
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                ordering: false,
+                dom: '<"cir-dt-top"<"cir-dt-top-left"B><"cir-dt-top-right"f>>rt<"cir-dt-bottom"<"d-flex align-items-center gap-3"li>p>',
+                language: {
+                    search: '<i class="fa fa-search text-muted"></i>',
+                    searchPlaceholder: "Search circulars...",
+                    lengthMenu: "Show _MENU_ records",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    paginate: {
+                        previous: '<i class="fa fa-angle-left"></i>',
+                        next: '<i class="fa fa-angle-right"></i>'
+                    }
+                },
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o text-success"></i> Export Excel',
+                        className: 'btn btn-sm btn-outline-secondary',
+                        title: 'LG_Circulars_Notices'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o text-danger"></i> Export PDF',
+                        className: 'btn btn-sm btn-outline-secondary',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        title: null,
+                        filename: 'LG_Circulars_Notices',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3],
+                            format: {
+                                header: function (data) {
+                                    return $('<div>').html(data).text().trim();
+                                },
+                                body: function (data) {
+                                    if (!data) return '';
+                                    var text = data.toString()
+                                        .replace(/<br\s*[\/]?>/gi, '\n')
+                                        .replace(/<\/a>/gi, ' </a>')
+                                        .replace(/<\/span>/gi, ' </span>');
+                                    return $('<div>').html(text).text().trim();
+                                }
+                            }
+                        },
+                        customize: function (doc) {
+                            try {
+                                if (doc.content && doc.content.length) {
+                                    doc.content = doc.content.filter(function (item) {
+                                        return item && item.table;
+                                    });
+                                }
+
+                                var selectedFont = null;
+                                if (window.pdfMake && window.pdfMake.vfs && window.pdfMake.vfs['Raavi-Regular.ttf']) {
+                                    window.pdfMake.fonts = window.pdfMake.fonts || {};
+                                    window.pdfMake.fonts.Raavi = {
+                                        normal: 'Raavi-Regular.ttf',
+                                        bold: window.pdfMake.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf',
+                                        italics: 'Raavi-Regular.ttf',
+                                        bolditalics: window.pdfMake.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf'
+                                    };
+                                    selectedFont = 'Raavi';
+                                }
+
+                                doc.defaultStyle = doc.defaultStyle || {};
+                                if (selectedFont) {
+                                    doc.defaultStyle.font = selectedFont;
+                                }
+                                doc.defaultStyle.fontSize = 8;
+                                doc.pageMargins = [16, 16, 16, 16];
+
+                                var tableNode = null;
+                                for (var i = 0; i < doc.content.length; i++) {
+                                    if (doc.content[i].table) {
+                                        tableNode = doc.content[i];
+                                        break;
+                                    }
+                                }
+
+                                if (tableNode && tableNode.table && tableNode.table.body) {
+                                    var table = tableNode.table;
+                                    table.headerRows = 1;
+                                    table.dontBreakRows = true;
+                                    table.widths = [35, 140, '*', 75];
+
+                                    for (var r = 0; r < table.body.length; r++) {
+                                        var row = table.body[r];
+                                        for (var c = 0; c < row.length; c++) {
+                                            var cell = row[c];
+                                            if (typeof cell !== 'object' || cell === null) {
+                                                cell = { text: String(cell || '') };
+                                                row[c] = cell;
+                                            }
+                                            if (selectedFont) {
+                                                cell.font = selectedFont;
+                                            }
+                                            if (r === 0) {
+                                                cell.fillColor = '#1e3a8a';
+                                                cell.color = '#ffffff';
+                                                cell.bold = true;
+                                                cell.alignment = 'center';
+                                                cell.fontSize = 8.5;
+                                            } else {
+                                                cell.fontSize = 7.5;
+                                                cell.color = '#1e293b';
+                                                cell.fillColor = (r % 2 === 0) ? '#f8fafc' : '#ffffff';
+                                                cell.alignment = (c === 0 || c === 3) ? 'center' : 'left';
+                                            }
+                                        }
+                                    }
+
+                                    tableNode.layout = {
+                                        hLineWidth: function (i, node) { return (i === 0 || i === 1 || i === node.table.body.length) ? 0.8 : 0.4; },
+                                        vLineWidth: function () { return 0.4; },
+                                        hLineColor: function (i, node) { return (i === 0 || i === 1 || i === node.table.body.length) ? '#1e3a8a' : '#cbd5e1'; },
+                                        vLineColor: function () { return '#cbd5e1'; },
+                                        paddingLeft: function () { return 5; },
+                                        paddingRight: function () { return 5; },
+                                        paddingTop: function (i) { return i === 0 ? 6 : 4; },
+                                        paddingBottom: function (i) { return i === 0 ? 6 : 4; }
+                                    };
+                                }
+                            } catch (err) {
+                                console.warn('PDF customization error: ', err);
+                            }
+                        }
+                    }
+                ]
+            });
+        } catch (e) {
+            console.warn('DataTable initialization error: ', e);
+        }
+    }
 </script>

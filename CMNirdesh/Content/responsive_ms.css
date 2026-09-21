@@ -54,9 +54,10 @@ div#body {
 }
 
 footer.footer_sec.p_fixd.bg_light_rd {
-    position: absolute;
-    bottom: 0;
+    position: relative;
+    bottom: auto;
     width: 100%;
+    clear: both;
 }
 }
 @media screen and (max-width : 1366px) {

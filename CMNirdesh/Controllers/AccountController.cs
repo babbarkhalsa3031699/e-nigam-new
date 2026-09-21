@@ -356,7 +356,9 @@ namespace CMNirdesh.Controllers
             {
                 if (Session["CaptchaImageText"] != null)
                 {
-                    if (this.Session["CaptchaImageText"].ToString() != CaptchaText)
+                    string sessionCaptcha = (this.Session["CaptchaImageText"] ?? "").ToString().Trim().ToUpper();
+                    string userCaptcha = (CaptchaText ?? "").Trim().ToUpper();
+                    if (sessionCaptcha != userCaptcha)
                     {
                         model.ErrorMessage = "Captcha Validation Failed!";
                         return View("Login", model);
@@ -1167,7 +1169,9 @@ namespace CMNirdesh.Controllers
             {
                 if (Session["CaptchaImageText"] != null)
                 {
-                    if (this.Session["CaptchaImageText"].ToString() != CaptchaText)
+                    string sessionCaptcha = (this.Session["CaptchaImageText"] ?? "").ToString().Trim().ToUpper();
+                    string userCaptcha = (CaptchaText ?? "").Trim().ToUpper();
+                    if (sessionCaptcha != userCaptcha)
                     {
                         model.ErrorMessage = "Captcha Validation Failed!";
                         return View("ChangePassword", model);
@@ -1233,7 +1237,9 @@ namespace CMNirdesh.Controllers
             {
                 if (Session["CaptchaImageText"] != null)
                 {
-                    if (this.Session["CaptchaImageText"].ToString() != CaptchaText)
+                    string sessionCaptcha = (this.Session["CaptchaImageText"] ?? "").ToString().Trim().ToUpper();
+                    string userCaptcha = (CaptchaText ?? "").Trim().ToUpper();
+                    if (sessionCaptcha != userCaptcha)
                     {
                         model.ErrorMessage = "Captcha Validation Failed!";
                         return View("ChangePassword", model);
@@ -1262,7 +1268,9 @@ namespace CMNirdesh.Controllers
             {
                 if (Session["CaptchaImageText"] != null)
                 {
-                    if (this.Session["CaptchaImageText"].ToString() != CaptchaText)
+                    string sessionCaptcha = (this.Session["CaptchaImageText"] ?? "").ToString().Trim().ToUpper();
+                    string userCaptcha = (CaptchaText ?? "").Trim().ToUpper();
+                    if (sessionCaptcha != userCaptcha)
                     {
                         model.ErrorMessage = "Captcha Validation Failed!";
                         return View("ChangePassword", model);
