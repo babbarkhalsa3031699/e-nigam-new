@@ -1,4 +1,4 @@
-﻿
+
 @model CMNirdesh.Models.MCHouse.mCouncilCorporation.LstMCModel
 
 @using CMNirdesh;
@@ -135,6 +135,416 @@
         gap: 10px;
         border: none;
     }
+
+    /* ==========================================================================
+       DESIGN SYSTEM FOR UPDATE OFFICE DETAILS MODAL
+       Derived directly from the "Add Proposal" Modal Reference System
+       Scoped strictly under: .office-details-modal
+       Zero font properties modified (Preserving exact existing typography)
+       ========================================================================== */
+
+    /* 1. Modal Dialog & Viewport Containment */
+    .modal.office-details-modal.addnew_modal,
+    .modal.office-details-modal.coman_modal,
+    .modal.office-details-modal.dispatch_modal {
+        padding: 0 !important;
+    }
+
+    .office-details-modal.modal {
+        padding: 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Gurmukhi", "Raavi", sans-serif;
+    }
+
+    .office-details-modal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 920px;
+        width: calc(100% - 2rem);
+        margin: 1.5rem auto;
+        min-height: calc(100% - 3rem);
+    }
+
+    .office-details-modal .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Modal Header & Accent Bar */
+    .office-details-modal .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .office-details-modal .modal-header .modal-title {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .office-details-modal .modal-header .modal-title::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .office-details-modal .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .office-details-modal .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* 3. Modal Body & Custom Scrollbar */
+    .office-details-modal .modal-body {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #cbd5e1 transparent !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .office-details-modal .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .office-details-modal .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .office-details-modal .modal-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .office-details-modal .modal-body::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
+    /* 4. Form Section Cards */
+    .office-details-modal .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .office-details-modal .form-section-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .office-details-modal .form-section-title i {
+        color: #2563eb;
+        font-size: 13px !important;
+    }
+
+    /* 5. 2-Column Responsive Layout */
+    .office-details-modal .form-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-items: start;
+    }
+
+    @@media (max-width: 767px) {
+        .office-details-modal .modal-dialog {
+            margin: 0.75rem auto;
+            width: calc(100% - 1.5rem);
+        }
+
+        .office-details-modal .form-card-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .office-details-modal .modal-footer {
+            padding: 12px 16px !important;
+        }
+
+        .office-details-modal .modal-footer .btn {
+            flex: 1 1 auto;
+        }
+    }
+
+    .office-details-modal .col-full {
+        grid-column: 1 / -1;
+    }
+
+    /* 6. Form Groups & Field Labels */
+    .office-details-modal .form-group {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .office-details-modal .fotm_lbl,
+    .office-details-modal .profile-info-name.fotm_lbl,
+    .office-details-modal label.fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: normal !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+        width: 100% !important;
+        text-align: left !important;
+        float: none !important;
+    }
+
+    /* 7. Inputs, Selects & Text Controls */
+    .office-details-modal input[type="text"],
+    .office-details-modal select#MCSelect,
+    .office-details-modal .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        line-height: normal !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        box-sizing: border-box !important;
+    }
+
+    .office-details-modal input[type="text"]:hover,
+    .office-details-modal select#MCSelect:hover {
+        border-color: #94a3b8 !important;
+    }
+
+    .office-details-modal input[type="text"]:focus,
+    .office-details-modal select#MCSelect:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    .office-details-modal .form-control::placeholder {
+        color: #64748b;
+        opacity: 0.7;
+    }
+
+    /* 8. Select Dropdown Appearance */
+    .office-details-modal select#MCSelect {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px 16px;
+        padding-right: 36px !important;
+        cursor: pointer;
+    }
+
+    /* 9. Disabled Dropdown State */
+    .office-details-modal select#MCSelect:disabled,
+    .office-details-modal select#MCSelect[disabled],
+    .office-details-modal select#MCSelect.disabled {
+        background-color: #f8fafc !important;
+        border-color: #e2e8f0 !important;
+        color: #475569 !important;
+        cursor: not-allowed !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2364748b' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M10 2a4 4 0 00-4 4v2H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z' clip-rule='evenodd'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 12px center !important;
+        background-size: 16px 16px !important;
+        padding-right: 36px !important;
+        opacity: 0.95 !important;
+    }
+
+    /* 10. Upload Dropzone Card & Thumbnail Layout */
+    .office-details-modal .odm-upload-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 18px;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .office-details-modal .odm-upload-card:hover {
+        border-color: #cbd5e1;
+        background-color: #f1f5f9;
+    }
+
+    .office-details-modal .odm-upload-preview {
+        flex-shrink: 0;
+    }
+
+    .office-details-modal img#MCLogoIcon,
+    .office-details-modal img#HeadPhotoIcon,
+    .office-details-modal img#SubHeadPhotoIcon {
+        width: 72px !important;
+        height: 72px !important;
+        min-width: 72px !important;
+        object-fit: cover !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 2px !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .office-details-modal .odm-upload-input-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .office-details-modal .odm-upload-input-wrap input[type="file"] {
+        height: auto !important;
+        min-height: 38px;
+        padding: 5px 8px !important;
+        background-color: #ffffff;
+    }
+
+    .office-details-modal .odm-upload-input-wrap input[type="file"]::file-selector-button {
+        height: 28px;
+        padding: 0 14px;
+        margin-right: 10px;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        background-color: #f8fafc;
+        color: #1e293b;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .office-details-modal .odm-upload-input-wrap input[type="file"]::file-selector-button:hover {
+        background-color: #eff6ff;
+        border-color: #93c5fd;
+        color: #2563eb;
+    }
+
+    .office-details-modal .odm-upload-hint {
+        font-size: 12px !important;
+        font-style: italic !important;
+        color: #64748b;
+    }
+
+    /* 11. Sticky Footer & Actions */
+    .office-details-modal .modal-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .office-details-modal button#btnSave,
+    .office-details-modal button#btnUpdate {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 24px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .office-details-modal button#btnSave[style*="display: none"],
+    .office-details-modal button#btnSave[style*="display:none"],
+    .office-details-modal button#btnUpdate[style*="display: none"],
+    .office-details-modal button#btnUpdate[style*="display:none"] {
+        display: none !important;
+    }
+
+    .office-details-modal button#btnSave:hover,
+    .office-details-modal button#btnUpdate:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px);
+    }
+
+    .office-details-modal button#btnSave:active,
+    .office-details-modal button#btnUpdate:active {
+        transform: translateY(0);
+    }
+
+    .office-details-modal .modal-footer .btn-danger {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 20px !important;
+        border-radius: 6px !important;
+        display: inline-flex;
+        align-items: center !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        height: 38px !important;
+    }
+
+    .office-details-modal .modal-footer .btn-danger:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
 </style>
 <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
     <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -269,7 +679,7 @@
             </div>
 
 
-            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="coman_modal dispatch_modal addnew_modal modal office-details-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -279,141 +689,175 @@
                         <div class="modal-body">
                             <form>
                                 <input type="hidden" id="selectedId" />
-                                <div class="form-group" id="MenuDropdown">
-                                    <div class="profile-info-name fotm_lbl">LG/Council/Corporation:</div>
-                                    <select id="MCSelect">
-                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="MC Name"></option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Office Name:</label>
-                                    <input type="text" class="form-control" id="MCName" placeholder="Head Name" />
-                                </div>
 
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Office Name(Punjabi):</label>
-                                    <input type="text" class="form-control" id="MCLocalName" placeholder="Head Designation" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">About:</label>
-                                    <input type="text" class="form-control" id="AboutMC" placeholder="About" />
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">About(Punjabi):</label>
-                                    <input type="text" class="form-control" id="AboutMCLocal" placeholder="About(Punjabi)" />
-
+                                <!-- Section 1: Basic Information -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-university"></i> Basic Information</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group col-full" id="MenuDropdown">
+                                            <div class="profile-info-name fotm_lbl">LG/Council/Corporation:</div>
+                                            <select id="MCSelect">
+                                                <option value="select" class="form-control txt_design" id="SelectId" placeholder="MC Name"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Office Name:</label>
+                                            <input type="text" class="form-control" id="MCName" placeholder="Head Name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Office Name(Punjabi):</label>
+                                            <input type="text" class="form-control" id="MCLocalName" placeholder="Head Designation" />
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Address:</label>
-                                    <input type="text" class="form-control" id="Address" placeholder="Address" />
-
+                                <!-- Section 2: About & Address -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-info-circle"></i> About &amp; Address</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">About:</label>
+                                            <input type="text" class="form-control" id="AboutMC" placeholder="About" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">About(Punjabi):</label>
+                                            <input type="text" class="form-control" id="AboutMCLocal" placeholder="About(Punjabi)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Address:</label>
+                                            <input type="text" class="form-control" id="Address" placeholder="Address" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Address(Punjabi):</label>
+                                            <input type="text" class="form-control" id="AddressLocal" placeholder="Address(Punjabi)" />
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Address(Punjabi):</label>
-                                    <input type="text" class="form-control" id="AddressLocal" placeholder="Address(Punjabi)" />
-
+                                <!-- Section 3: Contact Details -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-phone"></i> Contact Details</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Email:</label>
+                                            <input type="text" class="form-control" id="Email" placeholder="Email" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Phone No.:</label>
+                                            <input type="text" class="form-control" id="Phone" placeholder="Phone No." />
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Email:</label>
-                                    <input type="text" class="form-control" id="Email" placeholder="Email" />
-
+                                <!-- Section 4: Office Branding -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-picture-o"></i> Office Branding</div>
+                                    <div class="form-group">
+                                        <label for="MC Logo" class="profile-info-name fotm_lbl">Office Logo:</label>
+                                        <div class="odm-upload-card">
+                                            <div class="odm-upload-preview">
+                                                <img src="https://placehold.jp/100x100.png" id="MCLogoIcon" class="form-control" alt="Load Image" />
+                                            </div>
+                                            <div class="odm-upload-input-wrap">
+                                                <input type="file" name="file" class="form-control" id="MCLogoFile" placeholder="MCLogo Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                                <span class="odm-upload-hint">Accepted formats: JPG, PNG, GIF, BMP</span>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="DocumentIconName" />
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Phone No.:</label>
-                                    <input type="text" class="form-control" id="Phone" placeholder="Phone No." />
-
+                                <!-- Section 5: Head of Office Details -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-user"></i> Head of Office Details</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Name:</label>
+                                            <input type="text" class="form-control" id="HeadName" placeholder="Head Name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Name(Punjabi):</label>
+                                            <input type="text" class="form-control" id="HeadNamePunjabi" placeholder="Head Name(Punjabi)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Designation:</label>
+                                            <input type="text" class="form-control" id="HeadDesignation" placeholder="Head Designation" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Designation(Punjabi):</label>
+                                            <input type="text" class="form-control" id="HeadDesignationPunjabi" placeholder="Head Designation(Punjabi)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Message:</label>
+                                            <input type="text" class="form-control" id="HeadMessage" placeholder="Head Message" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Message(Punjabi):</label>
+                                            <input type="text" class="form-control" id="HeadMessagePunjabi" placeholder="Head Message(Punjabi)" />
+                                        </div>
+                                        <div class="form-group col-full">
+                                            <label for="Head Photo" class="profile-info-name fotm_lbl">Head Photo:</label>
+                                            <div class="odm-upload-card">
+                                                <div class="odm-upload-preview">
+                                                    <img src="https://placehold.jp/100x100.png" id="HeadPhotoIcon" class="form-control" alt="Load Image" />
+                                                </div>
+                                                <div class="odm-upload-input-wrap">
+                                                    <input type="file" name="file" class="form-control" id="HeadPhotoFile" placeholder="MCLogo Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                                    <span class="odm-upload-hint">Accepted formats: JPG, PNG, GIF, BMP</span>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="DocumentIconName" />
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label for="MC Logo" class="profile-info-name fotm_lbl">Office Logo:</label>
-                                    <input type="file" name="file" class="form-control" id="MCLogoFile" placeholder="MCLogo Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                    <img src="https://placehold.jp/100x100.png" id="MCLogoIcon" class="form-control" style="width:100px; height:100px; border:1px solid red;" alt="Load Image" />
-                                    <input type="hidden" id="DocumentIconName" />
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Name:</label>
-                                    <input type="text" class="form-control" id="HeadName" placeholder="Head Name" />
-
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Name(Punjabi):</label>
-                                    <input type="text" class="form-control" id="HeadNamePunjabi" placeholder="Head Name(Punjabi)" />
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Designation:</label>
-                                    <input type="text" class="form-control" id="HeadDesignation" placeholder="Head Designation" />
-
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Designation(Punjabi):</label>
-                                    <input type="text" class="form-control" id="HeadDesignationPunjabi" placeholder="Head Designation(Punjabi)" />
-
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Message:</label>
-                                    <input type="text" class="form-control" id="HeadMessage" placeholder="Head Message" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">Head Message(Punjabi):</label>
-                                    <input type="text" class="form-control" id="HeadMessagePunjabi" placeholder="Head Message(Punjabi)" />
-                                </div>
-                                <div>
-                                    <label for="Head Photo" class="profile-info-name fotm_lbl">Head Photo:</label>
-
-                                    <input type="file" name="file" class="form-control" id="HeadPhotoFile" placeholder="MCLogo Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-
-                                    <img src="https://placehold.jp/100x100.png" id="HeadPhotoIcon" class="form-control" style="width:100px; height:100px; border:1px solid red;" alt="Load Image" />
-                                    <input type="hidden" id="DocumentIconName" />
-                                </div>
-                                <br />
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Name:</label>
-                                    <input type="text" class="form-control" id="SubHeadName" placeholder="SubHead Name" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Name(Punjabi):</label>
-                                    <input type="text" class="form-control" id="SubHeadNamePunjabi" placeholder="SubHead Name" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Designation:</label>
-                                    <input type="text" class="form-control" id="SubHeadDesignation" placeholder="SubHead Designation" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Designation(Punjabi):</label>
-                                    <input type="text" class="form-control" id="SubHeadDesignationPunjabi" placeholder="SubHead Designation(Punjabi)" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Message:</label>
-                                    <input type="text" class="form-control" id="SubHeadMessage" placeholder="SubHead Message" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Message(Punjabi):</label>
-                                    <input type="text" class="form-control" id="SubHeadMessagePunjabi" placeholder="SubHead Message(Punjabi)" />
-                                </div>
-
-                                <div>
-                                    <label for="SubHeading Photo" class="profile-info-name fotm_lbl">SubHead Photo:</label>
-                                    <input type="file" name="file" class="form-control" id="SubHeadingPhotoFile" placeholder="SubHead Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                    <img src="https://placehold.jp/100x100.png" id="SubHeadPhotoIcon" class="form-control" style="width:100px; height:100px; border:1px solid red;" alt="Load Image" />
-                                    <input type="hidden" id="DocumentIconName" />
+                                <!-- Section 6: Sub-Head of Office Details -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-user-plus"></i> Sub-Head of Office Details</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Name:</label>
+                                            <input type="text" class="form-control" id="SubHeadName" placeholder="SubHead Name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Name(Punjabi):</label>
+                                            <input type="text" class="form-control" id="SubHeadNamePunjabi" placeholder="SubHead Name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Designation:</label>
+                                            <input type="text" class="form-control" id="SubHeadDesignation" placeholder="SubHead Designation" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Designation(Punjabi):</label>
+                                            <input type="text" class="form-control" id="SubHeadDesignationPunjabi" placeholder="SubHead Designation(Punjabi)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Message:</label>
+                                            <input type="text" class="form-control" id="SubHeadMessage" placeholder="SubHead Message" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Department Abbreviation" class="profile-info-name fotm_lbl">SubHead Message(Punjabi):</label>
+                                            <input type="text" class="form-control" id="SubHeadMessagePunjabi" placeholder="SubHead Message(Punjabi)" />
+                                        </div>
+                                        <div class="form-group col-full">
+                                            <label for="SubHeading Photo" class="profile-info-name fotm_lbl">SubHead Photo:</label>
+                                            <div class="odm-upload-card">
+                                                <div class="odm-upload-preview">
+                                                    <img src="https://placehold.jp/100x100.png" id="SubHeadPhotoIcon" class="form-control" alt="Load Image" />
+                                                </div>
+                                                <div class="odm-upload-input-wrap">
+                                                    <input type="file" name="file" class="form-control" id="SubHeadingPhotoFile" placeholder="SubHead Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                                    <span class="odm-upload-hint">Accepted formats: JPG, PNG, GIF, BMP</span>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="DocumentIconName" />
+                                        </div>
+                                    </div>
                                 </div>
 
                             </form>
                         </div>
-                        <div class="modal-footer" style="background-color:white">
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
                             <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
