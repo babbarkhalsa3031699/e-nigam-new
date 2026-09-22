@@ -105,7 +105,7 @@
             </div>
 
 
-            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="coman_modal dispatch_modal addnew_modal modal office-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -113,43 +113,64 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form>
-                                <div class="form-group" id="departmentsDropdown">
-                                    <div class="profile-info-name fotm_lbl">Department Name:</div>
-                                    <select id="ch_user1">
-                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="Select Department Id"></option>
-                                    </select>
+                            <form id="frmOfficeRecord">
+                                <!-- Section 1: Department & Office Information -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-building-o"></i> Office Information &amp; Department</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group col-full" id="departmentsDropdown">
+                                            <label for="ch_user1" class="profile-info-name fotm_lbl">Department Name:</label>
+                                            <select id="ch_user1" class="form-control">
+                                                <option value="select" class="form-control txt_design" id="SelectId" placeholder="Select Department Id">Please select</option>
+                                            </select>
+                                            <span id="ch_user1Error" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> Please select Department Name</span>
+                                        </div>
+
+                                        <div class="form-group col-full" id="OfficeIdLabel" style="display:none;">
+                                            <label for="OfficeId" class="profile-info-name fotm_lbl">Office ID:</label>
+                                            <input type="text" class="form-control" id="OfficeId" placeholder="Office Id" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="OfficeName" class="profile-info-name fotm_lbl">Office Name:</label>
+                                            <input type="text" class="form-control" id="OfficeName" placeholder="Enter Office Name" />
+                                            <span id="OfficeNameError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> Office Name is required</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="OfficeNameLocal" class="profile-info-name fotm_lbl">Office Name Local:</label>
+                                            <input type="text" class="form-control" id="OfficeNameLocal" placeholder="ਦਫ਼ਤਰ ਦਾ ਨਾਮ (ਸਥਾਨਕ)" />
+                                        </div>
+                                    </div>
                                 </div>
 
+                                <!-- Section 2: Location & Configuration -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-map-marker"></i> Location &amp; Configuration</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group col-full">
+                                            <label for="OfficeAddress" class="profile-info-name fotm_lbl">Office Address:</label>
+                                            <input type="text" class="form-control" id="OfficeAddress" placeholder="Enter Office Address" />
+                                            <span id="OfficeAddressError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> Office Address is required</span>
+                                        </div>
 
-                                <div class="form-group" id="OfficeIdLabel">
-
-                                    <div class="profile-info-name fotm_lbl">Office ID:</div>
-                                    <input type="text" class="form-control txt_design" id="OfficeId" placeholder="Office Id" />
+                                        <div class="form-group col-full">
+                                            <div class="office-apex-toggle">
+                                                <label for="IsApex" class="office-checkbox-label">
+                                                    <input type="checkbox" class="checkbox styled-checkbox" id="IsApex" />
+                                                    <span class="office-checkbox-text">Is Apex Office</span>
+                                                </label>
+                                                <span class="office-checkbox-hint">Designates this office as the apex (primary) governing branch</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">Office Name:</div>
-                                    <input type="text" class="form-control txt_design" id="OfficeName" placeholder="Office Name" />
-                                </div>
-                                <div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">Office Name Local:</div>
-                                    <input type="text" class="form-control txt_design" id="OfficeNameLocal" placeholder="Office Local Name" />
-                                </div>
-                                <div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">Office Address:</div>
-                                    <input type="text" class="form-control txt_design" id="OfficeAddress" placeholder="Office Address" />
-                                </div>
-                                <label for="IsApex">
-                                    <input type="checkbox" class="checkbox" id="IsApex" />
-                                    Is Apex
-                                </label>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
-                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();"><i class="fa fa-check"></i> Save</button>
+                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();" style="display:none;"><i class="fa fa-pencil-square-o"></i> Update</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
                     </div>
                 </div>
@@ -197,6 +218,394 @@
 
 
 <style>
+
+    /* ==========================================================================
+       OFFICE RECORD MODAL - SAAS DESIGN SYSTEM
+       Scoped strictly under .office-record-modal
+       ========================================================================== */
+
+    /* 1. Reset Global Distortion & Base Typography */
+    .modal.office-record-modal.addnew_modal,
+    .modal.office-record-modal.dispatch_modal {
+        padding: 0 !important;
+    }
+
+    .office-record-modal.modal {
+        padding: 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Gurmukhi", "Raavi", sans-serif;
+    }
+
+    .office-record-modal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 840px;
+        width: calc(100% - 2rem);
+        margin: 1.5rem auto;
+        min-height: calc(100% - 3rem);
+    }
+
+    .office-record-modal .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Modal Header & Accent Bar */
+    .office-record-modal .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .office-record-modal .modal-header .modal-title {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .office-record-modal .modal-header .modal-title::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .office-record-modal .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .office-record-modal .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* 3. Modal Body & Custom Scrollbar */
+    .office-record-modal .modal-body {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #cbd5e1 transparent !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .office-record-modal .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .office-record-modal .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .office-record-modal .modal-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .office-record-modal .modal-body::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
+    /* 4. Form Section Cards */
+    .office-record-modal .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .office-record-modal .form-section-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .office-record-modal .form-section-title i {
+        color: #2563eb;
+        font-size: 13px !important;
+    }
+
+    /* 5. 2-Column Responsive Layout */
+    .office-record-modal .form-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-items: start;
+    }
+
+    @@media (max-width: 767px) {
+        .office-record-modal .modal-dialog {
+            margin: 0.75rem auto;
+            width: calc(100% - 1.5rem);
+        }
+
+        .office-record-modal .form-card-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .office-record-modal .modal-footer {
+            padding: 12px 16px !important;
+        }
+
+        .office-record-modal .modal-footer .btn {
+            flex: 1 1 auto;
+        }
+    }
+
+    .office-record-modal .col-full {
+        grid-column: 1 / -1;
+    }
+
+    /* 6. Form Groups & Field Labels */
+    .office-record-modal .form-group {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .office-record-modal .fotm_lbl,
+    .office-record-modal .profile-info-name.fotm_lbl,
+    .office-record-modal label.fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: normal !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+        width: 100% !important;
+        text-align: left !important;
+        float: none !important;
+        padding-left: 0 !important;
+    }
+
+    /* 7. Inputs, Selects & Form Controls */
+    .office-record-modal input[type="text"],
+    .office-record-modal select,
+    .office-record-modal .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        line-height: normal !important;
+        color: #0f172a !important;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Validation Error Highlighting (Clean & Prominent) */
+    .office-record-modal .form-control.is-invalid,
+    .office-record-modal select.is-invalid,
+    .office-record-modal input[type="text"].is-invalid {
+        border: 1.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
+
+    .office-record-modal .field-val-msg {
+        display: none;
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: #dc2626 !important;
+        margin-top: 5px !important;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .office-record-modal .field-val-msg.show {
+        display: flex !important;
+    }
+
+    .office-record-modal input[type="text"]:hover,
+    .office-record-modal select:hover {
+        border-color: #94a3b8 !important;
+    }
+
+    .office-record-modal input[type="text"]:focus,
+    .office-record-modal select:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    .office-record-modal .form-control::placeholder {
+        color: #64748b;
+        opacity: 0.7;
+    }
+
+    /* 8. Select Dropdown Appearance */
+    .office-record-modal select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px 16px;
+        padding-right: 36px !important;
+        cursor: pointer;
+    }
+
+    /* 9. Apex Checkbox Card */
+    .office-record-modal .office-apex-toggle {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 12px 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.15s ease;
+    }
+
+    .office-record-modal .office-apex-toggle:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+
+    .office-record-modal .office-checkbox-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .office-record-modal .styled-checkbox {
+        width: 18px !important;
+        height: 18px !important;
+        min-height: 18px !important;
+        accent-color: #2563eb;
+        cursor: pointer;
+        margin: 0 !important;
+    }
+
+    .office-record-modal .office-checkbox-text {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .office-record-modal .office-checkbox-hint {
+        font-size: 12px;
+        color: #64748b;
+        margin-left: 28px;
+    }
+
+    /* 10. Sticky Footer & Actions */
+    .office-record-modal .modal-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .office-record-modal button#btnSave,
+    .office-record-modal button#btnUpdate {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 24px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .office-record-modal button#btnSave[style*="display: none"],
+    .office-record-modal button#btnSave[style*="display:none"],
+    .office-record-modal button#btnUpdate[style*="display: none"],
+    .office-record-modal button#btnUpdate[style*="display:none"] {
+        display: none !important;
+    }
+
+    .office-record-modal button#btnSave:hover,
+    .office-record-modal button#btnUpdate:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px);
+    }
+
+    .office-record-modal button#btnSave:active,
+    .office-record-modal button#btnUpdate:active {
+        transform: translateY(0);
+    }
+
+    .office-record-modal .modal-footer .btn-secondary,
+    .office-record-modal .modal-footer .btn-danger {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        padding: 8px 20px !important;
+        border-radius: 6px !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .office-record-modal .modal-footer .btn-secondary:hover,
+    .office-record-modal .modal-footer .btn-danger:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
 
 
     .inr_frm_dsgn {
@@ -323,6 +732,27 @@
 <script>
 
     $(document).ready(function () {
+        // Real-time clearing of validation highlights when user types or selects
+        $('#ch_user1').on('change', function () {
+            var val = $(this).val();
+            if (val && val.toString().trim() !== "0" && val.toString().trim() !== "select" && val.toString().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#ch_user1Error').removeClass('show');
+            }
+        });
+        $('#OfficeName').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#OfficeNameError').removeClass('show');
+            }
+        });
+        $('#OfficeAddress').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#OfficeAddressError').removeClass('show');
+            }
+        });
+
         var s = $("#ch_user1");
         s.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
         $.ajax({
@@ -369,6 +799,7 @@
 
                 var data = obj._ListofficeModel[0];
                 $("#OfficeId").attr("disabled", "disabled");
+                $("#OfficeIdLabel").show();
                 $('#myModal').modal();
                 $("#OfficeId").val(data.OfficeId);
                 $("#ch_user1").val(data.deptid);
@@ -385,62 +816,70 @@
 
     //Function for clearing the textboxes
 
-    //Valdidation using jquery
+    //Validation using jquery
     function validate() {
-
         var isValid = true;
+        var firstInvalid = null;
 
-        //if ($('#OfficeId').val().trim() === "") {
-        //    $('#OfficeId').css('background-color', 'Red');
-
-
-        //    isValid = false;
-        //}
-        //else {
-        $('#OfficeIdLabel').hide();
-        //}
-        if ($('#ch_user1').val().trim() === "0") {
-            $('#ch_user1').css('background-color', '#ff56564d');
+        // Validate Department Name
+        var deptVal = $('#ch_user1').val();
+        if (!deptVal || deptVal.toString().trim() === "0" || deptVal.toString().trim() === "select" || deptVal.toString().trim() === "") {
+            $('#ch_user1').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#ch_user1Error').addClass('show');
             isValid = false;
-        }
-        else {
-            $('#ch_user1').css('background-color', 'white');
-        }
-        if ($('#OfficeName').val().trim() === "") {
-            $('#OfficeName').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#OfficeName').css('background-color', 'white');
+            if (!firstInvalid) firstInvalid = $('#ch_user1');
+        } else {
+            $('#ch_user1').removeClass('is-invalid').css('background-color', 'white');
+            $('#ch_user1Error').removeClass('show');
         }
 
-        if ($('#OfficeAddress').val().trim() === "") {
-            $('#OfficeAddress').css('background-color', '#ff56564d');
+        // Validate Office Name
+        var officeNameVal = $('#OfficeName').val();
+        if (!officeNameVal || officeNameVal.trim() === "") {
+            $('#OfficeName').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#OfficeNameError').addClass('show');
             isValid = false;
+            if (!firstInvalid) firstInvalid = $('#OfficeName');
+        } else {
+            $('#OfficeName').removeClass('is-invalid').css('background-color', 'white');
+            $('#OfficeNameError').removeClass('show');
         }
-        else {
-            $('#OfficeAddress').css('background-color', 'white');
+
+        // Validate Office Address
+        var addrVal = $('#OfficeAddress').val();
+        if (!addrVal || addrVal.trim() === "") {
+            $('#OfficeAddress').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#OfficeAddressError').addClass('show');
+            isValid = false;
+            if (!firstInvalid) firstInvalid = $('#OfficeAddress');
+        } else {
+            $('#OfficeAddress').removeClass('is-invalid').css('background-color', 'white');
+            $('#OfficeAddressError').removeClass('show');
         }
+
+        if (firstInvalid) {
+            firstInvalid.focus();
+        }
+
         return isValid;
     }
 
 
     function clearTextBox() {
         $('#myModal').data({ backdrop: 'static', keyboard: false });
-        $('#ch_user1').css('background-color', 'white');
-        $('#ch_user1').val(0);
-        $('#OfficeName').css('background-color', 'white');
-        $('#OfficeNameLocal').css('background-color', 'white');
-        $('#OfficeAddress').css('background-color', 'white');
+        $('.is-invalid').removeClass('is-invalid');
+        $('.field-val-msg').removeClass('show');
+        $('#ch_user1').css('background-color', 'white').val(0);
+        $('#OfficeName').css('background-color', 'white').val("");
+        $('#OfficeNameLocal').css('background-color', 'white').val("");
+        $('#OfficeAddress').css('background-color', 'white').val("");
         $('#OfficeId').val("");
         $("#OfficeIdLabel").hide();
-        $('#OfficeName').val("");
-        $('#OfficeNameLocal').val("");
-        $('#OfficeAddress').val("");
         $('#btnUpdate').hide();
         $("#OfficeId").removeAttr("disabled", "disabled");
         $("#myModalLabel").html("Add Office Record");
         $('#btnSave').show();
+        $("#IsApex").prop("checked", false);
         $("#IsApex").val("");
 
     }

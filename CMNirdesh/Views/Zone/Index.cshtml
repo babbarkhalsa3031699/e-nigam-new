@@ -99,7 +99,7 @@
 
                 </div>
             </div>
-            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="coman_modal dispatch_modal addnew_modal modal zone-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -109,35 +109,39 @@
                         </div>
                         <div class="modal-body">
 
-
-
-                            @using (Ajax.BeginForm("Create", "Zone", null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "handleSuccess", OnFailure = "handleFailure" }))
+                            @using (Ajax.BeginForm("Create", "Zone", null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "handleSuccess", OnFailure = "handleFailure", OnBegin = "validate" }, new { id = "zoneForm", onsubmit = "return validate();" }))
                             {
                                 @Html.AntiForgeryToken()
                                 @Html.ValidationSummary(true)
-                                @Html.HiddenFor(model => model.ZoneID)
+                                @Html.HiddenFor(model => model.ZoneID, new { id = "ZoneID", Value = "0" })
                                 @Html.HiddenFor(model => model.Mode, new { id = "mode" })
 
-                                <div class="form-group">
-                                    @Html.Label("Zone Name")
-                                    @Html.EditorFor(model => model.ZoneName)
-                                    @Html.ValidationMessageFor(model => model.ZoneName)
+                                <!-- Section: Zone Information -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-map-marker"></i> Zone Information</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <label for="ZoneName" class="profile-info-name fotm_lbl">Zone Name:</label>
+                                            @Html.TextBoxFor(model => model.ZoneName, new { @class = "form-control", id = "ZoneName", placeholder = "Enter Zone Name" })
+                                            <span id="ZoneNameError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> Zone Name is required</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="ZoneNameLocal" class="profile-info-name fotm_lbl">Zone Name (Punjabi):</label>
+                                            @Html.TextBoxFor(model => model.ZoneNameLocal, new { @class = "form-control", id = "ZoneNameLocal", placeholder = "ਜ਼ੋਨ ਦਾ ਨਾਮ (ਪੰਜਾਬੀ)" })
+                                            <span id="ZoneNameLocalError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> Zone Name (Punjabi) is required</span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    @Html.Label("Zone Name(Punjabi)")
-                                    @Html.EditorFor(model => model.ZoneNameLocal)
-                                    @Html.ValidationMessageFor(model => model.ZoneNameLocal)
-                                </div>
-
-                                <div class="modal-footer" style="background-color:white;">
-                                    <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
-                                    <button type="submit" class="btn btn-primary" id="btnUpdate">Update</button>
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="btnSave"><i class="fa fa-check"></i> Save</button>
+                                    <button type="submit" class="btn btn-primary" id="btnUpdate" style="display:none;"><i class="fa fa-pencil-square-o"></i> Update</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                                 </div>
                             }
                         </div>
-                        <div id="validationErrors" style="color:red"></div>
+                        <div id="validationErrors" style="color:red; padding: 0 24px 12px 24px;"></div>
 
                     </div>
                 </div>
@@ -147,6 +151,331 @@
 </div>
 
 <style>
+    /* ==========================================================================
+       ZONE RECORD MODAL (SaaS Clean Modern Design)
+       ========================================================================== */
+
+    /* 1. Modal Reset & Container */
+    .zone-record-modal.addnew_modal {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .zone-record-modal.modal {
+        padding: 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Gurmukhi", "Raavi", sans-serif;
+    }
+
+    .zone-record-modal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 840px;
+        width: calc(100% - 2rem);
+        margin: 1.5rem auto;
+        min-height: calc(100% - 3rem);
+    }
+
+    .zone-record-modal .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Modal Header & Accent Bar */
+    .zone-record-modal .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .zone-record-modal .modal-header .modal-title {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .zone-record-modal .modal-header .modal-title::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .zone-record-modal .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .zone-record-modal .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* 3. Modal Body & Custom Scrollbar */
+    .zone-record-modal .modal-body {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #cbd5e1 transparent !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .zone-record-modal .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .zone-record-modal .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .zone-record-modal .modal-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .zone-record-modal .modal-body::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
+    /* 4. Form Section Cards */
+    .zone-record-modal .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .zone-record-modal .form-section-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .zone-record-modal .form-section-title i {
+        color: #2563eb;
+        font-size: 13px !important;
+    }
+
+    /* 5. 2-Column Responsive Layout */
+    .zone-record-modal .form-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-items: start;
+    }
+
+    @@media (max-width: 767px) {
+        .zone-record-modal .modal-dialog {
+            margin: 0.75rem auto;
+            width: calc(100% - 1.5rem);
+        }
+
+        .zone-record-modal .form-card-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .zone-record-modal .modal-footer {
+            padding: 12px 16px !important;
+        }
+
+        .zone-record-modal .modal-footer .btn {
+            flex: 1 1 auto;
+        }
+    }
+
+    .zone-record-modal .col-full {
+        grid-column: 1 / -1;
+    }
+
+    /* 6. Form Groups & Field Labels */
+    .zone-record-modal .form-group {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .zone-record-modal .fotm_lbl,
+    .zone-record-modal .profile-info-name.fotm_lbl,
+    .zone-record-modal label.fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: normal !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+        width: 100% !important;
+        text-align: left !important;
+        float: none !important;
+        padding-left: 0 !important;
+    }
+
+    /* 7. Inputs & Form Controls */
+    .zone-record-modal input[type="text"],
+    .zone-record-modal .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        line-height: normal !important;
+        color: #0f172a !important;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Validation Error Highlighting (Clean & Prominent) */
+    .zone-record-modal .form-control.is-invalid,
+    .zone-record-modal input[type="text"].is-invalid {
+        border: 1.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
+
+    .zone-record-modal .field-val-msg {
+        display: none;
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: #dc2626 !important;
+        margin-top: 5px !important;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .zone-record-modal .field-val-msg.show {
+        display: flex !important;
+    }
+
+    .zone-record-modal input[type="text"]:hover {
+        border-color: #94a3b8 !important;
+    }
+
+    .zone-record-modal input[type="text"]:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    .zone-record-modal .form-control::placeholder {
+        color: #64748b;
+        opacity: 0.7;
+    }
+
+    /* 8. Sticky Footer & Actions */
+    .zone-record-modal .modal-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .zone-record-modal button#btnSave,
+    .zone-record-modal button#btnUpdate {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 24px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .zone-record-modal button#btnSave[style*="display: none"],
+    .zone-record-modal button#btnSave[style*="display:none"],
+    .zone-record-modal button#btnUpdate[style*="display: none"],
+    .zone-record-modal button#btnUpdate[style*="display:none"] {
+        display: none !important;
+    }
+
+    .zone-record-modal button#btnSave:hover,
+    .zone-record-modal button#btnUpdate:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px);
+    }
+
+    .zone-record-modal button#btnSave:active,
+    .zone-record-modal button#btnUpdate:active {
+        transform: translateY(0);
+    }
+
+    .zone-record-modal .modal-footer .btn-secondary,
+    .zone-record-modal .modal-footer .btn-danger {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        padding: 8px 20px !important;
+        border-radius: 6px !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .zone-record-modal .modal-footer .btn-secondary:hover,
+    .zone-record-modal .modal-footer .btn-danger:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
 
 
     .inr_frm_dsgn {
@@ -276,19 +605,64 @@
 </style>
 
 <script>
-
-
     $(document).ready(function () {
         $('#example').DataTable({
         });
+
+        // Real-time clearing of validation highlights when user types
+        $('#ZoneName').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#ZoneNameError').removeClass('show');
+            }
+        });
+
+        $('#ZoneNameLocal').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#ZoneNameLocalError').removeClass('show');
+            }
+        });
     });
+
+    function validate() {
+        var isValid = true;
+        var firstInvalid = null;
+
+        var zoneName = $('#ZoneName').val();
+        if (!zoneName || zoneName.trim() === '') {
+            $('#ZoneName').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#ZoneNameError').addClass('show');
+            isValid = false;
+            if (!firstInvalid) firstInvalid = $('#ZoneName');
+        } else {
+            $('#ZoneName').removeClass('is-invalid').css('background-color', 'white');
+            $('#ZoneNameError').removeClass('show');
+        }
+
+        var zoneNameLocal = $('#ZoneNameLocal').val();
+        if (!zoneNameLocal || zoneNameLocal.trim() === '') {
+            $('#ZoneNameLocal').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#ZoneNameLocalError').addClass('show');
+            isValid = false;
+            if (!firstInvalid) firstInvalid = $('#ZoneNameLocal');
+        } else {
+            $('#ZoneNameLocal').removeClass('is-invalid').css('background-color', 'white');
+            $('#ZoneNameLocalError').removeClass('show');
+        }
+
+        if (firstInvalid) {
+            firstInvalid.focus();
+        }
+
+        return isValid;
+    }
 
     function handleSuccess(response) {
         if (response.success) {
             alert("Form submitted successfully!");
-             window.location.href =  "@Url.Action("Index", "Zone")";
+            window.location.href = "@Url.Action("Index", "Zone")";
         } else {
-
             var errorsHtml = "<ul>";
             $.each(response.errors, function (index, error) {
                 errorsHtml += "<li>" + error + "</li>";
@@ -301,15 +675,15 @@
     function handleFailure(response) {
         $("#validationErrors").html("An error occurred while processing your request.");
     }
+
     function AddNew() {
         clearTextBox();
         $('#myModal').modal('show');
         $("#mode").val('Add');
+        $("#ZoneID").val("0");
     }
 
-
-
-        var MyApp = {};
+    var MyApp = {};
     function DeleteDepartmentRecord(xyz) {
         MyApp = xyz;
         DeleteID();
@@ -324,13 +698,10 @@
             url: '@Url.Action("UpdateStatusZone", "Zone")' + '?ZoneId=' + i,
             success: function (result) {
                 alert("Updated Successfully");
-               // window.location.href =  "@Url.Action("Index", "Assembly")";
             }
         });
     }
 
-
- 
     function ToggleZoneStatus(checkbox) {
         var zoneId = $(checkbox).data("zoneid");
         var isActive = checkbox.checked ? 1 : 0;
@@ -338,7 +709,7 @@
         alert(isActive);
 
         $.ajax({
-            url: '@Url.Action("UpdateStatusZone", "Zone")', // ✅ MVC URL helper
+            url: '@Url.Action("UpdateStatusZone", "Zone")',
             type: 'POST',
             data: {
                 ZoneId: zoneId,
@@ -349,7 +720,7 @@
                     var msg = isActive === 1
                         ? "Zone activated successfully."
                         : "Zone deactivated successfully.";
-                    alert(msg); // You can replace with SweetAlert or toast later
+                    alert(msg);
                 } else {
                     alert("Error: " + response.message);
                 }
@@ -361,19 +732,8 @@
         });
     }
 
-
-
-
-
-
-
-
-
-
-
     function getbyID(ZoneID) {
-
-          clearTextBox();
+        clearTextBox();
         $("#myModalLabel").html("Update Zone Record");
         $("#btnUpdate").show();
         $("#btnSave").hide();
@@ -383,26 +743,28 @@
             contentType: "application/json;charset=utf-8",
             dataType: "json",
             success: function (data) {
-            var obj = JSON.parse(data);
-            var data = obj.Zoneslist[0];
-            $('#myModal').modal('show');
-            $("#mode").val('Edit');
-            $("#ZoneID").val(data.ZoneID);
-            $("#ZoneName").val(data.ZoneName);
-            $('#ZoneNameLocal').val(data.ZoneNameLocal);
-            $("#btnSave").hide();
-
+                var obj = JSON.parse(data);
+                var data = obj.Zoneslist[0];
+                $('#myModal').modal('show');
+                $("#mode").val('Edit');
+                $("#ZoneID").val(data.ZoneID);
+                $("#ZoneName").val(data.ZoneName);
+                $('#ZoneNameLocal').val(data.ZoneNameLocal);
+                $("#btnSave").hide();
             }
-            });
-            }
+        });
+    }
 
-            function clearTextBox() {
-            $('#ZoneName').val("");
-            $('#ZoneNameLocal').val("");
-            $("#btnSave").show();
-            $("#btnUpdate").hide();
-            $("#btnSave").show();
-            }
-
-
-            </script>
+    function clearTextBox() {
+        $('.is-invalid').removeClass('is-invalid');
+        $('.field-val-msg').removeClass('show');
+        $('#ZoneName').css('background-color', 'white').val("");
+        $('#ZoneNameLocal').css('background-color', 'white').val("");
+        $('#ZoneID').val("0");
+        $('#mode').val("Add");
+        $("#validationErrors").html("");
+        $("#myModalLabel").html("Add Zone Details");
+        $("#btnSave").show();
+        $("#btnUpdate").hide();
+    }
+</script>
