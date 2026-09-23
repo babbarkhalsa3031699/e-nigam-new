@@ -1,78 +1,349 @@
-﻿@model CMNirdesh.Models.PriorityProject
+@model CMNirdesh.Models.PriorityProject
 
 @{
     ViewBag.Title = "PriorityProjects";
     var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
 }
-<div class="row pb-3">
-    <div class="col-lg-6">
-        @using (Html.BeginForm("SaveProject", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "PriorityProjectSaveForm", enctype = "multipart/form-data" }))
-        {
-            <div class="row">
-                <div class="col-md-12">
-                    @if (@Model.mode != "Add")
-                    {
-                        <span style="font-weight: 500; font-size: 12pt; color: #707070;">
-                            Project ID: <span id="spnProjectid"> @Model.PromiseRefId </span>
-                        </span><br />
-                    }
-                    <span style="font-weight: 500; font-size: 12pt; color: #707070;">
-                        Project Name
-                    </span>
+
+<style>
+    .project-modal-container {
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .project-form-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 16px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .project-list-card-panel {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 16px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .panel-section-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-project-id {
+        display: inline-flex;
+        align-items: center;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        border-radius: 6px;
+        padding: 3px 8px;
+        font-size: 11.5px;
+        font-weight: 600;
+        font-family: monospace;
+    }
+
+    .project-textarea {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        font-size: 13px !important;
+        padding: 10px 12px !important;
+        min-height: 95px !important;
+        resize: vertical !important;
+        transition: all 0.2s ease !important;
+        background: #ffffff !important;
+        color: #1e293b !important;
+        line-height: 1.5 !important;
+    }
+
+    .project-textarea:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+        outline: none !important;
+    }
+
+    .btn-project-save {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        border: none !important;
+        color: #ffffff !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        padding: 6px 18px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+
+    .btn-project-save:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.35) !important;
+        color: #ffffff !important;
+    }
+
+    .btn-project-reset {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #64748b !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        padding: 6px 14px !important;
+        border-radius: 6px !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+
+    .btn-project-reset:hover {
+        background: #f1f5f9 !important;
+        color: #334155 !important;
+        border-color: #94a3b8 !important;
+    }
+
+    .project-search-wrapper {
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .project-search-wrapper .project-search-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .project-search-input {
+        padding-left: 28px !important;
+        height: 32px !important;
+        font-size: 12px !important;
+        border-radius: 6px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #f8fafc !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .project-search-input:focus {
+        background: #ffffff !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12) !important;
+    }
+
+    .project-list-scroll {
+        max-height: 240px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .project-list-scroll::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .project-list-scroll::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+
+    .project-list-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .project-list-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    .project-item-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-bottom: 6px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .project-item-card:hover {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        transform: translateX(2px);
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.08);
+    }
+
+    .badge-ref-id {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: #f1f5f9;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: monospace;
+        border: 1px solid #e2e8f0;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .project-item-card:hover .badge-ref-id {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+    }
+
+    .project-card-name {
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #1e293b;
+        line-height: 1.35;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .btn-edit-hint {
+        color: #94a3b8;
+        font-size: 11px;
+        transition: all 0.15s ease;
+        opacity: 0;
+        flex-shrink: 0;
+    }
+
+    .project-item-card:hover .btn-edit-hint {
+        color: #2563eb;
+        opacity: 1;
+    }
+
+    .badge-count-sm {
+        font-size: 11px;
+        font-weight: 600;
+        color: #475569;
+        background: #f1f5f9;
+        padding: 2px 8px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+</style>
+
+<div class="project-modal-container">
+    <div class="row g-3">
+        <!-- Left: Add/Update Form -->
+        <div class="col-md-6 mb-2">
+            <div class="project-form-card">
+                <div class="panel-section-title">
+                    <i class="fa fa-pencil text-primary"></i>
+                    <span>Project Information</span>
                 </div>
-                <div class="col-md-12 mt-2">
+
+                @using (Html.BeginForm("SaveProject", "PriorityProjects", FormMethod.Post, new { @class = "form-horizontal d-flex flex-column flex-grow-1", @role = "form", @id = "PriorityProjectSaveForm", enctype = "multipart/form-data" }))
+                {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(model => model.PromiseId, new { id = "PromiseId" })
                     @Html.HiddenFor(model => model.mode, new { id = "modeId" })
                     @Html.HiddenFor(model => model.DeptId)
-                    @Html.TextAreaFor(model => model.PromiseName, new { @placeholder = "Enter Project Name", @autocomplete = "off", @class = "width-100 form-control txt_with", @tabindex = "1", @id = "txtprojectName", @style = "min-height:100px !important;" })
 
-                    @Html.ValidationMessageFor(model => model.PromiseName)
+                    <div id="divProjectRef" class="mb-2" style="display: @(Model.mode != "Add" ? "block" : "none");">
+                        <span class="badge-project-id">
+                            <i class="fa fa-hashtag me-1"></i> ID: <span id="spnProjectid">@Model.PromiseRefId</span>
+                        </span>
+                    </div>
 
-                </div>
-            </div>
-            <div class="row mrgn_tp pt-3">
-                <div class="col-md-12">
-                    <div class="pull-right c_btn">
-                        @if (@Model.mode == "Add")
-                        {
-                            <button id="saveProject" onclick="saveproject(); return false;" class="btn btn-sm btn-success">
-                                <i class="ace-icon fa fa-floppy-o bigger-125"></i>Save
-                            </button>
-                        }
-                        else
-                        {
-                            <button id="saveProject" onclick="saveproject(); return false;" class="btn btn-sm btn-success">
-                                <i class="ace-icon fa fa-floppy-o bigger-125"></i>Update
-                            </button>
-                        }
-                        <button type="reset" id="btnreset" class="btn btn-sm btn-danger">
-                            <i class="ace-icon fa fa-times bigger-125"></i>
-                            Reset
+                    <div class="mb-3 flex-grow-1">
+                        <label class="form-label text-secondary fw-semibold mb-1" style="font-size: 12px;">
+                            Project Name <span class="text-danger">*</span>
+                        </label>
+                        @Html.TextAreaFor(model => model.PromiseName, new { 
+                            @placeholder = "Enter project title / name (English or Punjabi)...", 
+                            @autocomplete = "off", 
+                            @class = "form-control project-textarea gurmukhi-text", 
+                            @tabindex = "1", 
+                            @id = "txtprojectName"
+                        })
+                        @Html.ValidationMessageFor(model => model.PromiseName)
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-end gap-2 mt-auto pt-2 border-top">
+                        <button type="button" id="btnreset" onclick="resetProjectForm();" class="btn btn-project-reset">
+                            <i class="fa fa-undo"></i> Reset
+                        </button>
+                        <button type="button" id="saveProject" onclick="saveproject(); return false;" class="btn btn-project-save">
+                            <i class="fa fa-check-circle"></i>
+                            <span id="saveProjectText">@(Model.mode == "Add" ? "Save Project" : "Update Project")</span>
                         </button>
                     </div>
+                }
+            </div>
+        </div>
+
+        <!-- Right: Master Projects List -->
+        <div class="col-md-6 mb-2">
+            <div class="project-list-card-panel">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="panel-section-title mb-0">
+                        <i class="fa fa-briefcase text-primary"></i>
+                        <span>Configured Projects</span>
+                    </div>
+                    <span id="projectListBadgeCount" class="badge-count-sm">0 Total</span>
+                </div>
+
+                <div class="project-search-wrapper">
+                    <i class="fa fa-search project-search-icon"></i>
+                    <input type="text" id="txtSearchProject" class="form-control project-search-input" placeholder="Filter projects by name or ID..." onkeyup="filterProjectCards();" />
+                </div>
+
+                <div class="project-list-scroll flex-grow-1">
+                    <table id="tableProjects" class="table table-borderless m-0 w-100" style="vertical-align:top">
+                        <tbody id="tbodyProjectsList">
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        }
-    </div>
-    <div class="col-lg-6">
-        <div class="col-md-12">
-            <span style="font-weight: 500; font-size: 12pt; color: #707070;">
-                Projects List
-            </span>
-        </div>
-        <div class="col-md-12" style="height:350px;overflow:auto">
-            @if (Model != null)
-            {
-                <table id="tableProjects" class="table table2" style="vertical-align:top">
-                    <tbody id="tbodyProjectsList">
-                    </tbody>
-                </table>
-            }
         </div>
     </div>
 </div>
+
 <script>
+    function filterProjectCards() {
+        var query = ($('#txtSearchProject').val() || '').toLowerCase().trim();
+        $('.project-row-item').each(function () {
+            var searchData = $(this).attr('data-search') || '';
+            if (!query || searchData.indexOf(query) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+    function resetProjectForm() {
+        $('#txtprojectName').val('');
+        $('#modeId').val('Add');
+        $('#PromiseId').val('0');
+        $('#divProjectRef').hide();
+        $('#spnProjectid').text('');
+        $("#projectSaveHead").text("New Project");
+        $("#saveProjectText").text("Save Project");
+    }
+
     function getProjectsList(ProjectId) {
         $("#loader-wrapper").show();
         $('#tbodyProjectsList').html('');
@@ -86,26 +357,35 @@
                 $('#loader-wrapper').show();
             },
             success: function (data) {
-                if (data.length > 0) {
+                if (data && data.length > 0) {
+                    $('#projectListBadgeCount').text(data.length + ' Total');
                     $.each(data, function (i, item) {
-                        //var onclickString = 'DeleteDeptBtn("' + deptId + '"); return false;';
-                        html = "<tr role='row'><td>" +
-                            "<a class='loader btn-link' title='Click to Update Project Name' onclick='getProjectDetail(" + item.Value + "); return false;'>" + item.Text + "</a>" +
-                            "</td></tr > ";
-                        $('#tbodyProjectsList').append(html);
+                        var rawText = item.Text || '';
+                        var parts = rawText.split(')');
+                        var refId = parts.length > 1 ? parts[0].replace('(', '').trim() : '';
+                        var name = parts.length > 1 ? parts.slice(1).join(')').trim() : rawText;
+
+                        html += "<tr role='row' class='project-row-item' data-search='" + rawText.toLowerCase().replace(/'/g, "") + "'>" +
+                            "<td class='p-0 pb-1 border-0'>" +
+                                "<div class='project-item-card' onclick='getProjectDetail(" + item.Value + "); return false;' title='Click to edit'>" +
+                                    "<div class='d-flex align-items-center gap-2 overflow-hidden' style='min-width:0;'>" +
+                                        (refId ? "<span class='badge-ref-id'>" + refId + "</span>" : "") +
+                                        "<span class='project-card-name gurmukhi-text'>" + name + "</span>" +
+                                    "</div>" +
+                                    "<span class='btn-edit-hint'><i class='fa fa-pencil'></i></span>" +
+                                "</div>" +
+                            "</td></tr>";
                     });
+                    $('#tbodyProjectsList').append(html);
                 }
                 else {
-                    html = "<tr role='row'><td colspan='2'>" +
-                        "Projects Not Available" +
-                        "</td>'</tr > ";
+                    $('#projectListBadgeCount').text('0 Total');
+                    html = "<tr><td class='text-center py-4 text-muted border-0'><i class='fa fa-folder-open-o fa-2x d-block mb-1 opacity-50'></i>No Projects Available</td></tr>";
                     $('#tbodyProjectsList').append(html);
                 }
                 $("#loader-wrapper").hide();
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-                alert(thrownError);
                 $("#loader-wrapper").hide();
             },
             complete: function (results) {
@@ -113,81 +393,88 @@
             }
         });
     }
+
     function getProjectDetail(projectid) {
         $("#loader-wrapper").show();
         $.ajax({
-        type: "GET",
-        url: '@Url.Action("getProjectDetails", "PriorityProjects")',
-        datatype: "Json",
-        contentType: "application/json; charset=utf-8",
-        data: { projectid: projectid },
-        success: function (response) {
-            if (response != null) {
-                $('#txtprojectName').val(response[0].PromiseName);
-                $('#modeId').val('Edit');
-                $('#PromiseId').val(projectid);
-                $('#spnProjectid').text(response[0].PromiseRefId);
+            type: "GET",
+            url: '@Url.Action("getProjectDetails", "PriorityProjects")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { projectid: projectid },
+            success: function (response) {
+                if (response != null && response.length > 0) {
+                    $('#txtprojectName').val(response[0].PromiseName);
+                    $('#modeId').val('Edit');
+                    $('#PromiseId').val(projectid);
+                    $('#spnProjectid').text(response[0].PromiseRefId);
+                    $('#divProjectRef').show();
+                    $("#loader-wrapper").hide();
+                    $("#projectSaveHead").text("Update Project");
+                    $("#saveProjectText").text("Update Project");
+                    $('#txtprojectName').focus();
+                }
                 $("#loader-wrapper").hide();
-                $("#projectSaveHead").text("Update Project");
-                $("#saveProject").text("Update");
-            }
-            $("#loader-wrapper").hide();
-        },
+            },
             error: function (error) {
                 $("#loader-wrapper").hide();
-        }
+            }
         });
     }
+
     function saveproject() {
         try {
-            if ($("#txtprojectName").val() == "") {
+            var nameVal = $.trim($("#txtprojectName").val());
+            if (nameVal == "") {
                 alert("Please Enter Project Name");
+                $("#txtprojectName").focus();
                 return false;
             }
-            else
-            {
-            var projectid = $('#PromiseId').val();
-            if (confirm("Are you sure you want to save ?")) {
-                $("#loader-wrapper").show();
-                var action = $("#PriorityProjectSaveForm").attr("action");
-                if ($("#PriorityProjectSaveForm").attr("enctype") == "multipart/form-data") {
-                    var dataString = new FormData($("#PriorityProjectSaveForm").get(0));
-                    processData = false;
+            else {
+                var projectid = $('#PromiseId').val();
+                if (confirm("Are you sure you want to save ?")) {
+                    $("#loader-wrapper").show();
+                    var action = $("#PriorityProjectSaveForm").attr("action");
+                    var dataString;
+                    var processData = true;
+                    if ($("#PriorityProjectSaveForm").attr("enctype") == "multipart/form-data") {
+                        dataString = new FormData($("#PriorityProjectSaveForm").get(0));
+                        processData = false;
+                    } else {
+                        dataString = $("#PriorityProjectSaveForm").serialize();
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: action,
+                        async: true,
+                        data: dataString,
+                        dataType: "json",
+                        contentType: processData ? 'application/x-www-form-urlencoded; charset=UTF-8' : false,
+                        processData: processData,
+                        success: function (data) {
+                            $("#loader-wrapper").hide();
+                            if (data == "1") {
+                                alert("Project saved successfully");
+                                resetProjectForm();
+                                getProjectsList(projectid);
+                                return false;
+                            }
+                            else {
+                                alert("Some error occurred, please try again");
+                                return false;
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $("#loader-wrapper").hide();
+                            alert("Some error occurred, please try again");
+                        }
+                    });
                 }
-                $.ajax({
-                    type: "POST",
-                    url: action,
-                    async: true,
-                    data: dataString,
-                    dataType: "json", //change to your own, else read my note above on enabling the JsonValueProviderFactory in MVC
-                    contentType: false,
-                    processData: false,
-                    success: function (data) {
-                        $("#loader-wrapper").hide();
-                        if (data == "1") {
-                            alert("Project added successfully");
-                            $("#txtprojectName").val('')
-                            $("#saveProject").text("Save");
-                            $("#projectSaveHead").text("New Project");
-                            getProjectsList(projectid);
-                            return false;
-                        }
-                        else {
-                            alert("Some error occurred,please try again");
-                            return false;
-                            e.preventDefault();
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        $("#loader-wrapper").hide();
-                        alert("Some error occurred,please try again2");
-                    },
-                });
-            }
             }
         }
         catch (ex) {
-            alert("Some error occurred,please try again3");
+            $("#loader-wrapper").hide();
+            alert("Some error occurred, please try again");
         }
     }
 </script>

@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.LstDashboard
+@model CMNirdesh.Models.LstDashboard
 
 @{
     int Totaldispatch = Model._LstDashboard.Sum(x => x.Count);
@@ -18,119 +18,41 @@
     <div id="main-content">
         <div class="main-content">
 
-            <div class="col-md-12 col-lg-12 col-xl-12">
-                <div>
-                    <h4 id="lblmenuname">Orders >> Agenda</h4>
-                    <hr />
+            <div class="agenda-page-container">
+                <!-- Compact Page Header (Matches Proceedings >> Proceeding Resolutions) -->
+                <div class="col-12 p-0 mb-2">
+                    <h4 id="lblmenuname" class="compact-breadcrumb-bar">Orders <span class="crumb-sep">&gt;&gt;</span> Agenda</h4>
                 </div>
 
-
-            </div>
-            <div class="col-md-12 col-xl-12 col-lg-12 p-0 no-right-margin" id="DispatchTableDiv">
-
-                <div class="col-md-12 col-xl-12 col-lg-12 row p-3 no-right-margin filter-part position-relative ">
-                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                        <div>
-                            <label class="form fc"><b>Department</b></label>
-                            <select class="form-control" id="DispatchDepartment" name="DispatchDepartment"></select>
+                <!-- Compact Filter Toolbar -->
+                <div class="agenda-filter-bar mb-2" id="filter-part">
+                    <div class="d-flex flex-wrap align-items-center gap-3 py-2 px-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="filter-label-compact mb-0 text-nowrap" for="DispatchDepartment">
+                                <i class="fa fa-filter text-primary me-1"></i> Department:
+                            </label>
+                            <select class="form-select form-control custom-select-compact" id="DispatchDepartment" name="DispatchDepartment" style="min-width: 220px; max-width: 320px;">
+                                <option selected="selected" value="">-- select --</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-compact-search" id="changebutton" onclick="changeD();">
+                                <i class="fa fa-search me-1"></i> Search
+                            </button>
+                            <button class="btn btn-compact-reset" id="resetbutton" style="display:none;" onclick="ResetD();">
+                                <i class="fa fa-refresh me-1"></i> Reset
+                            </button>
+                            <button class="btn btn-compact-clear" id="clearbutton" style="display:none;" onclick="Clear();">
+                                <i class="fa fa-times me-1"></i> Clear
+                            </button>
                         </div>
                     </div>
-
-                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                    <div>
-                        <label class="form fc"> <b>Office</b></label><br />
-                        <select style="min-width: 30%;" class="form-control" id="DispatchoffId" name="DispatchoffId"></select>
-                    </div>
-                </div>*@
-
-
-
-                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                    <div>
-                        <label class="form fc"> <b>Reference Type</b></label>
-                        <select class="form-control" id="DispatchDocument" name="DispatchDocument"></select>
-                    </div>
-                </div>*@
-
-                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                    <div>
-                        <label class="form fc"> <b>Status</b></label>
-                        <select class="form-control" id="StatusListMlaD" name="StatusListMlaD"></select>
-                    </div>
-                </div>*@
-
-                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                    <div>
-                        <label class="form fc"> <b>Priority</b></label>
-                        <select class="form-control" name="DispatchPriority" id="DispatchPriority">
-                            <option value="" selected>-- Select --</option>
-                            <option value="1">High</option>
-                            <option value="2">Normal</option>
-                            <option value="3">Low</option>
-                        </select>
-                    </div>
-                </div>*@
-
-                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                    <div>
-                        <label class="form fc"> <b>Term</b></label>
-                        <select class="form-control" name="DispatchTerm" id="DispatchTerm">
-                            <option value="" selected>-- Select --</option>
-                            <option value="1">Short</option>
-                            <option value="2">Medium</option>
-                            <option value="3">Long</option>
-                        </select>
-                    </div>
-                </div>*@
-
-                    @*<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                    <div>
-                        <label class="form fc"> <b>Last Action Since</b></label><br />
-                        <select class="form-control" name="sincefilterdispatch" id="sincefilterdispatch">
-                            <option value="" selected="selected" onclick="ResetSinceDiary();">-- select --</option>
-                            <option value="1week">1 Week</option>
-                            <option value="2week">2 Week</option>
-                            <option value="1month">1 Months</option>
-                            <option value="3month">3 Months</option>
-                            <option value="6month">6 Months</option>
-                            <option value="year">1 Year</option>
-                            <option value="morethanyear">1 Year +</option>
-                        </select>
-                    </div>
-                </div>*@
-
-                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
-                        <div class="text-start d-flex gap-3" style="margin-top:27px;">
-                            <button class="btn btn-sm btn-primary" id="changebutton" onclick="changeD();"> Search</button>
-                            <button class="btn btn-sm btn-success" id="resetbutton" style="display:none;" onclick="ResetD();"> Reset</button>
-                            <button class="btn btn-sm btn-danger" id="clearbutton" style="display:none;" onclick="Clear();"> Clear</button>
-                        </div>
-                    </div>
-
                 </div>
 
-                <div class="col-md-12 col-xl-12 cl-lg-12 row" style="margin-top:27px;">
-                    <div class="col-md-1 col-xl-1 col-lg-1">
-
-                    </div>
-                    <div class="col-md-6 col-xl-6 col-lg-6 pull-right">
-                        <div class="pull-right" style="display:none">
-
-                            <input type="radio" id="status" name="radio_list" value="Status" checked="checked" onclick="lisfunction();">
-                            <label for="status"><b>Meeting Date-Status Summary</b></label>&nbsp;&nbsp;
-                            @*<input type="radio" id="list" name="radio_list" value="List" onclick="lisfunction();">
-                        <label for="list"><b>List</b></label>
-                        <input type="radio" id="type" name="radio_list" value="Type" onclick="lisfunction();">
-                        <label for="type"><b>Type-Status Summary</b></label>*@
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-2 col-xl-2 col-lg-2 pull-left">
-
-                    </div>
-
-
+                <!-- Hidden Controls (Preserved for compatibility) -->
+                <div style="display:none;">
+                    <input type="radio" id="status" name="radio_list" value="Status" checked="checked" onclick="lisfunction();">
+                    <label for="status">Meeting Date-Status Summary</label>
                 </div>
 
                 <div class="col-md-12 col-xl-12 col-lg-12 row" id="listdiv" style="display:none;">
@@ -157,44 +79,25 @@
                     </div>
                 </div>
 
-                @*<div class="col-md-12 col-xl-12 cl-lg-12  row" style="margin-top:20px;">
-
-                <div class="col-md-12 col-xl-12 col-lg-12 mt-3">
-                    <div class="table-switch">
-                        <div>
-                            <input type="radio" id="status" name="radio_list" value="NoStatus" checked="checked" onclick="showstatus();">
-                            <label id="lblstatus" for="status"><b>List</b></label>&nbsp;&nbsp;
+                <!-- Compact Table Card Container -->
+                <div class="col-md-12 col-lg-12 col-xl-12 p-0 mt-1" id="statusdiv">
+                    <div class="agenda-table-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle agenda-modern-table" id="MeetingTable" aria-describedby="sample-table-3_info" style="width:100%">
+                                <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                                </tbody>
+                            </table>
                         </div>
-                        <div>
-                            <input type="radio" id="Office" name="radio_list" value="YesStatus" onclick="showstatus();">
-                            <label id="lbloffice" for="office"><b>List with Status</b></label>&nbsp;&nbsp;
-                        </div>
-
                     </div>
-
                 </div>
 
-            </div>*@
-
-
-                <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
-                    <table class="table table-bordered " id="MeetingTable" aria-describedby="sample-table-3_info">
-                        <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
-                        </tbody>
-                    </table>
-
-                </div>
-
-                <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="typediv" style="margin-top: 15px;">
+                <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="typediv" style="margin-top: 15px; display:none;">
                     <table class="table table-bordered" id="Types" aria-describedby="sample-table-3_info">
-                        <thead>
-
-                        </thead>
-                        <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyTypediv">
-                        </tbody>
+                        <thead></thead>
+                        <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyTypediv"></tbody>
                     </table>
-
                 </div>
+            </div>
 
 
             </div>
@@ -289,39 +192,44 @@
             </div>
 
             <!-- Bootstrap Modal -->
-            <!-- Modal -->
+            <!-- Bootstrap Modals for Online Circulation -->
             <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title section-title">📇 Online Circulation (Agenda)</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal-content border-0 shadow-lg">
+                        <div class="modal-header d-flex justify-content-between align-items-center">
+                            <h5 class="modal-title section-title m-0"><i class="fa fa-commenting text-success me-2"></i> Online Circulation — SMS Broadcast</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body p-3">
                             <input type="hidden" id="hdnAgendaIdSMS"/>
                             <input type="hidden" id="hdAgendaPdfPathSMS"/>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5>📇 Contact List</h5>
-                                <button type="button" id="btnSMS" class="btn btn-success float-end">📤 SEND SMS</button>
-                                <button type="button" class="btn btn-success float-end" onclick="addManualRow()">
-                                    ➕ Add
-                                </button>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0 text-secondary"><i class="fa fa-address-book-o me-1"></i> Contact Directory</h6>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addManualRow()">
+                                        <i class="fa fa-plus me-1"></i> Add Contact
+                                    </button>
+                                    <button type="button" id="btnSMS" class="btn btn-sm btn-success px-3">
+                                        <i class="fa fa-paper-plane me-1"></i> SEND SMS
+                                    </button>
+                                </div>
                             </div>
-                            <table class="table table-bordered table-hover shadow-sm bg-white rounded" id="contactTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Designation</th>
-                                        <th>Mobile No.</th>
-                                        <th>Email</th>
-                                        <th>Select</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="contactBody">
-                                    <!-- JS will populate rows here -->
-                                </tbody>
-                            </table>
-
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover shadow-sm bg-white rounded" id="contactTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Designation</th>
+                                            <th>Mobile No.</th>
+                                            <th>Email</th>
+                                            <th style="width:100px;">Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="contactBody">
+                                        <!-- JS will populate rows here -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -329,36 +237,41 @@
 
             <div class="modal fade" id="contactModalEmail" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title section-title">📇 Online Circulation (Agenda) </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal-content border-0 shadow-lg">
+                        <div class="modal-header d-flex justify-content-between align-items-center">
+                            <h5 class="modal-title section-title m-0"><i class="fa fa-envelope text-primary me-2"></i> Online Circulation — Email Broadcast</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body p-3">
                             <input type="hidden" id="hdnAgendaIdEmail"/>
                             <input type="hidden" id="hdAgendaPdfPathEmail" />
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5>📇 Contact List</h5>
-                                <button type="button" id="btnEmail" class="btn btn-success float-end">📤 SEND EMAIL</button>
-                                <button type="button" class="btn btn-success float-end" onclick="addManualRowEmail()">
-                                    ➕ Add
-                                </button>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0 text-secondary"><i class="fa fa-address-book-o me-1"></i> Contact Directory</h6>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addManualRowEmail()">
+                                        <i class="fa fa-plus me-1"></i> Add Contact
+                                    </button>
+                                    <button type="button" id="btnEmail" class="btn btn-sm btn-primary px-3">
+                                        <i class="fa fa-paper-plane me-1"></i> SEND EMAIL
+                                    </button>
+                                </div>
                             </div>
-                            <table class="table table-bordered table-hover shadow-sm bg-white rounded" id="contactTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Designation</th>
-                                        <th>Mobile No.</th>
-                                        <th>Email</th>
-                                        <th>Select</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="contactBodyEmail">
-                                    <!-- JS will populate rows here -->
-                                </tbody>
-                            </table>
-
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover shadow-sm bg-white rounded" id="contactTableEmail">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Designation</th>
+                                            <th>Mobile No.</th>
+                                            <th>Email</th>
+                                            <th style="width:100px;">Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="contactBodyEmail">
+                                        <!-- JS will populate rows here -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -444,6 +357,7 @@
     <script src="~/Scripts/datatables/jszip.min.js"></script>
     <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
     <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts-punjabi.js"></script>
     <script src="~/Scripts/datatables/buttons.print.min.js"></script>
     <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
 
@@ -1017,105 +931,296 @@
 
     }
 
-        function GetDataForDispatchStatus() {
-           // alert(1);
-      //  $('#DocumentTypeDIdHdn').val(type);
+        function initializeMeetingTable() {
+            if ($.fn.DataTable.isDataTable('#MeetingTable')) {
+                $('#MeetingTable').DataTable().destroy();
+            }
 
-        var status = '10';
-        var deptid = '';
-        var officeid = '';
-        var term = '';
-        var priority = '';
-        var type = '20';
+            var exportFormatting = {
+                header: function (data, colIdx) {
+                    if (!data) return '';
+                    return $('<div>').html(data.toString().replace(/<br\s*[\/]?>/gi, ' ')).text().trim();
+                },
+                body: function (data, rowIdx, colIdx) {
+                    if (!data) return '-';
+                    var text = data.toString()
+                        .replace(/<br\s*[\/]?>/gi, '\n')
+                        .replace(/<\/div>/gi, '\n')
+                        .replace(/<\/p>/gi, '\n');
+                    var clean = $('<div>').html(text).text().trim();
 
+                    // Meeting Date (Column 2) - clean newline between date and time
+                    if (colIdx === 2) {
+                        return clean.replace(/\s+(\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM)?)/i, '\n$1');
+                    }
+                    // Proposals (Column 4)
+                    if (colIdx === 4) {
+                        return clean || '-';
+                    }
+                    // Agenda PDF (Column 5)
+                    if (colIdx === 5) {
+                        return clean.indexOf('PDF') !== -1 ? 'PDF' : '-';
+                    }
+                    // Covering Letters (Column 6)
+                    if (colIdx === 6) {
+                        return clean || '-';
+                    }
+                    // Online Circulation (Column 7)
+                    if (colIdx === 7) {
+                        if (clean.indexOf('SMS') !== -1 && clean.indexOf('Email') !== -1) return 'SMS / Email';
+                        if (clean.indexOf('SMS') !== -1) return 'SMS';
+                        if (clean.indexOf('Email') !== -1) return 'Email';
+                        return '-';
+                    }
+                    return clean || '-';
+                }
+            };
 
+            $("#MeetingTable").DataTable({
+                "bLengthChange": false,
+                "pageLength": 10,
+                dom: '<"dt-toolbar-modern d-flex flex-wrap align-items-center justify-content-between mb-2"<"dt-buttons-slot"B><"dt-search-slot"f>>rt<"dt-footer-modern d-flex flex-wrap align-items-center justify-content-between mt-2"<"dt-info-slot"i><"dt-paging-slot"p>>',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o me-1"></i> Excel',
+                        className: 'dt-btn-action dt-btn-excel',
+                        title: 'Scheduled_Meetings_and_Agendas',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7],
+                            format: exportFormatting
+                        }
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fa fa-file-text-o me-1"></i> CSV',
+                        className: 'dt-btn-action dt-btn-csv',
+                        title: 'Scheduled_Meetings_and_Agendas',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7],
+                            format: exportFormatting
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o me-1"></i> PDF',
+                        className: 'dt-btn-action dt-btn-pdf',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        title: null,
+                        filename: 'Scheduled_Meetings_and_Agendas',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7],
+                            format: exportFormatting
+                        },
+                        customize: function (doc) {
+                            try {
+                                // Register Punjabi font Raavi from vfs-fonts-punjabi.js
+                                var selectedFont = null;
+                                var pdfObj = window.pdfMake || (typeof pdfMake !== 'undefined' ? pdfMake : null);
+                                if (pdfObj && pdfObj.vfs && pdfObj.vfs['Raavi-Regular.ttf']) {
+                                    pdfObj.fonts = pdfObj.fonts || {};
+                                    pdfObj.fonts.Raavi = {
+                                        normal: 'Raavi-Regular.ttf',
+                                        bold: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf',
+                                        italics: 'Raavi-Regular.ttf',
+                                        bolditalics: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf'
+                                    };
+                                    selectedFont = 'Raavi';
+                                }
 
-        $.ajax({
-            type: "GET",
-              url: '@Url.Action("GetDataForDiaryDashboardStatus", "Agenda")',
-            datatype: "Json",
-                contentType: "application/json; charset=utf-8",
-            data: { DocumentType: type, status: status, deptid: deptid, officeid: officeid, term: term, priority: priority },
-            success: function (result) {
+                                doc.defaultStyle = doc.defaultStyle || {};
+                                if (selectedFont) {
+                                    doc.defaultStyle.font = selectedFont;
+                                }
+                                doc.defaultStyle.fontSize = 8;
+                                doc.pageMargins = [14, 16, 14, 16];
 
+                                // Add a clean heading above the table
+                                doc.content = doc.content || [];
+                                doc.content.unshift({
+                                    text: 'Orders >> Agenda — Scheduled Meetings & Agendas',
+                                    fontSize: 12.5,
+                                    bold: true,
+                                    color: '#1e3a8a',
+                                    margin: [0, 0, 0, 8],
+                                    font: selectedFont || undefined
+                                });
 
-                if (result.length > 0) {
+                                // Find the table in doc.content
+                                var tableNode = null;
+                                for (var i = 0; i < doc.content.length; i++) {
+                                    if (doc.content[i] && doc.content[i].table) {
+                                        tableNode = doc.content[i];
+                                        break;
+                                    }
+                                }
 
-                    $("#MeetingTable").html(result);
-                    $("#loader-wrapper").hide();
-                    $("#MeetingTable").DataTable({
-                        "bLengthChange": false,
-                        dom: 'Bfrtip',
-                        buttons: [
-                            'excelHtml5',
-                            'csvHtml5',
-                            'pdfHtml5'
-                        ],
-                        //columnDefs: [{ type: 'date', 'targets': [0] }],
-                        columnDefs: [
-                            {
-                                target: 0,
-                                visible: false,
-                                searchable: false,
+                                if (tableNode && tableNode.table && tableNode.table.body && tableNode.table.body.length > 0) {
+                                    var table = tableNode.table;
+                                    table.headerRows = 1;
+                                    table.dontBreakRows = true;
+
+                                    var colCount = table.body[0].length;
+                                    if (colCount === 8) {
+                                        table.widths = [75, 50, 85, '*', 45, 45, 60, 70];
+                                    } else if (colCount === 7) {
+                                        table.widths = [80, 55, 90, '*', 50, 50, 65];
+                                    } else {
+                                        var widths = [];
+                                        for (var j = 0; j < colCount; j++) {
+                                            if (j === 3) widths.push('*');
+                                            else widths.push('auto');
+                                        }
+                                        table.widths = widths;
+                                    }
+
+                                    for (var r = 0; r < table.body.length; r++) {
+                                        var row = table.body[r];
+                                        for (var c = 0; c < row.length; c++) {
+                                            var cell = row[c];
+                                            if (typeof cell !== 'object' || cell === null) {
+                                                cell = { text: String(cell || '') };
+                                                row[c] = cell;
+                                            }
+                                            if (selectedFont) {
+                                                cell.font = selectedFont;
+                                            }
+
+                                            if (r === 0) {
+                                                cell.fillColor = '#1e3a8a';
+                                                cell.color = '#ffffff';
+                                                cell.bold = true;
+                                                cell.fontSize = 8.5;
+                                                cell.alignment = 'center';
+                                            } else {
+                                                cell.fontSize = 7.5;
+                                                cell.color = '#1e293b';
+                                                cell.fillColor = (r % 2 === 0) ? '#f8fafc' : '#ffffff';
+
+                                                // Department and Meeting Title (Punjabi text) left aligned
+                                                if (c === 0 || c === 3) {
+                                                    cell.alignment = 'left';
+                                                } else {
+                                                    cell.alignment = 'center';
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    tableNode.layout = {
+                                        hLineWidth: function (idx, node) {
+                                            return (idx === 0 || idx === 1 || idx === node.table.body.length) ? 0.8 : 0.4;
+                                        },
+                                        vLineWidth: function () { return 0.4; },
+                                        hLineColor: function (idx, node) {
+                                            return (idx === 0 || idx === 1 || idx === node.table.body.length) ? '#1e3a8a' : '#cbd5e1';
+                                        },
+                                        vLineColor: function () { return '#cbd5e1'; },
+                                        paddingLeft: function () { return 5; },
+                                        paddingRight: function () { return 5; },
+                                        paddingTop: function (idx) { return idx === 0 ? 5 : 4; },
+                                        paddingBottom: function (idx) { return idx === 0 ? 5 : 4; }
+                                    };
+                                }
+
+                                doc.footer = function (currentPage, pageCount) {
+                                    return {
+                                        columns: [
+                                            {
+                                                text: 'Printed on: ' + new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString(),
+                                                alignment: 'left',
+                                                fontSize: 7,
+                                                color: '#64748b',
+                                                margin: [14, 0, 0, 0]
+                                            },
+                                            {
+                                                text: 'Page ' + currentPage.toString() + ' of ' + pageCount,
+                                                alignment: 'right',
+                                                fontSize: 7,
+                                                color: '#64748b',
+                                                margin: [0, 0, 14, 0]
+                                            }
+                                        ],
+                                        font: selectedFont || undefined
+                                    };
+                                };
+                            } catch (err) {
+                                console.warn('PDF export customization error: ', err);
                             }
-                        ],
-                        order: [[0, 'desc']]
-                    });
-                    $("#MeetingTable").removeClass("dataTable");
+                        }
+                    }
+                ],
+                order: []
+            });
+            $("#MeetingTable").removeClass("dataTable");
+        }
 
-                }
-                else {
-                    $("#MeetingTable").DataTable();
-                    $("#MeetingTable").html("No Data Found");
-                    $("#loader-wrapper").hide();
-                }
-            },
-            error: function (result) {
-                $("#loader-wrapper").hide();
-            }
+        function GetDataForDispatchStatus() {
+            var status = '10';
+            var deptid = '';
+            var officeid = '';
+            var term = '';
+            var priority = '';
+            var type = '20';
 
-        });
-        showdepartmentD();
-        DispatchDocument();
-    }
+            $("#loader-wrapper").show();
 
-    function GetDataForDispatchStatusN() {
-
-        var status = '10';
-        var deptid = $("#DispatchDepartment").val();
-        var officeid = $("#DispatchoffId").val();
-        var status = statusvalueD();
-        var term = $("#DispatchTerm").val();
-        var priority = $("#DispatchPriority").val();
-        var type = $("#DispatchDocument").val();
-        var since = $("#sincefilterhdndispatch").val();
-
-        //alert(deptid);
-
-        $.ajax({
-            type: "GET",
-              url: '@Url.Action("GetDataForDiaryDashboardStatus", "Agenda")',
-            datatype: "Json",
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDataForDiaryDashboardStatus", "Agenda")',
+                datatype: "Json",
                 contentType: "application/json; charset=utf-8",
-            data: { DocumentType: type, status: status, deptid: deptid,since:since, officeid: officeid, term: term, priority: priority },
-            success: function (result) {
-                if (result.length > 0) {
-                    $("#MeetingTable").html(result);
+                data: { DocumentType: type, status: status, deptid: deptid, officeid: officeid, term: term, priority: priority },
+                success: function (result) {
                     $("#loader-wrapper").hide();
-                    $("#MeetingTable").dataTable();
-                    $("#MeetingTable").removeClass("dataTable");
-                }
-                else {
-                    $("#MeetingTable").html("No Data Found");
-                    $("#MeetingTable").DataTable();
+                    if (result && result.length > 0) {
+                        $("#MeetingTable").html(result);
+                        initializeMeetingTable();
+                    }
+                    else {
+                        $("#MeetingTable").html("<tbody><tr><td colspan='8' class='text-center p-4 text-muted'><i class='fa fa-folder-open-o fa-2x mb-2 d-block'></i>No Agenda Records Found</td></tr></tbody>");
+                    }
+                },
+                error: function (result) {
                     $("#loader-wrapper").hide();
                 }
-            },
-            error: function (result) {
-                $("#loader-wrapper").hide();
-            }
+            });
+            showdepartmentD();
+            DispatchDocument();
+        }
 
-        });
+        function GetDataForDispatchStatusN() {
+            var deptid = $("#DispatchDepartment").val();
+            var officeid = $("#DispatchoffId").val();
+            var status = statusvalueD();
+            var term = $("#DispatchTerm").val();
+            var priority = $("#DispatchPriority").val();
+            var type = $("#DispatchDocument").val();
+            var since = $("#sincefilterhdndispatch").val();
+
+            $("#loader-wrapper").show();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDataForDiaryDashboardStatus", "Agenda")',
+                datatype: "Json",
+                contentType: "application/json; charset=utf-8",
+                data: { DocumentType: type, status: status, deptid: deptid, since: since, officeid: officeid, term: term, priority: priority },
+                success: function (result) {
+                    $("#loader-wrapper").hide();
+                    if (result && result.length > 0) {
+                        $("#MeetingTable").html(result);
+                        initializeMeetingTable();
+                    }
+                    else {
+                        $("#MeetingTable").html("<tbody><tr><td colspan='8' class='text-center p-4 text-muted'><i class='fa fa-folder-open-o fa-2x mb-2 d-block'></i>No Agenda Records Found</td></tr></tbody>");
+                    }
+                },
+                error: function (result) {
+                    $("#loader-wrapper").hide();
+                }
+            });
         }
 
 
@@ -2105,175 +2210,492 @@
 
 
     <style>
-        .pdf {
-            width: 5%;
+        /* ==========================================================================
+           ORDERS >> AGENDA - COMPACT EXECUTIVE VIEW
+           Designed to match other modules (e.g. Proceedings >> Proceeding Resolutions)
+           ========================================================================== */
+
+        /* Main Page Container */
+        .agenda-page-container {
+            padding: 4px 0 12px 0;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
         }
 
-        .dept {
-            width: 15%;
+        /* 1. Compact Breadcrumb Header (Matches reference module) */
+        h4#lblmenuname,
+        .compact-breadcrumb-bar {
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            color: #1e3a8a !important;
+            margin: 2px 0 8px 0 !important;
+            padding: 0 !important;
+            line-height: 1.35 !important;
+            display: flex !important;
+            align-items: center !important;
+            letter-spacing: -0.01em !important;
+            font-family: 'Poppins', sans-serif !important;
         }
 
-        .center {
-            width: 10%;
+        h4#lblmenuname .crumb-sep,
+        .compact-breadcrumb-bar .crumb-sep {
+            color: #94a3b8 !important;
+            margin: 0 7px !important;
+            font-weight: 400 !important;
+            font-size: 14px !important;
         }
 
-        .Subject {
-            width: 25%;
-        }
-
-        .edit {
-            display: block;
-        }
-
-        .nonedit {
-            display: none;
-        }
-
-        .accordion-toggle:hover {
-            text-decoration: none;
-        }
-
-        .hideshow {
-            /*display:none;*/
-        }
-
-        .hshow {
-            display: block;
-        }
-
-        .btn-sq-lg {
-            width: 150px !important;
-            height: 150px !important;
-        }
-
-        .btn-sq {
-            width: 100px !important;
-            height: 100px !important;
-            font-size: 8px;
-            margin-left: 20px;
-        }
-
-        .btn-sq-sm {
-            width: 50px !important;
-            height: 50px !important;
-            font-size: 10px;
-        }
-
-        .btn-sq-xs {
-            width: 25px !important;
-            height: 25px !important;
-            padding: 2px;
-        }
-        /*
-        .sblFullScreen select, input, textarea {
-            width: 10%;
-        }*/
-
-        .active1 {
-            width: 120px !important;
-            height: 120px !important;
-            font-size: 18px;
-            margin-left: 50px;
-        }
-
-        .dark-font .breadcrumb-item + .breadcrumb-item::before {
-            color: #000;
-            font-size: x-large;
-        }
-
-        .dark-font .breadcrumb-item.active {
-            color: #455a64;
-        }
-
-        .small-box {
-            position: relative;
-            display: block;
-            -webkit-border-radius: 2px;
-            -moz-border-radius: 2px;
+        /* 2. Compact Filter Bar */
+        .agenda-filter-bar {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            margin-bottom: 15px;
-            text-decoration: none;
-            color: #f9f9f9;
-            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         }
 
-        .badge-notify {
-            background: red !important;
-            background-color: red !important;
-            position: relative;
-            top: -12px;
-            left: -13px;
-            font-weight: bold;
-        }
-
-        .small-box h3 {
-            font-size: 26px;
-            font-weight: 700;
-            margin: 0 0 10px;
-            padding: 0;
-            white-space: nowrap;
-            font-family: "Proxima Nova Regular","Segoe UI",Roboto,"Droid Sans","Helvetica Neue",Arial,sans-serif;
-        }
-
-        .small-box p {
-            font-size: 14px;
+        .filter-label-compact {
+            font-size: 12px;
             font-weight: 600;
-            margin: -4px;
+            color: #475569;
         }
 
-        .small-box > .inner {
-            padding: 10px;
-            max-height: 90px;
+        .custom-select-compact {
+            height: 31px !important;
+            padding: 2px 26px 2px 8px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            color: #1e293b !important;
+            background-color: #ffffff !important;
+            transition: all 0.2s ease;
         }
 
-        .small-box .icon {
-            position: absolute;
-            top: 0px;
-            bottom: 5px;
-            right: 5px;
-            z-index: 0;
-            font-size: 50px;
-            color: rgba(0,0,0,.15);
+        .custom-select-compact:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+            outline: none !important;
         }
 
-        .small-box:hover > .icon > .fa {
-            font-size: 1.2em;
-            transition-duration: 0.5s;
-            transition-timing-function: linear;
+        /* Compact Action Buttons */
+        .btn-compact-search {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 4px 14px !important;
+            border-radius: 6px !important;
+            height: 31px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+            transition: all 0.15s ease !important;
         }
 
-        .collapse.in {
-            display: inline-block !important;
-            width: 100%;
+        .btn-compact-search:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35) !important;
+            color: #ffffff !important;
         }
 
+        .btn-compact-reset {
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 4px 12px !important;
+            border-radius: 6px !important;
+            height: 31px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.15s ease !important;
+        }
 
-        .small-box > .small-box-footer {
-            position: relative;
-            text-align: center;
-            padding: 3px 0;
-            color: #fff;
-            color: rgba(255,255,255,.8);
-            display: block;
-            z-index: 10;
-            background: rgba(0,0,0,.1);
+        .btn-compact-reset:hover {
+            background: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+
+        .btn-compact-clear {
+            background: #fff1f2 !important;
+            border: 1px solid #fecdd3 !important;
+            color: #e11d48 !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 4px 12px !important;
+            border-radius: 6px !important;
+            height: 31px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .btn-compact-clear:hover {
+            background: #e11d48 !important;
+            color: #ffffff !important;
+        }
+
+        /* 3. Compact Table Card & High-Density Table */
+        .agenda-table-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+        }
+
+        /* Table Header */
+        #MeetingTable {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            overflow: hidden !important;
+            margin-top: 4px !important;
+        }
+
+        #MeetingTable thead tr.table-header-agenda th,
+        #MeetingTable thead th {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            text-transform: capitalize !important;
+            letter-spacing: 0.01em !important;
+            padding: 7px 9px !important;
+            border: none !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+        }
+
+        #MeetingTable thead th:last-child {
+            border-right: none !important;
+        }
+
+        /* Table Body */
+        #MeetingTable tbody tr td {
+            font-size: 12px !important;
+            line-height: 1.35 !important;
+            color: #1e293b !important;
+            padding: 6px 9px !important;
+            border: none !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            border-right: 1px solid #f1f5f9 !important;
+            vertical-align: middle !important;
+            background: #ffffff;
+            transition: background 0.1s ease !important;
+        }
+
+        #MeetingTable tbody tr td:last-child {
+            border-right: none !important;
+        }
+
+        #MeetingTable tbody tr:nth-child(even) td {
+            background-color: #f8fafc !important;
+        }
+
+        #MeetingTable tbody tr:hover td {
+            background-color: #eff6ff !important;
+        }
+
+        /* Compact Cell Badges & Components */
+        .dept-name {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 12px;
+        }
+
+        .office-badge {
+            display: inline-block;
+            padding: 2px 7px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meeting-date-box {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .meeting-title-text {
+            font-size: 12px;
+            line-height: 1.35;
+            color: #1e293b;
+            max-width: 320px;
+            word-break: break-word;
+        }
+
+        .proposals-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 9px;
+            font-size: 11.5px;
+            font-weight: 700;
+            height: 24px;
+            color: #1d4ed8 !important;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none !important;
+        }
+
+        .proposals-pill-btn:hover {
+            background: #2563eb;
+            color: #ffffff !important;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-agenda-pdf {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            height: 24px;
+            color: #059669 !important;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 5px;
+            text-decoration: none !important;
+            transition: all 0.15s ease;
+        }
+
+        .btn-agenda-pdf:hover {
+            background: #059669;
+            color: #ffffff !important;
+            border-color: #059669;
+            transform: translateY(-1px);
+        }
+
+        .covering-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 6px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 1px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .covering-chip:hover {
+            background: #e2e8f0;
+        }
+
+        .covering-link {
+            color: #0d6efd;
             text-decoration: none;
+            font-weight: 600;
         }
 
-        @@media (min-width: 800px) {
-            .col-md-2 {
-                width: 183px !important;
-            }
-
-            .marg129 {
-                margin-top: 203px !important;
-            }
+        .covering-link:hover {
+            text-decoration: underline;
         }
 
-        @@media (max-width: 564px) {
-            .footer {
-                padding-top: 100px !important;
-            }
+        /* Compact Online Circulation Buttons */
+        .btn-cir-action {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 3px !important;
+            padding: 2px 9px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            height: 24px !important;
+            border-radius: 14px !important;
+            border: none !important;
+            color: #ffffff !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .btn-cir-sms {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        }
+
+        .btn-cir-sms:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(16, 185, 129, 0.3) !important;
+        }
+
+        .btn-cir-email {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+        }
+
+        .btn-cir-email:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(59, 130, 246, 0.3) !important;
+        }
+
+        /* 4. Compact DataTables Controls */
+        .dt-toolbar-modern {
+            gap: 8px;
+            margin-bottom: 8px !important;
+        }
+
+        .dt-btn-action {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            padding: 3px 10px !important;
+            font-size: 11.5px !important;
+            height: 28px !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            margin-right: 5px !important;
+            box-shadow: none !important;
+            transition: all 0.15s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+        }
+
+        .dt-btn-action:hover {
+            background: #f8fafc !important;
+            border-color: #94a3b8 !important;
+            transform: translateY(-1px);
+        }
+
+        .dt-btn-excel:hover {
+            border-color: #10b981 !important;
+            color: #059669 !important;
+        }
+
+        .dt-btn-csv:hover {
+            border-color: #0284c7 !important;
+            color: #0284c7 !important;
+        }
+
+        .dt-btn-pdf:hover {
+            border-color: #e11d48 !important;
+            color: #e11d48 !important;
+        }
+
+        .dataTables_filter {
+            margin: 0 !important;
+        }
+
+        .dataTables_filter label {
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            color: #475569 !important;
+            margin: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+        }
+
+        .dataTables_filter input {
+            height: 28px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            padding: 2px 8px !important;
+            font-size: 11.5px !important;
+            color: #1e293b !important;
+            background: #ffffff !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .dataTables_filter input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+            outline: none !important;
+        }
+
+        .dt-footer-modern {
+            margin-top: 8px !important;
+        }
+
+        .dataTables_info {
+            font-size: 11.5px !important;
+            color: #64748b !important;
+            font-weight: 500 !important;
+            padding-top: 4px !important;
+        }
+
+        .dataTables_paginate .paginate_button {
+            border-radius: 5px !important;
+            font-size: 11.5px !important;
+            padding: 2px 8px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            margin: 0 2px !important;
+        }
+
+        .dataTables_paginate .paginate_button.current,
+        .dataTables_paginate .paginate_button.current:hover {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+        }
+
+        .dataTables_paginate .paginate_button:hover {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        /* Modals Polish */
+        .modal-content {
+            border-radius: 10px !important;
+            border: 1px solid #e2e8f0 !important;
+            overflow: hidden !important;
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .modal-header {
+            background: #f8fafc !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 10px 16px !important;
+        }
+
+        .modal-title {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+        }
+
+        .btn-sms-send, .btn-email-send {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+            border-radius: 6px !important;
+            padding: 5px 14px !important;
+            border: none !important;
+        }
+
+        .btn-email-send {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        }
+
+        .btn-add-contact {
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+            border-radius: 6px !important;
+            padding: 5px 12px !important;
         }
 
         .sts {
