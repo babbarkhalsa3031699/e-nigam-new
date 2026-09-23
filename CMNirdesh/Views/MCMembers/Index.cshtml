@@ -130,8 +130,7 @@
 
                 </div>
             </div>
-            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-
+            <div class="coman_modal dispatch_modal addnew_modal modal member-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -140,201 +139,200 @@
                         </div>
                         <div class="modal-body">
                             <form id="fileUpload" enctype="multipart/form-data">
-                                <div class="form-group">
+                                <input type="hidden" class="form-control" id="id" />
 
-                                    <input type="hidden" class="form-control" id="id" />
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Prefix:</div>
-                                        <select id="PrefixDropDown">
-                                            <option value="0" class="form-control txt_design">Please select</option>
-                                            <option value="Sh." class="form-control txt_design">Sh.</option>
-                                            <option value="Smt." class="form-control txt_design">Smt.</option>
-                                            <option value="Smt." class="form-control txt_design">Miss</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Prefix(Punjabi):</div>
-                                        <select id="PrefixDropDown_local">
-                                            <option value="0" class="form-control txt_design">Please select</option>
-                                            <option value="ਸ਼੍ਰੀ" class="form-control txt_design">ਸ਼੍ਰੀ</option>
-                                            <option value="ਸ਼੍ਰੀਮਤੀ" class="form-control txt_design">ਸ਼੍ਰੀਮਤੀ</option>
-                                            <option value="ਸ਼੍ਰੀਮਤੀ" class="form-control txt_design">ਮਿਸ</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Name:</div>
-                                        <input type="text" class="form-control" id="Name" placeholder="Name" />
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">
-                                            Name(Punjabi):
+                                <!-- Section 1: Personal Details -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-user"></i> Personal Details</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Prefix:</div>
+                                            <select id="PrefixDropDown">
+                                                <option value="0" class="form-control txt_design">Please select</option>
+                                                <option value="Sh." class="form-control txt_design">Sh.</option>
+                                                <option value="Smt." class="form-control txt_design">Smt.</option>
+                                                <option value="Smt." class="form-control txt_design">Miss</option>
+                                            </select>
                                         </div>
-                                        <input type="text" class="form-control" id="Name_local" placeholder="Name(Punjabi)" />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Gender</div>
-                                        <select id="Gender" name="Gender">
-                                            <option value="">Select</option>
-                                            <option value="M">Male</option>
-                                            <option value="F">Female</option>
-                                            <option value="O">Other</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Member DOB</div>
-                                        <input type="date" class="form-control" id="memberDOB" placeholder="DOB" />
-                                    </div>
-                                </div>
-                                <div class="form-group row" id="MemberCodeField">
-                                    <div class="col-6">
-                                        @*<div class="profile-info-name fotm_lbl">
-                                            MemberCode:
-                                        </div>*@
-                                        @*@Html.TextAreaFor(model => model.MemberCodeOld, new { @id = "MemberCode", @placeholder = "Member Code", @autocomplete = "off", @class = "form-control", @type = "number" })*@
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Prefix(Punjabi):</div>
+                                            <select id="PrefixDropDown_local">
+                                                <option value="0" class="form-control txt_design">Please select</option>
+                                                <option value="ਸ਼੍ਰੀ" class="form-control txt_design">ਸ਼੍ਰੀ</option>
+                                                <option value="ਸ਼੍ਰੀਮਤੀ" class="form-control txt_design">ਸ਼੍ਰੀਮਤੀ</option>
+                                                <option value="ਸ਼੍ਰੀਮਤੀ" class="form-control txt_design">ਮਿਸ</option>
+                                            </select>
+                                        </div>
 
-                                        <div class="col-6">
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Name:</div>
+                                            <input type="text" class="form-control" id="Name" placeholder="Name" />
+                                            <span id="NameValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Name is required</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Name(Punjabi):</div>
+                                            <input type="text" class="form-control" id="Name_local" placeholder="Name(Punjabi)" />
+                                            <span id="NameLocalValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Name (Punjabi) is required</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Gender</div>
+                                            <select id="Gender" name="Gender">
+                                                <option value="">Select</option>
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                                <option value="O">Other</option>
+                                            </select>
+                                            <span id="GenderValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Please select Gender</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Member DOB</div>
+                                            <input type="date" class="form-control" id="memberDOB" placeholder="DOB" />
+                                        </div>
+
+                                        <div class="form-group col-full" id="MemberCodeField" style="margin: 0; padding: 0;">
                                             @Html.HiddenFor(model => model.MemberCodeOld, new { id = "MemberCode" })
                                             <input type="hidden" id="MemberID" name="MemberID" />
                                         </div>
                                     </div>
-                                    @*<div class="col-6" id="MemberIdField">
-                                        <div class="profile-info-name fotm_lbl">
-                                            MemberID:
-                                        </div>
-                                        <input type="number" class="form-control" id="MemberID" placeholder="Member ID" />
-                                    </div>*@
-                                    @*<div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Description</div>
-                                        <input type="text" class="form-control" id="Description" placeholder="Description" />
-                                    </div>*@
                                 </div>
-                                <div class="form-group row">
 
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Mobile (Max. 10 Digit)</div>
-                                        <input type="text" class="form-control" id="Mobile" placeholder="Mobile" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
-                                        <span id="MobileValidation" style="color:darkred;font-size:15PX;">MOBILE NUMBER SHOULD BE 10 DIGITS</span>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Email</div>
-                                        <input type="text" class="form-control" id="Email" placeholder="Email" />
-                                        <span id="EmailValidation" style="color:darkred;font-size:15PX;">EMAIL FORMAT INVALID</span>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Permanent Address</div>
-                                        <input type="text" class="form-control" id="PermanentAddress" placeholder="Permanent Address" />
-
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Permanent Address(Punjabi)</div>
-                                        <input type="text" class="form-control" id="PermanentAddress_local" placeholder="Permanent Address(Punjabi)" />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Designation</div>
-                                        @Html.DropDownList(
-                                             "Designation",
-                                             Model._LstDesignation,
-                                             "-------- Select Designation ---------",
-                                             new { @class = "form-control", required = "required" }
-                                         )
-                                        
-                                        @*<input type="text" class="form-control" id="Designation" placeholder="Designation" />*@
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Designation(Punjabi)</div>
-                                        @Html.DropDownList("Designation_local", Model._LstDesignationlocal, "--------  Select Designation -------- ", new { @class = "form-control",required = "required" })
-                                        @*<input type="text" class="form-control" id="Designation_local" placeholder="Designation(Punjabi)" />*@
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">MC</div>
-                                        <select id="ddlMc">
-                                            <option value="select" class="form-control txt_design"></option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Ward</div>
-                                        <select id="ddlWard" required = "required">
-                                            <option value="select" class="form-control txt_design"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Party</div>
-                                        <select id="ddlParty">
-                                            <option value="select" class="form-control txt_design"></option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Office Phone No.</div>
-                                        <input type="text" class="form-control" id="OfficePhoneNo" placeholder="Office Phone No." />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">State</div>
-                                        <select id="ddlState">
-                                            <option value="select" class="form-control txt_design" id="SelectId"></option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">District</div>
-                                        <select id="ddlDistrict">
-                                            <option value="select" class="form-control txt_design"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    @*<div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">Is Alive</div>
-                                        <select id="ddlIsAlive" name="Gender">
-                                            <option value="Y" selected>Yes</option>
-                                            <option value="N">No</option>
-                                        </select>
-                                    </div>*@
-                                    <div class="col-6">
-                                        <div class="profile-info-name fotm_lbl">
-                                            Member Icon:
+                                <!-- Section 2: Contact Details & Address -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-address-card-o"></i> Contact Details &amp; Address</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Mobile (Max. 10 Digit)</div>
+                                            <input type="text" class="form-control" id="Mobile" placeholder="Mobile" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+                                            <span id="MobileValidation" class="member-val-msg">MOBILE NUMBER SHOULD BE 10 DIGITS</span>
                                         </div>
-                                        <input type="file" name="file" class="form-control" id="DocumentIcon" placeholder="Document Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                        <img src="https://placehold.jp/100x100.png" id="imgPreview" class="form-control" style="width:100px; height:100px; border:1px solid red;" alt="Load Image" />
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Email</div>
+                                            <input type="text" class="form-control" id="Email" placeholder="Email" />
+                                            <span id="EmailValidation" class="member-val-msg">EMAIL FORMAT INVALID</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Permanent Address</div>
+                                            <input type="text" class="form-control" id="PermanentAddress" placeholder="Permanent Address" />
+                                            <span id="PermanentAddressValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Permanent Address is required</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Permanent Address(Punjabi)</div>
+                                            <input type="text" class="form-control" id="PermanentAddress_local" placeholder="Permanent Address(Punjabi)" />
+                                            <span id="PermanentAddressLocalValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Permanent Address (Punjabi) is required</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3: Designation & Representation -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-id-badge"></i> Designation &amp; Representation</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Designation</div>
+                                            @Html.DropDownList(
+                                                 "Designation",
+                                                 Model._LstDesignation,
+                                                 "-------- Select Designation ---------",
+                                                 new { @class = "form-control", required = "required" }
+                                             )
+                                            <span id="DesignationValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Please select Designation</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Designation(Punjabi)</div>
+                                            @Html.DropDownList("Designation_local", Model._LstDesignationlocal, "--------  Select Designation -------- ", new { @class = "form-control", required = "required" })
+                                            <span id="DesignationLocalValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Please select Designation (Punjabi)</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">MC</div>
+                                            <select id="ddlMc">
+                                                <option value="select" class="form-control txt_design"></option>
+                                            </select>
+                                            <span id="McValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Please select MC</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Ward</div>
+                                            <select id="ddlWard" required="required">
+                                                <option value="select" class="form-control txt_design"></option>
+                                            </select>
+                                            <span id="WardValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Please select Ward</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Party</div>
+                                            <select id="ddlParty">
+                                                <option value="select" class="form-control txt_design"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">Office Phone No.</div>
+                                            <input type="text" class="form-control" id="OfficePhoneNo" placeholder="Office Phone No." />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 4: Location Details -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-globe"></i> Location Details</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">State</div>
+                                            <select id="ddlState">
+                                                <option value="select" class="form-control txt_design" id="SelectId"></option>
+                                            </select>
+                                            <span id="StateValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Please select State</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="profile-info-name fotm_lbl">District</div>
+                                            <select id="ddlDistrict">
+                                                <option value="select" class="form-control txt_design"></option>
+                                            </select>
+                                            <span id="DistrictValidation" class="member-val-msg"><i class="fa fa-exclamation-circle"></i> Please select District</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 5: Member Photo -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-picture-o"></i> Member Photo</div>
+                                    <div class="form-group">
+                                        <div class="profile-info-name fotm_lbl">Member Icon:</div>
+                                        <div class="odm-upload-card">
+                                            <div class="odm-upload-preview">
+                                                <img src="https://placehold.jp/100x100.png" id="imgPreview" class="form-control" alt="Load Image" />
+                                            </div>
+                                            <div class="odm-upload-input-wrap">
+                                                <input type="file" name="file" class="form-control" id="DocumentIcon" placeholder="Document Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                                <span class="odm-upload-hint">Accepted formats: JPG, PNG, GIF, BMP</span>
+                                            </div>
+                                        </div>
                                         <input type="hidden" id="DocumentIconName" />
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="profile-info-name fotm_lbl col-12 pl-3" style="display: flex;">
-                                        Commitee Member Type:
-                                    </div>
-                                    <div class="col-12">
-                                        <p class="pera_txt_design">
 
+                                <!-- Section 6: Committee Member Type -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-users"></i> Committee Member Type</div>
+                                    <div class="form-group">
+                                        <div class="member-committee-chips">
                                             @foreach (var item in Model._CommitteeType)
                                             {
-                                                <div class="checkbox" style="display: inline;">
+                                                <label class="member-committee-item" for="@item.Value">
                                                     <input type="checkbox" id="@item.Value" name="ChkStatusFilter" value="@item.Value" onclick="StatusFilter1(this, this.value)" />
-                                                    <label for="@item.Value" class="lbltxt">@item.Text</label>
-                                                </div>
+                                                    <span class="lbltxt">@item.Text</span>
+                                                </label>
                                             }
-                                            <input type="hidden" id="hiddenCommitteeType" name="HiddenCommitteeType" value="" />
-                                            <input type="hidden" id="hdnmeetingtype" />
-                                        </p>
+                                        </div>
+                                        <input type="hidden" id="hiddenCommitteeType" name="HiddenCommitteeType" value="" />
+                                        <input type="hidden" id="hdnmeetingtype" />
                                     </div>
                                 </div>
+
                             </form>
                         </div>
-                        <div class="modal-footer" style="background-color:white;">
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
                             <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -350,6 +348,476 @@
 
 
 <style>
+
+    /* ==========================================================================
+       DESIGN SYSTEM FOR ADD / UPDATE MEMBER RECORD MODAL
+       Derived directly from the "Add Proposal" Modal Reference System
+       Scoped strictly under: .member-record-modal
+       ========================================================================== */
+
+    /* 1. Modal Dialog & Viewport Containment */
+    .modal.member-record-modal.addnew_modal,
+    .modal.member-record-modal.coman_modal,
+    .modal.member-record-modal.dispatch_modal {
+        padding: 0 !important;
+    }
+
+    .member-record-modal.modal {
+        padding: 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Gurmukhi", "Raavi", sans-serif;
+    }
+
+    .member-record-modal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 920px;
+        width: calc(100% - 2rem);
+        margin: 1.5rem auto;
+        min-height: calc(100% - 3rem);
+    }
+
+    .member-record-modal .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Modal Header & Accent Bar */
+    .member-record-modal .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .member-record-modal .modal-header .modal-title {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .member-record-modal .modal-header .modal-title::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .member-record-modal .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .member-record-modal .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* 3. Modal Body & Custom Scrollbar */
+    .member-record-modal .modal-body {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #cbd5e1 transparent !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .member-record-modal .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .member-record-modal .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .member-record-modal .modal-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .member-record-modal .modal-body::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
+    /* 4. Form Section Cards */
+    .member-record-modal .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .member-record-modal .form-section-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .member-record-modal .form-section-title i {
+        color: #2563eb;
+        font-size: 13px !important;
+    }
+
+    /* 5. 2-Column Responsive Layout */
+    .member-record-modal .form-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-items: start;
+    }
+
+    @@media (max-width: 767px) {
+        .member-record-modal .modal-dialog {
+            margin: 0.75rem auto;
+            width: calc(100% - 1.5rem);
+        }
+
+        .member-record-modal .form-card-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .member-record-modal .modal-footer {
+            padding: 12px 16px !important;
+        }
+
+        .member-record-modal .modal-footer .btn {
+            flex: 1 1 auto;
+        }
+    }
+
+    .member-record-modal .col-full {
+        grid-column: 1 / -1;
+    }
+
+    /* 6. Form Groups & Field Labels */
+    .member-record-modal .form-group {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .member-record-modal .fotm_lbl,
+    .member-record-modal .profile-info-name.fotm_lbl,
+    .member-record-modal label.fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: normal !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+        width: 100% !important;
+        text-align: left !important;
+        float: none !important;
+        padding-left: 0 !important;
+    }
+
+    /* 7. Inputs, Selects & Date Controls */
+    .member-record-modal input[type="text"],
+    .member-record-modal input[type="date"],
+    .member-record-modal select,
+    .member-record-modal .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        line-height: normal !important;
+        color: #0f172a !important;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Validation Error Highlighting (Clean & Prominent) */
+    .member-record-modal .form-control.is-invalid,
+    .member-record-modal select.is-invalid,
+    .member-record-modal input[type="text"].is-invalid,
+    .member-record-modal input[type="date"].is-invalid {
+        border: 1.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
+
+    .member-record-modal .member-val-msg {
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: #dc2626 !important;
+        margin-top: 5px !important;
+        display: none;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .member-record-modal .member-val-msg.show {
+        display: flex !important;
+    }
+
+    .member-record-modal input[type="text"]:hover,
+    .member-record-modal input[type="date"]:hover,
+    .member-record-modal select:hover {
+        border-color: #94a3b8 !important;
+    }
+
+    .member-record-modal input[type="text"]:focus,
+    .member-record-modal input[type="date"]:focus,
+    .member-record-modal select:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    .member-record-modal .form-control::placeholder {
+        color: #64748b;
+        opacity: 0.7;
+    }
+
+    /* 8. Select Dropdown Appearance */
+    .member-record-modal select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px 16px;
+        padding-right: 36px !important;
+        cursor: pointer;
+    }
+
+    /* 9. Upload Dropzone Card & Thumbnail Layout */
+    .member-record-modal .odm-upload-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 18px;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .member-record-modal .odm-upload-card:hover {
+        border-color: #cbd5e1;
+        background-color: #f1f5f9;
+    }
+
+    .member-record-modal .odm-upload-preview {
+        flex-shrink: 0;
+    }
+
+    .member-record-modal img#imgPreview {
+        width: 72px !important;
+        height: 72px !important;
+        min-width: 72px !important;
+        object-fit: cover !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 2px !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .member-record-modal .odm-upload-input-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .member-record-modal .odm-upload-input-wrap input[type="file"] {
+        height: auto !important;
+        min-height: 38px;
+        padding: 5px 8px !important;
+        background-color: #ffffff;
+    }
+
+    .member-record-modal .odm-upload-input-wrap input[type="file"]::file-selector-button {
+        height: 28px;
+        padding: 0 14px;
+        margin-right: 10px;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        background-color: #f8fafc;
+        color: #1e293b;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .member-record-modal .odm-upload-input-wrap input[type="file"]::file-selector-button:hover {
+        background-color: #eff6ff;
+        border-color: #93c5fd;
+        color: #2563eb;
+    }
+
+    .member-record-modal .odm-upload-hint {
+        font-size: 12px !important;
+        font-style: italic !important;
+        color: #64748b;
+    }
+
+    /* 10. Committee Member Type Chips */
+    .member-record-modal .member-committee-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        padding-top: 4px;
+    }
+
+    .member-record-modal .member-committee-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        margin-bottom: 0;
+    }
+
+    .member-record-modal .member-committee-item:hover {
+        border-color: #cbd5e1;
+        background-color: #f1f5f9;
+    }
+
+    .member-record-modal .member-committee-item input[type="checkbox"] {
+        margin: 0 !important;
+        cursor: pointer;
+        width: 15px;
+        height: 15px;
+        accent-color: #2563eb;
+    }
+
+    .member-record-modal .member-committee-item .lbltxt {
+        font-size: 12.5px;
+        color: #334155;
+        font-weight: 500;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    /* 11. Validation Alerts */
+    .member-record-modal .member-val-msg {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        color: #dc2626 !important;
+        margin-top: 4px;
+        display: none;
+    }
+
+    /* 12. Sticky Footer & Actions */
+    .member-record-modal .modal-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .member-record-modal button#btnSave,
+    .member-record-modal button#btnUpdate {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 24px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .member-record-modal button#btnSave[style*="display: none"],
+    .member-record-modal button#btnSave[style*="display:none"],
+    .member-record-modal button#btnUpdate[style*="display: none"],
+    .member-record-modal button#btnUpdate[style*="display:none"] {
+        display: none !important;
+    }
+
+    .member-record-modal button#btnSave:hover,
+    .member-record-modal button#btnUpdate:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px);
+    }
+
+    .member-record-modal button#btnSave:active,
+    .member-record-modal button#btnUpdate:active {
+        transform: translateY(0);
+    }
+
+    .member-record-modal .modal-footer .btn-danger {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 20px !important;
+        border-radius: 6px !important;
+        display: inline-flex;
+        align-items: center !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        height: 38px !important;
+    }
+
+    .member-record-modal .modal-footer .btn-danger:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
 
 
     .inr_frm_dsgn {
@@ -517,6 +985,80 @@
         }
     }
     $(document).ready(function () {
+        // Real-time clearing of validation highlights on MCMember inputs
+        $('#Name').on('input keyup change', function () {
+            if ($(this).val().trim() !== '') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#NameValidation').removeClass('show').hide();
+            }
+        });
+        $('#Name_local').on('input keyup change', function () {
+            if ($(this).val().trim() !== '') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#NameLocalValidation').removeClass('show').hide();
+            }
+        });
+        $('#Gender').on('change', function () {
+            if ($(this).val() !== '' && $(this).val() !== '0') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#GenderValidation').removeClass('show').hide();
+            }
+        });
+        $('#Mobile').on('input keyup change', function () {
+            if ($(this).val().trim().length === 10) {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#MobileValidation').removeClass('show').hide();
+            }
+        });
+        $('#PermanentAddress').on('input keyup change', function () {
+            if ($(this).val().trim() !== '') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#PermanentAddressValidation').removeClass('show').hide();
+            }
+        });
+        $('#PermanentAddress_local').on('input keyup change', function () {
+            if ($(this).val().trim() !== '') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#PermanentAddressLocalValidation').removeClass('show').hide();
+            }
+        });
+        $('#Designation').on('change', function () {
+            if ($(this).val() !== '' && $(this).val() !== '0' && $(this).val().indexOf('Select') < 0) {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#DesignationValidation').removeClass('show').hide();
+            }
+        });
+        $('#Designation_local').on('change', function () {
+            if ($(this).val() !== '' && $(this).val() !== '0' && $(this).val().indexOf('Select') < 0) {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#DesignationLocalValidation').removeClass('show').hide();
+            }
+        });
+        $('#ddlMc').on('change', function () {
+            if ($(this).val() !== '' && $(this).val() !== '0' && $(this).val() !== 'select') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#McValidation').removeClass('show').hide();
+            }
+        });
+        $('#ddlWard').on('change', function () {
+            if ($(this).val() !== '' && $(this).val() !== '0' && $(this).val() !== 'select') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#WardValidation').removeClass('show').hide();
+            }
+        });
+        $('#ddlState').on('change', function () {
+            if ($(this).val() !== '' && $(this).val() !== '0' && $(this).val() !== 'select') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#StateValidation').removeClass('show').hide();
+            }
+        });
+        $('#ddlDistrict').on('change', function () {
+            if ($(this).val() !== '' && $(this).val() !== '0' && $(this).val() !== 'select') {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#DistrictValidation').removeClass('show').hide();
+            }
+        });
+
         $('#example').DataTable({
         });
 
@@ -668,132 +1210,69 @@
     }
     function validate() {
         var isValid = true;
-        if ($('#Name').val() == "") {
-            $('#Name').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#Name').css('background-color', 'white');
-        }
-        if ($('#Name_local').val() == "") {
-            $('#Name_local').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#Name_local').css('background-color', 'white');
-        } 
+        var firstInvalid = null;
 
-        if ($('#Mobile').val() == "") {
-            $('#Mobile').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#Mobile').css('background-color', 'white');
-        } 
-        
-        if ($('#PermanentAddress').val() == "") {
-            $('#PermanentAddress').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#PermanentAddress').css('background-color', 'white');
+        function checkField(selector, errorSelector, condition) {
+            var $el = $(selector);
+            var $err = $(errorSelector);
+            if (condition) {
+                $el.addClass('is-invalid').css('background-color', '#fef2f2');
+                $err.addClass('show').show();
+                isValid = false;
+                if (!firstInvalid) firstInvalid = $el;
+            } else {
+                $el.removeClass('is-invalid').css('background-color', 'white');
+                $err.removeClass('show').hide();
+            }
         }
 
-        if ($('#PermanentAddress_local').val() == "") {
-            $('#PermanentAddress_local').css('background-color', '#ff56564d');
-            isValid = false;
+        // 1. Name
+        checkField('#Name', '#NameValidation', $('#Name').val().trim() === "");
+
+        // 2. Name Punjabi
+        checkField('#Name_local', '#NameLocalValidation', $('#Name_local').val().trim() === "");
+
+        // 3. Gender
+        checkField('#Gender', '#GenderValidation', $('#Gender').val() === "" || $('#Gender').val() === "0" || $('#Gender').val() === null);
+
+        // 4. Mobile
+        var mobVal = $('#Mobile').val().trim();
+        var mobInvalid = mobVal === "" || mobVal.length < 10;
+        checkField('#Mobile', '#MobileValidation', mobInvalid);
+
+        // 5. Permanent Address
+        checkField('#PermanentAddress', '#PermanentAddressValidation', $('#PermanentAddress').val().trim() === "");
+
+        // 6. Permanent Address Punjabi
+        checkField('#PermanentAddress_local', '#PermanentAddressLocalValidation', $('#PermanentAddress_local').val().trim() === "");
+
+        // 7. Designation
+        var desigVal = $('#Designation').val();
+        checkField('#Designation', '#DesignationValidation', !desigVal || desigVal === "" || desigVal === "0" || desigVal.indexOf("Select") >= 0);
+
+        // 8. Designation Punjabi
+        var desigLocalVal = $('#Designation_local').val();
+        checkField('#Designation_local', '#DesignationLocalValidation', !desigLocalVal || desigLocalVal === "" || desigLocalVal === "0" || desigLocalVal.indexOf("Select") >= 0);
+
+        // 9. MC
+        var mcVal = $('#ddlMc').val();
+        checkField('#ddlMc', '#McValidation', !mcVal || mcVal === "" || mcVal === "0" || mcVal === "select");
+
+        // 10. Ward
+        var wardVal = $('#ddlWard').val();
+        checkField('#ddlWard', '#WardValidation', !wardVal || wardVal === "" || wardVal === "0" || wardVal === "select");
+
+        // 11. State
+        var stateVal = $('#ddlState').val();
+        checkField('#ddlState', '#StateValidation', !stateVal || stateVal === "" || stateVal === "0" || stateVal === "select");
+
+        // 12. District
+        var distVal = $('#ddlDistrict').val();
+        checkField('#ddlDistrict', '#DistrictValidation', !distVal || distVal === "" || distVal === "0" || distVal === "select");
+
+        if (firstInvalid) {
+            firstInvalid.focus();
         }
-        else {
-            $('#PermanentAddress_local').css('background-color', 'white');
-        }
-
-        if ($('#ddlState').val() == "" || $('#ddlState').val() == "0") {
-            $('#ddlState').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#ddlState').css('background-color', 'white');
-        }
-        if ($('#ddlDistrict').val() == "" || $('#ddlDistrict').val() == "0") {
-            $('#ddlDistrict').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#ddlDistrict').css('background-color', 'white');
-        }
-        
-
-        //if ($('#MemberCode').val() == "") {
-        //    $('#MemberCode').css('background-color', '#ff56564d');
-        //    isValid = false;
-        //}
-        //else {
-        //    $('#MemberCode').css('background-color', 'white');
-
-        //}
-
-        if ($('#Designation').val() == "" || $('#Designation').val() == "0") {
-            $('#Designation').css('background-color', '#ff56564d');
-            isValid = false;
-        } else {
-            $('#Designation').css('background-color', 'white');
-        }
-        
-
-        if ($('#Designation_local').val() == "" || $('#Designation_local').val() == "0") {
-            $('#Designation_local').css('background-color', '#ff56564d');
-            isValid = false;
-        } else {
-            $('#Designation_local').css('background-color', 'white');
-        }
-
-        if ($('#ddlWard').val() == "" || $('#ddlWard').val() == "0") {
-            $('#ddlWard').css('background-color', '#ff56564d');
-            isValid = false;
-        } else {
-            $('#ddlWard').css('background-color', 'white');
-        }
-
-        if ($('#Gender').val() == "" || $('#Gender').val() == "0") {
-            $('#Gender').css('background-color', '#ff56564d');
-            isValid = false;
-        } else {
-            $('#Gender').css('background-color', 'white');
-        }
-        
-
-        //if ($('#Email').val() != "") {
-        //    debugger
-        //    var EmailRegex = "/^\w+([\.-]?\w+)*\w+([\.-]?\w+)*(\.\w{2,3})+$/";
-        //    var Email = $('#Mobile').val();
-        //    if (Email.value.match(EmailRegex))
-        //    {
-        //        $('#Email').css('background-color', '#ff56564d');
-        //        $('#EmailValidation').show();
-        //        return isValid = true;
-
-        //    }
-        //    else {
-
-        //        return isValid = false;
-        //    }
-        //}
-        //if ($('#Mobile').val() != "") {
-        //    debugger
-        //    var phoneno = "/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/";
-        //    var Mobile = $('#Mobile').val();
-        //    if (phoneno.test(Mobile)
-        //    {
-        //        $('#Mobile').css('background-color', '#ff56564d');
-        //        $('#MobileValidation').show();
-        //        return isValid = true;
-        //    }
-        //    else {
-
-        //        return isValid = false;
-        //    }
-        //}
-
 
         return isValid;
     }
@@ -815,11 +1294,9 @@
         $('#Mobile').val("");
         $('#Email').val("");
         $('#DocumentIcon').val("");
-        $('#Name').css('background-color', 'white');
-        $('#Name_local').css('background-color', 'white');
+        $('.is-invalid').removeClass('is-invalid').css('background-color', 'white');
+        $('.member-val-msg').removeClass('show').hide();
         $("#imgPreview").attr('src', 'https://placehold.jp/100x100.png');
-        $('#EmailValidation').hide();
-        $('#MobileValidation').hide();
         $('#MemberCode').prop("disabled", true);
         $("#MemberCodeField").show();
         $('#MemberCode').css('background-color', 'white');

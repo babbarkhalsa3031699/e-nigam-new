@@ -110,64 +110,82 @@
                 
             </div>
 
-            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
+            <div class="coman_modal dispatch_modal addnew_modal modal latestnews-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title fs-5" id="myModalLabel">Add Latest News</h5>
+                            <h5 class="modal-title fs-5" id="myModalLabel">Add News Record</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="fileUpload" enctype="multipart/form-data">
-                                <div class="form-group" id="StateName">
-                                    <div class="profile-info-name fotm_lbl">State Name:</div>
-                                    <select id="StateDropDown">
-                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="State Name"></option>
-                                    </select>
+                                <input type="hidden" class="form-control" id="newsid" />
+                                <input type="hidden" id="order" />
+                                <input type="hidden" id="DocumentIconName" />
 
-                                </div>
+                                <!-- Section 1: News Information & Content -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-newspaper-o"></i> News Information &amp; Content</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group col-full" id="StateName">
+                                            <label for="StateDropDown" class="profile-info-name fotm_lbl">State Name:</label>
+                                            <select id="StateDropDown" class="form-control">
+                                                <option value="select" class="form-control txt_design" id="SelectId" placeholder="State Name">Please select</option>
+                                            </select>
+                                            <span id="StateDropDownError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> Please select State Name</span>
+                                        </div>
 
+                                        <div class="form-group" id="DocumentTypeId1">
+                                            <label for="newstitle" class="profile-info-name fotm_lbl">News Title:</label>
+                                            <input type="text" class="form-control" id="newstitle" placeholder="Enter News Title" />
+                                            <span id="newstitleError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> News Title is required</span>
+                                        </div>
 
-                                <div class="form-group" id="DocumentTypeId1">
+                                        <div class="form-group">
+                                            <label for="newstitlelocal" class="profile-info-name fotm_lbl">News Title (Punjabi):</label>
+                                            <input type="text" class="form-control" id="newstitlelocal" placeholder="ਖ਼ਬਰ ਦਾ ਸਿਰਲੇਖ (ਪੰਜਾਬੀ)" />
+                                            <span id="newstitlelocalError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> News Title (Punjabi) is required</span>
+                                        </div>
 
-                                    <div class="profile-info-name fotm_lbl">News Title:</div>
-                                    <input type="text" class="form-control" id="newstitle" placeholder="News Title" />
-                                    <input type="hidden" class="form-control" id="newsid" placeholder="News Title" />
-                                </div>
-                                <div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">
-                                        News Title(Punjabi):
+                                        <div class="form-group">
+                                            <label for="newsdescription" class="profile-info-name fotm_lbl">News Description:</label>
+                                            <input type="text" class="form-control" id="newsdescription" placeholder="Enter News Description" />
+                                            <span id="newsdescriptionError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> News Description is required</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="newsdescriptionlocal" class="profile-info-name fotm_lbl">News Description (Punjabi):</label>
+                                            <input type="text" class="form-control" id="newsdescriptionlocal" placeholder="ਖ਼ਬਰ ਦਾ ਵੇਰਵਾ (ਪੰਜਾਬੀ)" />
+                                            <span id="newsdescriptionlocalError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> News Description (Punjabi) is required</span>
+                                        </div>
                                     </div>
-                                    <input type="text" class="form-control" id="newstitlelocal" placeholder="News Title Punjabi" />
                                 </div>
-                                <div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">News Description:</div>
-                                    <input type="text" class="form-control" id="newsdescription" placeholder="News Description" />
 
-                                </div>
-                                <div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">News Description(Punjabi):</div>
-                                    <input type="text" class="form-control" id="newsdescriptionlocal" placeholder="News Description(Punjabi)" />
-
-                                @*</div><div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">Order:</div>
-                                    <input type="number" class="form-control" id="order" placeholder="Order" />
-
-                                </div>*@
-                                <div class="form-group">
-                                    <div class="profile-info-name fotm_lbl">
-                                        News Image:
+                                <!-- Section 2: News Image & Preview -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-picture-o"></i> News Image &amp; Preview</div>
+                                    <div class="odm-upload-card" id="uploadCard">
+                                        <div class="odm-upload-preview">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpolyline points='21 15 16 10 5 21'/%3E%3C/svg%3E" 
+                                                 id="imgPreview" class="Img-Upload" alt="News Preview" 
+                                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%2394a3b8\' stroke-width=\'1.5\'%3E%3Crect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'/%3E%3Ccircle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/%3E%3Cpolyline points=\'21 15 16 10 5 21\'/%3E%3C/svg%3E';" />
+                                        </div>
+                                        <div class="odm-upload-input-wrap">
+                                            <div class="profile-info-name fotm_lbl mb-1">
+                                                Select News Image:
+                                            </div>
+                                            <input type="file" name="file" class="form-control" id="newsimage" placeholder="Document Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                            <span id="newsimageError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> Please choose an image file</span>
+                                            <span class="odm-upload-hint">Accepted formats: .jpg, .jpeg, .png, .gif, .bmp (Max size: 5MB)</span>
+                                        </div>
                                     </div>
-                                    <input type="file" name="file" class="form-control" id="newsimage" placeholder="Document Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                    <img src="https://placehold.jp/100x100.png" id="imgPreview" class="form-control" style="width:100px; height:100px !important; border:1px solid red;" alt="Load Image" />
-                                    <input type="hidden" id="DocumentIconName" />
                                 </div>
                             </form>
                         </div>
-                        <div class="modal-footer" style="background-color:white;">
-                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
-                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();"><i class="fa fa-check"></i> Save</button>
+                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();" style="display:none;"><i class="fa fa-pencil-square-o"></i> Update</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
                     </div>
                 </div>
@@ -195,6 +213,429 @@
 
 
 <style>
+
+    /* ==========================================================================
+       LATEST NEWS RECORD MODAL - SAAS DESIGN SYSTEM
+       Scoped strictly under .latestnews-record-modal
+       ========================================================================== */
+
+    /* 1. Reset Global Distortion & Base Typography */
+    .modal.latestnews-record-modal.addnew_modal,
+    .modal.latestnews-record-modal.dispatch_modal {
+        padding: 0 !important;
+    }
+
+    .latestnews-record-modal.modal {
+        padding: 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Gurmukhi", "Raavi", sans-serif;
+    }
+
+    .latestnews-record-modal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 840px;
+        width: calc(100% - 2rem);
+        margin: 1.5rem auto;
+        min-height: calc(100% - 3rem);
+    }
+
+    .latestnews-record-modal .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Modal Header & Accent Bar */
+    .latestnews-record-modal .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .latestnews-record-modal .modal-header .modal-title {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .latestnews-record-modal .modal-header .modal-title::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .latestnews-record-modal .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .latestnews-record-modal .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* 3. Modal Body & Custom Scrollbar */
+    .latestnews-record-modal .modal-body {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #cbd5e1 transparent !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .latestnews-record-modal .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .latestnews-record-modal .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .latestnews-record-modal .modal-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .latestnews-record-modal .modal-body::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
+    /* 4. Form Section Cards */
+    .latestnews-record-modal .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .latestnews-record-modal .form-section-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .latestnews-record-modal .form-section-title i {
+        color: #2563eb;
+        font-size: 13px !important;
+    }
+
+    /* 5. 2-Column Responsive Layout */
+    .latestnews-record-modal .form-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-items: start;
+    }
+
+    @@media (max-width: 767px) {
+        .latestnews-record-modal .modal-dialog {
+            margin: 0.75rem auto;
+            width: calc(100% - 1.5rem);
+        }
+
+        .latestnews-record-modal .form-card-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .latestnews-record-modal .modal-footer {
+            padding: 12px 16px !important;
+        }
+
+        .latestnews-record-modal .modal-footer .btn {
+            flex: 1 1 auto;
+        }
+    }
+
+    .latestnews-record-modal .col-full {
+        grid-column: 1 / -1;
+    }
+
+    /* 6. Form Groups & Field Labels */
+    .latestnews-record-modal .form-group {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .latestnews-record-modal .fotm_lbl,
+    .latestnews-record-modal .profile-info-name.fotm_lbl,
+    .latestnews-record-modal label.fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: normal !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+        width: 100% !important;
+        text-align: left !important;
+        float: none !important;
+        padding-left: 0 !important;
+    }
+
+    /* 7. Inputs, Selects & Form Controls */
+    .latestnews-record-modal input[type="text"],
+    .latestnews-record-modal select,
+    .latestnews-record-modal .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        line-height: normal !important;
+        color: #0f172a !important;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Validation Error Highlighting (Clean & Prominent) */
+    .latestnews-record-modal .form-control.is-invalid,
+    .latestnews-record-modal select.is-invalid,
+    .latestnews-record-modal input[type="text"].is-invalid {
+        border: 1.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
+
+    .latestnews-record-modal .odm-upload-card.is-invalid {
+        border: 1.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
+
+    .latestnews-record-modal .field-val-msg {
+        display: none;
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: #dc2626 !important;
+        margin-top: 5px !important;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .latestnews-record-modal .field-val-msg.show {
+        display: flex !important;
+    }
+
+    .latestnews-record-modal input[type="text"]:hover,
+    .latestnews-record-modal select:hover {
+        border-color: #94a3b8 !important;
+    }
+
+    .latestnews-record-modal input[type="text"]:focus,
+    .latestnews-record-modal select:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    .latestnews-record-modal .form-control::placeholder {
+        color: #64748b;
+        opacity: 0.7;
+    }
+
+    /* 8. Select Dropdown Appearance */
+    .latestnews-record-modal select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px 16px;
+        padding-right: 36px !important;
+        cursor: pointer;
+    }
+
+    /* 9. Upload Card & Image Preview Layout */
+    .latestnews-record-modal .odm-upload-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 18px;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .latestnews-record-modal .odm-upload-card:hover {
+        border-color: #cbd5e1;
+        background-color: #f1f5f9;
+    }
+
+    .latestnews-record-modal .odm-upload-preview {
+        flex-shrink: 0;
+    }
+
+    .latestnews-record-modal img#imgPreview.Img-Upload {
+        width: 76px !important;
+        height: 76px !important;
+        min-width: 76px !important;
+        object-fit: cover !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 2px !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        margin-top: 0 !important;
+    }
+
+    .latestnews-record-modal .odm-upload-input-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .latestnews-record-modal .odm-upload-input-wrap input[type="file"] {
+        height: auto !important;
+        min-height: 38px;
+        padding: 5px 8px !important;
+        background-color: #ffffff;
+    }
+
+    .latestnews-record-modal .odm-upload-input-wrap input[type="file"]::file-selector-button {
+        height: 28px;
+        padding: 0 14px;
+        margin-right: 10px;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        background-color: #f8fafc;
+        color: #1e293b;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .latestnews-record-modal .odm-upload-input-wrap input[type="file"]::file-selector-button:hover {
+        background-color: #eff6ff;
+        border-color: #93c5fd;
+        color: #2563eb;
+    }
+
+    .latestnews-record-modal .odm-upload-hint {
+        font-size: 12px !important;
+        font-style: italic !important;
+        color: #64748b;
+    }
+
+    /* 10. Sticky Footer & Actions */
+    .latestnews-record-modal .modal-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .latestnews-record-modal button#btnSave,
+    .latestnews-record-modal button#btnUpdate {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 24px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .latestnews-record-modal button#btnSave[style*="display: none"],
+    .latestnews-record-modal button#btnSave[style*="display:none"],
+    .latestnews-record-modal button#btnUpdate[style*="display: none"],
+    .latestnews-record-modal button#btnUpdate[style*="display:none"] {
+        display: none !important;
+    }
+
+    .latestnews-record-modal button#btnSave:hover,
+    .latestnews-record-modal button#btnUpdate:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px);
+    }
+
+    .latestnews-record-modal button#btnSave:active,
+    .latestnews-record-modal button#btnUpdate:active {
+        transform: translateY(0);
+    }
+
+    .latestnews-record-modal .modal-footer .btn-secondary,
+    .latestnews-record-modal .modal-footer .btn-danger {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        padding: 8px 20px !important;
+        border-radius: 6px !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .latestnews-record-modal .modal-footer .btn-secondary:hover,
+    .latestnews-record-modal .modal-footer .btn-danger:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
 
 
     .inr_frm_dsgn {
@@ -321,10 +762,61 @@
 
     $(document).ready(function () {
         $('#example').DataTable({
-
             order: [[0,'desc']]
         });
+
+        // Real-time clearing of validation highlights when user types or selects
+        $('#StateDropDown').on('change', function () {
+            var val = $(this).val();
+            if (val && val.toString().trim() !== "0" && val.toString().trim() !== "select" && val.toString().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#StateDropDownError').removeClass('show');
+            }
+        });
+
+        $('#newstitle').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#newstitleError').removeClass('show');
+            }
+        });
+
+        $('#newstitlelocal').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#newstitlelocalError').removeClass('show');
+            }
+        });
+
+        $('#newsdescription').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#newsdescriptionError').removeClass('show');
+            }
+        });
+
+        $('#newsdescriptionlocal').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#newsdescriptionlocalError').removeClass('show');
+            }
+        });
+
+        $('#newsimage').on('change', function () {
+            var file = this.files && this.files[0];
+            if (file) {
+                $('#uploadCard').removeClass('is-invalid');
+                $('#newsimageError').removeClass('show');
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imgPreview').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     });
+
+    var defaultNewsImgSrc = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpolyline points='21 15 16 10 5 21'/%3E%3C/svg%3E";
 
     var s = {};
     function getbyID(EmpID) {
@@ -350,9 +842,13 @@
                 $("#newstitlelocal").val(data.NewsTitle_local);
                 $("#newsdescription").val(data.NewsDescription);
                 $("#newsdescriptionlocal").val(data.NewsDescription_local);
-              /* $("#newsimage").val(data.Images);*/
+                /* $("#newsimage").val(data.Images);*/
                 $('#order').val(data.Ordering);
-                $("#imgPreview").attr('src', data.Images);
+                if (data.Images) {
+                    $("#imgPreview").attr('src', data.Images);
+                } else {
+                    $("#imgPreview").attr('src', defaultNewsImgSrc);
+                }
                 $("#btnSave").hide();
             }
         });
@@ -380,90 +876,118 @@
         }
     });
 
-
-
-
     function validate() {
         var isValid = true;
-        if ($('#StateDropDown').val() == 0) {
-            $('#StateDropDown').css('background-color', '#ff56564d');
+        var firstInvalid = null;
+
+        // 1. State Name
+        var stateVal = $('#StateDropDown').val();
+        if (!stateVal || stateVal.toString().trim() === "0" || stateVal.toString().trim() === "select" || stateVal.toString().trim() === "") {
+            $('#StateDropDown').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#StateDropDownError').addClass('show');
             isValid = false;
-        }
-        else {
-            $('#StateDropDown').css('background-color', 'white');
-        }
-        if ($('#newstitle').val() == "") {
-            $('#newstitle').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#newstitle').css('background-color', 'white');
-        }
-        if ($('#newstitlelocal').val() == "") {
-            $('#newstitlelocal').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#newstitlelocal').css('background-color', 'white');
-        }
-        if ($('#newsdescription').val() == "") {
-            $('#newsdescription').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#newsdescription').css('background-color', 'white');
+            if (!firstInvalid) firstInvalid = $('#StateDropDown');
+        } else {
+            $('#StateDropDown').removeClass('is-invalid').css('background-color', 'white');
+            $('#StateDropDownError').removeClass('show');
         }
 
-        if ($('#newsdescriptionlocal').val() == "") {
-            $('#newsdescriptionlocal').css('background-color', '#ff56564d');
+        // 2. News Title
+        var titleVal = $('#newstitle').val();
+        if (!titleVal || titleVal.trim() === "") {
+            $('#newstitle').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#newstitleError').addClass('show');
             isValid = false;
-        }
-        else {
-            $('#newsdescriptionlocal').css('background-color', 'white');
+            if (!firstInvalid) firstInvalid = $('#newstitle');
+        } else {
+            $('#newstitle').removeClass('is-invalid').css('background-color', 'white');
+            $('#newstitleError').removeClass('show');
         }
 
-        if ($('#newsimage').val() == "" && $("#imgPreview").attr('src') == "https://placehold.jp/100x100.png")
-        {
-
-            $('#newsimage').css('background-color', '#ff56564d');
+        // 3. News Title (Punjabi)
+        var titleLocalVal = $('#newstitlelocal').val();
+        if (!titleLocalVal || titleLocalVal.trim() === "") {
+            $('#newstitlelocal').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#newstitlelocalError').addClass('show');
             isValid = false;
-        }
-        else {
-            $('#newsimage').css('background-color', 'white');
-        }
-        if ($('#order').val() == "") {
-            $('#order').css('background-color', '#ff56564d');
-            isValid = false;
-        }
-        else {
-            $('#order').css('background-color', 'white');
+            if (!firstInvalid) firstInvalid = $('#newstitlelocal');
+        } else {
+            $('#newstitlelocal').removeClass('is-invalid').css('background-color', 'white');
+            $('#newstitlelocalError').removeClass('show');
         }
 
+        // 4. News Description
+        var descVal = $('#newsdescription').val();
+        if (!descVal || descVal.trim() === "") {
+            $('#newsdescription').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#newsdescriptionError').addClass('show');
+            isValid = false;
+            if (!firstInvalid) firstInvalid = $('#newsdescription');
+        } else {
+            $('#newsdescription').removeClass('is-invalid').css('background-color', 'white');
+            $('#newsdescriptionError').removeClass('show');
+        }
+
+        // 5. News Description (Punjabi)
+        var descLocalVal = $('#newsdescriptionlocal').val();
+        if (!descLocalVal || descLocalVal.trim() === "") {
+            $('#newsdescriptionlocal').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#newsdescriptionlocalError').addClass('show');
+            isValid = false;
+            if (!firstInvalid) firstInvalid = $('#newsdescriptionlocal');
+        } else {
+            $('#newsdescriptionlocal').removeClass('is-invalid').css('background-color', 'white');
+            $('#newsdescriptionlocalError').removeClass('show');
+        }
+
+        // 6. News Image (required on Add; on Edit required only if no existing image and no file uploaded)
+        var hasImage = false;
+        var currentSrc = $("#imgPreview").attr('src') || '';
+        var fileUpload = $("#newsimage").get(0);
+        var files = fileUpload ? fileUpload.files : null;
+
+        if (files && files.length > 0) {
+            hasImage = true;
+        } else if (currentSrc && currentSrc !== defaultNewsImgSrc && !currentSrc.startsWith("data:image/svg+xml") && currentSrc.indexOf("placehold.jp") === -1) {
+            hasImage = true;
+        }
+
+        if (!hasImage) {
+            $('#uploadCard').addClass('is-invalid');
+            $('#newsimageError').addClass('show');
+            isValid = false;
+            if (!firstInvalid) firstInvalid = $('#newsimage');
+        } else {
+            $('#uploadCard').removeClass('is-invalid');
+            $('#newsimageError').removeClass('show');
+        }
+
+        if (firstInvalid) {
+            firstInvalid.focus();
+        }
 
         return isValid;
     }
+
     function clearTextBox() {
         $('#myModal').data({ backdrop: 'static', keyboard: false });
+        $('.is-invalid').removeClass('is-invalid');
+        $('.field-val-msg').removeClass('show');
+        $('#uploadCard').removeClass('is-invalid');
+
         $('#newsid').val("");
-        $('#newstitle').val("");
-        $('#newstitlelocal').val("");
-        $('#newsdescription').css('background-color', 'white');
-        $('#newsdescriptionlocal').css('background-color', 'white');
-        $('#order').css('background-color', 'white');
-        $('#newsimage').css('background-color', 'white');
-        $('#StateDropDown').css('background-color', 'white');
-        $('#newstitle').css('background-color', 'white');
-        $('#newstitlelocal').css('background-color', 'white');
+        $('#StateDropDown').css('background-color', 'white').val(0);
+        $('#newstitle').css('background-color', 'white').val("");
+        $('#newstitlelocal').css('background-color', 'white').val("");
+        $('#newsdescription').css('background-color', 'white').val("");
+        $('#newsdescriptionlocal').css('background-color', 'white').val("");
+        $('#order').css('background-color', 'white').val("");
         $('#newsimage').val("");
+        $('#imgPreview').attr('src', defaultNewsImgSrc);
+
         $('#btnUpdate').hide();
         $("#myModalLabel").html("Add News Record");
         $('#btnSave').show();
-        $("#imgPreview").attr('src', 'https://placehold.jp/100x100.png');
-        $("#order").val("");
-        $("#StateDropDown").val(0);
-        $("#newsdescriptionlocal").val("");
-        $("#newsdescription").val("");
-
     }
     function Add() {
 
@@ -618,11 +1142,4 @@
         var s = $("#newsimage").val();
         $(location).attr("~/" + s);
     }
-    document.getElementById('newsimage').onchange = function (e) {
-        const [file] = newsimage.files;
-
-        if (file) {
-            $("#imgPreview").attr('src', URL.createObjectURL(file));
-        }
-    };
 </script>

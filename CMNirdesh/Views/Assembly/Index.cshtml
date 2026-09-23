@@ -99,9 +99,9 @@
 
                 </div>
             </div>
-            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="coman_modal dispatch_modal addnew_modal modal house-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title fs-5" id="myModalLabel">Add House Details</h5>
@@ -109,58 +109,60 @@
                         </div>
                         <div class="modal-body">
 
-
-
-                            @using (Ajax.BeginForm("Create", "Assembly", null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "handleSuccess", OnFailure = "handleFailure" }))
+                            @using (Ajax.BeginForm("Create", "Assembly", null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "handleSuccess", OnFailure = "handleFailure", OnBegin = "validate" }, new { id = "houseForm", onsubmit = "return validate();" }))
                             {
                                 @Html.AntiForgeryToken()
                                 @Html.ValidationSummary(true)
 
-                                @Html.HiddenFor(model => model.AssemblyCode)
-                                @Html.HiddenFor(model => model.Mode  ,new { id = "mode" })
+                                @Html.HiddenFor(model => model.AssemblyCode, new { id = "AssemblyCode", Value = "0" })
+                                @Html.HiddenFor(model => model.Mode, new { id = "mode", Value = "Add" })
 
+                                <!-- Section 1: House Information -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-home"></i> House Information</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <label for="AssemblyName" class="profile-info-name fotm_lbl">House Name:</label>
+                                            @Html.TextBoxFor(model => model.AssemblyName, new { @class = "form-control", id = "AssemblyName", placeholder = "Enter House Name" })
+                                            <span id="AssemblyNameError" class="field-val-msg"><i class="fa fa-exclamation-circle"></i> House Name is required</span>
+                                        </div>
 
-                                <div class="form-group">
-                                    @Html.Label("House Name")
-                                    @Html.EditorFor(model => model.AssemblyName)
-                                    @Html.ValidationMessageFor(model => model.AssemblyName)
+                                        <div class="form-group">
+                                            <label for="AssemblyNameLocal" class="profile-info-name fotm_lbl">House Name (Punjabi):</label>
+                                            @Html.TextBoxFor(model => model.AssemblyNameLocal, new { @class = "form-control", id = "AssemblyNameLocal", placeholder = "ਸਦਨ ਦਾ ਨਾਮ (ਪੰਜਾਬੀ)" })
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    @Html.Label("House Name Local")
-                                    @Html.EditorFor(model => model.AssemblyNameLocal)
-                                    @Html.ValidationMessageFor(model => model.AssemblyNameLocal)
+                                <!-- Section 2: Tenure & Schedule -->
+                                <div class="form-section-card">
+                                    <div class="form-section-title"><i class="fa fa-calendar"></i> Tenure &amp; Schedule</div>
+                                    <div class="form-card-grid">
+                                        <div class="form-group">
+                                            <label for="assemblyStartDate" class="profile-info-name fotm_lbl">Start Date:</label>
+                                            @Html.TextBoxFor(model => model.AssemblyStartDate, new { @type = "date", @class = "form-control", placeholder = "Pick Start Date", id = "assemblyStartDate" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="assemblyEndDate" class="profile-info-name fotm_lbl">End Date:</label>
+                                            @Html.TextBoxFor(model => model.AssemblyEndDate, new { @type = "date", @class = "form-control", placeholder = "Pick End Date", id = "assemblyEndDate" })
+                                        </div>
+
+                                        <div class="form-group col-full">
+                                            <label for="period" class="profile-info-name fotm_lbl">Period:</label>
+                                            @Html.TextBoxFor(model => model.Period, new { @class = "form-control", placeholder = "Enter Period e.g (2XXX- 2XXX)", id = "period" })
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    @Html.Label("Start Date")
-                                    @*<input type="date" id="startDate" name="StartDate" value="@Model.AssemblyStartDate" class="form-control" />*@
-                                    @Html.TextBoxFor(model => model.AssemblyStartDate, new { @type = "date", @class = "form-control", placeholder = "Pick Start Date", id = "assemblyStartDate" })
-                                    @Html.ValidationMessageFor(model => model.AssemblyStartDate)
-
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.Label("End Date")
-                                    @Html.TextBoxFor(model => model.AssemblyEndDate, new { @type = "date", @class = "form-control", placeholder = "Pick End Date", id = "assemblyEndDate" })
-                                    @Html.ValidationMessageFor(model => model.AssemblyEndDate)
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.Label("Period")
-                                    @Html.TextBoxFor(model => model.Period, new { @class = "form-control", placeholder = "Enter Period e.g (2XXX- 2XXX)", id = "period" })
-                                    @Html.ValidationMessageFor(model => model.Period)
-                                </div>
-
-
-                                <div class="modal-footer" style="background-color:white;">
-                                    <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
-                                    <button type="submit" class="btn btn-primary" id="btnUpdate">Update</button>
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="btnSave"><i class="fa fa-check"></i> Save</button>
+                                    <button type="submit" class="btn btn-primary" id="btnUpdate" style="display:none;"><i class="fa fa-pencil-square-o"></i> Update</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                                 </div>
                             }
                         </div>
-                        <div id="validationErrors" style="color:red"></div>
+                        <div id="validationErrors" style="color:red; padding: 0 24px 12px 24px;"></div>
 
                     </div>
                 </div>
@@ -170,8 +172,340 @@
 </div>
 
 <style>
+    /* ==========================================================================
+       HOUSE RECORD MODAL (SaaS Clean Modern Design)
+       ========================================================================== */
 
+    /* 1. Modal Reset & Container */
+    .house-record-modal.addnew_modal {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
 
+    .house-record-modal.modal {
+        padding: 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Gurmukhi", "Raavi", sans-serif;
+    }
+
+    .house-record-modal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 800px;
+        width: calc(100% - 2rem);
+        margin: 1.5rem auto;
+        min-height: calc(100% - 3rem);
+    }
+
+    .house-record-modal .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Modal Header & Accent Bar */
+    .house-record-modal .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .house-record-modal .modal-header .modal-title {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .house-record-modal .modal-header .modal-title::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .house-record-modal .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .house-record-modal .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* 3. Modal Body & Custom Scrollbar */
+    .house-record-modal .modal-body {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #cbd5e1 transparent !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .house-record-modal .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .house-record-modal .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .house-record-modal .modal-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .house-record-modal .modal-body::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+
+    /* 4. Form Section Cards */
+    .house-record-modal .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .house-record-modal .form-section-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .house-record-modal .form-section-title i {
+        color: #2563eb;
+        font-size: 13px !important;
+    }
+
+    /* 5. 2-Column Responsive Layout */
+    .house-record-modal .form-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-items: start;
+    }
+
+    .house-record-modal .col-full {
+        grid-column: 1 / -1;
+    }
+
+    @@media (max-width: 767px) {
+        .house-record-modal .modal-dialog {
+            margin: 0.75rem auto;
+            width: calc(100% - 1.5rem);
+        }
+
+        .house-record-modal .form-card-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .house-record-modal .modal-body {
+            padding: 14px 16px !important;
+        }
+
+        .house-record-modal .modal-footer {
+            padding: 12px 16px !important;
+        }
+
+        .house-record-modal .modal-footer .btn {
+            flex: 1 1 auto;
+        }
+    }
+
+    /* 6. Form Groups & Field Labels */
+    .house-record-modal .form-group {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .house-record-modal .fotm_lbl,
+    .house-record-modal .profile-info-name.fotm_lbl,
+    .house-record-modal label.fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: normal !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+        width: 100% !important;
+        text-align: left !important;
+        float: none !important;
+        padding-left: 0 !important;
+    }
+
+    /* 7. Inputs & Form Controls */
+    .house-record-modal input[type="text"],
+    .house-record-modal input[type="date"],
+    .house-record-modal .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        line-height: normal !important;
+        color: #0f172a !important;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out !important;
+        box-sizing: border-box !important;
+    }
+
+    .house-record-modal input[type="text"]:focus,
+    .house-record-modal input[type="date"]:focus,
+    .house-record-modal .form-control:focus {
+        border-color: #2563eb !important;
+        background-color: #ffffff !important;
+        outline: 0 !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+    }
+
+    .house-record-modal input::placeholder,
+    .house-record-modal .form-control::placeholder {
+        color: #94a3b8;
+        font-size: 12.5px;
+    }
+
+    /* 8. Validation Highlighting */
+    .house-record-modal .form-control.is-invalid,
+    .house-record-modal input[type="date"].is-invalid,
+    .house-record-modal input[type="text"].is-invalid {
+        border: 1.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
+
+    .house-record-modal .field-val-msg {
+        display: none;
+        color: #dc2626;
+        font-size: 11px;
+        font-weight: 500;
+        margin-top: 4px;
+        line-height: 1.3;
+    }
+
+    .house-record-modal .field-val-msg.show {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* 9. Sticky Footer & Actions */
+    .house-record-modal .modal-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .house-record-modal button#btnSave,
+    .house-record-modal button#btnUpdate {
+        background-color: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 8px 24px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .house-record-modal button#btnSave[style*="display: none"],
+    .house-record-modal button#btnSave[style*="display:none"],
+    .house-record-modal button#btnUpdate[style*="display: none"],
+    .house-record-modal button#btnUpdate[style*="display:none"] {
+        display: none !important;
+    }
+
+    .house-record-modal button#btnSave:hover,
+    .house-record-modal button#btnUpdate:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px);
+    }
+
+    .house-record-modal button#btnSave:active,
+    .house-record-modal button#btnUpdate:active {
+        transform: translateY(0);
+    }
+
+    .house-record-modal .modal-footer .btn-secondary,
+    .house-record-modal .modal-footer .btn-danger {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        padding: 8px 20px !important;
+        border-radius: 6px !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        height: 38px !important;
+    }
+
+    .house-record-modal .modal-footer .btn-secondary:hover,
+    .house-record-modal .modal-footer .btn-danger:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
+
+    /* 10. Table & Toggle Layout */
     .inr_frm_dsgn {
         box-shadow: 0px 0px 4px 1px #ccc;
         border-top-left-radius: 5px;
@@ -181,7 +515,6 @@
     .form_lyot {
         padding: 10px;
     }
-
 
     .form-group input[type="number"].txt_design {
         border-radius: 4px !important;
@@ -299,19 +632,46 @@
 </style>
 
 <script>
-
-
     $(document).ready(function () {
-        $('#example').DataTable({
+        $('#example').DataTable();
+
+        // Real-time clearing of validation highlights when user types in House Name
+        $('#AssemblyName').on('input keyup change', function () {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid').css('background-color', 'white');
+                $('#AssemblyNameError').removeClass('show');
+            }
         });
     });
+
+    function validate() {
+        var isValid = true;
+        var firstInvalid = null;
+
+        // Validate ONLY House Name
+        var houseName = $('#AssemblyName').val();
+        if (!houseName || houseName.trim() === '') {
+            $('#AssemblyName').addClass('is-invalid').css('background-color', '#fef2f2');
+            $('#AssemblyNameError').html('<i class="fa fa-exclamation-circle"></i> House Name is required').addClass('show');
+            isValid = false;
+            if (!firstInvalid) firstInvalid = $('#AssemblyName');
+        } else {
+            $('#AssemblyName').removeClass('is-invalid').css('background-color', 'white');
+            $('#AssemblyNameError').removeClass('show');
+        }
+
+        if (firstInvalid) {
+            firstInvalid.focus();
+        }
+
+        return isValid;
+    }
 
     function handleSuccess(response) {
         if (response.success) {
             alert("Form submitted successfully!");
-             window.location.href =  "@Url.Action("Index", "Assembly")";
+            window.location.href = "@Url.Action("Index", "Assembly")";
         } else {
-
             var errorsHtml = "<ul>";
             $.each(response.errors, function (index, error) {
                 errorsHtml += "<li>" + error + "</li>";
@@ -321,15 +681,47 @@
         }
     }
 
+    function handleFailure(response) {
+        $("#validationErrors").html("An error occurred while processing your request.");
+    }
 
     function AddNew() {
         clearTextBox();
         $('#myModal').modal('show');
         $("#mode").val('Add');
+        $("#AssemblyCode").val('0');
     }
 
-     function getbyID(AssemblyId, DeptId) {
-        clearTextBox()
+    function parseJsonDate(val) {
+        if (!val) return null;
+        if (typeof val === 'string' && val.indexOf('/Date(') !== -1) {
+            return new Date(parseInt(val.substr(6)));
+        }
+        if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}/.test(val)) {
+            var parts = val.substring(0, 10).split('-');
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+        var parsed = new Date(val);
+        return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function formatDate(date) {
+        if (!date || isNaN(date.getTime())) return "";
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (day < 10) {
+            day = '0' + day;
+        }
+        if (month < 10) {
+            month = '0' + month;
+        }
+        return year + "-" + month + "-" + day;
+    }
+
+    function getbyID(AssemblyId, DeptId) {
+        clearTextBox();
         $("#myModalLabel").html("Update House Record");
         $("#btnUpdate").show();
         $("#btnSave").hide();
@@ -346,35 +738,22 @@
                 $("#AssemblyCode").val(data.AssemblyCode);
                 $("#AssemblyName").val(data.AssemblyName);
                 $('#AssemblyNameLocal').val(data.AssemblyNameLocal);
-                var assemblyStartDate = new Date(data.AssemblyStartDate);
-                var formattedStartDate = formatDate(assemblyStartDate);
-                $("#assemblyStartDate").val(formattedStartDate);
-                var assemblyEndDate = new Date(data.AssemblyEndDate);
-                var formattedEndDate = formatDate(assemblyEndDate);
-                $("#assemblyEndDate").val(formattedEndDate);
+                var sDate = parseJsonDate(data.AssemblyStartDate);
+                if (sDate) {
+                    $("#assemblyStartDate").val(formatDate(sDate));
+                }
+                var eDate = parseJsonDate(data.AssemblyEndDate);
+                if (eDate) {
+                    $("#assemblyEndDate").val(formatDate(eDate));
+                }
                 $("#period").val(data.Period);
                 $("#btnSave").hide();
-
+                $("#btnUpdate").show();
             }
         });
     }
 
-    function formatDate(date) {
-        var day = date.getDate();
-        var month = date.getMonth() + 1;
-        var year = date.getFullYear();
-
-        if (day < 10) {
-            day = '0' + day;
-        }
-        if (month < 10) {
-            month = '0' + month;
-        }
-        return year + "-" + month + "-" + day;
-    }
-
-
-   var MyApp = {};
+    var MyApp = {};
     function DeleteDepartmentRecord(xyz) {
         MyApp = xyz;
         DeleteID();
@@ -389,25 +768,24 @@
             url: '@Url.Action("UpdateStatusHouse", "Assembly")' + '?AssemblyCode=' + i,
             success: function (result) {
                 alert("Updated Successfully");
-                window.location.href =  "@Url.Action("Index", "Assembly")";
+                window.location.href = "@Url.Action("Index", "Assembly")";
             }
         });
     }
 
-    function handleFailure(response) {
-        $("#validationErrors").html("An error occurred while processing your request.");
-    }
     function clearTextBox() {
-        $('#AssemblyName').val("");
-        $('#AssemblyNameLocal').val("");
-        $('#assemblyStartDate').val("");
-        $('#assemblyEndDate').val("");
-        $('#Period').val("");
+        $('.is-invalid').removeClass('is-invalid');
+        $('.field-val-msg').removeClass('show');
+        $('#AssemblyName').css('background-color', 'white').val("");
+        $('#AssemblyNameLocal').css('background-color', 'white').val("");
+        $('#assemblyStartDate').css('background-color', 'white').val("");
+        $('#assemblyEndDate').css('background-color', 'white').val("");
+        $('#period').css('background-color', 'white').val("");
+        $('#AssemblyCode').val("0");
+        $('#mode').val("Add");
+        $("#validationErrors").html("");
+        $("#myModalLabel").html("Add House Details");
         $("#btnSave").show();
         $("#btnUpdate").hide();
-        $("#btnSave").show();
     }
-
 </script>
-
-
