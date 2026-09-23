@@ -275,12 +275,17 @@
                         var editor = tinymce.get('MeetingTableApproval_txt_' + safeId);
                         if (editor && editor.getContent()) {
 
-                            var status = $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
+                            var $editorContainer = $(editor.getContainer());
+                            var status = ($editorContainer.length ? $editorContainer.find('select.action-ddl').val() : null)
+                                || $('#MeetingTableApproval select.action-ddl[data-refid="' + refIds + '"]:visible').val()
+                                || $('#MeetingTableApproval #drpdwn_' + safeId + ' select.action-ddl').val()
+                                || $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
+
                             var resolutionNo = $(this).data('resolution');
                             tinyMceDataStoreApproval[safeId] = {
                                 RefId: safeId,
                                 Comments: editor.getContent(),
-                                Status: status || '',
+                                //Status: status || '',
                                 resolutionNo: resolutionNo
                             };
                         }
@@ -362,6 +367,30 @@
                                         var $clone = $drpdwn.clone(true, true)
                                             .removeAttr('id')
                                             .css('display', '');
+
+                                        var $origSelect = $drpdwn.find('.action-ddl');
+                                        var $cloneSelect = $clone.find('.action-ddl');
+
+                                        // Sync initial value (or from tinyMceDataStoreApproval if restored)
+                                        var initialStatus = $origSelect.val();
+
+                                        if (initialStatus) {
+                                            $origSelect.val(initialStatus);
+                                            $cloneSelect.val(initialStatus);
+                                        }
+
+                                        // Sync clone -> original on change
+                                        $cloneSelect.off('change.syncStatus').on('change.syncStatus', function () {
+                                            var val = $(this).val();
+                                            $origSelect.val(val);
+                                            saveEditorData(editor, false);
+                                        });
+
+                                        // Sync original -> clone on change
+                                        $origSelect.off('change.syncStatus').on('change.syncStatus', function () {
+                                            var val = $(this).val();
+                                            $cloneSelect.val(val);
+                                        });
 
                                         // Keep the original inside the DataTables row
                                         // and put only the clone inside TinyMCE
@@ -464,10 +493,18 @@
                         for (const el of keyIds) {
                             if (firstIds.has(el)) {
                                 editor.setContent(ls[key].Comments || '');
+                                // var draftStatus = value.Status || ls[key].Status;
+                                // if (draftStatus) {
+                                //     var $editorContainer = $(editor.getContainer());
+                                //     if ($editorContainer.length) {
+                                //         $editorContainer.find('.action-ddl').val(draftStatus);
+                                //     }
+                                //     $('#MeetingTableApproval #drpdwn_' + firstId + ' select.action-ddl').val(draftStatus);
+                                // }
                                 tinyMceDataStoreApproval[firstId] = {
                                     RefId: firstId,
                                     Comments: value.Comments || '',
-                                    Status: value.Status,
+                                    //Status: draftStatus,
                                     resolutionNo: value.resolutionNo
                                 };
                                 matched = true;
@@ -492,14 +529,20 @@
 
             if (!refIds) return;
 
-            var status = $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
+            var $editorContainer = $(editor.getContainer());
+            var safeRefId = refIds.toString().replace(/,/g, '_');
+            var status = ($editorContainer.length ? $editorContainer.find('select.action-ddl').val() : null)
+                || $('#MeetingTableApproval select.action-ddl[data-refid="' + refIds + '"]:visible').val()
+                || $('#MeetingTableApproval #drpdwn_' + safeRefId + ' select.action-ddl').val()
+                || $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
+
             var comments = editor.getContent();
             var refId = refIds.toString().replace(/,/g, '_');
 
             tinyMceDataStoreApproval[refId] = {
                 RefId: refId,
                 Comments: comments,
-                Status: status || '',
+                //Status: status || '',
                 resolutionNo: resolutionNo
             };
 
@@ -571,7 +614,11 @@
                 var safeId = refIds.toString().replace(/,/g, '_');
                 var editor = tinymce.get('MeetingTableApproval_txt_' + safeId);
                 var comments = editor ? editor.getContent() : '';
-                var status = $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
+                var $editorContainer = editor ? $(editor.getContainer()) : null;
+                var status = ($editorContainer && $editorContainer.length ? $editorContainer.find('select.action-ddl').val() : null)
+                    || $('#MeetingTableApproval select.action-ddl[data-refid="' + refIds + '"]:visible').val()
+                    || $('#MeetingTableApproval #drpdwn_' + safeId + ' select.action-ddl').val()
+                    || $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
 
                 var editorCheckbox = $(this).closest('td').find('#actionSubmitCheckbox');
                 var isChecked = $(editorCheckbox).is(':checked');
@@ -636,6 +683,7 @@
 
                 success: function () {
                     // ✅ success UI
+                    localStorage.removeItem(storageKey);
                     btn.disabled = true;
                     btn.innerText = "Submitted";
                     alert("All data saved successfully");       
@@ -660,7 +708,11 @@
             var safeId = refIds.toString().replace(/,/g, '_');
             var editor = tinymce.get('MeetingTableApproval_txt_' + safeId);
             var comments = editor ? editor.getContent() : '';
-            var status = $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
+            var status = $(btn).closest('.drpdwn-container').find('.action-ddl').val()
+                || (editor ? $(editor.getContainer()).find('.action-ddl').val() : null)
+                || $('#MeetingTableApproval select.action-ddl[data-refid="' + refIds + '"]:visible').val()
+                || $('#MeetingTableApproval #drpdwn_' + safeId + ' select.action-ddl').val()
+                || $('#MeetingTableApproval select[data-refid="' + refIds + '"]').val();
 
             if (!status || status === "") {
                 alert("Please select status");
