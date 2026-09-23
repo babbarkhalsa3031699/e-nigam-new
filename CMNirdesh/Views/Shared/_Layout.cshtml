@@ -127,16 +127,18 @@
             //    $("#homebutton").css("display", "none");
             //}
 
-            $("#news_slider").owlCarousel({
-                items: 8,
-                itemsDesktop: [1199, 8],
-                itemsDesktopSmall: [980, 6],
-                itemsMobile: [600, 3],
-                navigation: true,
-                navigationText: ["", ""],
-                pagination: true,
-                autoPlay: true
-            });
+            if ($("#news_slider").length && typeof $.fn.owlCarousel === 'function') {
+                $("#news_slider").owlCarousel({
+                    items: 8,
+                    itemsDesktop: [1199, 8],
+                    itemsDesktopSmall: [980, 6],
+                    itemsMobile: [600, 3],
+                    navigation: true,
+                    navigationText: ["", ""],
+                    pagination: true,
+                    autoPlay: true
+                });
+            }
         //    // RESTYLE THE DROPDOWN MENU
         //    $('#google_translate_element').on("click", function () {
 
@@ -454,6 +456,14 @@
            EXECUTIVE CIVIC PORTAL HEADER DESIGN SYSTEM (COMPACT AFTER-LOGIN & GENERAL)
            Every styled element uses a designated semantic class name.
            ========================================================================== */
+
+        /* Global Modals Layering above Header (1050) and Sidebar (1040/1060) */
+        .modal {
+            z-index: 1070 !important;
+        }
+        .modal-backdrop {
+            z-index: 1065 !important;
+        }
 
         /* Header Container */
         .portal-header {
@@ -2013,7 +2023,7 @@
             clear: both !important;
             display: block !important;
             width: 100% !important;
-            margin-top: 25px !important;
+            /* margin-top: 25px !important; */
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
             border-top: 1px solid #e2e8f0 !important;
             box-shadow: 0 -2px 12px rgba(15, 23, 42, 0.04) !important;

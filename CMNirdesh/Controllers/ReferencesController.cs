@@ -14228,7 +14228,7 @@ namespace CMNirdesh.Controllers
                 sb.Append("<tr>");
                 sb.Append("<th colspan='19' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + "Meeting Files" + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + "Meeting Files" + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='FileDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -14346,7 +14346,7 @@ namespace CMNirdesh.Controllers
                 sb.Append("<tr>");
                 sb.Append("<th colspan='19' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + "Meeting Files" + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + "Meeting Files" + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='FileDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -14557,7 +14557,7 @@ namespace CMNirdesh.Controllers
                 sb.Append("<tr>");
                 sb.Append("<th colspan='19' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + "Meeting Files" + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + "Meeting Files" + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='FileDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -15014,7 +15014,7 @@ namespace CMNirdesh.Controllers
                 sb.Append("<tr>");
                 sb.Append("<th colspan='8' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='FlipFileDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -15029,7 +15029,7 @@ namespace CMNirdesh.Controllers
                 sb.Append("<tr>");
                 sb.Append("<th colspan='8' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='FlipFileDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -15106,7 +15106,7 @@ namespace CMNirdesh.Controllers
                 sb.Append("<tr>");
                 sb.Append("<th colspan='6' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='FlipFileDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -15122,7 +15122,7 @@ namespace CMNirdesh.Controllers
                 sb.Append("<tr>");
                 sb.Append("<th colspan='6' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='FlipFileDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -15319,7 +15319,7 @@ namespace CMNirdesh.Controllers
                     }
                 }
 
-                sb.Append("<td class='center td-heading total' style='border: 1px solid #D3D3D3;'>" + GTotal + "</td>");
+                sb.Append("<td class='center td-heading total' style='border: 1px solid #D3D3D3; text-align: center !important;'><span class='total-badge'>" + GTotal + "</span></td>");
                 int Gcnt = 0;
                 for (int i = 1; i < dt.Columns.Count; i++)
                 {
@@ -15330,7 +15330,7 @@ namespace CMNirdesh.Controllers
                         Gcnt = dt.AsEnumerable().Sum(row => row.Field<int>(result1[0].ItemArray[1].ToString()));
                         GTotal += Gcnt;
 
-                        sb.Append("<td class='center td-heading total " + dt.Columns[i].ColumnName.ToString().Replace(" ", "_") + "' style='border: 1px solid #D3D3D3;'>" + Gcnt + "</td>");
+                        sb.Append("<td class='center td-heading total " + dt.Columns[i].ColumnName.ToString().Replace(" ", "_") + "' style='border: 1px solid #D3D3D3; text-align: center !important;'><span class='total-badge'>" + Gcnt + "</span></td>");
                     }
                 }
 
@@ -15449,7 +15449,7 @@ namespace CMNirdesh.Controllers
             sb.Append("<tr>");
             sb.Append("<th colspan='6' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
             sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-            sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
+            sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
             sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='MemoDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
             sb.Append("</div>");
             sb.Append("</th>");
@@ -16999,43 +16999,65 @@ tr { page-break-inside: avoid }
             DataTable dt = new DataTable();
             dt = DiaryDashboard.GetDataForDiaryDashboardIndivisual(CurrentSession.OfficeId, Convert.ToString(CurrentSession.UserID), CurrentSession.DeptID, out dtstatus, financialyear, RefType, MeetingType, selectedType);
 
-            sb.Append("<table id='MemoType' style='padding:10px;font-size: 12px; border-collapse: collapse;' class='table table-bordered'>");
+            sb.Append("<table id='MemoType' class='table table-bordered'>");
             sb.Append("<thead>");
             if (dt.Rows.Count >= 0)
             {
                 int count = dt.Columns.Count;
                 sb = sb.Append("<tr role='row' class='table-heading'>");
-                sb = sb.Append("<td style= 'text-align:center; ' class='td-heading' id='tdFrom'></td>");
-                sb = sb.Append("<td style= 'text-align:center; ' colspan= " + count + " class='td-heading' id='tdFrom'>House Resolutions</td>");
+                sb = sb.Append("<th style='text-align:center;' colspan='" + count + "' class='td-heading'>House Resolutions</th>");
                 sb = sb.Append("</tr>");
                 sb = sb.Append("<tr role='row' class='table-heading'>");
-                sb = sb.Append("<td class='td-heading' id='tdFrom'>Department</td>");
+                sb = sb.Append("<th class='td-heading' id='tdFrom'>Department</th>");
 
                 for (int i = 1; i < dt.Columns.Count; i++)
                 {
                     DataRow[] result1 = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
                     if (result1.Length > 0)
                     {
-                        sb = sb.Append("<td class='td-heading' >" + result1[0].ItemArray[1].ToString().Trim().Substring(0, result1[0].ItemArray[1].ToString().IndexOf("_")) + "</td>");
+                        string title = result1[0].ItemArray[1].ToString().Trim();
+                        int idx = title.IndexOf("_");
+                        sb = sb.Append("<th class='td-heading'>" + (idx >= 0 ? title.Substring(0, idx) : title) + "</th>");
                     }
                 }
 
                 sb = sb.Append("</tr>");
-                sb = sb.Append("<tr role='row' class='table-heading'>");
-                sb = sb.Append("<td class='td-heading' id='tdFrom'></td>");
 
+                bool hasSubHeaders = false;
                 for (int i = 1; i < dt.Columns.Count; i++)
                 {
                     DataRow[] result1 = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
                     if (result1.Length > 0)
                     {
-                        sb = sb.Append("<td class='td-heading' >" + result1[0].ItemArray[1].ToString().Trim().Substring(result1[0].ItemArray[1].ToString().LastIndexOf("_") + 1) + "</td>");
+                        string title = result1[0].ItemArray[1].ToString().Trim();
+                        int lastIdx = title.LastIndexOf("_");
+                        if (lastIdx >= 0 && lastIdx < title.Length - 1)
+                        {
+                            hasSubHeaders = true;
+                            break;
+                        }
                     }
-
                 }
 
-                sb = sb.Append("</tr>");
-                sb.Append("<thead>");
+                if (hasSubHeaders)
+                {
+                    sb = sb.Append("<tr role='row' class='table-heading'>");
+                    sb = sb.Append("<th class='td-heading' id='tdFrom'></th>");
+
+                    for (int i = 1; i < dt.Columns.Count; i++)
+                    {
+                        DataRow[] result1 = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
+                        if (result1.Length > 0)
+                        {
+                            string title = result1[0].ItemArray[1].ToString().Trim();
+                            int lastIdx = title.LastIndexOf("_");
+                            sb = sb.Append("<th class='td-heading'>" + (lastIdx >= 0 ? title.Substring(lastIdx + 1) : "") + "</th>");
+                        }
+                    }
+
+                    sb = sb.Append("</tr>");
+                }
+                sb.Append("</thead>");
             }
 
             sb.Append("<tbody>");
@@ -17141,7 +17163,7 @@ tr { page-break-inside: avoid }
                 sb.Append("<tr>");
                 sb.Append("<th colspan='8' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > Total Proposals </h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > Total Proposals </h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='MemoDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");
@@ -17154,7 +17176,7 @@ tr { page-break-inside: avoid }
                 sb.Append("<tr>");
                 sb.Append("<th colspan='8' style='background: #d9eaff; padding: 10px; border-bottom: 3px solid #a3c2f5;'>");
                 sb.Append("<div style='display: flex; justify-content: space-between; align-items: center; height: 100%;'>");
-                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #003366; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
+                sb.Append("<h6 style='margin: 0; font-size: 16px; color: #ffffffff; font-weight: 600;'>" + DepartmentName + " > " + documentTypeName + "</h6>");
                 sb.Append("<button style='padding: 5px 15px; font-size: 14px;' type='button' onclick='MemoDivs()' class='btn btn-primary' aria-label='Close'>Back</button>");
                 sb.Append("</div>");
                 sb.Append("</th>");

@@ -689,7 +689,7 @@
             margin-top: auto !important;
             background: #ffffff !important;
             border-top: 1px solid #e2e8f0 !important;
-            padding: 14px 20px !important;
+            /* padding: 14px 20px !important; */
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02) !important;
             z-index: 10 !important;
         }
@@ -978,104 +978,102 @@
 
 
     function LoginWithParichay() {
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("LoginButtonClik", "ParichayLogin")',
-
-                datatype: "Json",
-                contentType: "application/json; charset=utf-8",
-                data: { },
-                success: function (response) {
-                    if (response != null) {
-                        window.location = response;
-                    }
-                    else {
-                        alert("Login Failed..");
-                    }
-                },
-                error: function (error) {
-                }
-              });
-        }
-        function changepassword() {
+        $('#loader-wrapper').show();
         $.ajax({
-        type: "GET",
-        url: '@Url.Action("ChangePassword", "Account")',
+            type: "GET",
+            url: '@Url.Action("LoginButtonClik", "ParichayLogin")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { },
+            success: function (response) {
+                if (response != null) {
+                    window.location = response;
+                }
+                else {
+                    $('#loader-wrapper').hide();
+                    alert("Login Failed..");
+                }
+            },
+            error: function (error) {
+                $('#loader-wrapper').hide();
+            }
+        });
+    }
 
-        datatype: "Json",
-        contentType: "application/json; charset=utf-8",
-        data: { },
-        success: function (response) {
-            //if (response != null) {
-            //    window.location = response;
-            //}
-        },
-        error: function (error) {
+    function changepassword() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ChangePassword", "Account")',
+            datatype: "Json",
+            contentType: "application/json; charset=utf-8",
+            data: { },
+            success: function (response) {
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    window.addEventListener('pageshow', function (event) {
+        $('#loader-wrapper').hide();
+    });
+
+    function SubmitForm() {
+        var username = document.getElementById("UserName");
+        var password = document.getElementById("Password");
+        var Captcha = document.getElementById("CaptchaText");
+        document.getElementById("hdnUserName").value = encodeURI(username.value);
+        var hashedPassword = $("#Password").val();
+        var randomSalt = generateRandomSalt();
+        document.getElementById("ActualPassword").value = generateSHA256Hash(hashedPassword) +  generateSHA256Hash(randomSalt);
+        var isValid = true;
+        if (username.value == "") {
+            $('#UsernameValidation').html('Username required');
+            isValid = false;
         }
-      });
-}
-
-        function SubmitForm() {
-            var username = document.getElementById("UserName");
-            var password = document.getElementById("Password");
-            var Captcha = document.getElementById("CaptchaText");
-            document.getElementById("hdnUserName").value = encodeURI(username.value);
-            var hashedPassword = $("#Password").val();
-            var randomSalt = generateRandomSalt();
-            document.getElementById("ActualPassword").value = generateSHA256Hash(hashedPassword) +  generateSHA256Hash(randomSalt);
-            var isValid = true;
-            if (username.value == "") {
-                $('#UsernameValidation').html('Username required');
-                isValid = false;
+        else {
+            $('#UsernameValidation').html('');
+            if (isValid != false) {
+                isValid = true;
             }
-            else {
-                $('#UsernameValidation').html('');
-                if (isValid != false) {
-                    isValid = true;
-                }
-            }
-            if (password.value == "") {
-                $('#PasswordValidation').html('Password required')
-                //event.preventDefault();
-                isValid = false;
-            }
-            else {
-                $('#PasswordValidation').html('');
-                if (isValid != false) {
-                    isValid = true;
-                }
-            }
-            if (Captcha.value == "") {
-                $('#CaptchaValidation').html('Captcha required')
-                //event.preventDefault();
-                isValid = false;
-            }
-            else {
-                $('#CaptchaValidation').html('');
-                if (isValid != false) {
-                    isValid = true;
-
-                }
-            }
-            if (isValid) {
-                /*$('#LoginForm').submit();*/
-                if (Captcha && Captcha.value) {
-                    Captcha.value = Captcha.value.trim().toUpperCase();
-                }
-                setTimeout(function () {
-                    var pwd = document.getElementById("Password");
-                    var usr = document.getElementById("UserName");
-                    if (pwd) pwd.value = "";
-                    if (usr) usr.value = "";
-                }, 100);
-                return true;
-            }
-            else {
-                //event.preventDefault();
-                return false;
-            }
-
         }
+        if (password.value == "") {
+            $('#PasswordValidation').html('Password required');
+            isValid = false;
+        }
+        else {
+            $('#PasswordValidation').html('');
+            if (isValid != false) {
+                isValid = true;
+            }
+        }
+        if (Captcha.value == "") {
+            $('#CaptchaValidation').html('Captcha required');
+            isValid = false;
+        }
+        else {
+            $('#CaptchaValidation').html('');
+            if (isValid != false) {
+                isValid = true;
+            }
+        }
+        if (isValid) {
+            if (Captcha && Captcha.value) {
+                Captcha.value = Captcha.value.trim().toUpperCase();
+            }
+            $('#loader-wrapper').show();
+            setTimeout(function () {
+                var pwd = document.getElementById("Password");
+                var usr = document.getElementById("UserName");
+                if (pwd) pwd.value = "";
+                if (usr) usr.value = "";
+            }, 100);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
         function generateRandomSalt() {
             var salt = '';
@@ -1576,7 +1574,30 @@
         </div>
     </section>
 
-
+    <!-- Executive Civic Loader Overlay -->
+    <div id="loader-wrapper" style="display: none;">
+        <div class="portal-loader-card">
+            <div class="portal-loader-spinner-box">
+                <div class="portal-loader-orbit-outer"></div>
+                <div class="portal-loader-orbit-middle"></div>
+                <div id="loader" class="portal-loader-core"></div>
+                <div class="portal-loader-emblem-badge">
+                    <img src="~/Assets/Home_Images/punjab-logo.png" alt="Government of Punjab" class="portal-loader-emblem-img" />
+                </div>
+            </div>
+            <div class="portal-loader-info">
+                <h5 class="portal-loader-title">Digital MC House</h5>
+                <p class="portal-loader-subtitle">Government of Punjab &bull; Civic Governance</p>
+                <div class="portal-loader-status">
+                    <span class="portal-loader-status-dot"></span>
+                    <span class="portal-loader-status-text">Processing request, please wait...</span>
+                </div>
+                <div class="portal-loader-progress-track">
+                    <div class="portal-loader-progress-indicator"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 

@@ -1,139 +1,720 @@
-﻿@model CMNirdesh.Models.LGApproval
+@model CMNirdesh.Models.LGApproval
 
 @{
-    int Sr = 1;
+    int totalApprovals = Model.LGApprovalList != null ? Model.LGApprovalList.Count : 0;
+    int totalMCs = Model.LGApprovalList != null ? Model.LGApprovalList.Select(x => x.MCName).Distinct().Count() : 0;
+    int totalMeetings = Model.LGApprovalList != null ? Model.LGApprovalList.Select(x => x.MeetingDate).Distinct().Count() : 0;
+    string pageTitle = !string.IsNullOrEmpty(Model.RefMenuName) ? Model.RefMenuName : "ADC Approvals";
 }
 
 <head>
     <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
-
     <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
     <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
     <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
     <script src="~/Scripts/datatables/jszip.min.js"></script>
     <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
     <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts-punjabi.js"></script>
     <script src="~/Scripts/datatables/buttons.print.min.js"></script>
     <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
 
-
-
     <script>
-
-
         $(document).ready(function () {
+            initializeADCTable();
+        });
+
+        function initializeADCTable() {
+            if ($.fn.DataTable.isDataTable('#MeetingTable')) {
+                $('#MeetingTable').DataTable().destroy();
+            }
+
+            var exportFormatting = {
+                body: function (data, rowIdx, colIdx, node) {
+                    var rawText = (data || '').toString();
+                    var clean = rawText.replace(/<[^>]*>?/gm, '').trim();
+
+                    // ULB (Col 0)
+                    if (colIdx === 0) {
+                        return clean;
+                    }
+                    // Meeting Date (Col 1)
+                    if (colIdx === 1) {
+                        return clean;
+                    }
+                    // Meeting Title (Col 2)
+                    if (colIdx === 2) {
+                        return clean.replace(/\s+/g, ' ');
+                    }
+                    // Approvals (Col 3) - extract dates and remove "More.."
+                    if (colIdx === 3) {
+                        clean = clean.replace(/More\.\./gi, '').trim();
+                        return clean || '-';
+                    }
+                    return clean;
+                }
+            };
+
             $('#MeetingTable').DataTable({
                 "bLengthChange": false,
-                dom: 'Bfrtip',
+                "pageLength": 10,
+                dom: '<"dt-toolbar-modern d-flex flex-wrap align-items-center justify-content-between mb-2"<"dt-buttons-slot"B><"dt-search-slot"f>>rt<"dt-footer-modern d-flex flex-wrap align-items-center justify-content-between mt-2"<"dt-info-slot"i><"dt-paging-slot"p>>',
                 buttons: [
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5'
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o me-1"></i> Excel',
+                        className: 'dt-btn-action dt-btn-excel',
+                        title: 'Orders_ADC_Approvals',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3],
+                            format: exportFormatting
+                        }
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fa fa-file-text-o me-1"></i> CSV',
+                        className: 'dt-btn-action dt-btn-csv',
+                        title: 'Orders_ADC_Approvals',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3],
+                            format: exportFormatting
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o me-1"></i> PDF',
+                        className: 'dt-btn-action dt-btn-pdf',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        title: null,
+                        filename: 'Orders_ADC_Approvals',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3],
+                            format: exportFormatting
+                        },
+                        customize: function (doc) {
+                            try {
+                                var selectedFont = null;
+                                var pdfObj = window.pdfMake || (typeof pdfMake !== 'undefined' ? pdfMake : null);
+                                if (pdfObj && pdfObj.vfs && pdfObj.vfs['Raavi-Regular.ttf']) {
+                                    pdfObj.fonts = pdfObj.fonts || {};
+                                    pdfObj.fonts.Raavi = {
+                                        normal: 'Raavi-Regular.ttf',
+                                        bold: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf',
+                                        italics: 'Raavi-Regular.ttf',
+                                        bolditalics: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf'
+                                    };
+                                    selectedFont = 'Raavi';
+                                }
+
+                                doc.defaultStyle = doc.defaultStyle || {};
+                                if (selectedFont) {
+                                    doc.defaultStyle.font = selectedFont;
+                                }
+                                doc.defaultStyle.fontSize = 8.5;
+                                doc.pageMargins = [18, 18, 18, 18];
+
+                                doc.content = doc.content || [];
+                                doc.content.unshift({
+                                    text: 'Orders >> ADC Approvals — Sanctioned Proceedings & Orders',
+                                    fontSize: 13,
+                                    bold: true,
+                                    color: '#1e3a8a',
+                                    margin: [0, 0, 0, 9],
+                                    font: selectedFont || undefined
+                                });
+
+                                var tableNode = null;
+                                for (var i = 0; i < doc.content.length; i++) {
+                                    if (doc.content[i] && doc.content[i].table) {
+                                        tableNode = doc.content[i];
+                                        break;
+                                    }
+                                }
+
+                                if (tableNode && tableNode.table && tableNode.table.body && tableNode.table.body.length > 0) {
+                                    var table = tableNode.table;
+                                    table.headerRows = 1;
+                                    table.dontBreakRows = true;
+                                    table.widths = [130, 80, '*', 110];
+
+                                    for (var r = 0; r < table.body.length; r++) {
+                                        var row = table.body[r];
+                                        for (var c = 0; c < row.length; c++) {
+                                            var cell = row[c];
+                                            if (typeof cell !== 'object' || cell === null) {
+                                                cell = { text: String(cell || '') };
+                                                row[c] = cell;
+                                            }
+                                            if (selectedFont) {
+                                                cell.font = selectedFont;
+                                            }
+
+                                            if (r === 0) {
+                                                cell.fillColor = '#1e3a8a';
+                                                cell.color = '#ffffff';
+                                                cell.bold = true;
+                                                cell.fontSize = 9;
+                                                cell.alignment = 'center';
+                                            } else {
+                                                cell.fontSize = 8;
+                                                cell.color = '#1e293b';
+                                                cell.fillColor = (r % 2 === 0) ? '#f8fafc' : '#ffffff';
+
+                                                if (c === 0 || c === 2) {
+                                                    cell.alignment = 'left';
+                                                } else {
+                                                    cell.alignment = 'center';
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    tableNode.layout = {
+                                        hLineWidth: function (idx, node) {
+                                            return (idx === 0 || idx === 1 || idx === node.table.body.length) ? 0.8 : 0.4;
+                                        },
+                                        vLineWidth: function () { return 0.4; },
+                                        hLineColor: function (idx, node) {
+                                            return (idx === 0 || idx === 1 || idx === node.table.body.length) ? '#1e3a8a' : '#cbd5e1';
+                                        },
+                                        vLineColor: function () { return '#cbd5e1'; },
+                                        paddingLeft: function () { return 6; },
+                                        paddingRight: function () { return 6; },
+                                        paddingTop: function (idx) { return idx === 0 ? 5 : 4; },
+                                        paddingBottom: function (idx) { return idx === 0 ? 5 : 4; }
+                                    };
+                                }
+
+                                doc.footer = function (currentPage, pageCount) {
+                                    return {
+                                        columns: [
+                                            {
+                                                text: 'Printed on: ' + new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString(),
+                                                alignment: 'left',
+                                                fontSize: 7.5,
+                                                color: '#64748b',
+                                                margin: [18, 0, 0, 0]
+                                            },
+                                            {
+                                                text: 'Page ' + currentPage.toString() + ' of ' + pageCount,
+                                                alignment: 'right',
+                                                fontSize: 7.5,
+                                                color: '#64748b',
+                                                margin: [0, 0, 18, 0]
+                                            }
+                                        ],
+                                        font: selectedFont || undefined
+                                    };
+                                };
+                            } catch (err) {
+                                console.warn('PDF export customization error: ', err);
+                            }
+                        }
+                    }
                 ],
-                order: [[0, 'asc']], // Sort by Meeting Date
+                order: [[1, 'desc']],
                 columnDefs: [
                     { targets: 1, type: 'date' }
                 ]
             });
-        });
-
+            $("#MeetingTable").removeClass("dataTable");
+        }
 
         function SeeApproval(agendaId) {
-        if (!agendaId) {
-            alert("Agenda ID is missing. Please try again.");
-            return;
-        }
-        var url = '@Url.Action("FileApprovals", "LGApproval")';
-
-        $('#loader-wrapper').show();
-        $("#ShowApproval").html("<p>Loading, please wait...</p>");
-        $.ajax({
-            url: url,
-            type: 'GET',
-            data: { AgendaID: agendaId },
-            success: function (data) {
-                $('#loader-wrapper').hide();
-                $('#ApprovalModal').show();
-                $("#ShowApproval").html(data);
-            },
-            error: function (xhr, status, error) {
-                console.error(`Error: ${status} - ${error}`);
-                $('#loader-wrapper').hide();
-                $('#ApprovalModal').show();
-                $("#ShowApproval").html(
-                    "<p>An error occurred while processing your request. Please try again later.</p>"
-                );
+            if (!agendaId) {
+                alert("Agenda ID is missing. Please try again.");
+                return;
             }
-        });
-    }
+            var url = '@Url.Action("FileApprovals", "LGApproval")';
 
+            $('#loader-wrapper').show();
+            $("#ShowApproval").html("<div class='text-center py-4'><i class='fa fa-spinner fa-spin fa-2x text-primary mb-2'></i><p class='text-muted'>Loading approval details, please wait...</p></div>");
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { AgendaID: agendaId },
+                success: function (data) {
+                    $('#loader-wrapper').hide();
+                    $('#ApprovalModal').modal('show');
+                    $("#ShowApproval").html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Error: ${status} - ${error}`);
+                    $('#loader-wrapper').hide();
+                    $('#ApprovalModal').modal('show');
+                    $("#ShowApproval").html(
+                        "<div class='alert alert-danger m-2'><i class='fa fa-exclamation-triangle me-1'></i> An error occurred while fetching approval details. Please try again later.</div>"
+                    );
+                }
+            });
+        }
     </script>
+
     <style>
-        .dtebuton {
-            padding: 4px;
-            margin: 1px;
-            height: 30px;
-            /* max-width:50%*/
+        /* 1. Modern Compact Breadcrumb Header */
+        .compact-breadcrumb-bar {
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #1e40af;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            letter-spacing: -0.01em;
+        }
+
+        .compact-breadcrumb-bar .crumb-sep {
+            color: #94a3b8;
+            margin: 0 8px;
+            font-weight: 400;
+        }
+
+        /* 2. Compact Metric Strip */
+        .adc-metrics-strip {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        }
+
+        .adc-metric-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.01em;
+        }
+
+        .adc-metric-ulb {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .adc-metric-meetings {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .adc-metric-approvals {
+            background: #faf5ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
+        }
+
+        /* 3. Compact Table Card & Table Design */
+        .agenda-table-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+        }
+
+        #MeetingTable {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            overflow: hidden !important;
+            margin-top: 4px !important;
+        }
+
+        #MeetingTable thead tr.table-header-agenda th,
+        #MeetingTable thead th {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            text-transform: capitalize !important;
+            letter-spacing: 0.01em !important;
+            padding: 8px 10px !important;
+            border: none !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+        }
+
+        #MeetingTable thead th:last-child {
+            border-right: none !important;
+        }
+
+        #MeetingTable tbody tr td {
+            font-size: 12px !important;
+            line-height: 1.4 !important;
+            color: #1e293b !important;
+            padding: 7px 10px !important;
+            border: none !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            border-right: 1px solid #f1f5f9 !important;
+            vertical-align: middle !important;
+            background: #ffffff;
+            transition: background 0.1s ease !important;
+        }
+
+        #MeetingTable tbody tr td:last-child {
+            border-right: none !important;
+        }
+
+        #MeetingTable tbody tr:nth-child(even) td {
+            background-color: #f8fafc !important;
+        }
+
+        #MeetingTable tbody tr:hover td {
+            background-color: #eff6ff !important;
+        }
+
+        /* 4. Cell Badges & Components */
+        .ulb-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .meeting-date-box {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+            background: #f1f5f9;
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meeting-title-text {
+            font-size: 12.5px;
+            line-height: 1.45;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+        .gurmukhi-text {
+            font-family: 'Raavi', 'Noto Sans Gurmukhi', sans-serif, -apple-system;
+        }
+
+        /* Redesigned ADC Approval Date Pills */
+        .dtebuton,
+        a.dtebuton,
+        .btn-primary.dtebuton {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 2px 10px !important;
+            margin: 2px 3px !important;
+            height: 24px !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+            border: 1px solid #1d4ed8 !important;
+            border-radius: 9999px !important;
+            text-decoration: none !important;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.28) !important;
+            transition: all 0.15s ease !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+        }
+
+        .dtebuton:hover,
+        a.dtebuton:hover,
+        .btn-primary.dtebuton:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 3px 8px rgba(30, 64, 175, 0.35) !important;
+        }
+
+        button.btn-warning.dtebuton {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+            border: 1px solid #d97706 !important;
+            color: #ffffff !important;
+            border-radius: 9999px !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            height: 24px !important;
+            padding: 2px 9px !important;
+            box-shadow: 0 1px 3px rgba(217, 119, 6, 0.25) !important;
+        }
+
+        button.btn-warning.dtebuton:hover {
+            background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 3px 8px rgba(180, 83, 9, 0.32) !important;
+        }
+
+        /* 5. Modern DataTables Toolbar & Action Buttons */
+        .dt-toolbar-modern {
+            padding: 2px 0 6px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dt-buttons-slot {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dt-btn-action {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            padding: 4px 11px !important;
+            border-radius: 6px !important;
+            border: 1px solid transparent !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+            background: #ffffff !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        .dt-btn-excel {
+            color: #047857 !important;
+            border-color: #a7f3d0 !important;
+            background: #ecfdf5 !important;
+        }
+
+        .dt-btn-excel:hover {
+            background: #047857 !important;
+            color: #ffffff !important;
+            border-color: #047857 !important;
+            transform: translateY(-1px);
+        }
+
+        .dt-btn-csv {
+            color: #0284c7 !important;
+            border-color: #bae6fd !important;
+            background: #f0f9ff !important;
+        }
+
+        .dt-btn-csv:hover {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            border-color: #0284c7 !important;
+            transform: translateY(-1px);
+        }
+
+        .dt-btn-pdf {
+            color: #e11d48 !important;
+            border-color: #fecdd3 !important;
+            background: #fff1f2 !important;
+        }
+
+        .dt-btn-pdf:hover {
+            background: #e11d48 !important;
+            color: #ffffff !important;
+            border-color: #e11d48 !important;
+            transform: translateY(-1px);
+        }
+
+        /* Search input styling */
+        .dt-search-slot .dataTables_filter {
+            margin: 0;
+        }
+
+        .dt-search-slot .dataTables_filter label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin: 0;
+        }
+
+        .dt-search-slot .dataTables_filter input {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 3px 8px !important;
+            font-size: 12px !important;
+            color: #0f172a !important;
+            outline: none !important;
+            transition: all 0.15s ease !important;
+            height: 28px !important;
+            width: 180px !important;
+        }
+
+        .dt-search-slot .dataTables_filter input:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        /* Footer & Pagination */
+        .dt-footer-modern {
+            padding-top: 8px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .dt-info-slot .dataTables_info {
+            font-size: 11.5px;
+            color: #64748b;
+            padding-top: 2px;
+        }
+
+        .dt-paging-slot .dataTables_paginate {
+            margin: 0;
+        }
+
+        .dt-paging-slot .paginate_button {
+            padding: 3px 8px !important;
+            font-size: 11.5px !important;
+            border-radius: 4px !important;
+            border: 1px solid #e2e8f0 !important;
+            margin: 0 2px !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .dt-paging-slot .paginate_button:hover {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        .dt-paging-slot .paginate_button.current,
+        .dt-paging-slot .paginate_button.current:hover {
+            background: #1e40af !important;
+            color: #ffffff !important;
+            border-color: #1e40af !important;
+            font-weight: 700 !important;
+        }
+
+        .dt-paging-slot .paginate_button.disabled,
+        .dt-paging-slot .paginate_button.disabled:hover {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            background: #ffffff !important;
         }
     </style>
-
 </head>
 
 <div id="main-content">
     <div class="main-content">
+        <div class="agenda-page-container">
 
-        <div class="col-md-12 col-lg-12 col-xl-12">
-            <div>
-                <h4 id="lblmenuname">Orders >> @Model.RefMenuName</h4>
-                <hr />
+            <!-- Compact Page Header -->
+            <div class="col-12 p-0 mb-2">
+                <h4 id="lblmenuname" class="compact-breadcrumb-bar">
+                    Orders <span class="crumb-sep">&gt;&gt;</span> @pageTitle
+                </h4>
             </div>
 
-
-        </div>
-
-        <div class="col-md-12 col-lg-12 col-xl-12 table-responsive" id="statusdiv" style="margin-top: 15px;">
-            <table class="table table-bordered" id="MeetingTable" aria-describedby="sample-table-3_info" style="border-collapse: collapse;">
-                <thead>
-                    <tr style="color: white; font-size:16px; font-weight:bold;margin-left:10px;">
-                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">ULB</th>
-                        <th class="center" style="width:10%" id="tdFrom" rowspan="1" colspan="1">Meeting Date</th>
-                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">Meeting Title</th>
-
-                        <th class="center" style="width:20%" id="tdFrom" rowspan="1" colspan="1">Approvals</th>
-
-                    </tr>
-                </thead>
-
-                <tbody class="bordered" role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
-                    @foreach (var items in Model.LGApprovalList)
-                    {
-                        <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3; padding-left: 20px;">
-                            <td style="font-size: 16px; border: 1px solid #D3D3D3 ">@items.MCName</td>
-                            <td data-order="@Convert.ToDateTime(items.MeetingDate).ToString("yyyy-MM-dd")" style="font-size: 16px; border: 1px solid #D3D3D3; color: black; margin-left: 200px;">@Convert.ToDateTime(items.MeetingDate).ToString("dd/MM/yyyy")</td>
-                            <td style="font-size: 16px; border: 1px solid #D3D3D3 ">@items.MeetingTitle</td>
-
-                            <td style="font-size: 16px; border: 1px solid #D3D3D3 ">@Html.Raw(items.ApprovedDate)</td>
-
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-    <div class="modal fade" id="ApprovalModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" style="width:100%; display:none">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Approvals Detail</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <!-- Compact Metrics Overview Strip -->
+            <div class="col-12 p-0 mb-2">
+                <div class="adc-metrics-strip d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <span class="adc-metric-badge adc-metric-ulb" title="Municipal Councils with recorded approvals">
+                            <i class="fa fa-university me-1.5 text-primary"></i> Councils: <strong class="ms-1">@totalMCs</strong>
+                        </span>
+                        <span class="adc-metric-badge adc-metric-meetings" title="Total meetings recorded">
+                            <i class="fa fa-calendar-check-o me-1.5 text-success"></i> Meetings: <strong class="ms-1">@totalMeetings</strong>
+                        </span>
+                        <span class="adc-metric-badge adc-metric-approvals" title="Total approval entries">
+                            <i class="fa fa-stamp me-1.5 text-purple" style="color:#7e22ce;"></i> Approvals: <strong class="ms-1">@totalApprovals</strong>
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center text-muted small">
+                        <span class="d-inline-block rounded-circle bg-success me-1.5" style="width: 7px; height: 7px;"></span>
+                        <span style="font-size: 11px; font-weight: 600;">Live Sanctions &amp; Approvals</span>
+                    </div>
                 </div>
-                <div class="modal-body" id="ShowApproval">
+            </div>
+
+            <!-- Compact Table Card Container -->
+            <div class="col-md-12 col-lg-12 col-xl-12 p-0 mt-1" id="statusdiv">
+                <div class="agenda-table-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle agenda-modern-table" id="MeetingTable" aria-describedby="sample-table-3_info" style="width:100%">
+                            <thead>
+                                <tr class="table-header-agenda">
+                                    <th class="text-start" style="width:24%;" id="tdULB">ULB / Municipal Council</th>
+                                    <th class="center text-center" style="width:14%;" id="tdDate">Meeting Date</th>
+                                    <th class="text-start" style="width:42%;" id="tdTitle">Meeting Title</th>
+                                    <th class="center text-center" style="width:20%;" id="tdApprovals">Approvals</th>
+                                </tr>
+                            </thead>
+
+                            <tbody role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
+                                @if (Model.LGApprovalList != null && Model.LGApprovalList.Count > 0)
+                                {
+                                    foreach (var items in Model.LGApprovalList)
+                                    {
+                                        <tr>
+                                            <td class="text-start">
+                                                <span class="ulb-badge">
+                                                    <i class="fa fa-university me-1.5 text-primary"></i>@items.MCName
+                                                </span>
+                                            </td>
+                                            <td class="center text-center" data-order="@(items.MeetingDate != null ? Convert.ToDateTime(items.MeetingDate).ToString("yyyy-MM-dd") : "")">
+                                                <span class="meeting-date-box">
+                                                    <i class="fa fa-calendar-o me-1 text-secondary"></i>@(items.MeetingDate != null ? Convert.ToDateTime(items.MeetingDate).ToString("dd-MM-yyyy") : "-")
+                                                </span>
+                                            </td>
+                                            <td class="text-start">
+                                                <div class="meeting-title-text gurmukhi-text">
+                                                    @items.MeetingTitle
+                                                </div>
+                                            </td>
+                                            <td class="center text-center">
+                                                <div class="d-inline-flex flex-wrap align-items-center justify-content-center gap-1">
+                                                    @Html.Raw(items.ApprovedDate)
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center p-4 text-muted">
+                                            <i class="fa fa-folder-open-o fa-2x mb-2 d-block"></i>
+                                            No ADC Approval Records Found
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Polished Approvals Detail Modal -->
+    <div class="modal fade" id="ApprovalModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" style="width:100%; display:none">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 10px; overflow: hidden;">
+                <div class="modal-header d-flex justify-content-between align-items-center text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); padding: 10px 16px;">
+                    <h5 class="modal-title fs-6 fw-bold m-0 text-white">
+                        <i class="fa fa-file-text-o me-2"></i> Approvals Detail
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-3" id="ShowApproval">
                     Show Approval Here
                 </div>
-                <div id="validationErrors" class="text-danger"></div>
+                <div id="validationErrors" class="text-danger px-3 pb-2"></div>
             </div>
         </div>
     </div>

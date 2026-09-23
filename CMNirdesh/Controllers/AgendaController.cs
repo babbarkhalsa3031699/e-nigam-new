@@ -1,4 +1,4 @@
-﻿
+
 using Azure.Storage.Blobs;
 using BotDetect;
 using BotDetect.C5;
@@ -7976,56 +7976,19 @@ table.maintable tr1,table.maintable td1{
           
             if (dt.Rows.Count == 0 || dt.Rows.Count > 0)
             {
-                sb = sb.Append("<thead><tr role='row' style='color: white; font-size:16px; font-weight:bold;'>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Department</th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Office</th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Meeting Date</th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Meeting Title</th>");
-                sb = sb.Append("<th  class='center' style=''>Resolutions</th>");
-
-
-                //column bind
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result1 = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result1.Length > 0)
-                //    {
-                //        sb = sb.Append("<th class='center sts' style=' ' >" + result1[0].ItemArray[1].ToString().Substring(0, result1[0].ItemArray[1].ToString().IndexOf("_")) + "</th>");
-                //    }
-                //}
-
-
-
-                sb = sb.Append("<th  class='pdf' id='tdFrom'>Proceedings</th>");
-                sb = sb.Append("<th  class='pdf' id='tdFrom' style='width:20%'>Covering Letters</th>");
-                sb = sb.Append("<th  class='pdf' id='tdFrom'>Online Circulation</th></tr>");
-
-                // Second Column Row
-                sb = sb.Append("<tr role='row' style='color: white; font-size:16px; font-weight:bold;'>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=''></th>");
-                //column bind
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result1 = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result1.Length > 0)
-                //    {
-
-                //        sb = sb.Append("<th class='center sts' style=' ' >" + result1[0].ItemArray[1].ToString().Substring(result1[0].ItemArray[1].ToString().LastIndexOf("_") + 1) + "</th>");
-                //    }
-                //}
-                sb = sb.Append("<th class='center' style=''></th>");
-                sb = sb.Append("<th class='center' style=''></th>");
-                sb = sb.Append("</tr></thead>");
+                sb = sb.Append("<thead><tr role='row' class='table-header-agenda'>");
+                sb = sb.Append("<th class='center th-dept'>Department</th>");
+                sb = sb.Append("<th class='center th-office'>Office</th>");
+                sb = sb.Append("<th class='center th-date'>Meeting Date</th>");
+                sb = sb.Append("<th class='center th-title'>Meeting Title</th>");
+                sb = sb.Append("<th class='center th-proposals'>Resolutions</th>");
+                sb = sb.Append("<th class='center th-agenda'>Proceedings</th>");
+                sb = sb.Append("<th class='center th-covering'>Covering Letters</th>");
+                sb = sb.Append("<th class='center th-circulation'>Online Circulation</th></tr></thead>");
             }
             int j = 0, GTotal = 0;
             //row data bind
             string Enpath1 = System.Web.Configuration.WebConfigurationManager.AppSettings["URL"];
-            //string BlobPath = System.Web.Configuration.WebConfigurationManager.AppSettings["URL"];
             string BlobPath = BlobStorage.GetStorageAcessingPath() + "/";
             foreach (DataRow drDyn in dt.Rows)
             {
@@ -8033,156 +7996,88 @@ table.maintable tr1,table.maintable td1{
                 var CoveringLetters = PDFCoverList.GetCoveringLetters(CurrentSession.DeptID, agenda, "Resolutions");
                 sb = sb.Append("<tr id='trtd" + drDyn["AgendaId"] + "'>");
 
-                // sb = sb.Append("<td data-sort=" + Convert.ToDateTime(drDyn["AgendaDate"]).ToString("yyyyMMdd") + " class='center'>" + Convert.ToDateTime(drDyn["AgendaDate"]).ToString("yyyyMMdd").Trim() + "</td>");
+                sb = sb.Append("<td class='dept-cell'><span class='dept-name'>" + drDyn["deptname"].ToString().Trim() + "</span></td>");
+                sb = sb.Append("<td class='center office-cell'><span class='office-badge'>" + drDyn["officename"].ToString().Trim() + "</span></td>");
 
-                sb = sb.Append("<td class='dept'>" + drDyn["deptname"].ToString().Trim() + "</td>");
-                sb = sb.Append("<td class='dept'>" + drDyn["officename"].ToString().Trim() + "</td>");
+                sb = sb.Append("<td data-sort='" + drDyn["AgendaId"] + "' class='center date-cell'><div class='meeting-date-box'><i class='fa fa-calendar me-1 text-primary'></i>" + drDyn["AgendaDate"].ToString().Trim() + "</div></td>");
+                sb = sb.Append("<td class='Subject title-cell'><div class='meeting-title-text'>" + drDyn["AgendaName"].ToString().Trim() + "</div></td>");
 
-                sb = sb.Append("<td data-sort=" + drDyn["AgendaId"] + " class='center'>" + drDyn["AgendaDate"].ToString().Trim() + "</td>");
-                sb = sb.Append("<td class='Subject'>" + drDyn["AgendaName"].ToString().Trim() + "</td>");
+                sb = sb.Append("<td class='center proposals-cell'><a class='proposals-pill-btn' onclick='GetDispatchDasdhboardDataTotalStatus(this)' DeptId='" + drDyn["AgendaId"] + "' DocTypeId='10' title='View Resolutions'><i class='fa fa-list-ol me-1'></i>" + drDyn["cnt"].ToString().Trim() + "</a></td>");
 
-                sb = sb.Append("<td class='Subject'><a onclick = 'GetDispatchDasdhboardDataTotalStatus(this)' DeptId = '" + drDyn["AgendaId"] + "' DocTypeId = '" + 10 + "' > " + drDyn["cnt"].ToString().Trim() + "</a></td>");
-
-
-
-
-
-                //For Total
-                //int Total = 0;
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result.Length > 0)
-                //    {
-                //        int docid = Convert.ToInt32(result[0].ItemArray[0]);
-                //        string cnt = string.IsNullOrEmpty(Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()])) ? "0" : Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()]);
-                //        Total = Total + Convert.ToInt32(cnt);
-                //    }
-                //}
-
-                //sb = sb.Append("<td class='center'><a onclick='GetDispatchDasdhboardDataTotalStatus(this)' DeptId='" + drDyn["AgendaId"] + "' DocTypeId='" + 10 + "'>" + Total + "</a></td>");
-                //For Total
-
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result.Length > 0)
-                //    {
-                //        int docid = Convert.ToInt32(result[0].ItemArray[0]);
-                //        string cnt = string.IsNullOrEmpty(Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()])) ? "0" : Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()]);
-                //        Total = Total + Convert.ToInt32(cnt);
-                //        sb = sb.Append("<td class='center sts'><a onclick='GetDispatchDasdhboardDataStatusType(this)' DeptId='" + drDyn["AgendaId"] + "' DocTypeId='" + docid + "'>" + cnt + "</a></td>");
-                //    }
-                //}
-                sb = sb.Append("<td class='pdf'>");
-                //if (drDyn["filepath"].ToString() != "")
-                //{
-                //    sb = sb.Append("<a href='" + BlobPath + drDyn["filepath"].ToString().Trim() + "' target='_blank'><img src = '/Assets/Home_Images/gpdf.png' alt = 'Download' title = 'Agenda PDF' width = '24' height = '24' /> </ a >");
-                //}
+                sb = sb.Append("<td class='center agenda-cell'>");
                 if (drDyn["filepath2"].ToString() != "")
                 {
-                    sb = sb.Append("<a href='" + BlobPath + drDyn["filepath2"].ToString().Trim() + "' target='_blank'><img src = '/Assets/Home_Images/rpdf.png' alt = 'Download' title = 'Proceeding PDF' width = '24' height = '24' /> </ a >");
+                    sb = sb.Append("<a href='" + BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath2"].ToString().Trim() + "' target='_blank' class='btn-proceedings-pdf' title='View Proceedings PDF'><img src='/Assets/Home_Images/rpdf.png' alt='PDF' width='16' height='16' class='me-1' /><span>PDF</span></a>");
                 }
-
-                sb = sb.Append("</td>");
-               // sb = sb.Append("<td class='pdf'>");
-                //if (drDyn["CirculatedProceedingPath"].ToString() != "")
-                //{
-                //    sb = sb.Append("<a href='" + BlobPath + drDyn["CirculatedProceedingPath"].ToString().Trim() + "' target='_blank'><img src = '/Assets/Home_Images/rpdf.png' alt = 'Download' title = 'Circulated Proceeding PDF' width = '24' height = '24' /> </ a >");
-                //}
-
-               // sb = sb.Append("</td>");
-
-                sb.Append("<td>");
-
-                int index = 0;
-                foreach (var letter in CoveringLetters)
+                else
                 {
-                    if (!string.IsNullOrEmpty(letter.PdfPath))
+                    sb = sb.Append("<span class='text-muted small'>-</span>");
+                }
+                sb = sb.Append("</td>");
+
+                sb.Append("<td class='covering-cell center'>");
+                if (CoveringLetters != null && CoveringLetters.Count > 0)
+                {
+                    int index = 0;
+                    foreach (var letter in CoveringLetters)
                     {
-                        sb.Append("<label class='me-2' style='cursor: pointer;'>");
-
-                        sb.AppendFormat("<input type='checkbox' name='SelectedPdfPaths' onclick='UpdateCoveringLetterStatus(this)' PdfPath='" + letter.PdfPath + "' value ='{0}' class='me-1' />",
-                            System.Net.WebUtility.HtmlEncode(letter.PdfPath));
-
-                        sb.AppendFormat("<a href='{0}' target='_blank' style='text-decoration: none; color: #0d6efd;'>",
-                            System.Net.WebUtility.HtmlEncode(letter.PdfPath));
-                        sb.Append($"{index + 1}</a>");
-
-                        sb.Append("</label>");
-
-                        if (index < CoveringLetters.Count - 1)
+                        if (!string.IsNullOrEmpty(letter.PdfPath))
                         {
-                            sb.Append(" | ");
+                            sb.Append("<label class='covering-chip' title='Covering Letter " + (index + 1) + "'>");
+                            sb.AppendFormat("<input type='checkbox' name='SelectedPdfPaths' onclick='UpdateCoveringLetterStatus(this)' PdfPath='{0}' value='{0}' class='form-check-input me-1' />",
+                                System.Net.WebUtility.HtmlEncode(letter.PdfPath));
+                            sb.AppendFormat("<a href='{0}' target='_blank' class='covering-link'><i class='fa fa-file-text-o text-danger me-1'></i>{1}</a>",
+                                System.Net.WebUtility.HtmlEncode(letter.PdfPath), (index + 1));
+                            sb.Append("</label> ");
+                            index++;
                         }
-
-                        index++;
                     }
                 }
-
-                sb.Append("</td>");
-
-
-                sb.Append("<td class='OnlineCir' style='white-space: nowrap;'>");
-
-
-
-
-                if (drDyn["filepath"].ToString() != "" && DocumentType == "20")
+                else
                 {
-                    string agendaId = drDyn["AgendaId"].ToString();
-                    string agendaPath = BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath"].ToString().Trim();
-
-                    // SMS Button
-                    sb.Append("<button type='button' class='btn btn-sm btn-success me-2 d-inline-flex align-items-center' ");
-                    sb.Append("onclick='GetContactList(this)' ");
-                    sb.Append("DeptId='" + agendaId + "' ");
-                    sb.Append("agendaPath='" + agendaPath + "'");
-                    sb.Append("Department='" + CurrentSession.DeptID + "'>");
-                    sb.Append("<i class='fas fa-sms me-1'></i><span>SMS</span></button>");
-
-                    // Email Button
-                    sb.Append("<button type='button' class='btn btn-sm btn-primary d-inline-flex align-items-center'");
-                    sb.Append("onclick='GetContactListEmail(this)'");
-                    sb.Append("DeptId='" + agendaId + "' ");
-                    sb.Append("agendaPath='" + agendaPath + "'");
-                    sb.Append("Department='" + CurrentSession.DeptID + "'>");
-                    sb.Append("<i class='fas fa-envelope me-1'></i><span>Email</span></button>");
-                }
-                if (drDyn["filepath2"].ToString() != "" && DocumentType == "22")
-                {
-                    string agendaId = drDyn["AgendaId"].ToString();
-                    string agendaPath = BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath2"].ToString().Trim();
-
-                    // SMS Button
-                    sb.Append("<button type='button' class='btn btn-sm btn-success me-2 d-inline-flex align-items-center' ");
-                    sb.Append("onclick='GetContactList(this)' ");
-                    sb.Append("DeptId='" + agendaId + "' ");
-                    sb.Append("agendaPath='" + agendaPath + "'");
-                    sb.Append("Department='" + CurrentSession.DeptID + "'>");
-                    sb.Append("<i class='fas fa-sms me-1'></i><span>SMS</span></button>");
-
-                    // Email Button
-                    sb.Append("<button type='button' class='btn btn-sm btn-primary d-inline-flex align-items-center'");
-                    sb.Append("onclick='GetContactListEmail(this)'");
-                    sb.Append("DeptId='" + agendaId + "' ");
-                    sb.Append("agendaPath='" + agendaPath + "'");
-                    sb.Append("Department='" + CurrentSession.DeptID + "'>");
-                    sb.Append("<i class='fas fa-envelope me-1'></i><span>Email</span></button>");
+                    sb.Append("<span class='text-muted small'>-</span>");
                 }
                 sb.Append("</td>");
 
+                sb.Append("<td class='OnlineCir center' style='white-space: nowrap;'>");
+                bool hasDoc = false;
+                string targetPath = "";
+                if (drDyn["filepath2"].ToString() != "")
+                {
+                    targetPath = BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath2"].ToString().Trim();
+                    hasDoc = true;
+                }
+                else if (drDyn["filepath"].ToString() != "")
+                {
+                    targetPath = BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath"].ToString().Trim();
+                    hasDoc = true;
+                }
 
-                //sb = sb.Append("<td class='pdf'>");
-                int agendaid = Convert.ToInt32(drDyn["AgendaId"]);
+                if (hasDoc)
+                {
+                    string agendaId = drDyn["AgendaId"].ToString();
 
-                //sb.Append("<a href='" + Enpath1 + "/Agenda/GetProceedingCoveringLetter?AgendaId=" + agendaid + "&LetterType=1' target='_blank'><img src='/Assets/Home_Images/rpdf.png' alt='Download' title='Proceeding Covering Letter to Divisional Commissioner, Rupnagar Mandal' width='24' height='24' /></a>");
-                ////sb.Append("<a href='" + Enpath1 + "/Agenda/GetProceedingCoveringLetter?AgendaId=" + agendaid + "&LetterType=2' target='_blank'><img src='/Assets/Home_Images/rpdf.png' alt='Download' title='Proceeding Covering Letter to Director (LG)' width='24' height='24' /></a>");
-                //sb.Append("<a href='" + Enpath1 + "/Agenda/GetProceedingCoveringLetter?AgendaId=" + agendaid + "&LetterType=3' target='_blank'><img src='/Assets/Home_Images/rpdf.png' alt='Download' title='Proceeding Covering Letter to All Members' width='24' height='24' /></a>");
-                //sb.Append("<a href='" + Enpath1 + "/Agenda/GetProceedingCoveringLetter?AgendaId=" + agendaid + "&LetterType=4' target='_blank'><img src='/Assets/Home_Images/rpdf.png' alt='Download' title='Proceeding Covering Letter to Joint Comr, Assistant Comr, All Branches' width='24' height='24' /></a>");
+                    // SMS Button
+                    sb.Append("<button type='button' class='btn-cir-action btn-cir-sms me-2' ");
+                    sb.Append("onclick='GetContactList(this)' ");
+                    sb.Append("DeptId='" + agendaId + "' ");
+                    sb.Append("agendaPath='" + targetPath + "' ");
+                    sb.Append("Department='" + CurrentSession.DeptID + "' title='Circulate via SMS'>");
+                    sb.Append("<i class='fa fa-commenting-o me-1'></i><span>SMS</span></button>");
 
-                sb = sb.Append("</td>");
-                //sb = sb.Append("<td class='center'><a onclick='GetDispatchDasdhboardDataTotalStatus(this)' DeptId='" + drDyn["AgendaId"] + "' DocTypeId='" + 10 + "'>" + Total + "</a></td>");
+                    // Email Button
+                    sb.Append("<button type='button' class='btn-cir-action btn-cir-email' ");
+                    sb.Append("onclick='GetContactListEmail(this)' ");
+                    sb.Append("DeptId='" + agendaId + "' ");
+                    sb.Append("agendaPath='" + targetPath + "' ");
+                    sb.Append("Department='" + CurrentSession.DeptID + "' title='Circulate via Email'>");
+                    sb.Append("<i class='fa fa-envelope-o me-1'></i><span>Email</span></button>");
+                }
+                else
+                {
+                    sb.Append("<span class='text-muted small'>-</span>");
+                }
+                sb.Append("</td>");
                 sb = sb.Append("</tr>");
                 j = j + 1;
             }
@@ -8248,59 +8143,15 @@ table.maintable tr1,table.maintable td1{
 
             if (dt.Rows.Count == 0 || dt.Rows.Count > 0)
             {
-
-
-                sb = sb.Append("<thead><tr role='row' style='color: white; font-size:16px; font-weight:bold;'>"
-                   /* "<td class='center' style='width: 50px;background-color: rgb(28,80,147);'></td>"*/);
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Department</th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Office</th>");
-
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Meeting Date</th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'>Meeting Title</th>");
-
-                sb = sb.Append("<th  class='center' style=''>Proposals</th>");
-
-
-                //column bind
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result1 = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result1.Length > 0)
-                //    {
-                //        sb = sb.Append("<th class='center sts' style=' ' >" + result1[0].ItemArray[1].ToString().Substring(0, result1[0].ItemArray[1].ToString().IndexOf("_")) + "</th>");
-                //    }
-                //}
-
-
-
-                sb = sb.Append("<th  class='pdf' id='tdFrom'>Agenda</th>");
-                //sb = sb.Append("<th  class='pdf' id='tdFrom'>Circulated Agenda</th>");
-                sb = sb.Append("<th  class='pdf' id='tdFrom' style='width:20%'>Covering Letters</th>");
-                sb = sb.Append("<th  class='pdf' id='tdFrom'>Online Circulation</th></tr>");
-
-
-                // Second Column Row
-                sb = sb.Append("<tr role='row' style='color: white; font-size:16px; font-weight:bold;'>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=' ' id='tdFrom'></th>");
-                sb = sb.Append("<th  class='center' style=''></th>");
-
-                //column bind
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result1 = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result1.Length > 0)
-                //    {
-
-                //        sb = sb.Append("<th class='center sts' style=' ' >" + result1[0].ItemArray[1].ToString().Substring(result1[0].ItemArray[1].ToString().LastIndexOf("_") + 1) + "</th>");
-                //    }
-                //}
-                sb = sb.Append("<th class='center' style=''></th>");
-                sb = sb.Append("<th  class='center' style=''></th>");
-                sb = sb.Append("<th class='center' style=''></th>");
-                sb = sb.Append("</tr></thead>");
+                sb = sb.Append("<thead><tr role='row' class='table-header-agenda'>");
+                sb = sb.Append("<th class='center th-dept'>Department</th>");
+                sb = sb.Append("<th class='center th-office'>Office</th>");
+                sb = sb.Append("<th class='center th-date'>Meeting Date</th>");
+                sb = sb.Append("<th class='center th-title'>Meeting Title</th>");
+                sb = sb.Append("<th class='center th-proposals'>Proposals</th>");
+                sb = sb.Append("<th class='center th-agenda'>Agenda</th>");
+                sb = sb.Append("<th class='center th-covering'>Covering Letters</th>");
+                sb = sb.Append("<th class='center th-circulation'>Online Circulation</th></tr></thead>");
             }
             int j = 0, GTotal = 0;
             //row data bind
@@ -8314,109 +8165,73 @@ table.maintable tr1,table.maintable td1{
 
                 sb = sb.Append("<tr id='trtd" + drDyn["AgendaId"] + "'>");
 
-                // sb = sb.Append("<td data-sort=" + Convert.ToDateTime(drDyn["AgendaDate"]).ToString("yyyyMMdd") + " class='center'>" + Convert.ToDateTime(drDyn["AgendaDate"]).ToString("yyyyMMdd").Trim() + "</td>");
+                sb = sb.Append("<td class='dept-cell'><span class='dept-name'>" + drDyn["deptname"].ToString().Trim() + "</span></td>");
+                sb = sb.Append("<td class='center office-cell'><span class='office-badge'>" + drDyn["officename"].ToString().Trim() + "</span></td>");
 
-                sb = sb.Append("<td class='dept'>" + drDyn["deptname"].ToString().Trim() + "</td>");
-                sb = sb.Append("<td class='dept'>" + drDyn["officename"].ToString().Trim() + "</td>");
+                sb = sb.Append("<td data-sort='" + drDyn["AgendaId"] + "' class='center date-cell'><div class='meeting-date-box'><i class='fa fa-calendar me-1 text-primary'></i>" + drDyn["AgendaDate"].ToString().Trim() + "</div></td>");
+                sb = sb.Append("<td class='Subject title-cell'><div class='meeting-title-text'>" + drDyn["AgendaName"].ToString().Trim() + "</div></td>");
+                sb = sb.Append("<td class='center proposals-cell'><a class='proposals-pill-btn' onclick='GetDispatchDasdhboardDataTotalStatus(this)' DeptId='" + drDyn["AgendaId"] + "' DocTypeId='10' title='View Proposals'><i class='fa fa-list-ol me-1'></i>" + drDyn["cnt"].ToString().Trim() + "</a></td>");
 
-                sb = sb.Append("<td data-sort=" + drDyn["AgendaId"] + " class='center'>" + drDyn["AgendaDate"].ToString().Trim() + "</td>");
-                sb = sb.Append("<td class='Subject'>" + drDyn["AgendaName"].ToString().Trim() + "</td>");
-                sb = sb.Append("<td class='Subject'><a onclick = 'GetDispatchDasdhboardDataTotalStatus(this)' DeptId = '" + drDyn["AgendaId"] + "' DocTypeId = '" + 10 + "' > " + drDyn["cnt"].ToString().Trim() + "</a></td>");
-
-                ////For Total
-                //int Total = 0;
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result.Length > 0)
-                //    {
-                //        int docid = Convert.ToInt32(result[0].ItemArray[0]);
-                //        string cnt = string.IsNullOrEmpty(Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()])) ? "0" : Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()]);
-                //        Total = Total + Convert.ToInt32(cnt);
-                //    }
-                //}
-
-                //sb = sb.Append("<td class='center'><a onclick='GetDispatchDasdhboardDataTotalStatus(this)' DeptId='" + drDyn["AgendaId"] + "' DocTypeId='" + 10 + "'>" + Total + "</a></td>");
-                ////For Total
-
-                //for (int i = 1; i < dt.Columns.Count; i++)
-                //{
-                //    DataRow[] result = dtstatus.Select("DocumentTypeName='" + dt.Columns[i].ColumnName.ToString() + "'");
-                //    if (result.Length > 0)
-                //    {
-                //        int docid = Convert.ToInt32(result[0].ItemArray[0]);
-                //        string cnt = string.IsNullOrEmpty(Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()])) ? "0" : Convert.ToString(drDyn[dt.Columns[i].ColumnName.ToString()]);
-                //        Total = Total + Convert.ToInt32(cnt);
-                //        sb = sb.Append("<td class='center sts'><a onclick='GetDispatchDasdhboardDataStatusType(this)' DeptId='" + drDyn["AgendaId"] + "' DocTypeId='" + docid + "'>" + cnt + "</a></td>");
-                //    }
-                //}
-                sb = sb.Append("<td class='pdf'>");
+                sb = sb.Append("<td class='center agenda-cell'>");
                 if (drDyn["filepath"].ToString() != "")
                 {
-                    sb = sb.Append("<a href='" + BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath"].ToString().Trim() + "' target='_blank'><img src = '/Assets/Home_Images/gpdf.png' alt = 'Download' title = 'Agenda PDF' width = '24' height = '24' /> </ a >");
+                    sb = sb.Append("<a href='" + BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath"].ToString().Trim() + "' target='_blank' class='btn-agenda-pdf' title='View Agenda PDF'><img src='/Assets/Home_Images/gpdf.png' alt='PDF' width='16' height='16' class='me-1' /><span>PDF</span></a>");
+                }
+                else
+                {
+                    sb = sb.Append("<span class='text-muted small'>-</span>");
                 }
                 sb = sb.Append("</td>");
 
-                //sb = sb.Append("<td class='pdf'>");
-
-                //if (drDyn["CirculatedAgendaPath"].ToString() != "")
-                //{
-                //    sb = sb.Append("<a href='" + BlobStorage.GetStorageAcessingPath() + "/" + drDyn["CirculatedAgendaPath"].ToString().Trim() + "' target='_blank'><img src = '/Assets/Home_Images/rpdf.png' alt = 'Download' title = 'Proceeding PDF' width = '24' height = '24' /> </ a >");
-                //}
-
-                //sb = sb.Append("</td>");
-                sb.Append("<td>");
-
-                int index = 0;
-                foreach (var letter in CoveringLetters)
+                sb.Append("<td class='covering-cell center'>");
+                if (CoveringLetters != null && CoveringLetters.Count > 0)
                 {
-                    if (!string.IsNullOrEmpty(letter.PdfPath))
+                    int index = 0;
+                    foreach (var letter in CoveringLetters)
                     {
-                        sb.Append("<label class='me-2' style='cursor: pointer;'>");
-
-                        sb.AppendFormat("<input type='checkbox' name='SelectedPdfPaths' onclick='UpdateCoveringLetterStatus(this)' PdfPath='" + letter.PdfPath + "' value ='{0}' class='me-1' />",
-                            System.Net.WebUtility.HtmlEncode(letter.PdfPath));
-
-                        sb.AppendFormat("<a href='{0}' target='_blank' style='text-decoration: none; color: #0d6efd;'>",
-                            System.Net.WebUtility.HtmlEncode(letter.PdfPath));
-                        sb.Append($"{index + 1}</a>");
-
-                        sb.Append("</label>");
-
-                        if (index < CoveringLetters.Count - 1)
+                        if (!string.IsNullOrEmpty(letter.PdfPath))
                         {
-                            sb.Append(" | ");
+                            sb.Append("<label class='covering-chip' title='Covering Letter " + (index + 1) + "'>");
+                            sb.AppendFormat("<input type='checkbox' name='SelectedPdfPaths' onclick='UpdateCoveringLetterStatus(this)' PdfPath='{0}' value='{0}' class='form-check-input me-1' />",
+                                System.Net.WebUtility.HtmlEncode(letter.PdfPath));
+                            sb.AppendFormat("<a href='{0}' target='_blank' class='covering-link'><i class='fa fa-file-text-o text-danger me-1'></i>{1}</a>",
+                                System.Net.WebUtility.HtmlEncode(letter.PdfPath), (index + 1));
+                            sb.Append("</label> ");
+                            index++;
                         }
-
-                        index++;
                     }
                 }
-
+                else
+                {
+                    sb.Append("<span class='text-muted small'>-</span>");
+                }
                 sb.Append("</td>");
 
-
-                sb.Append("<td class='OnlineCir' style='white-space: nowrap;'>");
-
+                sb.Append("<td class='OnlineCir center' style='white-space: nowrap;'>");
                 if (drDyn["filepath"].ToString() != "")
                 {
                     string agendaId = drDyn["AgendaId"].ToString();
                     string agendaPath = BlobStorage.GetStorageAcessingPath() + "/" + drDyn["filepath"].ToString().Trim();
 
                     // SMS Button
-                    sb.Append("<button type='button' class='btn btn-sm btn-success me-2 d-inline-flex align-items-center' ");
+                    sb.Append("<button type='button' class='btn-cir-action btn-cir-sms me-2' ");
                     sb.Append("onclick='GetContactList(this)' ");
                     sb.Append("DeptId='" + agendaId + "' ");
                     sb.Append("agendaPath='" + agendaPath + "' ");
-                    sb.Append("Department='" + CurrentSession.DeptID + "'>");
-                    sb.Append("<i class='fas fa-sms me-1'></i><span>SMS</span></button>");
+                    sb.Append("Department='" + CurrentSession.DeptID + "' title='Circulate via SMS'>");
+                    sb.Append("<i class='fa fa-commenting-o me-1'></i><span>SMS</span></button>");
 
                     // Email Button
-                    sb.Append("<button type='button' class='btn btn-sm btn-primary d-inline-flex align-items-center'");
-                    sb.Append("onclick='GetContactListEmail(this)'");
+                    sb.Append("<button type='button' class='btn-cir-action btn-cir-email' ");
+                    sb.Append("onclick='GetContactListEmail(this)' ");
                     sb.Append("DeptId='" + agendaId + "' ");
                     sb.Append("agendaPath='" + agendaPath + "' ");
-                    sb.Append("Department='" + CurrentSession.DeptID + "'>");
-                    sb.Append("<i class='fas fa-envelope me-1'></i><span>Email</span></button>");
+                    sb.Append("Department='" + CurrentSession.DeptID + "' title='Circulate via Email'>");
+                    sb.Append("<i class='fa fa-envelope-o me-1'></i><span>Email</span></button>");
+                }
+                else
+                {
+                    sb.Append("<span class='text-muted small'>-</span>");
                 }
                 sb.Append("</td>");
                 sb = sb.Append("</tr>");

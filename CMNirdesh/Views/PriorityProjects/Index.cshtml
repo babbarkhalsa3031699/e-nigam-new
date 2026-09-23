@@ -1,10 +1,12 @@
-﻿@model CMNirdesh.Models.PriorityProject
+@model CMNirdesh.Models.PriorityProject
 
 @{
     ViewBag.Title = "PriorityProjects";
     var url = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"];
     var servicename = CMNirdesh.Models.CurrentSession.serviceName;
     var isapex = CMNirdesh.Models.CurrentSession.isApex;
+    int totalProjects = Model != null && Model.PromiseTypeList != null ? Model.PromiseTypeList.Count() : 0;
+    int totalDepts = Model != null ? (Model.mDepartmentList != null ? Model.mDepartmentList.Count() : (Model.mOfficeList != null ? Model.mOfficeList.Count() : 0)) : 0;
 }
 
 <!DOCTYPE html>
@@ -14,7 +16,786 @@
     <link href="~/Content/Site.css" rel="stylesheet" />
     <link href="~/Content/responsive_ms.css" rel="stylesheet" />
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
-    <link href="~/Content/common.css" rel="stylesheet" />    
+    <link href="~/Content/common.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <script src="~/Scripts/datatables/vfs-fonts-punjabi.js"></script>
+
+    <style>
+        /* === EXECUTIVE DESIGN SYSTEM: PRIORITY PROJECTS === */
+        body,
+        .form_dsign,
+        #main-content {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            color: #1e293b;
+        }
+
+        /* 1. Compact Breadcrumb & Executive Header Bar */
+        .adc-header-row {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-wrap: nowrap !important;
+            gap: 12px !important;
+        }
+
+        h4#lblmenuname,
+        .compact-breadcrumb-bar {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            color: #1e3a8a !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.35 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            letter-spacing: -0.01em !important;
+            font-family: 'Poppins', sans-serif !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+        }
+
+        h4#lblmenuname .crumb-sep,
+        .compact-breadcrumb-bar .crumb-sep {
+            color: #94a3b8 !important;
+            margin: 0 7px !important;
+            font-weight: 400 !important;
+            font-size: 14px !important;
+        }
+
+        /* Header Actions & Metric Badges */
+        .adc-header-actions {
+            display: flex !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+            gap: 10px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .adc-metrics-strip {
+            display: inline-flex !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+            gap: 8px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .adc-metric-badge {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 4px 10px !important;
+            border-radius: 6px !important;
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* New Project Action Button */
+        .btn-action-new-project {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-size: 12.5px !important;
+            font-weight: 600 !important;
+            padding: 5px 14px !important;
+            border-radius: 6px !important;
+            height: 32px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25) !important;
+            transition: all 0.15s ease !important;
+            text-decoration: none !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+        }
+
+        .btn-action-new-project:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(16, 185, 129, 0.35) !important;
+            color: #ffffff !important;
+        }
+
+        /* 2. Compact Filter Toolbar */
+        .agenda-filter-bar {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+            margin-bottom: 10px;
+        }
+
+        .filter-label-compact {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .custom-select-compact {
+            height: 32px !important;
+            padding: 3px 26px 3px 10px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            color: #1e293b !important;
+            background-color: #ffffff !important;
+            transition: all 0.2s ease;
+        }
+
+        .custom-select-compact:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+            outline: none !important;
+        }
+
+        .btn-stat-count-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-stat-count-icon:hover {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+            transform: scale(1.08);
+        }
+
+        .btn-compact-search {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 4px 14px !important;
+            border-radius: 6px !important;
+            height: 32px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .btn-compact-search:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-compact-reset {
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 4px 12px !important;
+            border-radius: 6px !important;
+            height: 32px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .btn-compact-reset:hover {
+            background: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+
+        .btn-compact-back {
+            background: #fff1f2 !important;
+            border: 1px solid #fecdd3 !important;
+            color: #e11d48 !important;
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            padding: 3px 10px !important;
+            border-radius: 5px !important;
+            height: 28px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.15s ease !important;
+            text-decoration: none !important;
+        }
+
+        .btn-compact-back:hover {
+            background: #e11d48 !important;
+            color: #ffffff !important;
+        }
+
+        /* 3. Segmented Table-Switch Bar */
+        .table-switch-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 5px 8px;
+            margin-bottom: 12px;
+        }
+
+        .table-switch {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .table-switch .switch-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .table-switch .switch-item:hover {
+            border-color: #cbd5e1;
+            background: #f1f5f9;
+        }
+
+        .table-switch .switch-item:has(input[type="radio"]:checked),
+        .table-switch .switch-item.active {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            box-shadow: 0 1px 2px rgba(59, 130, 246, 0.12);
+        }
+
+        .table-switch .switch-item input[type="radio"] {
+            accent-color: #2563eb;
+            margin: 0;
+            cursor: pointer;
+            width: 14px;
+            height: 14px;
+        }
+
+        .table-switch .switch-item label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .table-switch .switch-item:has(input[type="radio"]:checked) label,
+        .table-switch .switch-item.active label {
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        /* 4. Executive Table Card */
+        .agenda-table-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+        }
+
+        .table-responsive {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+        }
+
+        #tableProjects,
+        #tableProjectWorksList {
+            min-width: 600px;
+        }
+
+        #tableProjectList {
+            min-width: 950px;
+        }
+
+        #tableProjects,
+        #tableProjectWorksList,
+        #tableProjectList {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            overflow: hidden !important;
+            margin-top: 4px !important;
+        }
+
+        #tableProjects thead tr.table-heading th,
+        #tableProjects thead tr.table-heading td,
+        #tableProjectWorksList thead tr.table-heading th,
+        #tableProjectWorksList thead tr.table-heading td,
+        #tableProjectList thead tr.table-heading th,
+        #tableProjectList thead tr.table-heading td {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            text-transform: capitalize !important;
+            letter-spacing: 0.01em !important;
+            padding: 8px 10px !important;
+            border: none !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+        }
+
+        #tableProjects thead tr.table-heading td:last-child,
+        #tableProjectWorksList thead tr.table-heading td:last-child,
+        #tableProjectList thead tr.table-heading td:last-child {
+            border-right: none !important;
+        }
+
+        #tableProjects tbody tr td,
+        #tableProjectWorksList tbody tr td,
+        #tableProjectList tbody tr td {
+            font-size: 12px !important;
+            line-height: 1.4 !important;
+            color: #1e293b !important;
+            padding: 7px 10px !important;
+            border: none !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            border-right: 1px solid #f1f5f9 !important;
+            vertical-align: middle !important;
+            background: #ffffff;
+            transition: background 0.1s ease !important;
+        }
+
+        #tableProjects tbody tr:nth-child(even) td,
+        #tableProjectWorksList tbody tr:nth-child(even) td,
+        #tableProjectList tbody tr:nth-child(even) td {
+            background-color: #f8fafc !important;
+        }
+
+        #tableProjects tbody tr:hover td,
+        #tableProjectWorksList tbody tr:hover td,
+        #tableProjectList tbody tr:hover td {
+            background-color: #eff6ff !important;
+        }
+
+        /* Badges & Pills */
+        .project-id-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 11.5px;
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+            letter-spacing: 0.02em;
+        }
+
+        #tableProjects tbody tr td a.loader,
+        #tableProjectWorksList tbody tr td a.loader,
+        .badge-count-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 24px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #1d4ed8 !important;
+            font-weight: 700;
+            font-size: 11.5px;
+            border: 1px solid #bfdbfe;
+            text-decoration: none !important;
+            transition: all 0.15s ease;
+        }
+
+        #tableProjects tbody tr td a.loader:hover,
+        #tableProjectWorksList tbody tr td a.loader:hover,
+        .badge-count-pill:hover {
+            background: #2563eb;
+            color: #ffffff !important;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
+        }
+
+        .btnLinks {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 2px 7px !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            border-radius: 4px !important;
+            height: 24px !important;
+            min-width: 24px !important;
+            transition: all 0.15s ease !important;
+        }
+
+        /* Gurmukhi text styling */
+        .gurmukhi-text {
+            font-family: 'Raavi', 'Noto Sans Gurmukhi', 'Mukta Mahee', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            font-size: 12.5px !important;
+            line-height: 1.4 !important;
+        }
+
+        /* 5. DataTables Toolbar & Controls */
+        .dt-buttons .dt-button,
+        .dt-btn-action {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            padding: 3px 10px !important;
+            font-size: 11.5px !important;
+            height: 28px !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            margin-right: 5px !important;
+            box-shadow: none !important;
+            transition: all 0.15s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+        }
+
+        .dt-buttons .dt-button:hover,
+        .dt-btn-action:hover {
+            background: #f8fafc !important;
+            border-color: #94a3b8 !important;
+            transform: translateY(-1px);
+        }
+
+        .dt-buttons .buttons-excel:hover,
+        .dt-btn-excel:hover {
+            border-color: #10b981 !important;
+            color: #059669 !important;
+        }
+
+        .dt-buttons .buttons-csv:hover,
+        .dt-btn-csv:hover {
+            border-color: #0284c7 !important;
+            color: #0284c7 !important;
+        }
+
+        .dt-buttons .buttons-pdf:hover,
+        .dt-btn-pdf:hover {
+            border-color: #e11d48 !important;
+            color: #e11d48 !important;
+        }
+
+        .dataTables_length label,
+        .dataTables_filter label {
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            color: #475569 !important;
+            margin: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+        }
+
+        .dataTables_length select,
+        .dataTables_filter input {
+            height: 28px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            padding: 2px 8px !important;
+            font-size: 11.5px !important;
+            color: #1e293b !important;
+            background: #ffffff !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .dataTables_filter input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+            outline: none !important;
+        }
+
+        .dataTables_info {
+            font-size: 11.5px !important;
+            color: #64748b !important;
+            font-weight: 500 !important;
+            padding-top: 6px !important;
+        }
+
+        .dataTables_paginate .paginate_button {
+            border-radius: 5px !important;
+            font-size: 11.5px !important;
+            padding: 2px 8px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            margin: 0 2px !important;
+        }
+
+        .dataTables_paginate .paginate_button.current,
+        .dataTables_paginate .paginate_button.current:hover {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+        }
+
+        /* 6. Polished Modals */
+        .modal {
+            z-index: 1070 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 1065 !important;
+        }
+
+        #mpProjectList {
+            z-index: 1075 !important;
+        }
+
+        #modalWorks,
+        #modalImages,
+        #modalAddDocument,
+        #modalAddConstituency {
+            z-index: 1085 !important;
+        }
+
+        .modal-dialog .modal-content {
+            border: none !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .modal-dialog .modal-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            padding: 10px 16px !important;
+            border-bottom: none !important;
+        }
+
+        .modal-dialog .modal-header .modal-title,
+        .modal-dialog .modal-header h4,
+        .modal-dialog .modal-header h5 {
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            margin: 0 !important;
+        }
+
+        .modal-dialog .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+
+        .modal-dialog .modal-header .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-dialog .modal-header .btn-close-modal {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border: none !important;
+            color: #ffffff !important;
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 50% !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            font-size: 16px !important;
+            line-height: 1 !important;
+            transition: all 0.15s ease !important;
+            padding: 0 !important;
+        }
+
+        .modal-dialog .modal-header .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
+            color: #ffffff !important;
+            transform: scale(1.08);
+        }
+
+        /* 7. Comprehensive Responsive Layout */
+        @@media (max-width: 1199.98px) {
+            .filter-item-group {
+                min-width: 180px;
+            }
+        }
+
+        @@media (max-width: 991.98px) {
+            .adc-header-row {
+                flex-wrap: wrap !important;
+                gap: 10px !important;
+            }
+            .adc-header-actions {
+                width: 100% !important;
+                justify-content: space-between !important;
+                margin-left: 0 !important;
+            }
+            .filter-item-group {
+                min-width: calc(50% - 10px) !important;
+                flex: 1 1 calc(50% - 10px) !important;
+            }
+            .filter-action-group {
+                width: 100% !important;
+                display: flex !important;
+                justify-content: flex-end !important;
+                margin-top: 4px !important;
+            }
+        }
+
+        @@media (max-width: 767.98px) {
+            .priority-projects-container {
+                padding: 0 4px;
+            }
+            h4#lblmenuname,
+            .compact-breadcrumb-bar {
+                font-size: 14px !important;
+                white-space: normal !important;
+            }
+            .adc-metrics-strip {
+                gap: 5px !important;
+            }
+            .adc-metric-badge {
+                padding: 3px 8px !important;
+                font-size: 11px !important;
+            }
+            .agenda-filter-bar {
+                padding: 4px 0 !important;
+            }
+            .agenda-table-card {
+                padding: 8px !important;
+            }
+            .table-switch-container {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                padding: 4px 6px !important;
+            }
+            .table-switch {
+                flex-wrap: nowrap !important;
+                gap: 6px !important;
+                white-space: nowrap !important;
+            }
+            .table-switch .switch-item {
+                flex-shrink: 0 !important;
+                padding: 4px 10px !important;
+            }
+            .table-switch .switch-item label {
+                font-size: 11.5px !important;
+            }
+            /* DataTables mobile layout */
+            .dataTables_wrapper .dt-buttons {
+                float: none !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 4px !important;
+                margin-bottom: 8px !important;
+            }
+            .dataTables_wrapper .dataTables_length {
+                float: left !important;
+                margin-bottom: 8px !important;
+            }
+            .dataTables_wrapper .dataTables_filter {
+                float: right !important;
+                margin-bottom: 8px !important;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                width: 120px !important;
+            }
+            .dataTables_wrapper .dataTables_info {
+                float: none !important;
+                text-align: center !important;
+                margin-bottom: 6px !important;
+            }
+            .dataTables_wrapper .dataTables_paginate {
+                float: none !important;
+                display: flex !important;
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+            }
+            /* Modal responsiveness */
+            #mpProjectList .modal-dialog {
+                margin: 0 !important;
+                max-width: 100% !important;
+                height: 100% !important;
+            }
+            #mpProjectList .modal-content {
+                height: 100% !important;
+                border-radius: 0 !important;
+            }
+            #mpProjectList .modal-header {
+                padding: 8px 12px !important;
+            }
+            #mpProjectList .modal-header .modal-title {
+                font-size: 13px !important;
+            }
+            #mpProjectList .modal-body {
+                padding: 8px !important;
+            }
+            #mpProjectList .modal-footer {
+                padding: 6px 12px !important;
+            }
+        }
+
+        @@media (max-width: 575.98px) {
+            .adc-header-actions {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+            .adc-metrics-strip {
+                display: flex !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+            }
+            .adc-metric-badge {
+                flex: 1 !important;
+                justify-content: center !important;
+            }
+            .btn-action-new-project {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .filter-item-group {
+                min-width: 100% !important;
+                flex: 1 1 100% !important;
+            }
+            .filter-action-group {
+                width: 100% !important;
+                display: flex !important;
+                gap: 8px !important;
+            }
+            .filter-action-group .btn-compact-search,
+            .filter-action-group .btn-compact-reset {
+                flex: 1 !important;
+                justify-content: center !important;
+            }
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                float: none !important;
+                display: block !important;
+                width: 100% !important;
+                text-align: left !important;
+                margin-bottom: 6px !important;
+            }
+            .dataTables_wrapper .dataTables_filter label,
+            .dataTables_wrapper .dataTables_length label {
+                width: 100% !important;
+                justify-content: space-between !important;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                flex: 1 !important;
+                width: auto !important;
+            }
+        }
+    </style>
+
     @if (TempData["Message"] != null)
     {
         <script>
@@ -30,6 +811,7 @@
         <script>
             $(document).ready(function () {
                 $("#modalPromise").modal('show');
+            });
         </script>
     }
     @if (ViewBag.ErrorMessage != null)
@@ -51,465 +833,369 @@
     <input type="hidden" name="hidden" value="2" id="hdnMCorLeg" />
     <div id="main-content">
         <section class="form_dsign">
-            <div class="">
-                <div class="widget-box" id="divAction">
-                    <div class="widget-header widget-header-flat">
-                        @if (servicename == "CMNirdesh" || isapex == "1")
-                        {
+            <div class="priority-projects-container">
+                <!-- Compact Executive Header Bar -->
+                <div class="col-12 p-0 mb-2">
+                    <div class="adc-header-row d-flex align-items-center justify-content-between py-1">
+                        <h4 id="lblmenuname" class="compact-breadcrumb-bar mb-0">
+                            Priority Projects <span class="crumb-sep">&gt;&gt;</span>
+                            <span id="selectednew">
+                                @if (servicename == "CMNirdesh" || isapex == "1")
+                                {
+                                    @(Model.useractiontype == "Edit" ? "Project-Departments" : "Department-Works")
+                                }
+                                else
+                                {
+                                    @(Model.useractiontype == "Edit" ? "Project-Offices" : "Office-Works")
+                                }
+                            </span>
+                        </h4>
 
-                            if (Model.useractiontype == "Edit")
-                            {
-                                <h4>
-                                    <span id="selectednew" class="">
-                                        Project-Departments
+                        <div class="adc-header-actions d-flex align-items-center ml-auto ms-auto">
+                            <div class="adc-metrics-strip d-flex align-items-center">
+                                @if (totalProjects > 0)
+                                {
+                                    <span class="adc-metric-badge text-nowrap" title="Configured Projects" style="white-space: nowrap !important; flex-shrink: 0 !important;">
+                                        <i class="fa fa-briefcase text-primary mr-1 me-1"></i> Projects: <strong class="ml-1 ms-1">@totalProjects</strong>
                                     </span>
-                                </h4>
-                            }
-                            else
-                            {
-                                <h4>
-                                    <span id="selectednew" class="">
-                                        Department-Works
+                                }
+                                @if (totalDepts > 0)
+                                {
+                                    <span class="adc-metric-badge text-nowrap" title="@(servicename == "CMNirdesh" || isapex == "1" ? "Departments" : "Offices")" style="white-space: nowrap !important; flex-shrink: 0 !important;">
+                                        <i class="fa fa-building text-success mr-1 me-1"></i> @(servicename == "CMNirdesh" || isapex == "1" ? "Departments" : "Offices"): <strong class="ml-1 ms-1">@totalDepts</strong>
                                     </span>
-                                </h4>
-                            }
-                        }
-                        else
-                        {
-
-                            if (Model.useractiontype == "Edit")
-                            {
-                                <h4>
-                                    <span id="selectednew" class="">
-                                        Project-Offices
-                                    </span>
-                                </h4>
-                            }
-                            else
-                            {
-                                <h4>
-                                    <span id="selectednew" class="">
-                                        Office-Works
-                                    </span>
-                                </h4>
-                            }
-                        }
-                        <div class="widget-toolbar no-border">
+                                }
+                            </div>
                             @if ((isapex == "1" || Model.projectedityn == "Y") && Model.useractiontype == "Edit")
                             {
-                                <button class="loader btn btn-sm btn-success" style="font-size:14px !important;" onclick="AddProjects('0');">
-                                    <i class="ace-icon fa fa-pencil-square-o"></i>
-                                    <span class="bigger-110">New Project</span>
+                                <button class="loader btn btn-action-new-project text-nowrap flex-shrink-0" onclick="AddProjects('0');" style="white-space: nowrap !important; flex-shrink: 0 !important;">
+                                    <i class="fa fa-plus-circle mr-1 me-1"></i> New Project
                                 </button>
                             }
                         </div>
                     </div>
-                    @Html.Hidden("maintype", "0")
-                    <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
                 </div>
-                <div class="col-md-12 col-xl-12 col-lg-12 no-right-margin filter-part position-relative ">
-                    <div class="row">
+
+                <!-- Hidden compatibility markers -->
+                <div id="divAction" style="display:none;"></div>
+                @Html.Hidden("maintype", "0")
+                <input type="hidden" id="DepartmentId" value="@ViewBag.DeptID" />
+
+                <!-- Compact Filter Bar -->
+                <div class="col-12 p-0 filter-part position-relative">
+                    <div class="agenda-filter-bar mb-2">
                         @if (Model.useractiontype == "All")
                         {
-                            <div class="col-lg-10">
-                                <div class="row">
-                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
-                                        <div>
-                                            <div class="form fc align-items-center gap-1">
-                                                <span class="label-text">
-                                                    <b> Project</b>
-                                                </span>
-                                                <div class="btn-group dropup">
-
-                                                    <button onclick="ProjectCountD();" type="button" class=" dropdown-toggle link-option icon-refrence" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="far fa-briefcase"></i>
-                                                    </button>
-
-                                                    <div class="dropdown-menu popup-box p-0">
-
-                                                        <div class="filter-popup" id="DispatchProjectCount">
-                                                            <div class="table-responsive">
-                                                                <table class="table " id="DispatchProjectTableCount" style="width:100%">
-                                                                    <thead>
-                                                                        <tr class="table-heading ">
-                                                                            <th class='td-heading'>
-                                                                                <b>Project </b>
-                                                                            </th>
-                                                                            <th class='td-heading'>Works</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody></tbody>
-                                                                </table>
-
-
-                                                            </div>
-                                                        </div>
+                            <div class="d-flex flex-wrap align-items-end gap-3 py-2 px-3">
+                                <!-- Project -->
+                                <div class="filter-item-group" style="min-width: 200px; flex: 1;">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <label class="filter-label-compact mb-0">
+                                            <i class="fa fa-briefcase text-primary me-1"></i> Project
+                                        </label>
+                                        <div class="btn-group dropup">
+                                            <button onclick="ProjectCountD();" type="button" class="dropdown-toggle link-option btn-stat-count-icon" data-bs-toggle="dropdown" aria-expanded="false" title="View Project Counts">
+                                                <i class="fa fa-pie-chart"></i>
+                                            </button>
+                                            <div class="dropdown-menu popup-box p-0 shadow-lg border-0">
+                                                <div class="filter-popup" id="DispatchProjectCount">
+                                                    <div class="table-responsive">
+                                                        <table class="table mb-0" id="DispatchProjectTableCount" style="width:100%">
+                                                            <thead>
+                                                                <tr class="table-heading">
+                                                                    <th class='td-heading'><b>Project</b></th>
+                                                                    <th class='td-heading'>Works</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
-                                                @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, "--Select--", new { @id = "ddlProject", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @disabled = "true" })
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
-                                        <div>
-                                            <div class="form fc align-items-center gap-1">
-                                                <span class="label-text">
-                                                    @if (servicename == "CMNirdesh")
-                                                    {
-                                                        <b>Department </b>
-                                                    }
-                                                    else
-                                                    {
-                                                        <b>Department/Office</b>
-                                                    }
-                                                </span>
-                                                <div class="btn-group dropup">
-
-                                                    <button onclick="DepartmentCountD();" type="button" class=" dropdown-toggle link-option icon-department" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="fas fa-building"></i>
-
-                                                    </button>
-
-                                                    <div class="dropdown-menu popup-box p-0">
-
-                                                        <div class="filter-popup" id="DispatchOfficeCount">
-                                                            <div class="table-responsive">
-                                                                <table class="table " id="DispatchOfficeTableCount" style="width:100%">
-                                                                    <thead>
-                                                                        <tr class="table-heading ">
-                                                                            <th class='td-heading'>
-                                                                                <b>Department </b>
-                                                                            </th>
-                                                                            <th class='td-heading'>Works</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody></tbody>
-                                                                </table>
-
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @Html.DropDownListFor(model => model.DeptId, Model.mDepartmentList, "--Select--", new { @id = "ddlDepartment", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2" })
-                                                @Html.DropDownListFor(model => model.OfficeId, Model.mOfficeList, "--Select--", new { @id = "ddlOffice", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @style = "display:none" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
-                                        <div>
-                                            <div class="form fc align-items-center gap-1">
-                                                @if (servicename == "CMNirdesh")
-                                                {
-                                                    <span class="label-text">
-                                                        <b>Constituency </b>
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="label-text">
-                                                        <b>MC Wards </b>
-                                                    </span>
-                                                }
-                                                <div class="btn-group dropup">
-
-                                                    <button onclick="WardCountD();" type="button" class=" dropdown-toggle link-option icon-office" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="fas fa-poll-people"></i>
-
-                                                    </button>
-
-                                                    <div class="dropdown-menu popup-box p-0">
-
-                                                        <div class="filter-popup" id="DispatchWardCount">
-                                                            <div class="table-responsive">
-                                                                <table class="table " id="DispatchWardTableCount" style="width:100%">
-                                                                    <thead>
-                                                                        <tr class="table-heading ">
-                                                                            <th class='td-heading'>
-                                                                                @if (servicename == "CMNirdesh")
-                                                                                {
-                                                                                    <b>
-                                                                                        Constituency
-                                                                                    </b>
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    <b>
-                                                                                        Ward
-                                                                                    </b>
-                                                                                }
-                                                                            </th>
-                                                                            <th class='td-heading'>Works</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody></tbody>
-                                                                </table>
-
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @Html.DropDownListFor(model => model.ConstituencyId, Model.mProjectConstituencyList, "--Select--", new { @id = "ddlConstituency", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @disabled = "true" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
-                                        <div>
-                                            <div class="form fc align-items-center gap-1">
-                                                <span class="label-text">
-                                                    <b>Status </b>
-                                                </span>
-                                                <div class="btn-group dropup">
-
-                                                    <button onclick="StatusCountD();" type="button" class=" dropdown-toggle link-option icon-status" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="fas fa-chart-line"></i>
-                                                    </button>
-
-                                                    <div class="dropdown-menu popup-box p-0">
-
-                                                        <div class="filter-popup" id="DispatchStatusCount">
-                                                            <div class="table-responsive">
-                                                                <table class="table " id="DispatchStatusTableCount" style="width:100%">
-                                                                    <thead>
-                                                                        <tr class="table-heading ">
-                                                                            <th class='td-heading'>Status</th>
-                                                                            <th class='td-heading'>Works</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody></tbody>
-                                                                </table>
-
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @Html.DropDownListFor(model => model.ProjectStatusId, Model.ProjectStatusTypeList, new { @id = "ddlStatus", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "11", @disabled = "true" })
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, "--Select--", new { @id = "ddlProject", @class = "form-select form-control custom-select-compact w-100", @tabindex = "2", @disabled = "true" })
                                 </div>
-                            </div>
-                            <div class="col-lg-2">
-                                <div class="row">
-                                    <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 mt-3 pt-4">
-                                        <div class="text-start d-flex gap-3 pt-4">
-                                            <button class="loader btn btn-primary" id="searchbutton" onclick="searchData();"> Search</button>
-                                            <button class="loader btn btn-success" id="resetbutton" style="display:block;" onclick="ResetD();"> Reset</button>
+                                <!-- Department / Office -->
+                                <div class="filter-item-group" style="min-width: 200px; flex: 1;">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <label class="filter-label-compact mb-0">
+                                            <i class="fa fa-building text-primary me-1"></i> @(servicename == "CMNirdesh" ? "Department" : "Department/Office")
+                                        </label>
+                                        <div class="btn-group dropup">
+                                            <button onclick="DepartmentCountD();" type="button" class="dropdown-toggle link-option btn-stat-count-icon" data-bs-toggle="dropdown" aria-expanded="false" title="View Department Counts">
+                                                <i class="fa fa-pie-chart"></i>
+                                            </button>
+                                            <div class="dropdown-menu popup-box p-0 shadow-lg border-0">
+                                                <div class="filter-popup" id="DispatchOfficeCount">
+                                                    <div class="table-responsive">
+                                                        <table class="table mb-0" id="DispatchOfficeTableCount" style="width:100%">
+                                                            <thead>
+                                                                <tr class="table-heading">
+                                                                    <th class='td-heading'><b>Department</b></th>
+                                                                    <th class='td-heading'>Works</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                    @Html.DropDownListFor(model => model.DeptId, Model.mDepartmentList, "--Select--", new { @id = "ddlDepartment", @class = "form-select form-control custom-select-compact w-100", @tabindex = "2" })
+                                    @Html.DropDownListFor(model => model.OfficeId, Model.mOfficeList, "--Select--", new { @id = "ddlOffice", @class = "form-select form-control custom-select-compact w-100", @tabindex = "2", @style = "display:none" })
+                                </div>
+                                <!-- Constituency / Ward -->
+                                <div class="filter-item-group" style="min-width: 180px; flex: 1;">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <label class="filter-label-compact mb-0">
+                                            <i class="fa fa-map-marker text-primary me-1"></i> @(servicename == "CMNirdesh" ? "Constituency" : "MC Wards")
+                                        </label>
+                                        <div class="btn-group dropup">
+                                            <button onclick="WardCountD();" type="button" class="dropdown-toggle link-option btn-stat-count-icon" data-bs-toggle="dropdown" aria-expanded="false" title="View Counts">
+                                                <i class="fa fa-pie-chart"></i>
+                                            </button>
+                                            <div class="dropdown-menu popup-box p-0 shadow-lg border-0">
+                                                <div class="filter-popup" id="DispatchWardCount">
+                                                    <div class="table-responsive">
+                                                        <table class="table mb-0" id="DispatchWardTableCount" style="width:100%">
+                                                            <thead>
+                                                                <tr class="table-heading">
+                                                                    <th class='td-heading'><b>@(servicename == "CMNirdesh" ? "Constituency" : "Ward")</b></th>
+                                                                    <th class='td-heading'>Works</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.ConstituencyId, Model.mProjectConstituencyList, "--Select--", new { @id = "ddlConstituency", @class = "form-select form-control custom-select-compact w-100", @tabindex = "2", @disabled = "true" })
+                                </div>
+                                <!-- Status -->
+                                <div class="filter-item-group" style="min-width: 160px; flex: 1;">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <label class="filter-label-compact mb-0">
+                                            <i class="fa fa-tasks text-primary me-1"></i> Status
+                                        </label>
+                                        <div class="btn-group dropup">
+                                            <button onclick="StatusCountD();" type="button" class="dropdown-toggle link-option btn-stat-count-icon" data-bs-toggle="dropdown" aria-expanded="false" title="View Status Counts">
+                                                <i class="fa fa-pie-chart"></i>
+                                            </button>
+                                            <div class="dropdown-menu popup-box p-0 shadow-lg border-0">
+                                                <div class="filter-popup" id="DispatchStatusCount">
+                                                    <div class="table-responsive">
+                                                        <table class="table mb-0" id="DispatchStatusTableCount" style="width:100%">
+                                                            <thead>
+                                                                <tr class="table-heading">
+                                                                    <th class='td-heading'>Status</th>
+                                                                    <th class='td-heading'>Works</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.ProjectStatusId, Model.ProjectStatusTypeList, new { @id = "ddlStatus", @class = "form-select form-control custom-select-compact w-100", @tabindex = "11", @disabled = "true" })
+                                </div>
+                                <!-- Action Buttons -->
+                                <div class="filter-action-group d-flex align-items-center gap-2 pb-0.5">
+                                    <button class="loader btn btn-compact-search" id="searchbutton" onclick="searchData();">
+                                        <i class="fa fa-search me-1"></i> Search
+                                    </button>
+                                    <button class="loader btn btn-compact-reset" id="resetbutton" style="display:block;" onclick="ResetD();">
+                                        <i class="fa fa-refresh me-1"></i> Reset
+                                    </button>
                                 </div>
                             </div>
                         }
                         else
                         {
-                            <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3 ">
-                                <div>
-                                    <div class="form fc align-items-center gap-1">
-                                        <span class="label-text">
-                                            <b> Project</b>
-                                        </span>
+                            <div class="d-flex flex-wrap align-items-end gap-3 py-2 px-3">
+                                <!-- Project -->
+                                <div class="filter-item-group" style="min-width: 250px; flex: 1;">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <label class="filter-label-compact mb-0">
+                                            <i class="fa fa-briefcase text-primary me-1"></i> Project
+                                        </label>
                                         <div class="btn-group dropup">
-
-                                            <button onclick="ProjectOfcCountD();" type="button" class="inline dropdown-toggle link-option icon-refrence" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="far fa-briefcase"></i>
-
+                                            <button onclick="ProjectOfcCountD();" type="button" class="dropdown-toggle link-option btn-stat-count-icon" data-bs-toggle="dropdown" aria-expanded="false" title="View Project Counts">
+                                                <i class="fa fa-pie-chart"></i>
                                             </button>
-
-                                            <div class="dropdown-menu popup-box p-0">
-
+                                            <div class="dropdown-menu popup-box p-0 shadow-lg border-0">
                                                 <div class="filter-popup" id="DispatchProjectCount">
                                                     <div class="table-responsive">
-                                                        <table class="table " id="DispatchProjectTableCount" style="width:100%">
+                                                        <table class="table mb-0" id="DispatchProjectTableCount" style="width:100%">
                                                             <thead>
-                                                                <tr class="table-heading ">
-                                                                    <th class='td-heading'>
-                                                                        <b>Project </b>
-                                                                    </th>
-                                                                    <th class='td-heading'>
-                                                                        @if (isapex == "0" && servicename == "MC")
-                                                                        {
-                                                                            <b>Office</b>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <b>Department</b>
-                                                                        }
-
-                                                                    </th>
+                                                                <tr class="table-heading">
+                                                                    <th class='td-heading'><b>Project</b></th>
+                                                                    <th class='td-heading'><b>@(isapex == "0" && servicename == "MC" ? "Office" : "Department")</b></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody></tbody>
                                                         </table>
-
-
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, "--Select--", new { @id = "ddlProject", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2" })
                                     </div>
+                                    @Html.DropDownListFor(model => model.PromiseId, Model.PromiseTypeList, "--Select--", new { @id = "ddlProject", @class = "form-select form-control custom-select-compact w-100", @tabindex = "2" })
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 p-3">
-                                <div>
-                                    <div class="form fc align-items-center gap-1 pt-1">
-                                        <span class="label-text">
-                                            @if (servicename == "CMNirdesh" || isapex == "1")
-                                            {
-                                                <b>Department </b>
-                                            }
-                                            else
-                                            {
-                                                <b>Office</b>
-                                            }
-                                        </span>
+                                <!-- Department / Office -->
+                                <div class="filter-item-group" style="min-width: 250px; flex: 1;">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <label class="filter-label-compact mb-0">
+                                            <i class="fa fa-building text-primary me-1"></i> @(servicename == "CMNirdesh" || isapex == "1" ? "Department" : "Office")
+                                        </label>
                                         <div class="btn-group dropup">
-
-                                            <button onclick="OfficeCountD();" type="button" class=" dropdown-toggle link-option icon-department" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fas fa-building"></i>
-
+                                            <button onclick="OfficeCountD();" type="button" class="dropdown-toggle link-option btn-stat-count-icon" data-bs-toggle="dropdown" aria-expanded="false" title="View Counts">
+                                                <i class="fa fa-pie-chart"></i>
                                             </button>
-
-                                            <div class="dropdown-menu popup-box p-0">
-
+                                            <div class="dropdown-menu popup-box p-0 shadow-lg border-0">
                                                 <div class="filter-popup" id="DispatchOfficeCount">
                                                     <div class="table-responsive">
-                                                        <table class="table " id="DispatchOfficeTableCount" style="width:100%">
+                                                        <table class="table mb-0" id="DispatchOfficeTableCount" style="width:100%">
                                                             <thead>
-                                                                <tr class="table-heading ">
-                                                                    <th class='td-heading'>
-                                                                        @if (servicename == "CMNirdesh" || isapex == "1")
-                                                                        {
-                                                                            <b>Department </b>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <b>Office</b>
-                                                                        }
-                                                                    </th>
+                                                                <tr class="table-heading">
+                                                                    <th class='td-heading'><b>@(servicename == "CMNirdesh" || isapex == "1" ? "Department" : "Office")</b></th>
                                                                     <th class='td-heading'>Projects</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody></tbody>
                                                         </table>
-
-
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        @Html.DropDownListFor(model => model.DeptId, Model.mDepartmentList, "--Select--", new { @id = "ddlDepartment", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2" })
-                                        @Html.DropDownListFor(model => model.OfficeId, Model.mOfficeList, "--Select--", new { @id = "ddlOffice", @class = "mt-1 width-100 form-control drop_txt", @tabindex = "2", @style = "display:none" })
                                     </div>
+                                    @Html.DropDownListFor(model => model.DeptId, Model.mDepartmentList, "--Select--", new { @id = "ddlDepartment", @class = "form-select form-control custom-select-compact w-100", @tabindex = "2" })
+                                    @Html.DropDownListFor(model => model.OfficeId, Model.mOfficeList, "--Select--", new { @id = "ddlOffice", @class = "form-select form-control custom-select-compact w-100", @tabindex = "2", @style = "display:none" })
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 col-12 mt-4 pt-4">
-                                <div class="text-start d-flex gap-3 pt-3">
-                                    <button class="loader btn btn-primary" id="searchbutton" onclick="searchData();"> Search</button>
-                                    <button class="loader btn btn-success" id="resetbutton" style="display:block;" onclick="ResetD();"> Reset</button>
+                                <!-- Action Buttons -->
+                                <div class="filter-action-group d-flex align-items-center gap-2 pb-0.5">
+                                    <button class="loader btn btn-compact-search" id="searchbutton" onclick="searchData();">
+                                        <i class="fa fa-search me-1"></i> Search
+                                    </button>
+                                    <button class="loader btn btn-compact-reset" id="resetbutton" style="display:block;" onclick="ResetD();">
+                                        <i class="fa fa-refresh me-1"></i> Reset
+                                    </button>
                                 </div>
                             </div>
                         }
                     </div>
                 </div>
-                <div class="col-md-12 col-xl-12 cl-lg-12">
-                    <div class="row">
-                        <div class="col-md-12 col-xl-12 col-lg-12 mt-3" id="divOffficeSummaryBtn">
-                            <div class="table-switch">
-                                @if (Model.useractiontype == "Edit")
+
+                <!-- Modern Segmented Table-Switch Bar -->
+                <div class="col-12 p-0 mb-2" id="divOffficeSummaryBtn">
+                    <div class="table-switch-container">
+                        <div class="table-switch">
+                            @if (Model.useractiontype == "Edit")
+                            {
+                                if (servicename == "CMNirdesh" || isapex == "1")
                                 {
-                                    if (servicename == "CMNirdesh" || isapex == "1")
-                                    {
-                                        <div>
-                                            <input type="radio" id="rbtnProjectDeptStatus" name="radiobutton" value="rbtnProjectDeptStatus" checked="checked" onclick="loadProjectWiseDepartmentStatus();">
-                                            <label for="status"><b>Project-Department Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="rbtnDeptProjectStatus" name="radiobutton" value="rbtnDeptProjectStatus" onclick="loadDepartmentWiseProjectStatus();">
-                                            <label for="status"><b>Department-Project Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            <input type="radio" id="rbtnProjectDeptStatus" name="radiobutton" value="rbtnProjectDeptStatus" checked="checked" onclick="loadProjectWiseDepartmentStatus();">
-                                            <label for="status"><b>Project-Office Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="rbtnDeptProjectStatus" name="radiobutton" value="rbtnDeptProjectStatus" onclick="loadDepartmentWiseProjectStatus();">
-                                            <label for="status"><b>Office-Project Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                    }
+                                    <div class="switch-item active">
+                                        <input type="radio" id="rbtnProjectDeptStatus" name="radiobutton" value="rbtnProjectDeptStatus" checked="checked" onclick="loadProjectWiseDepartmentStatus();">
+                                        <label for="rbtnProjectDeptStatus">Project-Department Status Summary</label>
+                                    </div>
+                                    <div class="switch-item">
+                                        <input type="radio" id="rbtnDeptProjectStatus" name="radiobutton" value="rbtnDeptProjectStatus" onclick="loadDepartmentWiseProjectStatus();">
+                                        <label for="rbtnDeptProjectStatus">Department-Project Status Summary</label>
+                                    </div>
                                 }
-                                @if (Model.useractiontype == "All")
+                                else
                                 {
-                                    if (servicename == "CMNirdesh" || isapex == "1")
-                                    {
-                                        <div>
-                                            <input type="radio" id="rbtnDeptWiseProjectWorkStatus" name="radiobutton" checked="checked" value="rbtnDeptWiseProjectWorkStatus" onclick="loadDeptWiseProjectWorkStatus(0);">
-                                            <label for="status"><b>Department-Project-Work Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="rbtnProjectWiseDeptWorkStatus" name="radiobutton" value="rbtnProjectWiseDeptWorkStatus" onclick="loadProjectDeptWiseWorkStatus();">
-                                            <label for="status"><b>Project-Department-Work Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            <input type="radio" id="rbtnDeptWiseProjectWorkStatus" name="radiobutton" checked="checked" value="rbtnDeptWiseProjectWorkStatus" onclick="loadDeptWiseProjectWorkStatus(0);">
-                                            <label for="status"><b>Office-Project-Work Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                        <div>
-                                            <input type="radio" id="rbtnProjectWiseDeptWorkStatus" name="radiobutton" value="rbtnProjectWiseDeptWorkStatus" onclick="loadProjectDeptWiseWorkStatus();">
-                                            <label for="status"><b>Project-Office-Work Status Summary</b></label>&nbsp;&nbsp;
-                                        </div>
-                                    }
+                                    <div class="switch-item active">
+                                        <input type="radio" id="rbtnProjectDeptStatus" name="radiobutton" value="rbtnProjectDeptStatus" checked="checked" onclick="loadProjectWiseDepartmentStatus();">
+                                        <label for="rbtnProjectDeptStatus">Project-Office Status Summary</label>
+                                    </div>
+                                    <div class="switch-item">
+                                        <input type="radio" id="rbtnDeptProjectStatus" name="radiobutton" value="rbtnDeptProjectStatus" onclick="loadDepartmentWiseProjectStatus();">
+                                        <label for="rbtnDeptProjectStatus">Office-Project Status Summary</label>
+                                    </div>
                                 }
-                                <div>
-                                    <input type="radio" id="rbtnList" name="radiobutton" value="rbtnList" onclick="loadProjects();">
-                                    <label for="list"><b>List (View/Update)</b></label>
-                                </div>
+                            }
+                            @if (Model.useractiontype == "All")
+                            {
+                                if (servicename == "CMNirdesh" || isapex == "1")
+                                {
+                                    <div class="switch-item active">
+                                        <input type="radio" id="rbtnDeptWiseProjectWorkStatus" name="radiobutton" checked="checked" value="rbtnDeptWiseProjectWorkStatus" onclick="loadDeptWiseProjectWorkStatus(0);">
+                                        <label for="rbtnDeptWiseProjectWorkStatus">Department-Project-Work Status Summary</label>
+                                    </div>
+                                    <div class="switch-item">
+                                        <input type="radio" id="rbtnProjectWiseDeptWorkStatus" name="radiobutton" value="rbtnProjectWiseDeptWorkStatus" onclick="loadProjectDeptWiseWorkStatus();">
+                                        <label for="rbtnProjectWiseDeptWorkStatus">Project-Department-Work Status Summary</label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="switch-item active">
+                                        <input type="radio" id="rbtnDeptWiseProjectWorkStatus" name="radiobutton" checked="checked" value="rbtnDeptWiseProjectWorkStatus" onclick="loadDeptWiseProjectWorkStatus(0);">
+                                        <label for="rbtnDeptWiseProjectWorkStatus">Office-Project-Work Status Summary</label>
+                                    </div>
+                                    <div class="switch-item">
+                                        <input type="radio" id="rbtnProjectWiseDeptWorkStatus" name="radiobutton" value="rbtnProjectWiseDeptWorkStatus" onclick="loadProjectDeptWiseWorkStatus();">
+                                        <label for="rbtnProjectWiseDeptWorkStatus">Project-Office-Work Status Summary</label>
+                                    </div>
+                                }
+                            }
+                            <div class="switch-item">
+                                <input type="radio" id="rbtnList" name="radiobutton" value="rbtnList" onclick="loadProjects();">
+                                <label for="rbtnList">List (View/Update)</label>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="form_lyot table-responsive">
-                    @if (Model != null)
-                    {
-                        <div id="divProjectDeptName" style="display:none">
-                            <label for="inputinfo" class="control-label lbl_txt width-100" style="font-size: 13pt;">
-                                <b>Department: </b><span id="ddlProjectDeptName"></span>
-                                <a id="btnBackStatus" onclick="loadlist();" class="loader btn btn-sm btn-danger float-right"><i class="fa fa-arrow-left"></i> Back</a>
-                            </label>
-                        </div>
-                        <div id="divtableProjects">
-                            <table id="tableProjects" class="table table-hover table-bordered width-100" style="vertical-align:top">
-                            </table>
-                        </div>
-                        <div id="divProjectWorksStatus" class="mt-2">
-                        </div>
-                        <input type="hidden" id="hdnSelectedDeptID" />
-                        <input type="hidden" id="hdnSelectedCurrDeptID" />
-                        <input type="hidden" id="hdnStepNo" />
-                        <input type="hidden" id="hdnSelectedProjectid" />
-                        <input type="hidden" id="hdnSelectedStatusid" />
-                    }
 
+                <!-- Executive Table Card -->
+                <div class="col-12 p-0 mt-1">
+                    <div class="agenda-table-card">
+                        <div class="table-responsive">
+                            @if (Model != null)
+                            {
+                                <div id="divProjectDeptName" style="display:none" class="mb-2 p-2 bg-light rounded d-flex align-items-center justify-content-between">
+                                    <span class="fs-6 fw-bold text-dark">
+                                        <i class="fa fa-building text-primary me-1"></i> Department: <span id="ddlProjectDeptName" class="text-primary"></span>
+                                    </span>
+                                    <a id="btnBackStatus" onclick="loadlist();" class="loader btn btn-sm btn-compact-back"><i class="fa fa-arrow-left me-1"></i> Back</a>
+                                </div>
+                                <div id="divtableProjects">
+                                    <table id="tableProjects" class="table table-hover align-middle agenda-modern-table width-100" style="width:100%; vertical-align:top">
+                                    </table>
+                                </div>
+                                <div id="divProjectWorksStatus" class="mt-2">
+                                </div>
+                                <input type="hidden" id="hdnSelectedDeptID" />
+                                <input type="hidden" id="hdnSelectedCurrDeptID" />
+                                <input type="hidden" id="hdnStepNo" />
+                                <input type="hidden" id="hdnSelectedProjectid" />
+                                <input type="hidden" id="hdnSelectedStatusid" />
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
 
 
             <div id="modalPromise" class="modal" style="background: rgb(54 55 56 / 63%);" data-keyboard="false" data-backdrop="static">
-                <div class="modal-dialog modal-xl">
+                <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 820px;">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="projectSaveHead">New Project</h5>
-                            <button type="button" class="btn-close" onclick="closePopup();" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa fa-folder-open text-white me-2"></i>
+                                <h5 class="modal-title m-0 text-white" id="projectSaveHead">New Project</h5>
+                            </div>
+                            <button type="button" class="btn-close-modal" onclick="closePopup();" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-times"></i>
+                            </button>
                         </div>
-                        <div class="modal-body" id="modalPromiseBody">
+                        <div class="modal-body p-3" id="modalPromiseBody">
 
                         </div>
                     </div>
@@ -600,16 +1286,20 @@
                     </div>
                 </div>
             </div>
-            <div id="mpProjectList" class="modal pr-0" style="background: rgb(54 55 56 / 63%);z-index:111" data-keyboard="false" data-backdrop="static">
+            <div id="mpProjectList" class="modal pr-0" style="background: rgba(15, 23, 42, 0.65); z-index: 1075 !important;" data-keyboard="false" data-backdrop="static">
                 <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-xxl modal-dialog-scrollable">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="widget-title modal_heading">Projects List</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeImgPopup();"></button>
-
+                        <div class="modal-header d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa fa-list-alt text-white me-2"></i>
+                                <h5 class="modal-title m-0 text-white font-weight-bold">Projects List</h5>
+                            </div>
+                            <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Close" onclick="closeImgPopup();">
+                                <i class="fa fa-times"></i>
+                            </button>
                         </div>
-                        <div class="modal-body modal-dialog-scrollable">
-                            <div class="table-responsive" style="margin-top: 20px; height:auto;">
+                        <div class="modal-body modal-dialog-scrollable p-3">
+                            <div class="table-responsive" style="margin-top: 10px; height:auto;">
                                 <table id="tableProjectList" class="table table-hover table-bordered w-100 width-100" style="vertical-align:top">
                                     <thead>
                                         <tr class="table-heading">
@@ -652,12 +1342,11 @@
                                     </tbody>
                                 </table>
                             </div>
-
-
-
                         </div>
-                        <div class="modal-footer">
-
+                        <div class="modal-footer py-2 px-3 bg-light border-top d-flex justify-content-end">
+                            <button type="button" class="btn btn-sm btn-secondary px-3" onclick="closeImgPopup();">
+                                <i class="fa fa-times me-1"></i> Close
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -733,8 +1422,15 @@
                 $(document).ready(function () {
                     $('#divProjectWorksStatus').hide();
                     $(".loader").click(function () {
-                    $("#loader-wrapper").show();
-                });
+                        $("#loader-wrapper").show();
+                    });
+
+                    $('input[name="radiobutton"]').on('change', function () {
+                        $('.table-switch .switch-item').removeClass('active');
+                        $(this).closest('.switch-item').addClass('active');
+                    });
+                    $('input[name="radiobutton"]:checked').closest('.switch-item').addClass('active');
+
                     if ($('input[name="radiobutton"]:checked').val() === 'rbtnDeptProjectStatus') {
                         loadDepartmentWiseProjectStatus();
                     }
@@ -753,7 +1449,7 @@
                         $("#hdnStepNo").val("1");
                         loadProjects();
                     }
-            });
+                });
             function closePopup() {
                 $("#modalAddDocument").hide();
                 $("#modalImages").hide();
@@ -2579,12 +3275,12 @@
                     $('#tbodyPrzt').html('');
                     if (data.length > 0) {
                         $.each(data, function (i, item) {
-                            html = "<tr role='row'><td>" + item.DeptName + "</td>";
+                            html = "<tr role='row'><td class='gurmukhi-text'>" + item.DeptName + "</td>";
                             if (item.totalProject > 0) {
-                                html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadOfficeProjects(&#39;" + item.DeptId + "&#39;,&#39;" + item.OfficeId + "&#39;)'>" + item.totalProject + "</a></td>";
+                                html += "<td class='text-center'><a class='loader badge-count-pill' onclick='loadOfficeProjects(&#39;" + item.DeptId + "&#39;,&#39;" + item.OfficeId + "&#39;)'>" + item.totalProject + "</a></td>";
                             }
                             else {
-                                html += "<td class='text-center'>" + item.totalProject + "</a></td>";
+                                html += "<td class='text-center'>" + item.totalProject + "</td>";
                             }
                             html += "</tr > ";
                             $('#tbodyPrzt').append(html);
@@ -2598,30 +3294,60 @@
                             "pageLength": 25,
                             dom: 'Blfrtip',
                             buttons: [
-                                'csv',
-                                'excel',
+                                {
+                                    extend: 'csv',
+                                    text: '<i class="fa fa-file-text-o me-1"></i> CSV',
+                                    className: 'dt-btn-action dt-btn-csv'
+                                },
+                                {
+                                    extend: 'excel',
+                                    text: '<i class="fa fa-file-excel-o me-1"></i> Excel',
+                                    className: 'dt-btn-action dt-btn-excel'
+                                },
                                 {
                                     extend: 'pdf',
+                                    text: '<i class="fa fa-file-pdf-o me-1"></i> PDF',
+                                    className: 'dt-btn-action dt-btn-pdf',
                                     customize: function (doc) {
-                                        // Set custom margins for the PDF
-                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
-                                        // Find the header row
-                                        var header = doc.content[1].table.body[0];
+                                        try {
+                                            var selectedFont = null;
+                                            var pdfObj = window.pdfMake || (typeof pdfMake !== 'undefined' ? pdfMake : null);
+                                            if (pdfObj && pdfObj.vfs && pdfObj.vfs['Raavi-Regular.ttf']) {
+                                                pdfObj.fonts = pdfObj.fonts || {};
+                                                pdfObj.fonts.Raavi = {
+                                                    normal: 'Raavi-Regular.ttf',
+                                                    bold: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf',
+                                                    italics: 'Raavi-Regular.ttf',
+                                                    bolditalics: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf'
+                                                };
+                                                selectedFont = 'Raavi';
+                                            }
+                                            if (selectedFont) {
+                                                doc.defaultStyle = doc.defaultStyle || {};
+                                                doc.defaultStyle.font = selectedFont;
+                                            }
+                                        } catch (e) { }
 
-                                        // Set alignment to 'left' for all header cells
-                                        for (var i = 0; i < header.length; i++) {
-                                            header[i].alignment = 'left';
+                                        doc.pageMargins = [14, 14, 14, 14];
+                                        if (doc.content && doc.content.length > 1 && doc.content[1].table && doc.content[1].table.body) {
+                                            var header = doc.content[1].table.body[0];
+                                            for (var i = 0; i < header.length; i++) {
+                                                header[i].alignment = 'left';
+                                                header[i].fillColor = '#1e3a8a';
+                                                header[i].color = '#ffffff';
+                                            }
                                         }
                                         var head = 'Department-Project Status Summary';
                                         if (@isapex == 0 && '@servicename' == 'MC') {
                                             head = 'Office-Project Status Summary';
                                         }
-                                        // Replace the default heading with custom text
                                         doc.content.splice(0, 1, {
                                             text: head,
-                                            fontSize: 14,
+                                            fontSize: 13,
+                                            bold: true,
+                                            color: '#1e3a8a',
                                             alignment: 'center',
-                                            margin: [0, 10],
+                                            margin: [0, 8, 0, 12]
                                         });
                                     }
                                 }
@@ -2685,17 +3411,17 @@
                     $('#tbodyPrzt').html('');
                     if (data.length > 0) {
                         $.each(data, function (i, item) {
-                            html = "<tr role='row'><td>" + item.PromiseRefId + "</td><td>" + item.PromiseName + "</td>";
+                            html = "<tr role='row'><td><span class='project-id-badge'>" + item.PromiseRefId + "</span></td><td class='gurmukhi-text'>" + item.PromiseName + "</td>";
                             if (item.totalDepartment > 0) {
                                 if ('@servicename' == "MC") {
-                                    html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectOffices(" + item.PromiseId + ",&#39;" + "0" + "&#39;)'>" + item.totalDepartment + "</a></td>";
+                                    html += "<td class='text-center'><a class='loader badge-count-pill' onclick='loadProjectOffices(" + item.PromiseId + ",&#39;" + "0" + "&#39;)'>" + item.totalDepartment + "</a></td>";
                                 }
                                 else {
-                                    html += "<td class='text-center'><a class='loader' style='text-decoration: underline;font-weight: 500;' onclick='loadProjectDepartments(" + item.PromiseId + ")'>" + item.totalDepartment + "</a></td>";
+                                    html += "<td class='text-center'><a class='loader badge-count-pill' onclick='loadProjectDepartments(" + item.PromiseId + ")'>" + item.totalDepartment + "</a></td>";
                                 }
                             }
                             else {
-                                html += "<td class='text-center'>" + item.totalDepartment + "</a></td>";
+                                html += "<td class='text-center'>" + item.totalDepartment + "</td>";
                             }
                             html += "</tr > ";
                             $('#tbodyPrzt').append(html);
@@ -2709,31 +3435,60 @@
                             "pageLength": 25,
                             dom: 'Blfrtip',
                             buttons: [
-                                'csv',
-                                'excel',
+                                {
+                                    extend: 'csv',
+                                    text: '<i class="fa fa-file-text-o me-1"></i> CSV',
+                                    className: 'dt-btn-action dt-btn-csv'
+                                },
+                                {
+                                    extend: 'excel',
+                                    text: '<i class="fa fa-file-excel-o me-1"></i> Excel',
+                                    className: 'dt-btn-action dt-btn-excel'
+                                },
                                 {
                                     extend: 'pdf',
+                                    text: '<i class="fa fa-file-pdf-o me-1"></i> PDF',
+                                    className: 'dt-btn-action dt-btn-pdf',
                                     customize: function (doc) {
-                                        // Set custom margins for the PDF
-                                        doc.pageMargins = [10, 10, 10, 10]; // [left, top, right, bottom]
-                                        // Find the header row
-                                        var header = doc.content[1].table.body[0];
+                                        try {
+                                            var selectedFont = null;
+                                            var pdfObj = window.pdfMake || (typeof pdfMake !== 'undefined' ? pdfMake : null);
+                                            if (pdfObj && pdfObj.vfs && pdfObj.vfs['Raavi-Regular.ttf']) {
+                                                pdfObj.fonts = pdfObj.fonts || {};
+                                                pdfObj.fonts.Raavi = {
+                                                    normal: 'Raavi-Regular.ttf',
+                                                    bold: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf',
+                                                    italics: 'Raavi-Regular.ttf',
+                                                    bolditalics: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf'
+                                                };
+                                                selectedFont = 'Raavi';
+                                            }
+                                            if (selectedFont) {
+                                                doc.defaultStyle = doc.defaultStyle || {};
+                                                doc.defaultStyle.font = selectedFont;
+                                            }
+                                        } catch (e) { }
 
-                                        // Set alignment to 'left' for all header cells
-                                        for (var i = 0; i < header.length; i++) {
-                                            header[i].alignment = 'left';
+                                        doc.pageMargins = [14, 14, 14, 14];
+                                        if (doc.content && doc.content.length > 1 && doc.content[1].table && doc.content[1].table.body) {
+                                            var header = doc.content[1].table.body[0];
+                                            for (var i = 0; i < header.length; i++) {
+                                                header[i].alignment = 'left';
+                                                header[i].fillColor = '#1e3a8a';
+                                                header[i].color = '#ffffff';
+                                            }
                                         }
                                         var head = 'Project-Department Status Summary';
                                         if (@isapex == 0 && '@servicename' == 'MC') {
                                             head = 'Project-Office Status Summary';
                                         }
-
-                                        // Replace the default heading with custom text
                                         doc.content.splice(0, 1, {
                                             text: head,
-                                            fontSize: 14,
+                                            fontSize: 13,
+                                            bold: true,
+                                            color: '#1e3a8a',
                                             alignment: 'center',
-                                            margin: [0, 10],
+                                            margin: [0, 8, 0, 12]
                                         });
                                     }
                                 }

@@ -1448,46 +1448,157 @@
            ANALYTICS DASHBOARD REDESIGN - COMPACT & WELL-DEFINED
            ========================================================================== */
 
-        /* Top Hero Header */
+        /* ==========================================================================
+           ANALYTICS DASHBOARD REDESIGN - EXECUTIVE CIVIC SUITE
+           ========================================================================== */
+
+        /* Top Hero Header Bar - Compact */
         .analytics-hero-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+            padding: 5px 14px;
+            background: linear-gradient(135deg, #091e42 0%, #1e3a8a 55%, #1d4ed8 100%);
             border-radius: 8px;
             color: #ffffff;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.18);
+            margin-bottom: 6px;
+            box-shadow: 0 2px 8px rgba(9, 30, 66, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .analytics-hero-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 15px;
+            gap: 8px;
+        }
+        .hero-icon-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .hero-main-title {
+            font-size: 13px;
             font-weight: 700;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            line-height: 1.15;
+            color: #ffffff;
+        }
+        .hero-sub-title {
+            font-size: 10px;
+            font-weight: 500;
+            color: #93c5fd;
+            letter-spacing: 0.2px;
+            line-height: 1;
         }
         .analytics-hero-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 11px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 14px;
+            font-size: 10.5px;
             font-weight: 600;
-            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #f8fafc;
+        }
+        .live-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: livePulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+        @@keyframes livePulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 5px rgba(34, 197, 94, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
         }
 
-        /* Modern Compact Nav Pills Container */
+        /* House/Committee Filter Card - Compact Inline */
+        .analytics-filter-card {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 3px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+            margin: 0 !important;
+        }
+        .analytics-filter-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 5px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+            border: 1px solid #dbeafe;
+        }
+        .analytics-filter-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .analytics-filter-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin: 0;
+            white-space: nowrap;
+        }
+        .analytics-select {
+            height: 26px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+            padding: 1px 8px !important;
+            cursor: pointer;
+            width: auto !important;
+            min-width: 110px;
+        }
+        .analytics-select:focus {
+            border-color: #2563eb !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+            outline: none !important;
+        }
+
+        /* Modern Segmented Navigation Tabs - Compact Inline */
         .analytics-tabs-nav {
             background: #f1f5f9;
-            padding: 4px;
+            padding: 2px;
             border-radius: 8px;
             border: 1px solid #e2e8f0;
             display: inline-flex;
             flex-wrap: wrap;
-            gap: 4px;
-            margin-bottom: 8px;
+            gap: 3px;
+            margin: 0 !important;
             width: auto !important;
         }
         .analytics-tabs-nav .nav-item {
@@ -1499,15 +1610,15 @@
             border: none;
             background: transparent;
             color: #475569;
-            font-size: 12.5px;
+            font-size: 11.5px;
             font-weight: 600;
-            padding: 5px 14px;
+            padding: 4px 12px;
             border-radius: 6px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.15s ease;
             text-decoration: none;
             white-space: nowrap;
         }
@@ -1516,282 +1627,439 @@
             color: #0f172a;
         }
         .analytics-tabs-nav .nav-link.custom-tab.active {
-            background: #1e40af !important;
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
             color: #ffffff !important;
-            box-shadow: 0 2px 6px rgba(30, 64, 175, 0.3);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.28) !important;
         }
 
-        /* Card Container */
+        /* Main Card Container - Compact */
         .analytics-card {
             background: #ffffff;
             border: 1px solid #e2e8f0 !important;
             border-radius: 8px !important;
-            padding: 12px 14px !important;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+            padding: 8px 12px !important;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
         }
 
-        /* Filter Panel */
-        .compact-filter-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-bottom: 10px;
-        }
-        .compact-filter-card label {
-            font-size: 11px;
-            font-weight: 700;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
+        /* Modern Filter Toolbar above DataTables - Compact */
+        .analytics-filter-toolbar {
             display: flex;
             align-items: center;
-            gap: 4px;
-        }
-        .compact-filter-card select.form-control,
-        .compact-filter-card input.form-control {
-            height: 30px !important;
-            font-size: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 5px !important;
-            background-color: #ffffff;
-            color: #1e293b;
-            padding: 2px 8px;
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-        .compact-filter-card select.form-control:focus,
-        .compact-filter-card input.form-control:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
-            outline: none;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
         }
 
-        /* Segmented Dashboard Toggle */
-        .dashboard-toggle {
-            display: inline-flex;
-            border: 1px solid #cbd5e1;
-            border-radius: 20px;
-            overflow: hidden;
-            background: #e2e8f0;
-            padding: 2px;
-            height: 30px;
-            align-items: center;
+        /* Segmented Radio Button Group - Compact */
+        .analytics-segmented-group {
+            display: inline-flex !important;
+            align-items: center !important;
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 20px !important;
+            padding: 2px !important;
+            gap: 2px !important;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
         }
-        .dashboard-toggle input {
-            display: none;
+        .analytics-segmented-group input[type="radio"] {
+            display: none !important;
         }
-        .dashboard-toggle label {
-            padding: 3px 12px !important;
-            font-size: 11.5px !important;
+        .analytics-segmented-group .seg-btn,
+        .analytics-segmented-group label {
+            margin: 0 !important;
+            padding: 2px 8px !important;
+            font-size: 10.5px !important;
             font-weight: 600 !important;
-            cursor: pointer;
-            margin: 0;
             color: #475569 !important;
-            border-radius: 16px;
-            transition: all 0.2s ease;
-            text-transform: none;
+            border-radius: 16px !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            user-select: none !important;
+            text-transform: none !important;
         }
-        .dashboard-toggle input:checked + label {
-            background: #1e40af !important;
-            color: #ffffff !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        .dashboard-toggle label:hover:not(:checked) {
-            background: #cbd5e1;
+        .analytics-segmented-group .seg-btn:hover,
+        .analytics-segmented-group label:hover {
             color: #0f172a !important;
+            background: rgba(226, 232, 240, 0.7) !important;
+        }
+        .analytics-segmented-group .seg-btn.active,
+        .analytics-segmented-group label:has(input[type="radio"]:checked),
+        .analytics-segmented-group input[type="radio"]:checked + span,
+        .analytics-segmented-group input[type="radio"]:checked + label {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.3) !important;
         }
 
-        /* Toolbar (Export Buttons & Search) */
-        .dataTables_wrapper .dt-buttons {
+        /* Year Filter Box - Compact */
+        .analytics-year-box {
             display: inline-flex;
-            gap: 6px;
-            margin-bottom: 8px;
+            align-items: center;
+            gap: 5px;
         }
-        .btn-export-excel {
-            background: #ecfdf5 !important;
-            color: #047857 !important;
-            border: 1px solid #a7f3d0 !important;
-            border-radius: 5px !important;
-            font-size: 11.5px !important;
-            font-weight: 600 !important;
-            padding: 3px 10px !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 5px !important;
-            transition: all 0.15s ease !important;
-        }
-        .btn-export-excel:hover {
-            background: #d1fae5 !important;
-            border-color: #6ee7b7 !important;
-            color: #065f46 !important;
-        }
-        .btn-export-pdf {
-            background: #fef2f2 !important;
-            color: #b91c1c !important;
-            border: 1px solid #fecaca !important;
-            border-radius: 5px !important;
-            font-size: 11.5px !important;
-            font-weight: 600 !important;
-            padding: 3px 10px !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 5px !important;
-            transition: all 0.15s ease !important;
-        }
-        .btn-export-pdf:hover {
-            background: #fee2e2 !important;
-            border-color: #fca5a5 !important;
-            color: #991b1b !important;
-        }
-        .dataTables_wrapper .dataTables_filter {
-            margin-bottom: 8px;
-        }
-        .dataTables_wrapper .dataTables_filter label {
-            font-size: 11.5px;
+        .year-label-text {
+            font-size: 10.5px;
             font-weight: 600;
             color: #475569;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin: 0;
+            white-space: nowrap;
         }
+        .analytics-year-box select.fyear-dropdown {
+            height: 26px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            padding: 1px 6px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            cursor: pointer;
+        }
+        .analytics-year-box select.fyear-dropdown:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+            outline: none !important;
+        }
+
+        /* Search input modern styling - Compact */
+        .analytics-search-box label,
+        .dataTables_wrapper .dataTables_filter label {
+            font-size: 10.5px !important;
+            font-weight: 600 !important;
+            color: #475569 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            margin: 0 !important;
+        }
+        .analytics-search-box input,
         .dataTables_wrapper .dataTables_filter input {
-            height: 30px;
-            font-size: 12px;
-            padding: 2px 8px;
-            border: 1px solid #cbd5e1;
-            border-radius: 5px;
-            outline: none;
-            background: #ffffff;
-            transition: border-color 0.15s, box-shadow 0.15s;
+            height: 26px !important;
+            font-size: 11px !important;
+            padding: 2px 10px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 16px !important;
+            outline: none !important;
+            background: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
         }
+        .analytics-search-box input:focus,
         .dataTables_wrapper .dataTables_filter input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
         }
 
-        /* Compact, Well-Defined Table (#StatsDepartment & #StatsDepartmentOffice) */
-        #DashBoardStatsDepartment .table-responsive,
-        #DashBoardStatsDepartmentOffice .table-responsive {
-            position: relative;
-            z-index: 1;
+        /* Show entries (length) - Compact */
+        .dataTables_wrapper .dataTables_length {
+            margin-bottom: 6px;
+        }
+        .dataTables_wrapper .dataTables_length label {
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            color: #475569 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            margin: 0 !important;
+        }
+        .dataTables_wrapper .dataTables_length select {
+            height: 26px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            padding: 1px 6px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            cursor: pointer;
         }
 
+        /* ==========================================================================
+           EXECUTIVE DATA TABLES - COMPACT & SPACE EFFICIENT
+           ========================================================================== */
+        #MemoType,
         #StatsDepartment,
-        #StatsDepartmentOffice {
+        #StatsDepartmentOffice,
+        #Ind111 {
             width: 100% !important;
             border-collapse: separate !important;
             border-spacing: 0 !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 6px;
-            font-size: 12px !important;
-            background: #ffffff;
-            overflow: hidden;
-        }
-        #StatsDepartment thead th,
-        #StatsDepartmentOffice thead th {
-            padding: 5px 6px !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
             font-size: 11px !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-            vertical-align: middle !important;
-            text-align: center !important;
-            letter-spacing: 0.3px;
-            z-index: 5 !important;
-        }
-        #StatsDepartment thead tr:first-child th {
-            height: 28px;
-            font-weight: 700 !important;
-            text-transform: uppercase;
-            font-size: 11px !important;
-            z-index: 5 !important;
-        }
-        #StatsDepartment thead tr:nth-child(2) th {
-            height: 24px;
-            font-weight: 600 !important;
-            font-size: 10.5px !important;
-            border: 1px solid #cbd5e1 !important;
-            z-index: 4 !important;
+            background: #ffffff !important;
+            overflow: hidden !important;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02) !important;
+            margin-top: 4px !important;
+            margin-bottom: 6px !important;
         }
 
-        /* Table Body */
-        #StatsDepartment tbody tr,
-        #StatsDepartmentOffice tbody tr {
-            transition: background-color 0.12s ease;
-        }
-        #StatsDepartment tbody tr:nth-child(even),
-        #StatsDepartmentOffice tbody tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-        #StatsDepartment tbody tr:hover,
-        #StatsDepartmentOffice tbody tr:hover {
-            background-color: #eff6ff !important;
-        }
-        #StatsDepartment tbody td,
-        #StatsDepartmentOffice tbody td {
-            padding: 4px 6px !important;
+        /* Top Hero Header Row (e.g. "House Resolutions" in MemoType) - Compact */
+        #MemoType thead tr:first-child td,
+        #MemoType thead tr:first-child th {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
             font-size: 11.5px !important;
-            border: 1px solid #e2e8f0 !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.5px !important;
+            text-transform: uppercase !important;
+            text-align: center !important;
+            padding: 5px 8px !important;
+            height: 26px !important;
+            border: none !important;
+        }
+        #MemoType thead tr:first-child td:first-child:empty {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
+        }
+
+        /* Column Sub-Headers ("Department", "Total Proposal" in MemoType) - Compact */
+        #MemoType thead tr:nth-child(2) td,
+        #MemoType thead tr:nth-child(2) th {
+            background: #f8fafc !important;
+            color: #334155 !important;
+            font-size: 10.5px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.3px !important;
+            border-top: 1px solid #cbd5e1 !important;
+            border-bottom: 1px solid #cbd5e1 !important;
+            border-left: 1px solid #e2e8f0 !important;
+            border-right: 1px solid #e2e8f0 !important;
+            padding: 4px 8px !important;
+            height: 24px !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+        }
+        #MemoType thead tr:nth-child(2) td:first-child,
+        #MemoType thead tr:nth-child(2) th:first-child {
+            text-align: left !important;
+            padding-left: 10px !important;
+        }
+
+        /* StatsDepartment & StatsDepartmentOffice Headers (Preserves Distinct Category Theming) */
+        #StatsDepartment thead th,
+        #StatsDepartmentOffice thead th {
+            font-size: 11px !important;
+            padding: 5px 6px !important;
             vertical-align: middle !important;
             text-align: center !important;
             line-height: 1.25 !important;
+            box-sizing: border-box !important;
         }
-        /* MC Column (first column) */
+        #StatsDepartment thead th span,
+        #StatsDepartmentOffice thead th span {
+            font-size: 9.5px !important;
+            line-height: 1.2 !important;
+        }
+
+        /* Optional Row 3 Header when empty */
+        #MemoType thead tr:nth-child(3) td:empty {
+            display: none !important;
+        }
+
+        /* Table Body Rows & Hover - Compact */
+        #MemoType tbody tr,
+        #StatsDepartment tbody tr,
+        #StatsDepartmentOffice tbody tr,
+        #Ind111 tbody tr {
+            transition: background-color 0.12s ease !important;
+            background-color: #ffffff;
+        }
+        #MemoType tbody tr:nth-child(even),
+        #StatsDepartment tbody tr:nth-child(even),
+        #StatsDepartmentOffice tbody tr:nth-child(even),
+        #Ind111 tbody tr:nth-child(even) {
+            background-color: #f8fafc !important;
+        }
+        #MemoType tbody tr:hover,
+        #StatsDepartment tbody tr:hover,
+        #StatsDepartmentOffice tbody tr:hover,
+        #Ind111 tbody tr:hover {
+            background-color: #eff6ff !important;
+        }
+        #MemoType tbody td,
+        #StatsDepartment tbody td,
+        #StatsDepartmentOffice tbody td,
+        #Ind111 tbody td {
+            padding: 3px 8px !important;
+            font-size: 11px !important;
+            border: 1px solid #f1f5f9 !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+            color: #334155 !important;
+            line-height: 1.25 !important;
+        }
+
+        /* Department Column (First Column) - Compact */
+        #MemoType tbody td:first-child,
         #StatsDepartment tbody td:first-child,
         #StatsDepartmentOffice tbody td:first-child {
             font-weight: 600 !important;
             color: #0f172a !important;
             text-align: left !important;
             padding-left: 10px !important;
-            white-space: nowrap;
+            white-space: nowrap !important;
+            cursor: pointer !important;
         }
+        #MemoType tbody td:first-child a,
+        #StatsDepartment tbody td:first-child a {
+            color: #0f172a !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+        }
+        #MemoType tbody td:first-child:hover,
+        #MemoType tbody td:first-child a:hover,
         #StatsDepartment tbody td:first-child:hover,
         #StatsDepartmentOffice tbody td:first-child:hover {
-            color: #1d4ed8 !important;
-            text-decoration: underline;
+            color: #2563eb !important;
         }
 
-        /* Zero Counts - muted */
-        #StatsDepartment tbody td span,
-        #StatsDepartmentOffice tbody td span {
-            color: #94a3b8;
-            font-weight: 500;
-        }
-
-        /* Non-Zero Counts - pill badges */
+        /* Metric Count Pill Badges - Compact */
+        #MemoType tbody td a:not([actionCode]),
         #StatsDepartment tbody td a,
         #StatsDepartmentOffice tbody td a {
-            display: inline-block !important;
-            min-width: 22px;
-            padding: 1px 5px !important;
-            border-radius: 4px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 24px !important;
+            height: 20px !important;
+            padding: 1px 6px !important;
+            border-radius: 10px !important;
             background: #eff6ff !important;
             color: #1d4ed8 !important;
+            border: 1px solid #bfdbfe !important;
             font-weight: 700 !important;
+            font-size: 10.5px !important;
             text-decoration: none !important;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.06) !important;
             transition: all 0.15s ease !important;
         }
+        #MemoType tbody td a:not([actionCode]):hover,
         #StatsDepartment tbody td a:hover,
         #StatsDepartmentOffice tbody td a:hover {
-            background: #dbeafe !important;
-            color: #1e40af !important;
-            transform: scale(1.08);
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3) !important;
+            transform: scale(1.06) !important;
         }
 
-        /* Total Row (Last Row) */
+        /* Total Summary Row (Bottom Row) - Compact */
+        #MemoType tbody tr#trtd0,
+        #MemoType tbody tr:last-child,
         #StatsDepartment tbody tr:last-child,
         #StatsDepartmentOffice tbody tr:last-child {
-            background: #f1f5f9 !important;
-            border-top: 2px solid #94a3b8 !important;
-            font-weight: 700 !important;
+            background: #0f172a !important;
+            border-top: 2px solid #2563eb !important;
         }
+        #MemoType tbody tr#trtd0 td,
+        #MemoType tbody tr:last-child td,
         #StatsDepartment tbody tr:last-child td,
         #StatsDepartmentOffice tbody tr:last-child td {
+            background: #0f172a !important;
+            color: #ffffff !important;
             font-weight: 700 !important;
-            color: #0f172a !important;
+            font-size: 11px !important;
+            padding: 4px 8px !important;
+            border-top: 2px solid #2563eb !important;
+            border-bottom: 1px solid #0f172a !important;
+            border-left: 1px solid rgba(255, 255, 255, 0.06) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            display: table-cell !important;
+        }
+        #MemoType tbody tr#trtd0 td:first-child,
+        #MemoType tbody tr:last-child td:first-child,
+        #StatsDepartment tbody tr:last-child td:first-child,
+        #StatsDepartmentOffice tbody tr:last-child td:first-child {
+            color: #ffffff !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            font-weight: 800 !important;
+            text-align: left !important;
+            padding-left: 10px !important;
+        }
+
+        /* Total Count Pill Badge in Total Row - Compact & Centered */
+        #MemoType tbody tr#trtd0 td a,
+        #MemoType tbody tr:last-child td a,
+        #MemoType tbody tr#trtd0 td.total a,
+        #MemoType tbody tr:last-child td.total a,
+        #MemoType tbody tr#trtd0 td .total-badge,
+        #MemoType tbody tr:last-child td .total-badge,
+        #StatsDepartment tbody tr:last-child td a,
+        #StatsDepartmentOffice tbody tr:last-child td a,
+        .total-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid #34d399 !important;
+            font-weight: 800 !important;
+            font-size: 11px !important;
+            padding: 2px 8px !important;
+            height: 20px !important;
+            min-width: 28px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 1px 5px rgba(16, 185, 129, 0.4) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-decoration: none !important;
+            margin: 0 auto !important;
+        }
+        #MemoType tbody tr#trtd0 td a:hover,
+        #MemoType tbody tr:last-child td a:hover,
+        #MemoType tbody tr#trtd0 td .total-badge:hover,
+        #MemoType tbody tr:last-child td .total-badge:hover,
+        .total-badge:hover {
+            transform: scale(1.06) !important;
+            box-shadow: 0 3px 8px rgba(16, 185, 129, 0.55) !important;
+        }
+
+        /* DataTables Information & Pagination - Compact */
+        .dataTables_wrapper .dataTables_info {
+            color: #64748b !important;
+            font-size: 11px !important;
+            font-weight: 500 !important;
+            padding-top: 6px !important;
+        }
+        .dataTables_wrapper .dataTables_paginate {
+            padding-top: 4px !important;
+        }
+        .dataTables_wrapper .paginate_button {
+            border-radius: 4px !important;
+            border: 1px solid #cbd5e1 !important;
+            background: #ffffff !important;
+            color: #475569 !important;
+            font-weight: 600 !important;
+            font-size: 11px !important;
+            padding: 2px 8px !important;
+            margin: 0 1px !important;
+            transition: all 0.15s ease !important;
+            cursor: pointer !important;
+        }
+        .dataTables_wrapper .paginate_button.current,
+        .dataTables_wrapper .paginate_button.current:hover {
+            background: #2563eb !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.25) !important;
+        }
+        .dataTables_wrapper .paginate_button:hover {
             background: #f1f5f9 !important;
-            border-top: 2px solid #94a3b8 !important;
-            border-bottom: 2px solid #cbd5e1 !important;
+            color: #0f172a !important;
+            border-color: #94a3b8 !important;
+        }
+        .dataTables_wrapper .paginate_button.disabled,
+        .dataTables_wrapper .paginate_button.disabled:hover {
+            background: #f8fafc !important;
+            color: #cbd5e1 !important;
+            border-color: #e2e8f0 !important;
+            cursor: not-allowed !important;
         }
     </style>
 
@@ -1802,13 +2070,17 @@
     <div class="main-content" id="main-content">
         @if (Model.RMenuName == null)
         {
-            <div class="analytics-hero-bar mb-2">
+            <div class="analytics-hero-bar mb-3">
                 <div class="analytics-hero-title">
-                    <i class="fa fa-dashboard text-white"></i>
-                    <span>Analytics Dashboard</span>
+                    <div class="hero-icon-badge">
+                        <i class="fa fa-dashboard text-white"></i>
+                    </div>
+                    <div>
+                        <div class="hero-main-title">Analytics Dashboard</div>
+                    </div>
                 </div>
                 <div class="analytics-hero-badge">
-                    <i class="fa fa-circle text-success me-1" style="font-size: 8px;"></i> Live Summary
+                    <span class="live-pulse-dot"></span> Live Summary
                 </div>
             </div>
 
@@ -1816,46 +2088,24 @@
                 @{
                     // Determine tab visibility
                     bool showMeetingFilter = CurrentSession.DeptID != "LG00001";
+                    bool showMemoTab = CurrentSession.DeptID != "LG00001" && CurrentSession.DeptID != "UDD0001";
+                    bool showFilter = CurrentSession.DeptID == "LG00001";
+                    bool showFilesTab = CurrentSession.isDeptApex == "1" || CurrentSession.DeptID == "LG00001" || CurrentSession.DeptID == "UDD0001";
+                    bool showFilesTabPend = CurrentSession.DeptID == "LG00001" || CurrentSession.DeptID == "UDD0001";
+                    bool showFilesTabOffice = CurrentSession.DeptID == "LG00001";
+
+                    // Logic to activate one tab only
+                    bool memoActive = showMemoTab; // If Memo tab shows, it's active by default
+                    bool filesActive = !memoActive && showFilesTab;
+                    bool filesActivePend = !memoActive && showFilesTabPend;
                 }
-                @if (showMeetingFilter)
-                {
-                    <div class="row justify-content-center mb-2">
-                        <div class="col-md-6 d-flex align-items-center">
-                            <label for="MeetingId" class="me-3 mb-0" style="font-size: 12px; font-weight: 600;"> House/Committee</label>
-                            @Html.DropDownList(
-                                                    "MeetingId",
-                                                    new List<SelectListItem>
-                                                    {
-                                                        new SelectListItem { Text = "House", Value = "1" },
-                                                        new SelectListItem { Text = "F&CC", Value = "2" },
-                                                        new SelectListItem { Text = "RC", Value = "3" }
-                                                    },
-                                                    //"-- Select Meeting Type --",
-                                                    new { @id = "meetingType", @class = "form-control form-control-sm", @style = "width: 60%; font-size: 12px;", onchange = "onMeetingChange()" }
-                                                )
-                        </div>
-                    </div>
-                }
-                <!-- Tabs and Dropdown Section -->
-                <div class="col-12 py-1 mb-1">
+
+                <!-- Unified Single-Row: Tabs on Left, Filter on Right -->
+                <div class="col-12 mb-1">
                     <input type="hidden" id="dashtab" value="files" />
-                    <div class="d-flex flex-wrap align-items-center justify-content-between">
-                        @{
-                            // Determine tab visibility
-                            bool showMemoTab = CurrentSession.DeptID != "LG00001" && CurrentSession.DeptID != "UDD0001";
-                            bool showFilter = CurrentSession.DeptID == "LG00001";
-                            bool showFilesTab = CurrentSession.isDeptApex == "1" || CurrentSession.DeptID == "LG00001" || CurrentSession.DeptID == "UDD0001";
-                            bool showFilesTabPend = CurrentSession.DeptID == "LG00001" || CurrentSession.DeptID == "UDD0001";
-                            bool showFilesTabOffice = CurrentSession.DeptID == "LG00001";
-
-                            // Logic to activate one tab only
-                            bool memoActive = showMemoTab; // If Memo tab shows, it's active by default
-                            bool filesActive = !memoActive && showFilesTab;
-                            bool filesActivePend = !memoActive && showFilesTabPend;
-
-                         }
-
-                        <ul class="nav nav-pills custom-tabs analytics-tabs-nav">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <!-- Navigation Tabs (Left) -->
+                        <ul class="nav nav-pills custom-tabs analytics-tabs-nav mb-0">
                             @if (showMemoTab)
                             {
                                 <li class="nav-item">
@@ -1923,6 +2173,29 @@
                                 </li>
                             }
                         </ul>
+
+                        <!-- House/Committee Filter (Right) -->
+                        @if (showMeetingFilter)
+                        {
+                            <div class="analytics-filter-card">
+                                <div class="analytics-filter-icon">
+                                    <i class="fa fa-university"></i>
+                                </div>
+                                <div class="analytics-filter-content">
+                                    <label for="meetingType" class="analytics-filter-label">House / Committee</label>
+                                    @Html.DropDownList(
+                                        "MeetingId",
+                                        new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "House", Value = "1" },
+                                            new SelectListItem { Text = "F&CC", Value = "2" },
+                                            new SelectListItem { Text = "RC", Value = "3" }
+                                        },
+                                        new { @id = "meetingType", @class = "form-select form-select-sm analytics-select", onchange = "onMeetingChange()" }
+                                    )
+                                </div>
+                            </div>
+                        }
                     </div>
                     <!-- Tab Content -->
                     <div class="tab-content mt-1">
@@ -3466,6 +3739,11 @@
             // If data is found
             if (result.length > 0) {
                 $("#showOuterMemoData").html(result);
+                $("#MemoType tbody tr#trtd0 td:not(:first-child), #MemoType tbody tr:last-child td:not(:first-child)").each(function () {
+                    if ($(this).find('a, .total-badge').length === 0 && $(this).text().trim() !== '') {
+                        $(this).html('<span class="total-badge">' + $(this).text().trim() + '</span>');
+                    }
+                });
                 $("#loader-wrapper").hide();
 
                 // Initialize the DataTable with custom options for this specific table
@@ -3476,29 +3754,35 @@
 
                         // Create dynamic filters HTML with unique IDs for MemoType table
                         const controlsHtml = `
-                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                        <div class="analytics-filter-toolbar">
                             <!-- Radio buttons for filter type selection -->
-                            <div id="fType" style="display: inline-block; padding: 5px; align-items: center; border: 1px solid #1974d2; border-radius: 5px;">
-                                <input type="radio" id="deptWise" name="filterTypeMemo" value="Dept" checked>
-                                <label for="deptWise">Dept wise</label>
+                            <div id="fType" class="analytics-segmented-group">
+                                <label for="deptWise" class="seg-btn">
+                                    <input type="radio" id="deptWise" name="filterTypeMemo" value="Dept" checked>
+                                    <span><i class="fa fa-building-o me-1"></i> Dept wise</span>
+                                </label>
 
-                                <input type="radio" id="officeWise" name="filterTypeMemo" value="Office">
-                                <label for="officeWise">Office wise</label>
+                                <label for="officeWise" class="seg-btn">
+                                    <input type="radio" id="officeWise" name="filterTypeMemo" value="Office">
+                                    <span><i class="fa fa-briefcase me-1"></i> Office wise</span>
+                                </label>
 
-                                <input type="radio" id="userWise" name="filterTypeMemo" value="User">
-                                <label for="userWise">User wise</label>
+                                <label for="userWise" class="seg-btn">
+                                    <input type="radio" id="userWise" name="filterTypeMemo" value="User">
+                                    <span><i class="fa fa-user-circle-o me-1"></i> User wise</span>
+                                </label>
                             </div>
 
                             <!-- Year dropdown filter with dynamic ID -->
-                            <label id="fYearlbl" for="fYear" style="display: flex; align-items: center;">
-                                Year (last five years):
-                                <select id="fYear" name='fYearMemo' class="fyear-dropdown select" style="border-radius: 3px; padding: 5px; border-color: #1974d2 !important; height: 27px; margin-left: 10px;" aria-label="Select Financial Year">
+                            <div id="fYearlbl" class="analytics-year-box">
+                                <span class="year-label-text"><i class="fa fa-calendar-o text-primary me-1"></i> Year (last 5 years):</span>
+                                <select id="fYear" name='fYearMemo' class="fyear-dropdown select" aria-label="Select Financial Year">
                                     <option value="">All</option>
                                 </select>
-                            </label>
+                            </div>
 
                             <!-- Default search box -->
-                            <div class='res-search' style="flex-grow: 1; text-align: right;">
+                            <div class='res-search analytics-search-box'>
                                 ${filterDiv.html()}
                             </div>
                         </div>`;
@@ -7886,6 +8170,11 @@ error: function (error) {
         success: function (result) {
             if (result.length > 0) {
                 $("#showOuterMemoData").html(result);
+                $("#MemoType tbody tr#trtd0 td:not(:first-child), #MemoType tbody tr:last-child td:not(:first-child)").each(function () {
+                    if ($(this).find('a, .total-badge').length === 0 && $(this).text().trim() !== '') {
+                        $(this).html('<span class="total-badge">' + $(this).text().trim() + '</span>');
+                    }
+                });
                 $("#loader-wrapper").hide();
 
                 const restoreSelectedType = selectedType;
@@ -7897,30 +8186,36 @@ error: function (error) {
                         const isApex = @CurrentSession.isApex == "1";
 
                         const deptRadio = isApex ? `
-                            <input type="radio" id="deptWise" name="filterTypeMemo" value="Dept" checked>
-                            <label for="deptWise">Dept wise</label>
+                            <label for="deptWise" class="seg-btn">
+                                <input type="radio" id="deptWise" name="filterTypeMemo" value="Dept" checked>
+                                <span><i class="fa fa-building-o me-1"></i> Dept wise</span>
+                            </label>
                         ` : '';
 
                         const officeChecked = !isApex ? 'checked' : '';
 
                         const controlsHtml = `
-                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                            <div id="fType" style="display: inline-block; padding: 5px; align-items: center; border: 1px solid #1974d2; border-radius: 5px;">
+                        <div class="analytics-filter-toolbar">
+                            <div id="fType" class="analytics-segmented-group">
                                 ${deptRadio}
-                                <input type="radio" id="officeWise" name="filterTypeMemo" value="Office" ${officeChecked}>
-                                <label for="officeWise">Office wise</label>
-                                <input type="radio" id="userWise" name="filterTypeMemo" value="User">
-                                <label for="userWise">User wise</label>
+                                <label for="officeWise" class="seg-btn">
+                                    <input type="radio" id="officeWise" name="filterTypeMemo" value="Office" ${officeChecked}>
+                                    <span><i class="fa fa-briefcase me-1"></i> Office wise</span>
+                                </label>
+                                <label for="userWise" class="seg-btn">
+                                    <input type="radio" id="userWise" name="filterTypeMemo" value="User">
+                                    <span><i class="fa fa-user-circle-o me-1"></i> User wise</span>
+                                </label>
                             </div>
 
-                            <label id="fYearlbl" for="fYear" style="display: flex; align-items: center;">
-                                Year (last five years):
-                                <select id="fYear" name='fYearMemo' class="fyear-dropdown select" style="border-radius: 3px; padding: 5px; border-color: #1974d2 !important; height: 27px; margin-left: 10px;" aria-label="Select Financial Year">
+                            <div id="fYearlbl" class="analytics-year-box">
+                                <span class="year-label-text"><i class="fa fa-calendar-o text-primary me-1"></i> Year (last 5 years):</span>
+                                <select id="fYear" name='fYearMemo' class="fyear-dropdown select" aria-label="Select Financial Year">
                                     <option value="">All</option>
                                 </select>
-                            </label>
+                            </div>
 
-                            <div class='pro-search' style="flex-grow: 1; text-align: right;">
+                            <div class='pro-search analytics-search-box'>
                                 ${filterDiv.html()}
                             </div>
                         </div>`;

@@ -1,249 +1,1007 @@
-﻿
-<head>
-    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
 
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
     <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
     <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
     <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
     <script src="~/Scripts/datatables/jszip.min.js"></script>
     <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
     <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+    <script src="~/Scripts/datatables/vfs-fonts-punjabi.js"></script>
     <script src="~/Scripts/datatables/buttons.print.min.js"></script>
     <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
 
     <style>
-        .select-box {
-            position: relative;
-            display: inline-block;
-            width: 100%;
+        /* === EXECUTIVE DESIGN SYSTEM: OBSERVATION REPLIES === */
+        body,
+        #main-content,
+        .obs-root-wrapper {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            color: #1e293b;
         }
 
-        .dropdown {
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: #fff;
+        /* 1. Compact Breadcrumb Bar (Matches Proceedings >> Proceeding Resolutions) */
+        h4#lblmenuname,
+        .compact-breadcrumb-bar {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            color: #1e3a8a !important;
+            margin: 0 0 14px 0 !important;
+            padding: 0 !important;
+            line-height: 1.4 !important;
+            display: flex !important;
+            align-items: center !important;
+            font-family: 'Poppins', sans-serif !important;
         }
 
-        .dropdown-options {
-            display: none;
-            border: 1px solid #ccc;
-            background: #fff;
-            position: absolute;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1000;
-            padding: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        h4#lblmenuname .crumb-sep,
+        .compact-breadcrumb-bar .crumb-sep {
+            color: #94a3b8 !important;
+            margin: 0 6px !important;
+            font-weight: normal !important;
+            font-size: 14px !important;
         }
 
-            .dropdown-options label {
-                display: block;
-                padding: 5px;
-                cursor: pointer;
-            }
-
-            .dropdown-options input {
-                margin-right: 5px;
-            }
-
-        .search-box {
-            margin-bottom: 10px;
-            padding: 5px;
-            width: 100%;
-            box-sizing: border-box;
+        /* 2. Executive Card Container */
+        .obs-card-container {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+            overflow: hidden;
+            margin-bottom: 30px;
         }
 
-        .selected-items {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-
-        .selected-item {
-            background: #007bff;
-            color: #fff;
-            padding: 5px 10px;
-            margin: 2px;
-            border-radius: 15px;
+        .obs-card-header {
             display: flex;
             align-items: center;
-        }
-
-            .selected-item span {
-                margin-left: 5px;
-                cursor: pointer;
-                font-weight: bold;
-            }
-
-                .selected-item span:hover {
-                    color: #ff4d4d;
-                }
-
-
-        .compact-filter {
+            justify-content: space-between;
+            padding: 16px 20px;
             background: #ffffff;
-            border: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .obs-card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .obs-card-icon {
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
-            padding: 12px 15px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            border: 1px solid #dbeafe;
+        }
+
+        .obs-card-title {
+            margin: 0;
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.25;
+        }
+
+        .obs-btn-refresh {
+            background: #1e3a8a !important;
+            color: #ffffff !important;
+            border: 1px solid #1e3a8a !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 5px 14px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            cursor: pointer !important;
+            box-shadow: 0 1px 3px rgba(30, 58, 138, 0.25) !important;
+            transition: all 0.2s ease !important;
+            text-decoration: none !important;
+        }
+
+        .obs-btn-refresh:hover,
+        .obs-btn-refresh:focus {
+            background: #172554 !important;
+            color: #ffffff !important;
+            border-color: #172554 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(30, 58, 138, 0.35) !important;
+        }
+
+        .obs-btn-refresh i {
+            color: #ffffff !important;
+            font-size: 12px !important;
+            margin-right: 4px !important;
+        }
+
+        .obs-card-meta {
             font-size: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            overflow: visible !important;
+            color: #64748b;
+            margin-top: 2px;
         }
 
-        #showOuterSearchResolution,
-        #filterLG,
-        #filterLG .row,
-        #filterLG .col-md-2,
-        #filterLG .position-relative {
-            overflow: visible !important;
-        }
-
-        #mcSuggestions {
-            display: none;
-            position: fixed !important;
-            background: #fff;
+        .obs-live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             font-size: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,.15);
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 2147483647 !important;
+            font-weight: 600;
+            color: #059669;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 20px;
+            padding: 4px 12px;
         }
 
-        .mc-item {
-            padding: 8px 10px;
+        .obs-pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: obs-pulse 2s infinite;
+        }
+
+        @@keyframes obs-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            }
+            70% {
+                box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .obs-card-body {
+            padding: 20px;
+            background: #ffffff;
+            min-height: 280px;
+        }
+
+        /* 3. Empty & Loading States */
+        .obs-loading-box {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .obs-spinner {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            border: 3.5px solid #e2e8f0;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: obs-spin 0.8s linear infinite;
+        }
+
+        @@keyframes obs-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .obs-loading-text {
+            margin-top: 14px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .obs-empty-card {
+            padding: 50px 24px;
+            text-align: center;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        .obs-empty-icon-wrap {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #3b82f6;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 8px -2px rgba(15, 23, 42, 0.06);
+        }
+
+        .obs-empty-title {
+            font-size: 16.5px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 8px 0;
+        }
+
+        .obs-empty-desc {
+            font-size: 13px;
+            color: #64748b;
+            max-width: 520px;
+            margin: 0 auto 20px auto;
+            line-height: 1.55;
+        }
+
+        .btn-obs-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+            transition: all 0.2s ease;
             cursor: pointer;
-            border-bottom: 1px solid #eee;
         }
 
-            .mc-item:hover {
-                background: #f5f5f5;
+        .btn-obs-action:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        /* 4. Populated Table & DataTables Styling */
+        #ObservationReplySearch {
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            margin-top: 12px !important;
+            margin-bottom: 16px !important;
+            width: 100% !important;
+        }
+
+        #ObservationReplySearch thead th {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+            letter-spacing: 0.02em !important;
+            padding: 12px 14px !important;
+            border: none !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
+            vertical-align: middle !important;
+        }
+
+        #ObservationReplySearch thead th:last-child {
+            border-right: none !important;
+        }
+
+        #ObservationReplySearch tbody td {
+            padding: 11px 14px !important;
+            font-size: 12.5px !important;
+            color: #334155 !important;
+            border-top: 1px solid #f1f5f9 !important;
+            border-right: 1px solid #f8fafc !important;
+            vertical-align: middle !important;
+        }
+
+        #ObservationReplySearch tbody tr:nth-of-type(odd) {
+            background-color: #ffffff !important;
+        }
+
+        #ObservationReplySearch tbody tr:nth-of-type(even) {
+            background-color: #f8fafc !important;
+        }
+
+        #ObservationReplySearch tbody tr:hover {
+            background-color: #f1f5f9 !important;
+            transition: background 0.15s ease;
+        }
+
+        /* Badge chips for links */
+        #ObservationReplySearch a.green {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            background: #eff6ff !important;
+            color: #1d4ed8 !important;
+            border: 1px solid #bfdbfe !important;
+            border-radius: 6px !important;
+            padding: 4px 10px !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+            text-decoration: none !important;
+            transition: all 0.15s ease !important;
+        }
+
+        #ObservationReplySearch a.green:hover {
+            background: #dbeafe !important;
+            color: #1e40af !important;
+            border-color: #93c5fd !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Distinct badge style for reply file */
+        #ObservationReplySearch a[onclick*="'Dispatch'"] {
+            background: #ecfdf5 !important;
+            color: #059669 !important;
+            border-color: #a7f3d0 !important;
+        }
+
+        #ObservationReplySearch a[onclick*="'Dispatch'"]:hover {
+            background: #d1fae5 !important;
+            color: #047857 !important;
+            border-color: #6ee7b7 !important;
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.15);
+        }
+
+        /* 5. Modern DataTables Controls */
+        .obs-dt-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .obs-dt-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .dt-buttons {
+            display: inline-flex !important;
+            gap: 8px !important;
+        }
+
+        .dt-obs-btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .dt-obs-excel {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25) !important;
+        }
+
+        .dt-obs-excel:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+            transform: translateY(-1px);
+            color: #ffffff !important;
+        }
+
+        .dt-obs-pdf {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 1px 3px rgba(239, 68, 68, 0.25) !important;
+        }
+
+        .dt-obs-pdf:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            transform: translateY(-1px);
+            color: #ffffff !important;
+        }
+
+        .dataTables_filter input {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 6px 12px !important;
+            font-size: 12.5px !important;
+            outline: none !important;
+            min-width: 250px !important;
+            transition: border-color 0.2s ease !important;
+        }
+
+        .dataTables_filter input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+        }
+
+        .dataTables_info {
+            font-size: 12px !important;
+            color: #64748b !important;
+        }
+
+        .dataTables_paginate .paginate_button {
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            padding: 5px 12px !important;
+            margin: 0 2px !important;
+        }
+
+        .dataTables_paginate .paginate_button.current {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+        }
+
+        /* 6. Modal Isolation (Prevents overlapping header/sidebar) */
+        #InboxModel,
+        #SingleModelEdit {
+            z-index: 1070 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 1065 !important;
+        }
+
+        .obs-modal-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 14px 20px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .obs-modal-title {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .obs-modal-close {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #ffffff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .obs-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* Responsive Viewport Optimizations */
+        .table-responsive {
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            margin-bottom: 0 !important;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 7px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        #ObservationReplySearch {
+            width: 100% !important;
+            min-width: 860px !important;
+            margin: 0 !important;
+            border: none !important;
+        }
+
+        @@media (max-width: 991px) {
+            .obs-root-wrapper {
+                padding: 0 10px !important;
+            }
+            .obs-card-container {
+                border-radius: 8px !important;
+                margin-bottom: 20px !important;
+            }
+            .obs-card-header {
+                padding: 14px 16px !important;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .obs-card-header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+                padding: 12px 14px !important;
             }
 
+            .obs-card-header-left {
+                width: 100% !important;
+            }
 
-        /* Labels */
-        .compact-filter label {
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #555;
-            display: block;
+            .obs-card-header-right {
+                width: 100% !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                gap: 8px !important;
+            }
+
+            .obs-dt-top {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+
+            .obs-dt-left {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+
+            .dt-obs-btn {
+                flex: 1 1 auto !important;
+                text-align: center !important;
+                justify-content: center !important;
+            }
+
+            .obs-dt-right {
+                width: 100% !important;
+            }
+
+            .dataTables_filter {
+                width: 100% !important;
+                text-align: left !important;
+            }
+
+            .dataTables_filter label {
+                width: 100% !important;
+                display: block !important;
+                margin-bottom: 0 !important;
+            }
+
+            .dataTables_filter input {
+                width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+            }
+
+            .obs-dt-bottom {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 10px !important;
+                text-align: center !important;
+            }
+
+            .dataTables_paginate {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+            }
         }
 
-        /* Compact Dropdowns (Bootstrap 3 safe) */
-        .compact-filter select.form-control {
-            height: 30px !important;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 6px;
+        @@media (max-width: 576px) {
+            .obs-card-icon {
+                width: 34px !important;
+                height: 34px !important;
+                font-size: 15px !important;
+            }
+
+            .obs-card-title {
+                font-size: 14px !important;
+            }
+
+            .obs-card-meta {
+                font-size: 11px !important;
+            }
+
+            .obs-btn-refresh {
+                padding: 5px 10px !important;
+                font-size: 11.5px !important;
+            }
+
+            .obs-live-indicator {
+                font-size: 11px !important;
+                padding: 3px 9px !important;
+            }
         }
 
-        .compact-filter input.form-control {
-            height: 30px !important;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 6px !important;
+        /* Legacy alert styling override in case direct alert is injected */
+        #showOuterSearchResolutionData .alert-warning {
+            display: none !important; /* replaced by modern empty state */
         }
     </style>
 </head>
 
-<div id="main-content" style="margin-top: 30px;">
-    <div class="col-md-12 col-lg-12 col-xl-12">
+<div id="main-content" style="margin-top: 15px;">
+    <div class="col-md-12 col-lg-12 col-xl-12 obs-root-wrapper">
 
-        <h4 id="breadcrumb">Observation Replies >> Observation Reply List</h4>
-        <hr />
+        <!-- ================= BREADCRUMB (Matches Proceedings >> Proceeding Resolutions) ================= -->
+        <div class="col-12 p-0 mb-2">
+            <h4 id="lblmenuname" class="compact-breadcrumb-bar">Observation Replies <span class="crumb-sep text-muted mx-1">&gt;&gt;</span> Observation Reply List</h4>
+        </div>
 
-        <section class="form_dsign">
-            <div class="container-fluid p-0">
-                <div class="inr_frm_dsgn">
-                    <!-- Add Circular Button -->
-                    <div class="widget-box" id="divAction">
-                        <div class="widget-header widget-header-flat rounded-top rounded-0">
-                            <h4 class="">List of Observation Replies</h4>
-                            <div class="widget-toolbar no-border">
-
-                            </div>
-                        </div>
+        <!-- ================= EXECUTIVE CARD ================= -->
+        <div class="obs-card-container">
+            <div class="obs-card-header">
+                <div class="obs-card-header-left">
+                    <div class="obs-card-icon">
+                        <i class="fa fa-list-alt"></i>
                     </div>
-
-                    <div class="form_lyot">
-                        <div id="showOuterSearchResolution">
-                            <div id="showOuterSearchResolutionData"></div>
-                        </div>
+                    <div>
+                        <h4 class="obs-card-title">List of Observation Replies</h4>
+                        <div class="obs-card-meta">Recorded observation replies and remarks under your departmental jurisdiction</div>
                     </div>
+                </div>
+                <div class="obs-card-header-right d-flex align-items-center gap-2">
+                    <button type="button" class="obs-btn-refresh" onclick="OservationReply()" title="Reload observations list"
+                            style="background: #1e3a8a !important; color: #ffffff !important; border: 1px solid #1e3a8a !important; border-radius: 6px !important; padding: 6px 14px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-flex !important; align-items: center !important; gap: 6px !important; box-shadow: 0 1px 3px rgba(30, 58, 138, 0.25) !important; text-decoration: none !important; cursor: pointer !important;">
+                        <i class="fa fa-refresh" style="color: #ffffff !important; font-size: 12px !important; margin-right: 4px !important;"></i> Refresh
+                    </button>
+                    <span class="obs-live-indicator"><span class="obs-pulse-dot"></span> Live Sync</span>
                 </div>
             </div>
 
-
-        </section>
-
-        <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="InboxModel"
-             data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important ">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="InboxModelbody">
+            <div class="obs-card-body">
+                <div id="showOuterSearchResolution">
+                    <div id="showOuterSearchResolutionData">
+                        <div class="obs-loading-box">
+                            <div class="obs-spinner"></div>
+                            <div class="obs-loading-text">Fetching Observation Replies...</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ================= INBOX MODAL ================= -->
+        <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="InboxModel"
+             data-keyboard="false" data-backdrop="static" style="z-index: 1070 !important;">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="Scroll2">
+                <div class="modal-content" style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+                    <div class="obs-modal-header">
+                        <h4 id="InboxHeader1" class="obs-modal-title">
+                            <i class="fa fa-comments-o"></i> Observation Reply Details
+                        </h4>
+                        <button type="button" class="obs-modal-close" onclick="closeInboxEdit()" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="InboxModelbody" style="padding: 20px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SINGLE EDIT MODAL ================= -->
+        <div class="modal inr_modal coman_modal edit_modal" tabindex="-1" id="SingleModelEdit"
+             data-keyboard="false" data-backdrop="static" style="z-index: 1070 !important;">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg modal_design" id="ScrollSingle">
+                <div class="modal-content" style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+                    <div class="obs-modal-header">
+                        <h4 class="obs-modal-title">
+                            <i class="fa fa-edit"></i> Single Observation Entry
+                        </h4>
+                        <button type="button" class="obs-modal-close" onclick="closeSingleEdit()" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="SingleModelEditbody" style="padding: 20px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <input type="hidden" id="RefId" name="RefId" />
      
     </div>
 </div>
-
 
 <script>
     $(document).ready(function () {
        OservationReply();
     });
 
-   function OservationReply() {
+    function OservationReply() {
+        // Show modern loading state
+        $("#showOuterSearchResolutionData").html(
+            '<div class="obs-loading-box">' +
+            '    <div class="obs-spinner"></div>' +
+            '    <div class="obs-loading-text">Fetching Observation Replies...</div>' +
+            '</div>'
+        ).show();
 
         $.ajax({
-        url: '@Url.Action("ObservationReplySearch", "References")',
-        type: 'GET',
-        data: {
+            url: '@Url.Action("ObservationReplySearch", "References")',
+            type: 'GET',
+            data: {},
+            success: function (res) {
+                // Check if no records found
+                if (!res || res.indexOf("No Records Found") !== -1 || res.indexOf("alert-warning") !== -1) {
+                    var emptyHtml = 
+                        '<div class="obs-empty-card">' +
+                        '    <div class="obs-empty-icon-wrap">' +
+                        '        <i class="fa fa-folder-open-o"></i>' +
+                        '    </div>' +
+                        '    <h3 class="obs-empty-title">No Observation Replies Found</h3>' +
+                        '    <p class="obs-empty-desc">' +
+                        '        There are currently no observation replies recorded for your assigned role or department jurisdiction. ' +
+                        '        Replies submitted by executive officers or clerks will appear here automatically.' +
+                        '    </p>' +
+                        '    <button type="button" class="btn-obs-action" onclick="OservationReply()">' +
+                        '        <i class="fa fa-refresh"></i> Check for Updates' +
+                        '    </button>' +
+                        '</div>';
+                    $("#showOuterSearchResolutionData").html(emptyHtml).show();
+                    return;
+                }
 
-        },
-        success: function (res) {
+                // Load table HTML
+                $("#showOuterSearchResolutionData").html(res).show();
 
-            // Load table HTML
-            $("#showOuterSearchResolutionData").html(res).show();
+                // Initialize DataTable if table exists
+                if ($.fn.DataTable.isDataTable('#ObservationReplySearch')) {
+                    $('#ObservationReplySearch').DataTable().destroy();
+                }
 
-            // Initialize DataTable after HTML is added
-            if ($.fn.DataTable.isDataTable('#ObservationReplySearch')) {
-                $('#ObservationReplySearch').DataTable().destroy();
-            }
+                var dt = $('#ObservationReplySearch').DataTable({
+                    pageLength: 25,
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                    responsive: false,
+                    ordering: true,
+                    dom: '<"obs-dt-top"<"obs-dt-left"B><"obs-dt-right"f>>rt<"obs-dt-bottom"<"obs-dt-info"i><"obs-dt-pager"p>>',
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            className: 'dt-obs-btn dt-obs-excel',
+                            text: '<i class="fa fa-file-excel-o me-1"></i> Export Excel',
+                            title: 'Observation_Replies_' + new Date().toISOString().slice(0, 10),
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            className: 'dt-obs-btn dt-obs-pdf',
+                            text: '<i class="fa fa-file-pdf-o me-1"></i> Export PDF',
+                            orientation: 'landscape',
+                            pageSize: 'A4',
+                            title: null,
+                            filename: 'Observation_Replies_' + new Date().toISOString().slice(0, 10),
+                            exportOptions: {
+                                columns: ':visible',
+                                format: {
+                                    header: function (data, colIdx) {
+                                        if (!data) return '';
+                                        return $('<div>').html(data.toString().replace(/<br\s*[\/]?>/gi, ' ')).text().trim();
+                                    },
+                                    body: function (data, rowIdx, colIdx) {
+                                        if (!data) return '-';
+                                        var text = data.toString()
+                                            .replace(/<br\s*[\/]?>/gi, '\n')
+                                            .replace(/<\/div>/gi, '\n')
+                                            .replace(/<\/p>/gi, '\n');
+                                        var clean = $('<div>').html(text).text().trim();
+                                        return clean || '-';
+                                    }
+                                }
+                            },
+                            customize: function (doc) {
+                                try {
+                                    // Register Punjabi font Raavi from vfs-fonts-punjabi.js
+                                    var selectedFont = null;
+                                    var pdfObj = window.pdfMake || (typeof pdfMake !== 'undefined' ? pdfMake : null);
+                                    if (pdfObj && pdfObj.vfs && pdfObj.vfs['Raavi-Regular.ttf']) {
+                                        pdfObj.fonts = pdfObj.fonts || {};
+                                        pdfObj.fonts.Raavi = {
+                                            normal: 'Raavi-Regular.ttf',
+                                            bold: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf',
+                                            italics: 'Raavi-Regular.ttf',
+                                            bolditalics: pdfObj.vfs['Raavi-Bold.ttf'] ? 'Raavi-Bold.ttf' : 'Raavi-Regular.ttf'
+                                        };
+                                        selectedFont = 'Raavi';
+                                    }
 
-            $('#ObservationReplySearch').DataTable({
-                pageLength: 100,
-                responsive: true,
-                ordering: false,
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        text: 'Export Excel'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        text: 'Export PDF'
+                                    doc.defaultStyle = doc.defaultStyle || {};
+                                    doc.styles = doc.styles || {};
+                                    if (selectedFont) {
+                                        doc.defaultStyle.font = selectedFont;
+                                        for (var key in doc.styles) {
+                                            if (doc.styles.hasOwnProperty(key)) {
+                                                doc.styles[key].font = selectedFont;
+                                            }
+                                        }
+                                    }
+                                    doc.defaultStyle.fontSize = 8;
+                                    doc.pageMargins = [14, 16, 14, 16];
+
+                                    // Add styled heading above the table
+                                    doc.content = doc.content || [];
+                                    doc.content.unshift({
+                                        text: 'Observation Replies >> Observation Reply List',
+                                        fontSize: 13,
+                                        bold: true,
+                                        color: '#1e3a8a',
+                                        margin: [0, 0, 0, 10],
+                                        font: selectedFont || undefined
+                                    });
+
+                                    // Find table node in doc.content
+                                    var tableNode = null;
+                                    for (var i = 0; i < doc.content.length; i++) {
+                                        if (doc.content[i] && doc.content[i].table) {
+                                            tableNode = doc.content[i];
+                                            break;
+                                        }
+                                    }
+
+                                    if (tableNode && tableNode.table && tableNode.table.body && tableNode.table.body.length > 0) {
+                                        var table = tableNode.table;
+                                        table.headerRows = 1;
+                                        table.dontBreakRows = true;
+
+                                        var colCount = table.body[0].length;
+                                        if (colCount === 7) {
+                                            table.widths = [75, 55, 75, '*', 65, 115, 70];
+                                        } else {
+                                            var widths = [];
+                                            for (var j = 0; j < colCount; j++) {
+                                                var hName = (table.body[0][j].text || '').toLowerCase();
+                                                if (hName.indexOf('subject') !== -1) {
+                                                    widths.push('*');
+                                                } else if (hName.indexOf('unique') !== -1 || hName.indexOf('res') !== -1) {
+                                                    widths.push(75);
+                                                } else if (hName.indexOf('number') !== -1) {
+                                                    widths.push(55);
+                                                } else if (hName.indexOf('file') !== -1) {
+                                                    widths.push(75);
+                                                } else if (hName.indexOf('date') !== -1) {
+                                                    widths.push(65);
+                                                } else if (hName.indexOf('comment') !== -1) {
+                                                    widths.push(115);
+                                                } else if (hName.indexOf('type') !== -1) {
+                                                    widths.push(70);
+                                                } else {
+                                                    widths.push('auto');
+                                                }
+                                            }
+                                            table.widths = widths;
+                                        }
+
+                                        for (var r = 0; r < table.body.length; r++) {
+                                            var row = table.body[r];
+                                            for (var c = 0; c < row.length; c++) {
+                                                var cell = row[c];
+                                                if (typeof cell !== 'object' || cell === null) {
+                                                    cell = { text: String(cell || '') };
+                                                    row[c] = cell;
+                                                }
+                                                if (selectedFont) {
+                                                    cell.font = selectedFont;
+                                                }
+
+                                                if (r === 0) {
+                                                    cell.fillColor = '#1e3a8a';
+                                                    cell.color = '#ffffff';
+                                                    cell.bold = true;
+                                                    cell.fontSize = 8.5;
+                                                    cell.alignment = 'center';
+                                                } else {
+                                                    cell.fontSize = 7.5;
+                                                    cell.color = '#1e293b';
+                                                    cell.fillColor = (r % 2 === 0) ? '#f8fafc' : '#ffffff';
+
+                                                    var colTitle = (table.body[0][c].text || '').toLowerCase();
+                                                    if (colTitle.indexOf('subject') !== -1 || colTitle.indexOf('comment') !== -1) {
+                                                        cell.alignment = 'left';
+                                                    } else {
+                                                        cell.alignment = 'center';
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        tableNode.layout = {
+                                            hLineWidth: function (idx, node) {
+                                                return (idx === 0 || idx === 1 || idx === node.table.body.length) ? 0.8 : 0.4;
+                                            },
+                                            vLineWidth: function () { return 0.4; },
+                                            hLineColor: function (idx, node) {
+                                                return (idx === 0 || idx === 1 || idx === node.table.body.length) ? '#1e3a8a' : '#cbd5e1';
+                                            },
+                                            vLineColor: function () { return '#cbd5e1'; },
+                                            paddingLeft: function () { return 5; },
+                                            paddingRight: function () { return 5; },
+                                            paddingTop: function (idx) { return idx === 0 ? 5 : 4; },
+                                            paddingBottom: function (idx) { return idx === 0 ? 5 : 4; }
+                                        };
+                                    }
+
+                                    doc.footer = function (currentPage, pageCount) {
+                                        return {
+                                            columns: [
+                                                {
+                                                    text: 'Observation Replies Report - Printed on: ' + new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString(),
+                                                    alignment: 'left',
+                                                    fontSize: 7.5,
+                                                    color: '#64748b',
+                                                    margin: [14, 0, 0, 0]
+                                                },
+                                                {
+                                                    text: 'Page ' + currentPage.toString() + ' of ' + pageCount,
+                                                    alignment: 'right',
+                                                    fontSize: 7.5,
+                                                    color: '#64748b',
+                                                    margin: [0, 0, 14, 0]
+                                                }
+                                            ],
+                                            font: selectedFont || undefined
+                                        };
+                                    };
+                                } catch (ex) {
+                                    console.error('Error in PDF export customization:', ex);
+                                }
+                            }
+                        }
+                    ],
+                    language: {
+                        search: "",
+                        searchPlaceholder: "Search replies...",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "Showing 0 to 0 of 0 entries",
+                        emptyTable: "No observation replies available"
                     }
-                ]
-            });
-        },
-        error: function (xhr) {
-            alert(xhr.responseText);
-        }
-    });
-}
+                });
+            },
+            error: function (xhr) {
+                var errorHtml = 
+                    '<div class="obs-empty-card" style="border-color:#fca5a5; background:#fef2f2;">' +
+                    '    <div class="obs-empty-icon-wrap" style="color:#ef4444; border-color:#fecaca;">' +
+                    '        <i class="fa fa-exclamation-triangle"></i>' +
+                    '    </div>' +
+                    '    <h3 class="obs-empty-title" style="color:#991b1b;">Error Loading Observations</h3>' +
+                    '    <p class="obs-empty-desc" style="color:#b91c1c;">' +
+                    '        Unable to fetch observation reply data at this time. Please try refreshing or re-login.' +
+                    '    </p>' +
+                    '    <button type="button" class="btn-obs-action" onclick="OservationReply()">' +
+                    '        <i class="fa fa-refresh"></i> Try Again' +
+                    '    </button>' +
+                    '</div>';
+                $("#showOuterSearchResolutionData").html(errorHtml);
+            }
+        });
+    }
 
    function EditMlaDispatch(IDD, moveid, mtype) {
     var ID = IDD;
@@ -358,15 +1116,11 @@
     var html = "";
 
     $.each(data, function (i, item) {
-
-        $.each(data, function (i, item) {
-
-            html += "<div class='mc-item' " +
-                "data-id='" + item.deptId + "' " +
-                "style='padding:8px;cursor:pointer;border-bottom:1px solid #eee;'>" +
-                item.deptname +
-                "</div>";
-        });
+        html += "<div class='mc-item' " +
+            "data-id='" + item.deptId + "' " +
+            "style='padding:8px;cursor:pointer;border-bottom:1px solid #eee;'>" +
+            item.deptname +
+            "</div>";
     });
 
     if (html !== "") {
