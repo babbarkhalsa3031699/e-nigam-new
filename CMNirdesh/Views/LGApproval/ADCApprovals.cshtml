@@ -624,13 +624,13 @@
                 <div class="adc-metrics-strip d-flex flex-wrap align-items-center justify-content-between gap-2">
                     <div class="d-flex flex-wrap align-items-center gap-2">
                         <span class="adc-metric-badge adc-metric-ulb" title="Municipal Councils with recorded approvals">
-                            <i class="fa fa-university me-1.5 text-primary"></i> Councils: <strong class="ms-1">@totalMCs</strong>
+                            <i class="fa fa-university me-1.5 text-primary"></i>&nbsp; Councils: <strong class="ms-1">@totalMCs</strong>
                         </span>
                         <span class="adc-metric-badge adc-metric-meetings" title="Total meetings recorded">
-                            <i class="fa fa-calendar-check-o me-1.5 text-success"></i> Meetings: <strong class="ms-1">@totalMeetings</strong>
+                            <i class="fa fa-calendar-check-o me-1.5 text-success"></i>&nbsp; Meetings: <strong class="ms-1">@totalMeetings</strong>
                         </span>
                         <span class="adc-metric-badge adc-metric-approvals" title="Total approval entries">
-                            <i class="fa fa-stamp me-1.5 text-purple" style="color:#7e22ce;"></i> Approvals: <strong class="ms-1">@totalApprovals</strong>
+                            <i class="fa fa-stamp me-1.5 text-purple" style="color:#7e22ce;"></i>&nbsp; Approvals: <strong class="ms-1">@totalApprovals</strong>
                         </span>
                     </div>
                     <div class="d-flex align-items-center text-muted small">
@@ -647,9 +647,9 @@
                         <table class="table table-hover align-middle agenda-modern-table" id="MeetingTable" aria-describedby="sample-table-3_info" style="width:100%">
                             <thead>
                                 <tr class="table-header-agenda">
-                                    <th class="text-start" style="width:24%;" id="tdULB">ULB / Municipal Council</th>
+                                    <th class="center text-center" style="width:24%;" id="tdULB">ULB / Municipal Council</th>
                                     <th class="center text-center" style="width:14%;" id="tdDate">Meeting Date</th>
-                                    <th class="text-start" style="width:42%;" id="tdTitle">Meeting Title</th>
+                                    <th class="center text-center" style="width:42%;" id="tdTitle">Meeting Title</th>
                                     <th class="center text-center" style="width:20%;" id="tdApprovals">Approvals</th>
                                 </tr>
                             </thead>
@@ -660,9 +660,9 @@
                                     foreach (var items in Model.LGApprovalList)
                                     {
                                         <tr>
-                                            <td class="text-start">
+                                            <td>
                                                 <span class="ulb-badge">
-                                                    <i class="fa fa-university me-1.5 text-primary"></i>@items.MCName
+                                                    <i class="fa fa-university me-1.5 text-primary"></i>&nbsp; @items.MCName
                                                 </span>
                                             </td>
                                             <td class="center text-center" data-order="@(items.MeetingDate != null ? Convert.ToDateTime(items.MeetingDate).ToString("yyyy-MM-dd") : "")">
@@ -670,7 +670,7 @@
                                                     <i class="fa fa-calendar-o me-1 text-secondary"></i>@(items.MeetingDate != null ? Convert.ToDateTime(items.MeetingDate).ToString("dd-MM-yyyy") : "-")
                                                 </span>
                                             </td>
-                                            <td class="text-start">
+                                            <td class="center text-center">
                                                 <div class="meeting-title-text gurmukhi-text">
                                                     @items.MeetingTitle
                                                 </div>
