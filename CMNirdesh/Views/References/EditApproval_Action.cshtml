@@ -66,18 +66,18 @@
                     border-radius: 2px;
                 }
 
-        #MeetingTableApproval .custom-header-group select.action-ddl {
-            display: block !important;
-            width: 100% !important;
-            min-width: 0 !important;
-            height: 40px !important;
-            padding: 1px 4px !important;
-            font-size: 12px !important;
-            border-radius: 3px !important;
-            border: 1px solid #cbd5e1 !important;
-            background-color: #ffffff !important;
-            color: #333 !important;
-        }
+            #MeetingTableApproval .custom-header-group select.action-ddl {
+                display: block !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                height: 40px !important;
+                padding: 1px 4px !important;
+                font-size: 12px !important;
+                border-radius: 3px !important;
+                border: 1px solid #cbd5e1 !important;
+                background-color: #ffffff !important;
+                color: #333 !important;
+            }
 
             #MeetingTableApproval .custom-header-group .action-save {
                 flex: 0 0 40px !important;
@@ -147,7 +147,7 @@
             padding: 0 !important;
         }
 
-            #MeetingTableApproval  .tox .tox-tbtn svg {
+            #MeetingTableApproval .tox .tox-tbtn svg {
                 transform: scale(0.85);
             }
 
@@ -171,10 +171,12 @@
             min-width: 0 !important;
             gap: 5px !important;
         }
-            #MeetingTableApproval  .custom-header-group .drpdwn-container > div:nth-child(2) {
+
+            #MeetingTableApproval .custom-header-group .drpdwn-container > div:nth-child(2) {
                 flex: 1 1 0 !important;
                 min-width: 0 !important;
             }
+
         #MeetingTableApproval .tox .tox-toolbar__group.custom-header-group {
             flex: 1 1 100% !important;
             width: 100% !important;
@@ -208,9 +210,9 @@
             padding: 2px 2px 2px 2px !important;
         }
 
-        #MeetingTableApproval td .actionNotingCheckboxApproval {
-            margin: 10px 3px 3px 1px;
-        }
+            #MeetingTableApproval td .actionNotingCheckboxApproval {
+                margin: 10px 3px 3px 1px;
+            }
 
         #MeetingTableApproval .split-btn {
             padding: 4px 8px;
@@ -285,29 +287,116 @@
                     }
                 `,
                 setup: function (editor) {
+                    function getAnnexureFiles() {
+                        var files = [];
+                        if (typeof window.multiFiles !== 'undefined' && Array.isArray(window.multiFiles) && window.multiFiles.length > 0) {
+                            files = window.multiFiles.slice();
+                        } else if (typeof multiFiles !== 'undefined' && Array.isArray(multiFiles) && multiFiles.length > 0) {
+                            files = multiFiles.slice();
+                        } else if (window.parent && typeof window.parent.multiFiles !== 'undefined' && Array.isArray(window.parent.multiFiles) && window.parent.multiFiles.length > 0) {
+                            files = window.parent.multiFiles.slice();
+                        }
+
+                        var extraFiles = [];
+                        if (typeof window.mlfiles !== 'undefined' && Array.isArray(window.mlfiles)) {
+                            extraFiles = window.mlfiles;
+                        } else if (typeof mlfiles !== 'undefined' && Array.isArray(mlfiles)) {
+                            extraFiles = mlfiles;
+                        } else if (window.parent && typeof window.parent.mlfiles !== 'undefined' && Array.isArray(window.parent.mlfiles)) {
+                            extraFiles = window.parent.mlfiles;
+                        }
+                        if (extraFiles && extraFiles.length > 0) {
+                            files = files.concat(extraFiles);
+                        }
+
+                        // Fallback: If still empty, scrape from DOM elements of _ActionTaken
+                        if (!files || files.length === 0) {
+                            $('.abc a[href], #divEnfile a[href], #MultipleFile a[href]').each(function () {
+                                var $a = $(this);
+                                var href = $a.attr('href') || '';
+                                var text = $a.text().trim();
+                                if (href && href !== '#' && href.indexOf('javascript') === -1 && text) {
+                                    var fileName = href.replace('@BlobPath', '');
+                                    files.push({
+                                        FileName: fileName,
+                                        isDeleted: text,
+                                        name: text
+                                    });
+                                }
+                            });
+                        }
+
+                        // Deduplicate
+                        var seen = {};
+                        var uniqueFiles = [];
+                        for (var i = 0; i < files.length; i++) {
+                            var f = files[i];
+                            if (!f) continue;
+                            var key = (f.FileName || f.name || '') + '_' + (f.isDeleted || '');
+                            if (!seen[key]) {
+                                seen[key] = true;
+                                uniqueFiles.push(f);
+                            }
+                        }
+                        return uniqueFiles;
+                    }
+
+                    function insertAnnexureLink(file) {
+                        if (!file) return;
+                        var displayName = (file.isDeleted || file.name || file.FileName || "Annexure").toString().replace(/\.pdf$/i, "").trim();
+                        var fileName = file.FileName || file.name || "";
+                        var fullUrl = '@BlobPath' + fileName;
+                        var link = "<a class='hand' href='" + fullUrl + "' target='_blank' style='color:blue;text-decoration:underline;cursor: pointer;'>" + displayName + "</a>&nbsp;";
+                        editor.insertContent(link);
+                    }
+
                     editor.ui.registry.addSplitButton('anxbutton', {
                         text: 'Annexure',
-                        onAction: function () { },
+                        onAction: function () {
+                            var files = getAnnexureFiles();
+                            if (files && files.length > 0) {
+                                insertAnnexureLink(files[0]);
+                            }
+                        },
                         onItemAction: function (api, value) {
-                            var file = JSON.parse(value);
-                            var link =
-                                "<a class='hand' href='@BlobPath" + file.FileName + "' " +
-                                "target='_blank' " +
-                                "style='color:blue;text-decoration:underline;cursor: pointer;'>" +
-                                "" + file.isDeleted.replace(".pdf", "") +
-                                "</a>&nbsp;";
-                            editor.insertContent(link);
+                            if (!value) return;
+                            try {
+                                var file = JSON.parse(value);
+                                insertAnnexureLink(file);
+                            } catch (e) {
+                                console.error("Error inserting annexure link:", e);
+                            }
                         },
                         fetch: function (callback) {
-                            var files = (typeof multiFiles !== 'undefined') ? multiFiles : [];
+                            var files = getAnnexureFiles();
+                            if (!files || files.length === 0) {
+                                callback([{
+                                    type: 'choiceitem',
+                                    text: 'No Annexures Found',
+                                    value: ''
+                                }]);
+                                return;
+                            }
                             var items = files.map(function (file) {
+                                var displayName = (file.isDeleted || file.name || file.FileName || "Document").toString().replace(/\.pdf$/i, "").trim();
                                 return {
                                     type: 'choiceitem',
-                                    text: file.isDeleted.replace(".pdf",""),
+                                    text: displayName,
                                     value: JSON.stringify(file)
                                 };
                             });
                             callback(items);
+                        }
+                    });
+
+                    editor.on('click', function (e) {
+                        var anchor = e.target.closest ? e.target.closest('a') : (e.target.nodeName === 'A' ? e.target : null);
+                        if (anchor && anchor.href) {
+                            var href = anchor.getAttribute('href') || anchor.href;
+                            if (href && href !== '#' && href.indexOf('javascript:') !== 0) {
+                                e.preventDefault();
+                                window.open(anchor.href, '_blank');
+                            }
                         }
                     });
 
@@ -1065,46 +1154,47 @@
                 <tbody class="bordered" role="alert" aria-live="polite" aria-relevant="all" id="tbodyTypeApproval">
                     @foreach (var items in Model._LstResolutionActions)
                     {
-                        <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3;">                            
+                        <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3;">
                             <td style="font-size: 16px; border: 1px solid #D3D3D3;">
                                 <div class="drpdwn-container" id="drpdwn_@items.RefId.Replace(",", "_")" style="display:none;">
                                     <!-- 🔥 Resolution No. Badge inside TinyMCE Header -->
                                     <div class="rsln-header-badge"
                                          title="Resolution No(s)"
                                          style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-                                         <div>
-                                        <span style="font-weight:700; color:#495057; margin-right: 5px;">Resolution No:</span>
-                                        @{
-                                            var resolutionListHeader = items.ResolutionNo.Split(',');
-                                            var refIdListHeader = items.RefId.Split(',');
-                                        }
-                                        @for (int i = 0; i < resolutionListHeader.Length; i++)
-                                        {
-                                            var resolution = resolutionListHeader[i].Trim();
-                                            var currentRefId = (i < refIdListHeader.Length) ? refIdListHeader[i].Trim() : "";
-
-                                            <a href="javascript:void(0);"
-                                               onclick="ShowSDPopUp(0,'@currentRefId')"
-                                               title="Open Resolution @resolution"
-                                               style="color:#007bff; cursor:pointer; font-weight:bold; text-decoration:underline;">
-                                                @resolution
-                                            </a>
-
-                                            if (i < resolutionListHeader.Length - 1)
-                                            {
-                                                <span style="color:#6c757d; margin-right: 2px;">,</span>
+                                        <div>
+                                            <span style="font-weight:700; color:#495057; margin-right: 5px;">Resolution No:</span>
+                                            @{
+                                                var resolutionListHeader = items.ResolutionNo.Split(',');
+                                                var refIdListHeader = items.RefId.Split(',');
                                             }
-                                        }
-                                        @if (resolutionListHeader.Length > 1)
-                                        {
-                                            <button type="button"
-                                                    class="btn btn-primary split-btn"
-                                                    onclick="splitResolution(this,'@items.RefId')"
-                                                    title="Split Resolution">Split
-                                            </button>
-                                        }
-                                    </div>
-                                    @if (CurrentSession.DeptID == "UDD0001" && items.StatusName == "5")
+                                            @for (int i = 0; i < resolutionListHeader.Length; i++)
+                                            {
+                                                var resolution = resolutionListHeader[i].Trim();
+                                                var currentRefId = (i < refIdListHeader.Length) ? refIdListHeader[i].Trim() : "";
+
+                                                <a href="javascript:void(0);"
+                                                   onclick="ShowSDPopUp(0,'@currentRefId')"
+                                                   title="Open Resolution @resolution"
+                                                   style="color:#007bff; cursor:pointer; font-weight:bold; text-decoration:underline;">
+                                                    @resolution
+                                                </a>
+
+                                                if (i < resolutionListHeader.Length - 1)
+                                                {
+                                                    <span style="color:#6c757d; margin-right: 2px;">,</span>
+                                                }
+                                            }
+                                            @if (resolutionListHeader.Length > 1)
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-primary split-btn"
+                                                        onclick="splitResolution(this,'@items.RefId')"
+                                                        title="Split Resolution">
+                                                    Split
+                                                </button>
+                                            }
+                                        </div>
+                                        @if (CurrentSession.DeptID == "UDD0001" && items.StatusName == "5")
                                         {
                                             <div style="text-align:right; white-space:nowrap;">
                                                 <label style="margin:0; cursor:pointer;">
@@ -1116,7 +1206,7 @@
                                                 </label>
                                             </div>
                                         }
-                                        </div>
+                                    </div>
                                     <div>
                                         <!-- 🔥 Branch Comments Dropdown -->
                                         @{
@@ -1160,7 +1250,7 @@
                                 @if (Model._LstResolutionActions.Count > 1)
                                 {
                                     <div class="actionNotingCheckboxApproval">
-                                        <input type="checkbox" id="actionSubmitCheckboxApproval"/>
+                                        <input type="checkbox" id="actionSubmitCheckboxApproval" />
                                     </div>
                                 }
                                 <textarea class="tiny-editor"
