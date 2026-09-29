@@ -10353,11 +10353,13 @@
 
         success: function (data) {
 
-            $('#loader-wrapper').hide();
-
             $('#EditApprovalBody').html(data);
 
-            $('#EditApprovalModal').modal('show');
+            setTimeout(function () {
+                $('#loader-wrapper').hide();
+                $('#EditApprovalModal').show();
+                $("#EditApprovalModal").addClass("show");
+            }, 100)
         },
 
         error: function () {

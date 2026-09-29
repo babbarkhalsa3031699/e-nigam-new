@@ -211,6 +211,12 @@
         #MeetingTable td .actionNotingCheckbox {
             margin: 10px 3px 3px 1px;
         }
+
+        #MeetingTable .split-btn {
+            padding: 4px 8px;
+            margin-left: 10px;
+            font-weight: 600;
+        }
     </style>
 
     <script>
@@ -253,11 +259,294 @@
         var tinyMceDataStore = {};
         var storageKey = "ActionDescriptionNoting_" + agendaId;
 
-        $(document).ready(function () {
+        function initTinyMceForSelector(selector) {
+            var $el = $(selector);
+            if (!$el.length) return;
 
+            var safeId = selector.replace('#MeetingTable_txt_', '');
+
+            // 🔥 Destroy old instance if exists
+            if (tinymce.get('MeetingTable_txt_' + safeId)) {
+                tinymce.get('MeetingTable_txt_' + safeId).remove();
+            }
+
+            // 🔥 Re-init TinyMCE for selector
+            tinymce.init({
+                selector: selector,
+                min_height: 400,
+                height: 400,
+                menubar: false,
+                plugins: 'lists link table code',
+                toolbar: 'anxbutton undo redo | bold italic | alignjustify alignleft aligncenter alignright | bullist numlist',
+                toolbar_mode: 'wrap',
+                content_style: `
+                    body {
+                        text-align: justify;
+                    }
+                `,
+                setup: function (editor) {
+                    editor.ui.registry.addSplitButton('anxbutton', {
+                        text: 'Annexure',
+                        onAction: function () { },
+                        onItemAction: function (api, value) {
+                            var file = JSON.parse(value);
+                            var link =
+                                "<a class='hand' href='@BlobPath" + file.FileName + "' " +
+                                "target='_blank' " +
+                                "style='color:blue;text-decoration:underline;cursor: pointer;'>" +
+                                "" + file.isDeleted.replace(".pdf", "") +
+                                "</a>&nbsp;";
+                            editor.insertContent(link);
+                        },
+                        fetch: function (callback) {
+                            var files = (typeof multiFiles !== 'undefined') ? multiFiles : [];
+                            var items = files.map(function (file) {
+                                return {
+                                    type: 'choiceitem',
+                                    text: file.isDeleted.replace(".pdf",""),
+                                    value: JSON.stringify(file)
+                                };
+                            });
+                            callback(items);
+                        }
+                    });
+
+                    editor.on('init', async function () {
+                        var refIds = $('#MeetingTable #' + editor.id).data('refid');
+                        var firstId = refIds ? refIds.toString().replace(/,/g, '_') : safeId;
+
+                        // 🔥 MOVE Branch Comments Dropdown & Save Button into TinyMCE Header Toolbar
+                        var $container = $(editor.getContainer());
+                        var $toolbar = $container.find('.tox-toolbar__primary, .tox-toolbar');
+                        var $drpdwn = $('#MeetingTable #drpdwn_' + firstId);
+
+                        if ($toolbar.length && $drpdwn.length) {
+
+                            // Remove an existing custom group for this editor
+                            $toolbar.find('.custom-header-group').remove();
+
+                            // Clone instead of moving the original
+                            var $group = $('<div class="tox-toolbar__group custom-header-group"></div>');
+
+                            var $clone = $drpdwn.clone(true, true)
+                                .removeAttr('id')
+                                .css('display', '');
+
+                            var $origSelect = $drpdwn.find('.action-ddl');
+                            var $cloneSelect = $clone.find('.action-ddl');
+
+                            // Sync initial value (or from tinyMceDataStore if restored)
+                            var initialStatus = $origSelect.val();
+
+                            if (initialStatus) {
+                                $origSelect.val(initialStatus);
+                                $cloneSelect.val(initialStatus);
+                            }
+
+                            // Sync clone -> original on change
+                            $cloneSelect.off('change.syncStatus').on('change.syncStatus', function () {
+                                var val = $(this).val();
+                                $origSelect.val(val);
+                                saveEditorData(editor, false);
+                            });
+
+                            // Sync original -> clone on change
+                            $origSelect.off('change.syncStatus').on('change.syncStatus', function () {
+                                var val = $(this).val();
+                                $cloneSelect.val(val);
+                            });
+
+                            // Keep the original inside the DataTables row
+                            // and put only the clone inside TinyMCE
+                            $group.append($clone);
+
+                            $toolbar.prepend($group);
+                        }
+
+                        // 🔥 Safe Content Restoration
+                        if (tinyMceDataStore[firstId]) {
+                            var content = typeof tinyMceDataStore[firstId] === 'object'
+                                ? tinyMceDataStore[firstId].Comments
+                                : tinyMceDataStore[firstId];
+                            editor.setContent(content || '');
+                        }
+
+                        adjustTinyMceHeights();
+
+                        let savedDraft = localStorage.getItem(storageKey);
+                        if (savedDraft && savedDraft.trim() !== "") {
+                            fillDraftData(editor, savedDraft, firstId);
+                        } else {
+                            savedDraft = await GetDraftNoting();
+                            if (savedDraft) {
+                                fillDraftData(editor, savedDraft, firstId);
+                            }
+                        }
+                    });
+
+                    editor.on('change keyup paste', function () {
+                        saveEditorData(editor, false);
+                    });
+                    editor.on('blur Undo Redo', function () {
+                        saveEditorData(editor, true);
+                    });
+                }
+            });
+        }
+
+        function createSplitRowHtml(rId, rNo, selectOptionsHtml, content) {
+            return `
+                <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3;">
+                    <td style="font-size: 16px; border: 1px solid #D3D3D3;">
+                        <div class="drpdwn-container" id="drpdwn_${rId}" style="display:none;">
+                            <div class="rsln-header-badge" title="Resolution No">
+                                <span style="font-weight:700; color:#495057; margin-right: 5px;">Resolution No:</span>
+                                <a href="javascript:void(0);"
+                                   onclick="ShowSDPopUp(0,'${rId}')"
+                                   title="Open Resolution ${rNo}"
+                                   style="color:#007bff; cursor:pointer; font-weight:bold; text-decoration:underline;">
+                                    ${rNo}
+                                </a>
+                            </div>
+                            <div>
+                                <select class="action-ddl" name="ActionCode_${rId}" data-refid="${rId}">
+                                    ${selectOptionsHtml}
+                                </select>
+                            </div>
+                            <div>
+                                <button type="button"
+                                        class="action-save btn btn-warning btn-sm"
+                                        onclick="saveRowDraft(this,'${rId}')"
+                                        title="Save Draft">
+                                    <i class="fa fa-floppy-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="actionNotingCheckbox">
+                            <input type="checkbox" id="actionSubmitCheckbox" />
+                        </div>
+                        <textarea class="tiny-editor"
+                                  id="MeetingTable_txt_${rId}"
+                                  data-refid="${rId}"
+                                  data-resolution="${rNo}">${content || ''}</textarea>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function splitRowsFromDraft(draftObj) {
+            if (!draftObj || typeof draftObj !== 'object') return false;
+            var wasAnyRowSplit = false;
+
+            $('#tbodyType tr').each(function () {
+                var $row = $(this);
+                var $textarea = $row.find('textarea.tiny-editor');
+                if (!$textarea.length) return;
+
+                var refIds = $textarea.data('refid');
+                if (!refIds) return;
+
+                var refIdList = refIds.toString().split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+                if (refIdList.length <= 1) return;
+
+                var safeId = refIds.toString().replace(/,/g, '_');
+
+                // Check if draftObj has individual keys for this row
+                var hasIndividualInDraft = refIdList.some(function (id) {
+                    return draftObj[id] !== undefined && draftObj[id] !== null;
+                });
+
+                if (hasIndividualInDraft) {
+                    var $origDropdown = $('#drpdwn_' + safeId);
+                    var $select = $origDropdown.find('select.action-ddl');
+                    if (!$select.length) {
+                        $select = $row.find('select.action-ddl');
+                    }
+                    var selectOptionsHtml = $select.length ? $select.html() : '';
+                    var resAttr = $textarea.data('resolution') || '';
+                    var resNoList = resAttr.toString().split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+                    var defaultContent = $textarea.val();
+
+                    var totalItems = Math.max(refIdList.length, resNoList.length);
+                    var newRowsHtml = '';
+
+                    for (var i = 0; i < totalItems; i++) {
+                        var rId = (i < refIdList.length) ? refIdList[i] : resNoList[i];
+                        var rNo = (i < resNoList.length) ? resNoList[i] : (draftObj[rId] && draftObj[rId].resolutionNo ? draftObj[rId].resolutionNo : rId);
+                        var itemContent = (draftObj[rId] && draftObj[rId].Comments)
+                            ? draftObj[rId].Comments
+                            : defaultContent;
+
+                        newRowsHtml += createSplitRowHtml(rId, rNo, selectOptionsHtml, itemContent);
+                    }
+
+                    var $newRows = $(newRowsHtml);
+                    $row.replaceWith($newRows);
+
+                    // Set tinyMceDataStore for each split item
+                    for (var j = 0; j < totalItems; j++) {
+                        var newId = (j < refIdList.length) ? refIdList[j] : resNoList[j];
+                        var newRes = (j < resNoList.length) ? resNoList[j] : (draftObj[newId] && draftObj[newId].resolutionNo ? draftObj[newId].resolutionNo : newId);
+                        //var itemStatus = draftObj[newId] && draftObj[newId].Status ? draftObj[newId].Status : '';
+                        //if (itemStatus) {
+                        //    $('#MeetingTable #drpdwn_' + newId + ' select.action-ddl').val(itemStatus);
+                        //}
+
+                        tinyMceDataStore[newId] = {
+                            RefId: newId,
+                            Comments: (draftObj[newId] && draftObj[newId].Comments) ? draftObj[newId].Comments : defaultContent,
+                            //Status: itemStatus,
+                            resolutionNo: newRes
+                        };
+                    }
+
+                    delete tinyMceDataStore[safeId];
+                    wasAnyRowSplit = true;
+                }
+            });
+
+            if (wasAnyRowSplit || $('#MeetingTable tbody tr').length > 1) {
+                $('#MeetingTable tbody tr').each(function () {
+                    if ($(this).find('.actionNotingCheckbox').length === 0) {
+                        $(this).find('td').prepend('<div class="actionNotingCheckbox"><input type="checkbox" id="actionSubmitCheckbox"/></div>');
+                    }
+                });
+            }
+
+            return wasAnyRowSplit;
+        }
+
+        $(document).ready(async function () {
+            // 1. Fetch saved draft first
+            let savedDraft = localStorage.getItem(storageKey);
+            if (!savedDraft || savedDraft.trim() === "") {
+                savedDraft = await GetDraftNoting();
+                if (savedDraft && savedDraft.trim() !== "") {
+                    localStorage.setItem(storageKey, savedDraft);
+                }
+            }
+
+            var draftObj = null;
+            if (savedDraft && savedDraft.trim() !== "") {
+                try {
+                    draftObj = JSON.parse(savedDraft);
+                    if (draftObj && typeof draftObj === 'object') {
+                        tinyMceDataStore = Object.assign({}, draftObj);
+                    }
+                } catch (e) {
+                    console.error("Error parsing draft data:", e);
+                }
+            }
+
+            // 2. If draft has split refIds, split rows in DOM before DataTable initializes
+            if (draftObj) {
+                splitRowsFromDraft(draftObj);
+            }
+
+            // 3. Initialize DataTable
             $('#MeetingTable').DataTable({
                 "bLengthChange": false,
-                "autoWidth": false, 
+                "autoWidth": false,
                 pageLength: 100,
                 order: [],
 
@@ -272,7 +561,7 @@
                             .find('#MeetingTable_txt_' + safeId);
                         var editor = tinymce.get($editorElement.attr('id'));
                         if (editor && editor.getContent()) {
-                            
+
                             var $editorContainer = $(editor.getContainer());
                             var status = ($editorContainer.length ? $editorContainer.find('select.action-ddl').val() : null)
                                 || $('#MeetingTable select.action-ddl[data-refid="' + refIds + '"]:visible').val()
@@ -298,134 +587,7 @@
 
                         var safeId = refIds.toString().replace(/,/g, '_');
                         var selector = '#MeetingTable_txt_' + safeId;
-
-                        // 🔥 Destroy old instance if exists
-                        if (tinymce.get('MeetingTable_txt_' + safeId)) {
-                            tinymce.get('MeetingTable_txt_' + safeId).remove();
-                        }
-
-                        // 🔥 Re-init TinyMCE for current page rows
-                        tinymce.init({
-                            selector: selector,
-                            min_height: 400,
-                            height: 400,
-                            menubar: false,
-                            plugins: 'lists link table code',
-                            toolbar: 'anxbutton undo redo | bold italic | alignjustify alignleft aligncenter alignright | bullist numlist',
-                            toolbar_mode: 'wrap',
-                            content_style: `
-                                body {
-                                    text-align: justify;
-                                }
-                            `,
-                            setup: function (editor) {
-                                editor.ui.registry.addSplitButton('anxbutton', {
-                                    text: 'Annexure',
-                                    onAction: function () { },
-                                    onItemAction: function (api, value) {
-                                        var file = JSON.parse(value);
-                                        var link =
-                                            "<a class='hand' href='@BlobPath" + file.FileName + "' " +
-                                            "target='_blank' " +
-                                            "style='color:blue;text-decoration:underline;cursor: pointer;'>" +
-                                            "" + file.isDeleted.replace(".pdf", "") +
-                                            "</a>&nbsp;";
-                                        editor.insertContent(link);
-                                    },
-                                    fetch: function (callback) {
-                                        var files = (typeof multiFiles !== 'undefined') ? multiFiles : [];
-                                        var items = files.map(function (file) {
-                                            return {
-                                                type: 'choiceitem',
-                                                text: file.isDeleted.replace(".pdf",""),
-                                                value: JSON.stringify(file)
-                                            };
-                                        });
-                                        callback(items);
-                                    }
-                                });
-
-                                editor.on('init', async function () {
-                                    var refIds = $('#MeetingTable #' + editor.id).data('refid');
-                                    var firstId = refIds.toString().replace(/,/g, '_');
-
-                                    // 🔥 MOVE Branch Comments Dropdown & Save Button into TinyMCE Header Toolbar
-                                    var $container = $(editor.getContainer());
-                                    var $toolbar = $container.find('.tox-toolbar__primary, .tox-toolbar');
-                                    var $drpdwn = $('#MeetingTable #drpdwn_' + firstId);
-
-                                    if ($toolbar.length && $drpdwn.length) {
-
-                                        // Remove an existing custom group for this editor
-                                        $toolbar.find('.custom-header-group').remove();
-
-                                        // Clone instead of moving the original
-                                        var $group = $('<div class="tox-toolbar__group custom-header-group"></div>');
-
-                                        var $clone = $drpdwn.clone(true, true)
-                                            .removeAttr('id')
-                                            .css('display', '');
-
-                                        var $origSelect = $drpdwn.find('.action-ddl');
-                                        var $cloneSelect = $clone.find('.action-ddl');
-
-                                        // Sync initial value (or from tinyMceDataStore if restored)
-                                        var initialStatus = $origSelect.val();
-
-                                        if (initialStatus) {
-                                            $origSelect.val(initialStatus);
-                                            $cloneSelect.val(initialStatus);
-                                        }
-
-                                        // Sync clone -> original on change
-                                        $cloneSelect.off('change.syncStatus').on('change.syncStatus', function () {
-                                            var val = $(this).val();
-                                            $origSelect.val(val);
-                                            saveEditorData(editor, false);
-                                        });
-
-                                        // Sync original -> clone on change
-                                        $origSelect.off('change.syncStatus').on('change.syncStatus', function () {
-                                            var val = $(this).val();
-                                            $cloneSelect.val(val);
-                                        });
-
-                                        // Keep the original inside the DataTables row
-                                        // and put only the clone inside TinyMCE
-                                        $group.append($clone);
-
-                                        $toolbar.prepend($group);
-                                    }
-
-                                    // 🔥 Safe Content Restoration
-                                    if (tinyMceDataStore[firstId]) {
-                                        var content = typeof tinyMceDataStore[firstId] === 'object'
-                                            ? tinyMceDataStore[firstId].Comments
-                                            : tinyMceDataStore[firstId];
-                                        editor.setContent(content || '');
-                                    }
-
-                                    adjustTinyMceHeights();
-
-                                    let savedDraft = localStorage.getItem(storageKey);
-                                    if (savedDraft && savedDraft.trim() !== "") {
-                                        fillDraftData(editor, savedDraft, firstId);
-                                    } else {
-                                        savedDraft = await GetDraftNoting();
-                                        if (savedDraft) {
-                                            fillDraftData(editor, savedDraft, firstId);
-                                        }
-                                    }
-                                });
-
-                                editor.on('change keyup paste', function () {
-                                    saveEditorData(editor, false);
-                                });
-                                editor.on('blur Undo Redo', function () {
-                                    saveEditorData(editor, true);
-                                });
-                            }
-                        });
+                        initTinyMceForSelector(selector);
                     });
                     adjustTinyMceHeights();
                 },
@@ -451,44 +613,64 @@
 
         function fillDraftData(editor, savedDraft, firstId) {
             try {
-                var ls = JSON.parse(savedDraft);
-                if (ls != null && ls != "" && firstId) {
+                var ls = typeof savedDraft === 'string' ? JSON.parse(savedDraft) : savedDraft;
+                if (!ls || !firstId) return;
 
-                    var firstIds = new Set(
-                        firstId.split('_').map(function (x) {
-                            return x.trim();
-                        })
-                    );
-                    
-                    for (const [key, value] of Object.entries(ls)) {
-                        const keyIds = key.split("_");
-                        let matched = false;
+                // 1. Direct match by firstId
+                if (ls[firstId]) {
+                    editor.setContent(ls[firstId].Comments || '');
+                    //var draftStatus = ls[firstId].Status;
+                    //if (draftStatus) {
+                    //    var $editorContainer = $(editor.getContainer());
+                    //    if ($editorContainer.length) {
+                    //        $editorContainer.find('.action-ddl').val(draftStatus);
+                    //    }
+                    //    $('#MeetingTable #drpdwn_' + firstId + ' select.action-ddl').val(draftStatus);
+                    //}
+                    tinyMceDataStore[firstId] = {
+                        RefId: firstId,
+                        Comments: ls[firstId].Comments || '',
+                        //Status: draftStatus,
+                        resolutionNo: ls[firstId].resolutionNo
+                    };
+                    return;
+                }
 
-                        for (const el of keyIds) {
-                            if (firstIds.has(el)) {
-                                editor.setContent(ls[key].Comments || '');
-                                //var draftStatus = value.Status;
-                                //if (draftStatus) {
-                                //    var $editorContainer = $(editor.getContainer());
-                                //    if ($editorContainer.length) {
-                                //        $editorContainer.find('.action-ddl').val(draftStatus);
-                                //    }
-                                //    $('#MeetingTable #drpdwn_' + firstId + ' select.action-ddl').val(draftStatus);
-                                //}
-                                tinyMceDataStore[firstId] = {
-                                    RefId: firstId,
-                                    Comments: value.Comments || '',
-                                    //Status: draftStatus,
-                                    resolutionNo: value.resolutionNo
-                                };
-                                matched = true;
-                                break;
-                            }
-                        }
+                // 2. Fallback matching for multi-id sets
+                var firstIds = new Set(
+                    firstId.split('_').map(function (x) {
+                        return x.trim();
+                    })
+                );
 
-                        if (matched) {
+                for (const [key, value] of Object.entries(ls)) {
+                    const keyIds = key.split("_");
+                    let matched = false;
+
+                    for (const el of keyIds) {
+                        if (firstIds.has(el)) {
+                            editor.setContent(value.Comments || '');
+                            //var draftStatus = value.Status;
+                            //if (draftStatus) {
+                            //    var $editorContainer = $(editor.getContainer());
+                            //    if ($editorContainer.length) {
+                            //        $editorContainer.find('.action-ddl').val(draftStatus);
+                            //    }
+                            //    $('#MeetingTable #drpdwn_' + firstId + ' select.action-ddl').val(draftStatus);
+                            //}
+                            tinyMceDataStore[firstId] = {
+                                RefId: firstId,
+                                Comments: value.Comments || '',
+                                //Status: draftStatus,
+                                resolutionNo: value.resolutionNo
+                            };
+                            matched = true;
                             break;
                         }
+                    }
+
+                    if (matched) {
+                        break;
                     }
                 }
             } catch (e) {
@@ -564,6 +746,26 @@
             }
         }
 
+         function DeleteDraftNoting(data) {
+             try {
+                 var res = $.ajax({
+                     url: '@Url.Action("DeleteDraftDirect", "References")',
+                     type: 'POST',
+                     data: {
+                         DraftKey: "Agenda" + agendaId + "_ActionDescriptionNoting_Action" + "@CurrentSession.UserID",
+                         Data: data
+                     }
+                 });
+                 return res ? res.DraftContent : "";
+             }
+             catch (xhr) {
+                 console.log("Status:", xhr.status);
+                 console.log("Error:", xhr.statusText);
+                 console.log("Response:", xhr.responseText);
+                 return "";
+             }
+         }
+
         function saveAllData(event) {
             if (event) {
                 event.preventDefault();
@@ -579,7 +781,7 @@
             }
 
             let hasError = false;
-            
+
             $('#MeetingTable .tiny-editor').each(function () {
                 var refIds = $(this).data('refid');
                 var resolutionNos = $(this).data('resolution');
@@ -593,10 +795,10 @@
                     || $('#MeetingTable select.action-ddl[data-refid="' + refIds + '"]:visible').val()
                     || $('#MeetingTable #drpdwn_' + safeId + ' select.action-ddl').val()
                     || $('#MeetingTable select[data-refid="' + refIds + '"]').val();
-                
+
                 var editorCheckbox = $(this).closest('td').find('#actionSubmitCheckbox');
                 var isChecked = $(editorCheckbox).is(':checked');
-                
+
                 if (!comments || comments.trim() === "") {
                     alert("Comment cannot be empty for Resolution No(s): " + resolutionNos);
                     hasError = true;
@@ -623,7 +825,7 @@
                     }
                 });
 
-                if (isChecked && $('#MeetingTable .tiny-editor').length > 1) {                  
+                if (isChecked && $('#MeetingTable .tiny-editor').length > 1) {
 
                     refIdArray.forEach(function (id) {
 
@@ -646,7 +848,7 @@
                 }
                 return;
             }
-            
+
             // 🔄 show loader (if exists)
             $('#loader-wrapper').show();
             $.ajax({
@@ -660,7 +862,8 @@
                     $('#MeetingTable .tiny-editor').closest('tr').css('background', '#d4edda');
                     alert("All data saved successfully");
                     localStorage.removeItem(storageKey);
-                   CloseActionSection();
+                    DeleteDraftNoting((dataList.length > 0 ? dataList : dataListAll).map(el => el.RefId));
+                    CloseActionSection();
                     OpenNotingSection();
                     InsertSelectedRemarksToActionDescription((dataList.length > 0 ? dataList : dataListAll).map(el => el.RefId).join(","));
                 },
@@ -762,7 +965,7 @@
                 || $('#MeetingTable select.action-ddl[data-refid="' + refIds + '"]:visible').val()
                 || $('#MeetingTable #drpdwn_' + safeId + ' select.action-ddl').val()
                 || $('#MeetingTable select[data-refid="' + refIds + '"]').val();
-            
+
             if (!status || status === "") {
                 alert("Please select status");
                 return;
@@ -774,8 +977,17 @@
             }
 
             btn.disabled = true;
-            //btn.innerText = 'Saving...';
             if (refIds.trim() === '') return;
+
+            // Also keep local draft store in sync
+            tinyMceDataStore[safeId] = {
+                RefId: safeId,
+                Comments: comments,
+                //Status: status || '',
+                resolutionNo: $('#MeetingTable_txt_' + safeId).data('resolution')
+            };
+            localStorage.setItem(storageKey, JSON.stringify(tinyMceDataStore));
+            SaveDraftNoting(storageKey);
 
             $.ajax({
                 url: '@Url.Action("SaveDraftRow", "References")',
@@ -805,7 +1017,6 @@
                     console.log("Status:", xhr.status);
                     console.log("Error:", error);
                     console.log("Response:", xhr.responseText);
-                    //alert('Error saving draft');
                     btn.disabled = false;
                     row.css('background', 'none');
                     $(btn).html('<i class="fa fa-floppy-o"></i>');
@@ -813,6 +1024,110 @@
             });
         }
 
+        function splitResolution(btn, refIds) {
+            if (!refIds) return;
+
+            var safeId = refIds.toString().replace(/,/g, '_');
+            var $textarea = $('#MeetingTable_txt_' + safeId);
+            var $row = $(btn).closest('tr');
+            if (!$row.length) {
+                $row = $textarea.closest('tr');
+            }
+
+            var editor = tinymce.get('MeetingTable_txt_' + safeId);
+            var currentContent = editor ? editor.getContent() : $textarea.val();
+
+            // Get current selected status
+            var $origDropdown = $('#MeetingTable #drpdwn_' + safeId);
+            var currentStatus = $(btn).closest('.custom-header-group').find('select.action-ddl').val()
+                || $(btn).closest('.drpdwn-container').find('select.action-ddl').val()
+                || $origDropdown.find('select.action-ddl').val()
+                || $row.find('select.action-ddl').val();
+
+            var $select = $origDropdown.find('select.action-ddl');
+            if (!$select.length) {
+                $select = $row.find('select.action-ddl');
+            }
+            var selectOptionsHtml = $select.length ? $select.html() : '';
+
+            var refIdList = refIds.toString().split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+            var resAttr = $textarea.data('resolution') || '';
+            var resNoList = resAttr.toString().split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+
+            var totalItems = Math.max(refIdList.length, resNoList.length);
+            if (totalItems <= 1) {
+                alert("This row has only one resolution and cannot be split.");
+                return;
+            }
+
+            // 🔥 Remove old TinyMCE instance
+            if (editor) {
+                editor.remove();
+            }
+            delete tinyMceDataStore[safeId];
+
+            // Build separated rows
+            var newRowsHtml = '';
+            for (var i = 0; i < totalItems; i++) {
+                var rId = (i < refIdList.length) ? refIdList[i] : resNoList[i];
+                var rNo = (i < resNoList.length) ? resNoList[i] : rId;
+                newRowsHtml += createSplitRowHtml(rId, rNo, selectOptionsHtml, currentContent);
+            }
+
+            // Replace combined row in DOM
+            var $newRows = $(newRowsHtml);
+            $row.replaceWith($newRows);
+
+            // Ensure all rows in table have a checkbox now that multiple rows exist
+            $('#MeetingTable tbody tr').each(function () {
+                if ($(this).find('.actionNotingCheckbox').length === 0) {
+                    $(this).find('td').prepend('<div class="actionNotingCheckbox"><input type="checkbox" id="actionSubmitCheckbox"/></div>');
+                }
+            });
+
+            // Set dropdown values, update data store and init each editor
+            for (var j = 0; j < totalItems; j++) {
+                var newId = (j < refIdList.length) ? refIdList[j] : resNoList[j];
+                var newRes = (j < resNoList.length) ? resNoList[j] : newId;
+
+                // Set selected status in the new dropdown before init so clone picks it up
+                if (currentStatus) {
+                    $('#MeetingTable #drpdwn_' + newId + ' select.action-ddl').val(currentStatus);
+                }
+
+                tinyMceDataStore[newId] = {
+                    RefId: newId,
+                    Comments: currentContent,
+                    //Status: currentStatus || '',
+                    resolutionNo: newRes
+                };
+
+                initTinyMceForSelector('#MeetingTable_txt_' + newId);
+            }
+
+            localStorage.setItem(storageKey, JSON.stringify(tinyMceDataStore));
+            SaveDraftNoting(storageKey);
+            adjustTinyMceHeights();
+        }
+
+        function NotifyLocalGovtMutiple(refId, isChecked) {
+            alert(refId);
+            $.ajax({
+                type: "POST",
+            // url: Action.url("NotifyLocalGovt", "References"),
+                url: '@Url.Action("NotifyLocalGovtMutiple", "References")',
+                data: {
+                    RefId: refId,
+                    NotifyTo: isChecked ? 1 : 2
+                },
+                success: function (response) {
+                    alert(response.message);
+                },
+                error: function (xhr) {
+                    console.log("Error: " + xhr.responseText);
+                }
+            });
+        }
     </script>
 </head>
 
@@ -822,7 +1137,6 @@
             <table class="table table-bordered" id="MeetingTable" aria-describedby="sample-table-3_info" style="border-collapse: collapse;">
                 <thead>
                     <tr style="color: white; font-size:16px; font-weight:bold;">
-                        @*<th class="center" style="width:10% !important; font-size:16px;" id="tdFrom" rowspan="1" colspan="1">Resolution No.</th>*@
                         <th class="center" style="width:90% !important; font-size:16px;" id="tdFrom" rowspan="1" colspan="1">Add Action</th>
                     </tr>
                 </thead>
@@ -830,33 +1144,7 @@
                 <tbody class="bordered" role="alert" aria-live="polite" aria-relevant="all" id="tbodyType">
                     @foreach (var items in Model._LstResolutionActions)
                     {
-                        <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3;">
-                            @*<td style="font-size:16px; border:1px solid #D3D3D3; width:10% !important; vertical-align:top; padding:10px; text-align:center; display: none;">
-                                <div class="rsln">
-                                    @{
-                                        var resolutionList = items.ResolutionNo.Split(',');
-                                        var refIdList = items.RefId.Split(',');
-                                    }
-
-                                    @for (int i = 0; i < resolutionList.Length; i++)
-                                    {
-                                        var resolution = resolutionList[i].Trim();
-                                        var currentRefId = (i < refIdList.Length) ? refIdList[i].Trim() : "";
-
-                                        <a href="javascript:void(0);"
-                                           onclick="ShowSDPopUp(0,'@currentRefId')"
-                                           title="Open Resolution"
-                                           style="color:#007bff;cursor:pointer;font-weight:bold;font-size:16px;">
-                                            @resolution
-                                        </a>
-
-                                        if (i < resolutionList.Length - 1)
-                                        {
-                                            @:,
-                                        }
-                                    }
-                                </div>
-                            </td>*@
+                        <tr role="row" style="font-size: 16px; color: black; border: 1px solid #D3D3D3;">                            
                             <td style="font-size: 16px; border: 1px solid #D3D3D3;">
                                 <div class="drpdwn-container" id="drpdwn_@items.RefId.Replace(",", "_")" style="display:none;">
                                     <!-- 🔥 Resolution No. Badge inside TinyMCE Header -->
@@ -883,7 +1171,27 @@
                                                 <span style="color:#6c757d; margin-right: 2px;">,</span>
                                             }
                                         }
+                                        @if (resolutionListHeader.Length > 1)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-primary split-btn"
+                                                    onclick="splitResolution(this,'@items.RefId')"
+                                                    title="Split Resolution">Split
+                                            </button>
+                                        }
                                     </div>
+                                    @if (CurrentSession.DeptID == "UDD0001" && items.StatusName == "5")
+                                        {
+                                            <div style="text-align:right; white-space:nowrap;">
+                                                <label style="margin:0; cursor:pointer;">
+                                                    <input type="checkbox"
+                                                           class="notifyLocalGovt"
+                                                           data-refid="@items.RefId"
+                                                           onchange="NotifyLocalGovtMutiple('@items.RefId', this.checked)">
+                                                    Notify LG
+                                                </label>
+                                            </div>
+                                        }
                                     <div>
                                         <!-- 🔥 Branch Comments Dropdown -->
                                         @{
