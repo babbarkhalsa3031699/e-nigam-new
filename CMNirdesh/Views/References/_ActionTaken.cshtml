@@ -2222,6 +2222,7 @@
 
 
 <script>
+    window.multiFiles = @Html.Raw(Json.Encode(Model.MultiFileModel)) || [];
     var SDPreText = "";
    function EnableSubjectPopupResizeAndDrag() {
 
@@ -2331,6 +2332,7 @@
 
 
     var itemsRef = []; var SwipeId = 0; var uploadCount = 0; var mlfiles = new Array();
+    window.mlfiles = mlfiles;
    $(document).ready(function () {
        $.noConflict();
        var menutype = $("#lblmenuname").html();
@@ -3190,7 +3192,8 @@
 
 
 
-        var multiFiles = @Html.Raw(Json.Encode(Model.MultiFileModel));
+        window.multiFiles = @Html.Raw(Json.Encode(Model.MultiFileModel)) || [];
+        var multiFiles = window.multiFiles;
        //console.log(multiFiles);
 
        tinyMCE.init({
@@ -6155,7 +6158,7 @@
 }
 
     function SaveMulti() {
-       
+
         //var myContent = tinymce.activeEditor.getContent();
         //$('#ActionDescription').html(myContent);
         tinymce.activeEditor.save();
@@ -10353,11 +10356,13 @@
 
         success: function (data) {
 
-            $('#loader-wrapper').hide();
-
             $('#EditApprovalBody').html(data);
 
-            $('#EditApprovalModal').modal('show');
+            setTimeout(function () {
+                $('#loader-wrapper').hide();
+                $('#EditApprovalModal').show();
+                $("#EditApprovalModal").addClass("show");
+            }, 100)
         },
 
         error: function () {
