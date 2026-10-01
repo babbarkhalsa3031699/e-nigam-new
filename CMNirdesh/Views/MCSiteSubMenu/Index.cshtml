@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.MCHouse.MCSiteSubMenu
+@model CMNirdesh.Models.MCHouse.MCSiteSubMenu
 @using CMNirdesh;
 
 @{
@@ -7,95 +7,88 @@
 }
 
 @*@Html.Partial("~/Views/References/_LeftNavigationMenu.cshtml")*@
-<div id="main-content">
-    <div class="main-content">
-        <!-- #section:basics/content.breadcrumbs -->
-        <section class="form_dsign">
-            <div class="container-fluid p-0">
+<div class="main-office-container">
+    <div class="compact-breadcrumb-bar">
+        <span class="crumb-root">Office Administration</span>
+        <span class="crumb-sep">&gt;&gt;</span>
+        <span class="crumb-current">MCHomeSubMenu</span>
+    </div>
 
-                <div class="inr_frm_dsgn">
+    <div class="source-heading">
+        <h4>MC Site SubMenu List</h4>
+        <button type="button" class="btn-toolbar-add" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();">
+            <i class="fa fa-plus"></i> Add New MCSite SubMenu
+        </button>
+    </div>
 
-                    <div class="widget-box " id="divAction">
-                        <div class="widget-header widget-header-flat rounded-top rounded-0">
-                            <h4 class=""> MC Site SubMenu List </h4>
-                            <div class="widget-toolbar no-border">
-                                <button type="button" class="btn btn-xs btn-primary bigger" style="font-size:14px;" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add New MCSite SubMenu</button>
-                            </div>
-                        </div>
-                    </div>
+    <div class="table-outer">
+        <div class="unified-table-toolbar">
+            <div style="font-size: 12px; font-weight: 600; color: #475569; display: flex; align-items: center; gap: 6px;">
+                <i class="fa fa-list text-primary"></i>
+                <span>SubMenu Records</span>
+            </div>
+            <div class="toolbar-search-slot" id="toolbarSearchSlot"></div>
+        </div>
 
-
-                    <div class="form_lyot">
-                        @if (Model != null)
-                        {
-                            if (Model._LstSubMenu.Count() > 0)
-                            {
-                                <div class="table-responsive ">
-                                    <table id="example" class="table table-hover table-bordered " style="font-size:20px;">
-                                        <thead>
-                                            <tr class="table-heading">
-                                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">SubMenu Id</span></th>
-                                                <th class="td-heading"><span class="font-weight-bold">MC Name</span></th>
-                                                <th class="td-heading" style="width:22%;"><span class="font-weight-bold">Menu Name</span></th>
-                                                <th class="td-heading" style="width:22%;"><span class="font-weight-bold">SubMenu Name</span></th>
-                                                <th class="td-heading" style="width:22%;"><span class="font-weight-bold">Linked file</span></th>
-
-                                                <th class="td-heading" style="width:10%;"><span class="font-weight-bold">SrNo</span></th>
-                                                <th class="td-heading" style="width:10%;"><span class="font-weight-bold">Action</span></th>
-                                            </tr>
-                                        </thead>
+        @if (Model != null)
+        {
+            if (Model._LstSubMenu.Count() > 0)
+            {
+                <div class="table-responsive table-cus">
+                    <table id="example" class="table table-bordered dataTable">
+                        <thead>
+                            <tr class="table-heading">
+                                <th style="width:12%;">SubMenu Id</th>
+                                <th>MC Name</th>
+                                <th style="width:20%;">Menu Name</th>
+                                <th style="width:20%;">SubMenu Name</th>
+                                <th style="width:16%;">Linked File</th>
+                                <th style="width:8%; text-align: center;">SrNo</th>
+                                <th style="width:14%; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
                                         <tbody role="alert" aria-live="polite" aria-relevant="all">
                                             @foreach (var items in Model._LstSubMenu)
                                             {
                                                 <tr>
-                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubMenuId)</td>
-                                                    <td class="center" style="font-size:18px; padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MCName)</td>
-                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MenuName)</td>
-                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubMenuName)</td>
+                                                    <td>@Html.DisplayFor(modelItem => items.SubMenuId)</td>
+                                                    <td>@Html.DisplayFor(modelItem => items.MCName)</td>
+                                                    <td>@Html.DisplayFor(modelItem => items.MenuName)</td>
+                                                    <td>@Html.DisplayFor(modelItem => items.SubMenuName)</td>
                                                     @if ((!string.IsNullOrEmpty(items.linkurl)) && (items.isLink == 2))
                                                     {
-                                                        <td class="center td-data" style="padding: 14px 4px !important">
-                                                            <a href="@Url.Content(Model.fileacessingUrl + "/" + items.linkurl)" target="_blank">
-                                                                <img src="/Assets/Home_Images/PDF.png" alt="Download" title="Download Proceeding File" width="24" height="24">
+                                                        <td>
+                                                            <a href="@Url.Content(Model.fileacessingUrl + "/" + items.linkurl)" target="_blank" class="pdf-download-btn" title="Download Proceeding File">
+                                                                <img src="/Assets/Home_Images/PDF.png" alt="Download" width="18" height="18" style="vertical-align: middle;">
+                                                                <span style="font-size: 11.5px; font-weight: 600; color: #dc2626;">PDF</span>
                                                             </a>
                                                         </td>
                                                     }
                                                     else if ((!string.IsNullOrEmpty(items.linkurl)) && (items.isLink == 1))
                                                     {
-                                                        <td class="center td-data" style="padding: 14px 4px !important">
-                                                            <a href="@Url.Content(items.linkurl)" target="_blank">
-                                                               Web URL
+                                                        <td>
+                                                            <a href="@Url.Content(items.linkurl)" target="_blank" style="font-size: 12px; font-weight: 600; color: #2563eb; text-decoration: underline;">
+                                                                Web URL
                                                             </a>
                                                         </td>
                                                     }
                                                     else
                                                     {
-                                                        <td class="center td-data" style="padding: 14px 4px !important">No Link</td>
+                                                        <td style="color: #94a3b8; font-style: italic;">No Link</td>
                                                     }
 
-                                                    <td class="center td-data" style=" padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SrNo)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">
-                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
-                                                            <div class="hidden-sm hidden-xs action-buttons">
-                                                                <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.SubMenuId')">
-                                                                    <i class="ace-icon fa fa-pencil bigger-130"></i>
-                                                                </a>
-                                                                @*<a data-rel="tooltip" id="DeleteCheck" class="red tooltip-error" onclick="DeleteOfficeRecord('@items.SubMenuId')" value="@items.SubMenuId">
-                        <i class="ace-icon fa fa-trash-o bigger-130"></i>
-                        <input type="hidden" id="DeleteConfirmFinal" value='@items.SubMenuId' class="DeleteConfirm" />
-                    </a>*@
-                                                            </div>
-                                                            <div class="hidden-sm hidden-xs action-buttons">
-                                                                <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.SubMenuId')" value="@items.SubMenuId" />
-                                                                <label class="toggle mb-0">
-                                                                    <input type="checkbox" onclick="DeleteDepartmentRecord('@items.SubMenuId')" @(Convert.ToBoolean(items.IsDeleted) == false ? "checked='checked'" : string.Empty)>
-                                                                    <span class="slider"></span>
-                                                                    <span class="labels" data-on="Active" data-off="DeActive"></span>
-                                                                </label>
-                                                            </div>
+                                                    <td style="text-align: center;">
+                                                        <div class="action-cell-wrap">
+                                                            <a class="btn-action-edit" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.SubMenuId')" title="Edit">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </a>
+                                                            <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.SubMenuId')" value="@items.SubMenuId" />
+                                                            <label class="toggle mb-0">
+                                                                <input type="checkbox" onclick="DeleteDepartmentRecord('@items.SubMenuId')" @(Convert.ToBoolean(items.IsDeleted) == false ? "checked='checked'" : string.Empty)>
+                                                                <span class="slider"></span>
+                                                                <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                            </label>
                                                         </div>
-
-
                                                     </td>
                                                 </tr>
                                             }
@@ -105,113 +98,98 @@
                             }
                             else
                             {
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="alert alert-info">
-                                            <strong>There are no record found</strong><br />
-                                        </div>
-                                    </div>
+                                <div class="analytics-empty-state">
+                                    <i class="fa fa-folder-open-o" style="font-size: 32px; color: #94a3b8; margin-bottom: 8px;"></i>
+                                    <div class="analytics-empty-title">No SubMenu Records Found</div>
+                                    <div class="analytics-empty-desc">Click "Add New MCSite SubMenu" to create the first entry.</div>
                                 </div>
                             }
                         }
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="coman_modal dispatch_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title fs-5" id="myModalLabel">Add Sub Menu Items</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form class="row ">
-                                <div class="col-md-6 col-sm-12 col-12 form-group" id="MCId">
-                                    <div class="profile-info-name fotm_lbl">MC Name:</div>
-                                    <select id="MCIDDropDown" onchange="GetMenuDropdown(this.value)">
-                                        <option value="0" class="form-control txt_design" id="SelectId" placeholder="MC Type">Please select</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-sm-12 col-12 form-group" id="MenuDropdown">
-                                    <div class="profile-info-name fotm_lbl">Menu Name:</div>
-                                    <select id="ch_user1" onchange="GetMaxSerial(this.value)">
-                                        <option value="select" class="form-control txt_design" id="SelectId" placeholder="Controller Name"></option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-sm-12 col-12 form-group" id="SubMenuIdLabel">
-
-                                    <div class="profile-info-name fotm_lbl">SubMenuId:</div>
-                                    <input type="text" class="form-control txt_design" id="SubMenuId" placeholder="SubMenu Name" />
-                                </div>
-
-                                <div class="col-md-6 col-sm-12 col-12 form-group">
-                                    <div class="profile-info-name fotm_lbl">SubMenuName:</div>
-                                    <input type="text" class="form-control txt_design" id="SubMenuName" placeholder="SubMenu Name" />
-                                </div>
-                                <div class="col-md-6 col-sm-12 col-12 form-group">
-                                    <div class="profile-info-name fotm_lbl">SubMenuName (Punjabi):</div>
-                                    <input type="text" class="form-control txt_design" id="SubMenuNameLocal" placeholder="SubMenu Name Local" />
-                                </div>
-                                <div class="col-md-6 col-sm-12 col-12 form-group">
-                                    <div class="profile-info-name fotm_lbl">SrNo:</div>
-                                    <input type="number" class="form-control txt_design" id="SrNo" placeholder="SrNo" />
-                                </div>
-                                <div class="form-group">
-                                    <h5>Select Link or Page:</h5>
-                                    @if (CMNirdesh.Models.CurrentSession.RoleID == "18")
-                                    {
-                                        <input type="radio" id="isPage" name="linkOrPage" value="page" onchange="showInput()"> <label for="isPage">Web Module</label>
-                                    }
-                                    <input type="radio" id="isLink" name="linkOrPage" value="link" onchange="showInput()"> <label for="isLink">Web URL</label>
-                                    <input type="radio" id="isPDF" name="linkOrPage" value="pdf" onchange="showInput()"> <label for="isPDF">Attach PDF</label>
-                                    <br>
-                                </div>
-                                <div class="form-group" id="inputContainer" style="display: none;">
-                                    <label for="Url">Enter URL:</label><br>
-                                    <input type="text" class="form-control txt_design" id="Url" name="Url"><br>
-                                </div>
-                                <div class="col-md-6 col-sm-12 col-12 form-group" id="pdfContainer" style="display: none;">
-                                    <label for="Url">
-                                        Upload PDF File:
-                                    </label><br>
-                                    <input type="file" name="file" class="form-control" id="uploadpdfFile" placeholder="PDF File" accept=".pdf" />
-                                    <a class="btn-link text-danger" href="~/SecureFileStructure/Local Government/head.png" target="_blank" id="pdfFile" style="display:none;font-size:10pt">View PDF</a>
-                                    <input type="hidden" id="pdfFileName" />
-                                </div>
-                                @*<div class="form-group">
-                                        <div class="profile-info-name fotm_lbl">
-                                            SubMenu Icon:
-                                        </div>
-                                        <input type="file" name="file" class="form-control" id="SubMenuIcon" placeholder="SubMenu Icon" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-
-                                    </div>
-
-                                    <div class="col-md-6 col-sm-12 col-12 form-group">
-                                        <img src="https://placehold.jp/100x100.png" id="imgPreview" class="" style="width:100px; height:100px; border:1px solid red;" alt="Load Icon" />
-                                        <input type="hidden" id="SubMenuIconName" />
-                                    </div>*@
-                            </form>
-                        </div>
-                        <div class="modal-footer" style="background-color:white;">
-                            <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();">Save</button>
-                            <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();">Update</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </div>
 </div>
-<br />
-<br />
-<br />
 
+<div class="coman_modal dispatch_modal modal site-submenu-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5" id="myModalLabel">Add Sub Menu Items</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row">
+                    <div class="form-section-card">
+                        <div class="form-section-title"><i class="fa fa-info-circle"></i> SubMenu Configuration</div>
+                        <div class="form-card-grid">
+                            <div class="form-group" id="MCId">
+                                <label for="MCIDDropDown" class="profile-info-name fotm_lbl">MC Name:</label>
+                                <select id="MCIDDropDown" class="form-control" onchange="GetMenuDropdown(this.value)">
+                                    <option value="0" id="SelectId" placeholder="MC Type">Please select</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="MenuDropdown">
+                                <label for="ch_user1" class="profile-info-name fotm_lbl">Menu Name:</label>
+                                <select id="ch_user1" class="form-control" onchange="GetMaxSerial(this.value)">
+                                    <option value="select" id="SelectId" placeholder="Controller Name"></option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="SubMenuIdLabel" style="display:none;">
+                                <label for="SubMenuId" class="profile-info-name fotm_lbl">SubMenuId:</label>
+                                <input type="text" class="form-control" id="SubMenuId" placeholder="SubMenu ID" />
+                            </div>
+                            <div class="form-group">
+                                <label for="SubMenuName" class="profile-info-name fotm_lbl">SubMenu Name:</label>
+                                <input type="text" class="form-control" id="SubMenuName" placeholder="SubMenu Name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="SubMenuNameLocal" class="profile-info-name fotm_lbl">SubMenu Name (Punjabi):</label>
+                                <input type="text" class="form-control" id="SubMenuNameLocal" placeholder="ਸਬ-ਮੇਨੂ ਨਾਮ (ਪੰਜਾਬੀ)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="SrNo" class="profile-info-name fotm_lbl">Serial Number (SrNo):</label>
+                                <input type="number" class="form-control" id="SrNo" placeholder="Enter SrNo" />
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="form-section-card">
+                        <div class="form-section-title"><i class="fa fa-link"></i> Link Destination &amp; Attachment</div>
+                        <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                            <span style="font-size: 12px; font-weight: 600; color: #475569;">Destination Type:</span>
+                            @if (CMNirdesh.Models.CurrentSession.RoleID == "18")
+                            {
+                                <label class="radio-inline" style="font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                    <input type="radio" id="isPage" name="linkOrPage" value="page" onchange="showInput()"> Web Module
+                                </label>
+                            }
+                            <label class="radio-inline" style="font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                <input type="radio" id="isLink" name="linkOrPage" value="link" onchange="showInput()"> Web URL
+                            </label>
+                            <label class="radio-inline" style="font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                <input type="radio" id="isPDF" name="linkOrPage" value="pdf" onchange="showInput()"> Attach PDF
+                            </label>
+                        </div>
 
+                        <div class="form-group" id="inputContainer" style="display: none; margin-bottom: 10px;">
+                            <label for="Url" class="profile-info-name fotm_lbl">Enter URL / Route:</label>
+                            <input type="text" class="form-control" id="Url" name="Url" placeholder="Enter URL" />
+                        </div>
+                        <div class="form-group" id="pdfContainer" style="display: none;">
+                            <label for="uploadpdfFile" class="profile-info-name fotm_lbl">Upload PDF File:</label>
+                            <input type="file" name="file" class="form-control" id="uploadpdfFile" accept=".pdf" />
+                            <a class="btn-link text-danger mt-1 d-inline-block" href="~/SecureFileStructure/Local Government/head.png" target="_blank" id="pdfFile" style="display:none;font-size:10pt"><i class="fa fa-file-pdf-o"></i> View PDF</a>
+                            <input type="hidden" id="pdfFileName" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSave" onclick="Add();"><i class="fa fa-check"></i> Save</button>
+                <button type="button" class="btn btn-primary" id="btnUpdate" onclick="Update();" style="display:none;"><i class="fa fa-pencil-square-o"></i> Update</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
     <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 </a>
@@ -240,132 +218,578 @@
 <script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
 
 <style>
-
-
-    .inr_frm_dsgn {
-        /*        margin-top: 20px;*/
-        box-shadow: 0px 0px 4px 1px #ccc;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
+    /* Civic Suite Layout & Table Styles */
+    .main-office-container {
+        padding: 4px 10px 10px 10px !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        background-color: #f8fafc !important;
+        min-height: calc(100vh - 80px) !important;
     }
 
-
-    .form_lyot {
-        padding: 10px;
+    .compact-breadcrumb-bar {
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        margin-bottom: 4px !important;
+        display: flex !important;
+        align-items: center !important;
     }
 
-    .form-group input[type="number"].txt_design {
+    .compact-breadcrumb-bar .crumb-root {
+        color: #475569 !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-current {
+        color: #2563eb !important;
+        font-weight: 700 !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-sep {
+        color: #94a3b8 !important;
+        margin: 0 6px !important;
+        font-weight: normal !important;
+    }
+
+    /* Section Header */
+    .source-heading {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 4px !important;
+    }
+
+    .source-heading h4 {
+        font-size: 14.5px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+
+    .source-heading h4::before {
+        content: '' !important;
+        display: inline-block !important;
+        width: 3px !important;
+        height: 14px !important;
+        background: #2563eb !important;
+        border-radius: 2px !important;
+    }
+
+    /* Table Outer Container */
+    .table-outer {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        padding: 8px 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Unified Single-Line Toolbar */
+    .unified-table-toolbar {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .btn-toolbar-add {
+        background: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        height: 30px !important;
+        padding: 0 14px !important;
+        border-radius: 5px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        text-decoration: none !important;
+    }
+
+    .btn-toolbar-add:hover {
+        background: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25) !important;
+    }
+
+    .toolbar-search-slot {
+        display: inline-flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter {
+        float: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter label {
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        color: #475569 !important;
+        margin-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input {
+        height: 30px !important;
+        border-radius: 5px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 2px 8px !important;
+        font-size: 12px !important;
+        background: #ffffff !important;
+        width: 170px !important;
+        min-width: 120px !important;
+        margin: 0 !important;
+        outline: none !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+    }
+
+    #example_wrapper > .dataTables_filter {
+        display: none !important;
+    }
+
+    .table-responsive.table-cus {
+        margin-top: 4px !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #example {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid #cbd5e1 !important;
+        margin: 0 !important;
+    }
+
+    #example thead th,
+    table.dataTable thead th {
+        background: #1e40af !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: capitalize !important;
+        letter-spacing: 0.01em !important;
+        padding: 8px 10px !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-bottom: 2px solid #1e3a8a !important;
+        vertical-align: middle !important;
+        white-space: nowrap !important;
+        text-align: left !important;
+    }
+
+    #example thead th:last-child {
+        border-right: none !important;
+    }
+
+    #example tbody tr td {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: #1e293b !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        vertical-align: middle !important;
+        background: #ffffff;
+        padding: 6px 10px !important;
+        transition: background 0.1s ease !important;
+    }
+
+    #example tbody tr:hover td {
+        background-color: #f1f5f9 !important;
+    }
+
+    #example tbody tr td:last-child {
+        border-right: none !important;
+    }
+
+    #example tbody tr td,
+    #example tbody tr td span,
+    #example tbody tr td div {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: #1e293b !important;
+    }
+
+    /* Action Cell Buttons */
+    .action-cell-wrap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .btn-action-edit {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 26px !important;
+        height: 26px !important;
         border-radius: 4px !important;
-        height: 41px !important;
-        width: 100%;
-        max-width: 100%;
+        background: #ecfdf5 !important;
+        border: 1px solid #a7f3d0 !important;
+        color: #059669 !important;
+        font-size: 12px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        text-decoration: none !important;
     }
 
-    .addnew_modal {
-        padding-right: 300px !important;
-        padding-left: 300px;
-        padding-top: 94px;
-        padding-bottom: 94px;
+    .btn-action-edit:hover {
+        background: #d1fae5 !important;
+        color: #047857 !important;
+        border-color: #6ee7b7 !important;
     }
 
+    .pdf-download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        text-decoration: none !important;
+        transition: all 0.15s ease;
+    }
+
+    .pdf-download-btn:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+    }
+
+    /* Modern Civic Toggle Switch */
     .toggle {
-        --width: 80px;
-        --height: calc(var(--width) / 3);
+        --width: 66px;
+        --height: 22px;
         position: relative;
         display: inline-block;
         width: var(--width);
         height: var(--height);
         border-radius: var(--height);
         cursor: pointer;
+        vertical-align: middle;
+        margin: 0;
     }
 
-        .toggle input {
-            display: none;
-        }
-
-        .toggle .slider {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: var(--height);
-            border: 2px solid #969696;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s ease-in-out;
-        }
-
-            .toggle .slider::before {
-                content: "";
-                position: absolute;
-                top: 3.5px;
-                left: 2px;
-                width: calc(var(--height)*0.6);
-                height: calc(var(--height)*0.6);
-                border-radius: calc(var(--height) / 2);
-                border: 3px solid #969696;
-                background-color: #dbdbdb;
-                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
-                transition: all 0.4s ease-in-out;
-            }
-
-        .toggle input:checked + .slider {
-            border-color: #2196F3;
-        }
-
-            .toggle input:checked + .slider::before {
-                border-color: #2196F3;
-                background-color: #c6e5ff;
-                transform: translateX(calc(var(--width) - var(--height)));
-            }
-
-        .toggle .labels {
-            position: absolute;
-            top: 4.5px;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            color: #4d4d4d;
-            font-size: 12px;
-            font-family: sans-serif;
-            transition: all 0.4s ease-in-out;
-        }
-
-            .toggle .labels::after {
-                content: attr(data-off);
-                position: absolute;
-                right: 5px;
-                opacity: 1;
-                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-                transition: all 0.4s ease-in-out;
-            }
-
-            .toggle .labels::before {
-                content: attr(data-on);
-                position: absolute;
-                left: 5px;
-                opacity: 0;
-                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
-                transition: all 0.4s ease-in-out;
-            }
-
-        .toggle input:checked ~ .labels::after {
-            opacity: 0;
-        }
-
-        .toggle input:checked ~ .labels::before {
-            opacity: 1;
-        }
-
-    .pencil-class {
-        font-size: 15px;
+    .toggle input {
+        display: none;
     }
 
-    .edit-1 {
+    .toggle .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: var(--height);
+        border: 1px solid #cbd5e1;
+        background: #e2e8f0;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle .slider::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: calc(var(--height) - 6px);
+        height: calc(var(--height) - 6px);
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle input:checked + .slider {
+        border-color: #059669;
+        background-color: #10b981;
+    }
+
+    .toggle input:checked + .slider::before {
+        transform: translateX(calc(var(--width) - var(--height)));
+    }
+
+    .toggle .labels {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
         display: flex;
         align-items: center;
-        gap: 10px;
-        border: none;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .toggle .labels::after {
+        content: "DeActive";
+        position: absolute;
+        right: 6px;
+        color: #64748b;
+        opacity: 1;
+    }
+
+    .toggle .labels::before {
+        content: "Active";
+        position: absolute;
+        left: 6px;
+        color: #ffffff;
+        opacity: 0;
+    }
+
+    .toggle input:checked ~ .labels::after {
+        opacity: 0;
+    }
+
+    .toggle input:checked ~ .labels::before {
+        opacity: 1;
+    }
+
+    /* Empty State Card */
+    .analytics-empty-state {
+        text-align: center;
+        padding: 36px 20px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 8px;
+        color: #64748b;
+        margin: 8px 0;
+    }
+
+    .analytics-empty-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 4px;
+    }
+
+    .analytics-empty-desc {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        font-size: 12px !important;
+        color: #64748b !important;
+        padding-top: 8px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        font-size: 12px !important;
+        padding-top: 8px !important;
+    }
+
+    /* ==========================================================================
+       SITE SUBMENU RECORD MODAL (SaaS Clean Modern Design)
+       ========================================================================== */
+    .site-submenu-record-modal.modal {
+        padding: 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .site-submenu-record-modal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 840px;
+        width: calc(100% - 2rem);
+        margin: 1.5rem auto;
+        min-height: calc(100% - 3rem);
+    }
+
+    .site-submenu-record-modal .modal-content {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #f8fafc !important;
+        overflow: hidden !important;
+    }
+
+    .site-submenu-record-modal .modal-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 24px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .site-submenu-record-modal .modal-header .modal-title {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .site-submenu-record-modal .modal-header .modal-title::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 18px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    .site-submenu-record-modal .modal-header .btn-close {
+        padding: 8px !important;
+        margin: 0 !important;
+        opacity: 0.55 !important;
+        transition: all 0.15s ease !important;
+        border-radius: 6px !important;
+    }
+
+    .site-submenu-record-modal .modal-header .btn-close:hover {
+        opacity: 1 !important;
+        background-color: #f1f5f9 !important;
+        transform: scale(1.05) !important;
+    }
+
+    .site-submenu-record-modal .modal-body {
+        padding: 20px 24px !important;
+        background-color: #f8fafc !important;
+        max-height: calc(85vh - 70px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .site-submenu-record-modal .form-section-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .site-submenu-record-modal .form-section-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .site-submenu-record-modal .form-section-title i {
+        color: #2563eb;
+        font-size: 13px !important;
+    }
+
+    .site-submenu-record-modal .form-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        align-items: start;
+    }
+
+    @@media (max-width: 767px) {
+        .site-submenu-record-modal .form-card-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+    }
+
+    .site-submenu-record-modal .form-group {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .site-submenu-record-modal .fotm_lbl,
+    .site-submenu-record-modal label.fotm_lbl {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+    }
+
+    .site-submenu-record-modal input[type="text"],
+    .site-submenu-record-modal input[type="number"],
+    .site-submenu-record-modal select,
+    .site-submenu-record-modal .form-control {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        color: #1e293b !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        outline: none !important;
+    }
+
+    .site-submenu-record-modal input:focus,
+    .site-submenu-record-modal select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+    }
+
+    .site-submenu-record-modal .modal-footer {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 10px !important;
+        padding: 14px 24px !important;
+        background-color: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
     }
 </style>
 
@@ -453,6 +877,23 @@ $.ajax({
 
 });
     $('#example').DataTable({
+        "language": {
+            "search": "Search:"
+        }
+    });
+
+    function syncToolbarSearch() {
+        var $wrapper = $('#example_wrapper');
+        if ($wrapper.length) {
+            var $filter = $wrapper.find('> .dataTables_filter, .dataTables_filter');
+            if ($filter.length && !$('#toolbarSearchSlot').children().length) {
+                $('#toolbarSearchSlot').empty().append($filter);
+            }
+        }
+    }
+    syncToolbarSearch();
+    $(document).on('init.dt draw.dt', '#example', function () {
+        syncToolbarSearch();
     });
     function getbyID(EmpID) {
 

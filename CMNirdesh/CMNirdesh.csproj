@@ -496,6 +496,7 @@
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\RecuitmentController.cs" />
     <Compile Include="Controllers\ReferencePriorityController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RptDairyController.cs" />
     <Compile Include="Controllers\SendMailerController.cs" />
     <Compile Include="Controllers\SubMenuController.cs" />
@@ -549,6 +550,8 @@
     <Compile Include="Models\DocumentViewModel.cs" />
     <Compile Include="Models\EmailService.cs" />
     <Compile Include="Models\EmailUserMappingVM.cs" />
+    <Compile Include="Models\Email\EmailService.cs" />
+    <Compile Include="Models\Email\SendEmailModel.cs" />
     <Compile Include="Models\EnumModel.cs" />
     <Compile Include="Filters\ErrorHandler.cs" />
     <Compile Include="Models\eSignHistory.cs" />
@@ -3183,6 +3186,7 @@
     <Content Include="Views\LGApproval\_FileApprovals.cshtml" />
     <Content Include="Views\References\EditApproval.cshtml" />
     <Content Include="Views\References\AdvanceResolutioSearch.cshtml" />
+    <Content Include="Views\Reports\LatestResolutionReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -11,95 +11,88 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 </head>
 
-<div id="main-content">
-    <div class="main-content">
-        <section class="form_dsign">
-            <div class="container-fluid p-0">
-                <div class="inr_frm_dsgn">
+<div class="main-office-container">
+    <div class="compact-breadcrumb-bar">
+        <span class="crumb-root">Office Administration</span>
+        <span class="crumb-sep">&gt;&gt;</span>
+        <span class="crumb-current">House Creation</span>
+    </div>
 
-                    <div class="widget-box " id="divAction">
-                        <div class="widget-header widget-header-flat rounded-top rounded-0">
-                            <h4 class=""> House List </h4>
-                            <div class="widget-toolbar no-border">
-                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="AddNew();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add House</button>
-                            </div>
-                        </div>
-                    </div>
+    <div class="source-heading">
+        <h4>House Creation</h4>
+        <button type="button" class="btn-toolbar-add" data-bs-toggle="modal" data-bs-target="#myModal" onclick="AddNew();">
+            <i class="fa fa-plus"></i> Add House
+        </button>
+    </div>
 
-                    <div class="form_lyot">
-                        @if (Model != null)
-                        {
-                            if (Model.Houselist.Count() > 0)
-                            {
-                                <div class=" table-responsive">
-                                    <table id="example" class="table table-hover table-bordered " style="font-size:20px;">
-                                        <thead>
-                                            <tr class="table-heading">
-                                                <th class="td-heading" style="width:5%;"><span class="font-weight-bold">House</span></th>
-                                                <th class="td-heading" style="width:20%;"><span class="font-weight-bold">House Name</span></th>
-                                                <th class="td-heading" style="width:20%;"><span class="font-weight-bold">House Name (Punjabi)</span></th>
-                                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">House Start Date</span></th>
-                                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">House End Date</span></th>
-                                                <th class="td-heading" style="width:10%;"><span class="font-weight-bold">House Period</span></th>
-                                                <th class="td-heading" style="width:15%;"><span class="font-weight-bold">Action</span></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody role="alert" aria-live="polite" aria-relevant="all">
-                                            @foreach (var items in Model.Houselist)
-                                            {
-
-                                                <tr>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@items.AssemblyID</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.AssemblyName)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.AssemblyNameLocal)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.AssemblyStartDate)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.AssemblyEndDate)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.Period)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">
-                                                        <div class="d-flex align-items-center gap-2">
-
-                                                            <div class="hidden-sm hidden-xs action-buttons">
-                                                                <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.AssemblyID')" value="@items.AssemblyID" />
-                                                            </div>
-                                                            <div class="hidden-sm hidden-xs action-buttons">
-                                                                <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.AssemblyID')" value="@items.AssemblyID" />
-
-                                                                <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.AssemblyID', '@items.DeptId')">
-                                                                    <i class="ace-icon fa fa-pencil bigger-130"></i>
-                                                                </a>
-                                                                <label class="toggle mb-0">
-                                                                    <input type="checkbox" onclick="DeleteDepartmentRecord('@items.AssemblyID', '@items.Active')" @(Convert.ToBoolean(items.Active) == true ? "checked='checked'" : string.Empty)>
-                                                                    <span class="slider"></span>
-                                                                    <span class="labels" data-on="Active" data-off="DeActive"></span>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="alert alert-info">
-                                            <strong>There are no record found</strong><br />
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        }
-
-                    </div>
-
-
-                </div>
+    <div class="table-outer">
+        <div class="unified-table-toolbar">
+            <div style="font-size: 12px; font-weight: 600; color: #475569; display: flex; align-items: center; gap: 6px;">
+                <i class="fa fa-list text-primary"></i>
+                <span>House Records</span>
             </div>
-            <div class="coman_modal dispatch_modal addnew_modal modal house-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="toolbar-search-slot" id="toolbarSearchSlot"></div>
+        </div>
+
+        @if (Model != null)
+        {
+            if (Model.Houselist.Count() > 0)
+            {
+                <div class="table-responsive table-cus">
+                    <table id="example" class="table table-bordered dataTable">
+                        <thead>
+                            <tr class="table-heading">
+                                <th style="width:6%; text-align: center;">House</th>
+                                <th style="width:20%;">House Name</th>
+                                <th style="width:20%;">House Name (Punjabi)</th>
+                                <th style="width:14%;">House Start Date</th>
+                                <th style="width:14%;">House End Date</th>
+                                <th style="width:10%;">House Period</th>
+                                <th style="width:16%; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody role="alert" aria-live="polite" aria-relevant="all">
+                            @foreach (var items in Model.Houselist)
+                            {
+                                <tr>
+                                    <td style="text-align: center;">@items.AssemblyID</td>
+                                    <td>@Html.DisplayFor(modelItem => items.AssemblyName)</td>
+                                    <td>@Html.DisplayFor(modelItem => items.AssemblyNameLocal)</td>
+                                    <td>@Html.DisplayFor(modelItem => items.AssemblyStartDate)</td>
+                                    <td>@Html.DisplayFor(modelItem => items.AssemblyEndDate)</td>
+                                    <td>@Html.DisplayFor(modelItem => items.Period)</td>
+                                    <td style="text-align: center;">
+                                        <div class="action-cell-wrap">
+                                            <a class="btn-action-edit" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.AssemblyID', '@items.DeptId')" title="Edit">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.AssemblyID')" value="@items.AssemblyID" />
+                                            <label class="toggle mb-0">
+                                                <input type="checkbox" onclick="DeleteDepartmentRecord('@items.AssemblyID', '@items.Active')" @(Convert.ToBoolean(items.Active) == true ? "checked='checked'" : string.Empty)>
+                                                <span class="slider"></span>
+                                                <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="analytics-empty-state">
+                    <i class="fa fa-folder-open-o" style="font-size: 32px; color: #94a3b8; margin-bottom: 8px;"></i>
+                    <div class="analytics-empty-title">No House Records Found</div>
+                    <div class="analytics-empty-desc">Click "Add House" to create the first entry.</div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div class="coman_modal dispatch_modal addnew_modal modal house-record-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
@@ -167,9 +160,6 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-</div>
 
 <style>
     /* ==========================================================================
@@ -530,110 +520,418 @@
         padding-bottom: 94px;
     }
 
+    /* Civic Suite Layout & Table Styles */
+    .main-office-container {
+        padding: 4px 10px 10px 10px !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        background-color: #f8fafc !important;
+        min-height: calc(100vh - 80px) !important;
+    }
+
+    .compact-breadcrumb-bar {
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        margin-bottom: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-root {
+        color: #475569 !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-current {
+        color: #2563eb !important;
+        font-weight: 700 !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-sep {
+        color: #94a3b8 !important;
+        margin: 0 6px !important;
+        font-weight: normal !important;
+    }
+
+    /* Section Header */
+    .source-heading {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 4px !important;
+    }
+
+    .source-heading h4 {
+        font-size: 14.5px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+
+    .source-heading h4::before {
+        content: '' !important;
+        display: inline-block !important;
+        width: 3px !important;
+        height: 14px !important;
+        background: #2563eb !important;
+        border-radius: 2px !important;
+    }
+
+    /* Table Outer Container */
+    .table-outer {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        padding: 8px 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Unified Single-Line Toolbar */
+    .unified-table-toolbar {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .btn-toolbar-add {
+        background: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        height: 30px !important;
+        padding: 0 14px !important;
+        border-radius: 5px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        text-decoration: none !important;
+    }
+
+    .btn-toolbar-add:hover {
+        background: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25) !important;
+    }
+
+    .toolbar-search-slot {
+        display: inline-flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter {
+        float: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter label {
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        color: #475569 !important;
+        margin-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input {
+        height: 30px !important;
+        border-radius: 5px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 2px 8px !important;
+        font-size: 12px !important;
+        background: #ffffff !important;
+        width: 170px !important;
+        min-width: 120px !important;
+        margin: 0 !important;
+        outline: none !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+    }
+
+    #example_wrapper > .dataTables_filter {
+        display: none !important;
+    }
+
+    .table-responsive.table-cus {
+        margin-top: 4px !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #example {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid #cbd5e1 !important;
+        margin: 0 !important;
+    }
+
+    #example thead th,
+    table.dataTable thead th {
+        background: #1e40af !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: capitalize !important;
+        letter-spacing: 0.01em !important;
+        padding: 8px 10px !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-bottom: 2px solid #1e3a8a !important;
+        vertical-align: middle !important;
+        white-space: nowrap !important;
+        text-align: left !important;
+    }
+
+    #example thead th:last-child {
+        border-right: none !important;
+    }
+
+    #example tbody tr td {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: #1e293b !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        vertical-align: middle !important;
+        background: #ffffff;
+        padding: 6px 10px !important;
+        transition: background 0.1s ease !important;
+    }
+
+    #example tbody tr:hover td {
+        background-color: #f1f5f9 !important;
+    }
+
+    #example tbody tr td:last-child {
+        border-right: none !important;
+    }
+
+    #example tbody tr td,
+    #example tbody tr td span,
+    #example tbody tr td div {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: #1e293b !important;
+    }
+
+    /* Action Cell Buttons */
+    .action-cell-wrap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .btn-action-edit {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 4px !important;
+        background: #ecfdf5 !important;
+        border: 1px solid #a7f3d0 !important;
+        color: #059669 !important;
+        font-size: 12px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        text-decoration: none !important;
+    }
+
+    .btn-action-edit:hover {
+        background: #d1fae5 !important;
+        color: #047857 !important;
+        border-color: #6ee7b7 !important;
+    }
+
+    /* Modern Civic Toggle Switch */
     .toggle {
-        --width: 80px;
-        --height: calc(var(--width) / 3);
+        --width: 66px;
+        --height: 22px;
         position: relative;
         display: inline-block;
         width: var(--width);
         height: var(--height);
         border-radius: var(--height);
         cursor: pointer;
+        vertical-align: middle;
+        margin: 0;
     }
 
-        .toggle input {
-            display: none;
-        }
-
-        .toggle .slider {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: var(--height);
-            border: 2px solid #969696;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s ease-in-out;
-        }
-
-            .toggle .slider::before {
-                content: "";
-                position: absolute;
-                top: 3.5px;
-                left: 2px;
-                width: calc(var(--height)*0.6);
-                height: calc(var(--height)*0.6);
-                border-radius: calc(var(--height) / 2);
-                border: 3px solid #969696;
-                background-color: #dbdbdb;
-                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
-                transition: all 0.4s ease-in-out;
-            }
-
-        .toggle input:checked + .slider {
-            border-color: #2196F3;
-        }
-
-            .toggle input:checked + .slider::before {
-                border-color: #2196F3;
-                background-color: #c6e5ff;
-                transform: translateX(calc(var(--width) - var(--height)));
-            }
-
-        .toggle .labels {
-            position: absolute;
-            top: 4.5px;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            color: #4d4d4d;
-            font-size: 12px;
-            font-family: sans-serif;
-            transition: all 0.4s ease-in-out;
-        }
-
-            .toggle .labels::after {
-                content: attr(data-off);
-                position: absolute;
-                right: 5px;
-                opacity: 1;
-                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-                transition: all 0.4s ease-in-out;
-            }
-
-            .toggle .labels::before {
-                content: attr(data-on);
-                position: absolute;
-                left: 5px;
-                opacity: 0;
-                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
-                transition: all 0.4s ease-in-out;
-            }
-
-        .toggle input:checked ~ .labels::after {
-            opacity: 0;
-        }
-
-        .toggle input:checked ~ .labels::before {
-            opacity: 1;
-        }
-
-    .pencil-class {
-        font-size: 15px;
+    .toggle input {
+        display: none;
     }
 
-    .edit-1 {
+    .toggle .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: var(--height);
+        border: 1px solid #cbd5e1;
+        background: #e2e8f0;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle .slider::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: calc(var(--height) - 6px);
+        height: calc(var(--height) - 6px);
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle input:checked + .slider {
+        border-color: #059669;
+        background-color: #10b981;
+    }
+
+    .toggle input:checked + .slider::before {
+        transform: translateX(calc(var(--width) - var(--height)));
+    }
+
+    .toggle .labels {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
         display: flex;
         align-items: center;
-        gap: 10px;
-        border: none;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .toggle .labels::after {
+        content: "DeActive";
+        position: absolute;
+        right: 6px;
+        color: #64748b;
+        opacity: 1;
+    }
+
+    .toggle .labels::before {
+        content: "Active";
+        position: absolute;
+        left: 6px;
+        color: #ffffff;
+        opacity: 0;
+    }
+
+    .toggle input:checked ~ .labels::after {
+        opacity: 0;
+    }
+
+    .toggle input:checked ~ .labels::before {
+        opacity: 1;
+    }
+
+    /* Empty State Card */
+    .analytics-empty-state {
+        text-align: center;
+        padding: 36px 20px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 8px;
+        color: #64748b;
+        margin: 8px 0;
+    }
+
+    .analytics-empty-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 4px;
+    }
+
+    .analytics-empty-desc {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        font-size: 12px !important;
+        color: #64748b !important;
+        padding-top: 8px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        font-size: 12px !important;
+        padding-top: 8px !important;
     }
 </style>
 
 <script>
     $(document).ready(function () {
-        $('#example').DataTable();
+        $('#example').DataTable({
+            "language": {
+                "search": "Search:"
+            }
+        });
+
+        function syncToolbarSearch() {
+            var $wrapper = $('#example_wrapper');
+            if ($wrapper.length) {
+                var $filter = $wrapper.find('> .dataTables_filter, .dataTables_filter');
+                if ($filter.length && !$('#toolbarSearchSlot').children().length) {
+                    $('#toolbarSearchSlot').empty().append($filter);
+                }
+            }
+        }
+        syncToolbarSearch();
+        $(document).on('init.dt draw.dt', '#example', function () {
+            syncToolbarSearch();
+        });
 
         // Real-time clearing of validation highlights when user types in House Name
         $('#AssemblyName').on('input keyup change', function () {

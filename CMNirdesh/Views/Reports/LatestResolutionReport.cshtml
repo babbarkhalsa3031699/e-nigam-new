@@ -1,0 +1,996 @@
+﻿@{
+    ViewBag.Title = "Resolutions Pendency Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+
+    <!-- ========================================================= -->
+    <!-- DATATABLES CSS -->
+    <!-- ========================================================= -->
+
+    <link href="~/Scripts/datatables/datatable.min.css"
+          rel="stylesheet" />
+
+    <link href="~/Scripts/datatables/buttons.dataTables.min.css"
+          rel="stylesheet" />
+
+
+    <!-- ========================================================= -->
+    <!-- DATATABLES JS -->
+    <!-- ========================================================= -->
+
+    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+
+    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+
+    <script src="~/Scripts/datatables/jszip.min.js"></script>
+
+    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+
+    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
+
+    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
+
+    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+
+
+    <!-- ========================================================= -->
+    <!-- STYLE -->
+    <!-- ========================================================= -->
+
+    <style>
+
+        .report-card {
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+
+        .report-header {
+            background: #1974d2;
+            color: #fff;
+            padding: 12px 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+
+        .filter-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+
+        .filter-box {
+            margin-bottom: 15px;
+        }
+
+
+        .btn-report {
+            min-width: 110px;
+        }
+
+
+        #tblReport th {
+            white-space: nowrap;
+            background: #1974d2;
+            color: white;
+            vertical-align: middle;
+        }
+
+
+        #tblReport td {
+            vertical-align: middle;
+        }
+
+
+        .dataTables_wrapper {
+            width: 100%;
+        }
+
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+
+            .loading i {
+                font-size: 25px;
+            }
+
+
+        .date-validation {
+            color: #dc3545;
+            font-size: 13px;
+            display: none;
+            margin-top: 4px;
+        }
+
+
+        .pending-days {
+            text-align: center;
+            white-space: nowrap;
+        }
+    </style>
+
+</head>
+
+
+<div class="main-content" id="main-content">
+
+    <div class="container-fluid">
+
+        <div class="card report-card">
+
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <div class="report-header">
+
+                Resolutions Pendency Report
+
+            </div>
+
+
+            <div class="card-body">
+
+
+                <!-- ================================================= -->
+                <!-- FILTERS -->
+                <!-- ================================================= -->
+
+                <div class="row">
+
+
+                    <!-- ============================================= -->
+                    <!-- ULB TYPE -->
+                    <!-- ============================================= -->
+
+                    <div class="col-md-3 filter-box">
+
+                        <label class="filter-label">
+
+                            ULB Type
+
+                        </label>
+
+
+                        <select id="ddlULBType"
+                                class="form-control">
+
+
+                            <option value="">
+
+                                All ULB Type
+
+                            </option>
+
+
+                            <option value="Municipal Corporation">
+
+                                Municipal Corporation
+
+                            </option>
+
+
+                            <option value="Municipal Council">
+
+                                Municipal Council
+
+                            </option>
+
+
+                            <option value="Nagar Panchayat">
+
+                                Nagar Panchayat
+
+                            </option>
+
+
+                            <option value="Improvement Trust">
+
+                                Improvement Trust
+
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- FROM DATE -->
+                    <!-- ============================================= -->
+
+                    <div class="col-md-2 filter-box">
+
+                        <label class="filter-label">
+
+                            From Date
+
+                        </label>
+
+
+                        <input type="date"
+                               id="txtFromDate"
+                               class="form-control" />
+
+
+                        <div id="fromDateError"
+                             class="date-validation">
+
+                            Invalid From Date
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- TO DATE -->
+                    <!-- ============================================= -->
+
+                    <div class="col-md-2 filter-box">
+
+                        <label class="filter-label">
+
+                            To Date
+
+                        </label>
+
+
+                        <input type="date"
+                               id="txtToDate"
+                               class="form-control" />
+
+
+                        <div id="toDateError"
+                             class="date-validation">
+
+                            Invalid To Date
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- BUTTONS -->
+                    <!-- ============================================= -->
+
+                    <div class="col-md-5 filter-box"
+                         style="padding-top:29px;">
+
+
+                        <button type="button"
+                                id="btnSearch"
+                                class="btn btn-primary btn-report">
+
+                            <i class="fa fa-search"></i>
+
+                            Search
+
+                        </button>
+
+
+                        <button type="button"
+                                id="btnExport"
+                                class="btn btn-success btn-report">
+
+                            <i class="fa fa-file-excel-o"></i>
+
+                            Excel
+
+                        </button>
+
+
+                        <button type="button"
+                                id="btnClear"
+                                class="btn btn-secondary btn-report">
+
+                            <i class="fa fa-refresh"></i>
+
+                            Clear
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- LOADING -->
+                <!-- ================================================= -->
+
+                <div id="reportLoading"
+                     class="loading">
+
+                    <i class="fa fa-spinner fa-spin"></i>
+
+
+                    <div>
+
+                        Loading report...
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- REPORT TABLE -->
+                <!-- ================================================= -->
+
+                <div class="table-responsive">
+
+
+                    <table id="tblReport"
+                           class="table table-bordered table-striped table-hover"
+                           style="width:100%;">
+
+
+                        <thead>
+
+                            <tr>
+
+
+                                <!-- S.NO. -->
+
+                                <th>
+                                    S.No.
+                                </th>
+
+
+                                <!-- ULB -->
+
+                                <th>
+                                    ULB
+                                </th>
+
+
+                                <!-- RESOLUTION NUMBER -->
+
+                                <th>
+                                    Resolution Number
+                                </th>
+
+
+                                <!-- MEETING DATE -->
+
+                                <th>
+                                    Meeting Date
+                                </th>
+
+
+                                <!-- STATUS -->
+
+                                <th>
+                                    Status
+                                </th>
+
+
+                                <!-- CURRENTLY WITH -->
+
+                                <th>
+                                    Currently With
+                                </th>
+
+
+                                <!-- PENDING SINCE -->
+
+                                <th>
+                                    Pending Since
+                                </th>
+
+
+                                <!-- BRANCH -->
+
+                                <th>
+                                    Branch
+                                </th>
+
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================= -->
+<!-- JQUERY -->
+<!-- ============================================================= -->
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+
+<!-- ============================================================= -->
+<!-- DATATABLES -->
+<!-- ============================================================= -->
+
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+
+
+<script>
+
+    var reportTable = null;
+
+
+    // =============================================================
+    // DOCUMENT READY
+    // =============================================================
+
+    $(document).ready(function () {
+
+
+        // Initialize report
+
+        initializeReport();
+
+
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        $('#btnSearch').click(function () {
+
+
+            if (!validateDates()) {
+
+                return;
+
+            }
+
+
+            if (reportTable != null) {
+
+                reportTable.ajax.reload();
+
+            }
+
+        });
+
+
+        // =========================================================
+        // CLEAR
+        // =========================================================
+
+        $('#btnClear').click(function () {
+
+
+            $('#ddlULBType').val('');
+
+            $('#txtFromDate').val('');
+
+            $('#txtToDate').val('');
+
+
+            $('#fromDateError').hide();
+
+            $('#toDateError').hide();
+
+
+            if (reportTable != null) {
+
+                reportTable.ajax.reload();
+
+            }
+
+        });
+
+
+        // =========================================================
+        // EXPORT EXCEL
+        // =========================================================
+
+        $('#btnExport').click(function () {
+
+
+            if (!validateDates()) {
+
+                return;
+
+            }
+
+
+            exportExcel();
+
+        });
+
+
+        // =========================================================
+        // DATE CHANGE
+        // =========================================================
+
+        $('#txtFromDate, #txtToDate').change(function () {
+
+            validateDates();
+
+        });
+
+    });
+
+
+    // =============================================================
+    // DATE VALIDATION
+    // =============================================================
+
+    function validateDates() {
+
+
+        var fromDate =
+            $('#txtFromDate').val();
+
+
+        var toDate =
+            $('#txtToDate').val();
+
+
+        $('#fromDateError').hide();
+
+        $('#toDateError').hide();
+
+
+        // ---------------------------------------------------------
+        // BOTH EMPTY
+        // ---------------------------------------------------------
+
+        if (fromDate === '' &&
+            toDate === '') {
+
+            return true;
+
+        }
+
+
+        // ---------------------------------------------------------
+        // FROM DATE ONLY
+        // ---------------------------------------------------------
+
+        if (fromDate !== '' &&
+            toDate === '') {
+
+            return true;
+
+        }
+
+
+        // ---------------------------------------------------------
+        // TO DATE ONLY
+        // ---------------------------------------------------------
+
+        if (fromDate === '' &&
+            toDate !== '') {
+
+            return true;
+
+        }
+
+
+        // ---------------------------------------------------------
+        // FROM DATE GREATER THAN TO DATE
+        // ---------------------------------------------------------
+
+        if (fromDate > toDate) {
+
+
+            $('#toDateError')
+                .text(
+                    'To Date cannot be earlier than From Date.'
+                )
+                .show();
+
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    // =============================================================
+    // INITIALIZE DATATABLE
+    // =============================================================
+
+    function initializeReport() {
+
+
+        reportTable =
+            $('#tblReport').DataTable({
+
+                processing: false,
+
+                serverSide: false,
+
+                searching: true,
+
+
+                // IMPORTANT:
+                // Do not sort on client side.
+                // Keep SQL database order.
+
+                ordering: false,
+
+
+                paging: true,
+
+                info: true,
+
+                autoWidth: false,
+
+
+                pageLength: 25,
+
+
+                lengthMenu: [
+
+                    [10, 25, 50, 100, -1],
+
+                    [10, 25, 50, 100, "All"]
+
+                ],
+
+
+                // =================================================
+                // AJAX
+                // =================================================
+
+                ajax: {
+
+
+                    url:
+                        '@Url.Action(
+                            "GetLatestResolutionReport",
+                            "Reports"
+                        )',
+
+
+                    type: 'GET',
+
+
+                    // =================================================
+                    // FILTER PARAMETERS
+                    // =================================================
+
+                    data: function () {
+
+
+                        return {
+
+
+                            ulbType:
+                                $('#ddlULBType').val(),
+
+
+                            fromDate:
+                                $('#txtFromDate').val(),
+
+
+                            toDate:
+                                $('#txtToDate').val()
+
+
+                        };
+
+                    },
+
+
+                    // =================================================
+                    // BEFORE REQUEST
+                    // =================================================
+
+                    beforeSend: function () {
+
+                        $('#reportLoading').show();
+
+                    },
+
+
+                    // =================================================
+                    // AFTER REQUEST
+                    // =================================================
+
+                    complete: function () {
+
+                        $('#reportLoading').hide();
+
+                    },
+
+
+                    // =================================================
+                    // ERROR
+                    // =================================================
+
+                    error: function (xhr) {
+
+
+                        $('#reportLoading').hide();
+
+
+                        alert(
+
+                            "Unable to load report.\n\n" +
+
+                            xhr.responseText
+
+                        );
+
+                    },
+
+
+                    // =================================================
+                    // RESPONSE
+                    // =================================================
+
+                    dataSrc: function (response) {
+
+
+                        if (!response.success) {
+
+
+                            alert(
+
+                                response.message ||
+
+                                "Unable to load report."
+
+                            );
+
+
+                            return [];
+
+                        }
+
+
+                        return response.data;
+
+                    }
+
+                },
+
+
+                // =================================================
+                // COLUMNS
+                // =================================================
+
+                columns: [
+
+
+                    // =================================================
+                    // S.NO.
+                    // =================================================
+
+                    {
+
+                        data: null,
+
+                        className: "text-center",
+
+                        width: "50px",
+
+
+                        render: function (
+                            data,
+                            type,
+                            row,
+                            meta
+                        ) {
+
+
+                            return meta.row + 1;
+
+                        }
+
+                    },
+
+
+                    // =================================================
+                    // ULB
+                    // =================================================
+
+                    {
+
+                        data: "ULB",
+
+                        defaultContent: ""
+
+                    },
+
+
+                    // =================================================
+                    // RESOLUTION NUMBER
+                    // =================================================
+
+                    {
+
+                        data: "ResolutionNumber",
+
+                        defaultContent: ""
+
+                    },
+
+
+                    // =================================================
+                    // MEETING DATE
+                    // =================================================
+
+                    {
+
+                        data: "MeetingDate",
+
+                        defaultContent: ""
+
+                    },
+
+
+                    // =================================================
+                    // STATUS
+                    // =================================================
+
+                    {
+
+                        data: "Status",
+
+                        defaultContent: ""
+
+                    },
+
+
+                    // =================================================
+                    // CURRENTLY WITH
+                    // =================================================
+
+                    {
+
+                        data: "CurrentlyWith",
+
+                        defaultContent: ""
+
+                    },
+
+
+                    // =================================================
+                    // PENDING SINCE
+                    // =================================================
+
+                    {
+
+                        data: "PendingSince",
+
+                        defaultContent: "0",
+
+                        className: "pending-days",
+
+
+                        render: function (data) {
+
+
+                            if (
+                                data === null ||
+                                data === undefined ||
+                                data === ''
+                            ) {
+
+                                return "0 Days";
+
+                            }
+
+
+                            return data + " Days";
+
+                        }
+
+                    },
+
+
+                    // =================================================
+                    // BRANCH
+                    // =================================================
+
+                    {
+
+                        data: "Branch",
+
+                        defaultContent: ""
+
+                    }
+
+                ],
+
+
+                // =================================================
+                // LANGUAGE
+                // =================================================
+
+                language: {
+
+                    emptyTable:
+                        "No records found.",
+
+                    zeroRecords:
+                        "No matching records found.",
+
+                    processing:
+                        "Loading..."
+
+                }
+
+            });
+
+    }
+
+
+    // =============================================================
+    // EXPORT EXCEL
+    // =============================================================
+
+    function exportExcel() {
+
+
+        var ulbType =
+            $('#ddlULBType').val() || '';
+
+
+        var fromDate =
+            $('#txtFromDate').val() || '';
+
+
+        var toDate =
+            $('#txtToDate').val() || '';
+
+
+        // =========================================================
+        // EXPORT URL
+        // =========================================================
+
+        var url =
+            '@Url.Action(
+                "ExportLatestResolutionReport",
+                "Reports"
+            )'
+
+
+            + '?ulbType='
+            + encodeURIComponent(ulbType)
+
+
+            + '&fromDate='
+            + encodeURIComponent(fromDate)
+
+
+            + '&toDate='
+            + encodeURIComponent(toDate);
+
+
+        window.location.href = url;
+
+    }
+
+</script>

@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.UpdateUserDetailModel
+@model CMNirdesh.Models.UpdateUserDetailModel
 @{
     ViewBag.Title = "Update Department User";
 }
@@ -25,6 +25,9 @@
             "searching": true,
             order: [[0, 'desc']],
             dom: 'Bfrtip',
+            "language": {
+                "search": "Search:"
+            },
             buttons: [
                 'excelHtml5',
                 'csvHtml5',
@@ -43,6 +46,20 @@
                     }
                 }
             ]
+        });
+
+        function syncToolbarSearch() {
+            var $wrapper = $('#fundreport_wrapper');
+            if ($wrapper.length) {
+                var $filter = $wrapper.find('> .dataTables_filter, .dataTables_filter');
+                if ($filter.length && !$('#toolbarSearchSlot').children().length) {
+                    $('#toolbarSearchSlot').empty().append($filter);
+                }
+            }
+        }
+        syncToolbarSearch();
+        $(document).on('init.dt draw.dt', '#fundreport', function () {
+            syncToolbarSearch();
         });
 
         // Real-time clearing of validation highlights
@@ -195,24 +212,58 @@
     }
 </script>
 
-<div id="main-content">
-    <div class="main-content">
-        <section class="form_dsign">
-            <div class="container-fluid p-0">
-                <div class="inr_frm_dsgn">
-                    <div class="widget-box" id="divAction">
-                        <div class="widget-header widget-header-flat rounded-top rounded-0">
-                            <h4 class=""> User List </h4>
-                            <div class="widget-toolbar no-border">
-                                <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();">
-                                    <i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Update Department User
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+<div class="main-office-container">
+    <div class="compact-breadcrumb-bar">
+        <span class="crumb-root">Office Administration</span>
+        <span class="crumb-sep">&gt;&gt;</span>
+        <span class="crumb-current">Update User's Detail</span>
+    </div>
 
-                    <div class="form_lyot">
-                        <div class="coman_modal dispatch_modal addnew_modal modal user-detail-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="source-heading">
+        <h4>Update User's Detail</h4>
+        <button type="button" class="btn-toolbar-add" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();">
+            <i class="fa fa-pencil-square-o"></i> Update Department User
+        </button>
+    </div>
+
+    <div class="table-outer">
+        <div class="unified-table-toolbar">
+            <div style="font-size: 12px; font-weight: 600; color: #475569; display: flex; align-items: center; gap: 6px;">
+                <i class="fa fa-users text-primary"></i>
+                <span>Department Users List</span>
+            </div>
+            <div class="toolbar-search-slot" id="toolbarSearchSlot"></div>
+        </div>
+
+        <div class="table-responsive table-cus">
+            <table id="fundreport" class="table table-bordered dataTable">
+                <thead>
+                    <tr class="table-heading">
+                        <th style="width: 20%;">User Name</th>
+                        <th style="width: 20%;">Name</th>
+                        <th style="width: 20%;">Designation</th>
+                        <th style="width: 25%;">Email</th>
+                        <th style="width: 15%;">Mobile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var mdl in Model._LstUser)
+                    {
+                        <tr id="row_@mdl.UserId">
+                            <td>@mdl.UserName</td>
+                            <td>@mdl.Name</td>
+                            <td>@mdl.Designation</td>
+                            <td>@mdl.Email</td>
+                            <td>@mdl.MobileNo</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="coman_modal dispatch_modal addnew_modal modal user-detail-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
@@ -330,48 +381,251 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <div class="col-lg-12">
-        <!-- BAR CHART -->
-        <div class="card card-success">
-            <div class="card-body">
-                <div class="row" id="filter"></div>
-                <div class="table-responsive">
-                    <table id="fundreport" class="table table-bordered dataTable">
-                        <thead>
-                            <tr>
-                                <th class="center td-heading">User Name</th>
-                                <th class="center td-heading">Name</th>
-                                <th class="center td-heading">Designation</th>
-                                <th class="center td-heading">Email</th>
-                                <th class="center td-heading">Mobile</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var mdl in Model._LstUser)
-                            {
-                                <tr id="row_@mdl.UserId">
-                                    <td>@mdl.UserName</td>
-                                    <td>@mdl.Name</td>
-                                    <td>@mdl.Designation</td>
-                                    <td>@mdl.Email</td>
-                                    <td>@mdl.MobileNo</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
+    /* Civic Suite Layout & Table Styles */
+    .main-office-container {
+        padding: 4px 10px 10px 10px !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        background-color: #f8fafc !important;
+        min-height: calc(100vh - 80px) !important;
+    }
+
+    .compact-breadcrumb-bar {
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        margin-bottom: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-root {
+        color: #475569 !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-current {
+        color: #2563eb !important;
+        font-weight: 700 !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-sep {
+        color: #94a3b8 !important;
+        margin: 0 6px !important;
+        font-weight: normal !important;
+    }
+
+    /* Section Header */
+    .source-heading {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 4px !important;
+    }
+
+    .source-heading h4 {
+        font-size: 14.5px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+
+    .source-heading h4::before {
+        content: '' !important;
+        display: inline-block !important;
+        width: 3px !important;
+        height: 14px !important;
+        background: #2563eb !important;
+        border-radius: 2px !important;
+    }
+
+    /* Table Outer Container */
+    .table-outer {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        padding: 8px 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Unified Single-Line Toolbar */
+    .unified-table-toolbar {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .btn-toolbar-add {
+        background: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        height: 30px !important;
+        padding: 0 14px !important;
+        border-radius: 5px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        text-decoration: none !important;
+    }
+
+    .btn-toolbar-add:hover {
+        background: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25) !important;
+    }
+
+    .toolbar-search-slot {
+        display: inline-flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter {
+        float: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter label {
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        color: #475569 !important;
+        margin-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input {
+        height: 30px !important;
+        border-radius: 5px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 2px 8px !important;
+        font-size: 12px !important;
+        background: #ffffff !important;
+        width: 170px !important;
+        min-width: 120px !important;
+        margin: 0 !important;
+        outline: none !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+    }
+
+    #fundreport_wrapper > .dataTables_filter {
+        display: none !important;
+    }
+
+    .table-responsive.table-cus {
+        margin-top: 4px !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #fundreport {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid #cbd5e1 !important;
+        margin: 0 !important;
+    }
+
+    #fundreport thead th,
+    table.dataTable thead th {
+        background: #1e40af !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: capitalize !important;
+        letter-spacing: 0.01em !important;
+        padding: 8px 10px !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-bottom: 2px solid #1e3a8a !important;
+        vertical-align: middle !important;
+        white-space: nowrap !important;
+        text-align: left !important;
+    }
+
+    #fundreport thead th:last-child {
+        border-right: none !important;
+    }
+
+    #fundreport tbody tr td {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: #1e293b !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        vertical-align: middle !important;
+        background: #ffffff;
+        padding: 6px 10px !important;
+        transition: background 0.1s ease !important;
+    }
+
+    #fundreport tbody tr:hover td {
+        background-color: #f1f5f9 !important;
+    }
+
+    #fundreport tbody tr td:last-child {
+        border-right: none !important;
+    }
+
+    #fundreport tbody tr td,
+    #fundreport tbody tr td span,
+    #fundreport tbody tr td div {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: #1e293b !important;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        font-size: 12px !important;
+        color: #64748b !important;
+        padding-top: 8px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        font-size: 12px !important;
+        padding-top: 8px !important;
+    }
+
     /* ==========================================================================
        USER DETAIL MODAL (SaaS Clean Modern Design)
        ========================================================================== */

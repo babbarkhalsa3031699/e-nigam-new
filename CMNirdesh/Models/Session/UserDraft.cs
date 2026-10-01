@@ -84,6 +84,26 @@ namespace CMNirdesh.Models.Session
             }
         }
 
+        public bool DeleteDraftDirect(string userId, string draftKey)
+        {
+
+
+            using (SqlConnection con = ClsConnection.GetConnection())
+            using (SqlCommand cmd = new SqlCommand("sp_DeleteDraftDirect", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@DraftKey", draftKey);
+
+                con.Open();
+
+                cmd.ExecuteNonQuery();
+
+                return true;
+            }
+        }
+
         public bool UnReadDeleteDraft(string userId, string draftKey)
         {
          

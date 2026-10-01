@@ -9,131 +9,514 @@
 }
 
 <style>
+    /* ==========================================================================
+       DASHBOARD VISUALS FOR ADD / UPDATE HOME PAGE
+       Matches: Proceedings >> Proceeding Resolutions & Analytics Dashboard
+       ========================================================================== */
 
-    .inr_frm_dsgn {
-        box-shadow: 0px 0px 4px 1px #ccc;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
+    /* Main Container */
+    .main-office-container {
+        padding: 8px 14px 24px 14px;
+    }
+
+    /* 1. Compact Breadcrumb Bar */
+    .compact-breadcrumb-bar {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin: 0 0 10px 0 !important;
+        padding: 0 !important;
+        line-height: 1.4 !important;
+        display: flex !important;
+        align-items: center !important;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+
+    .compact-breadcrumb-bar .crumb-sep {
+        color: #94a3b8 !important;
+        margin: 0 6px !important;
+        font-weight: normal !important;
     }
 
 
-    .form_lyot {
-        padding: 10px;
+
+    /* 3. Section Header ("| Registered Offices (Directory)") */
+    .source-heading {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 4px !important;
     }
 
+    .source-heading h4 {
+        font-size: 14.5px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
 
-    .form-group input[type="number"].txt_design {
+    .source-heading h4::before {
+        content: '' !important;
+        display: inline-block !important;
+        width: 3px !important;
+        height: 14px !important;
+        background: #2563eb !important;
+        border-radius: 2px !important;
+    }
+
+    /* 4. Table Outer Container with Light Border */
+    .table-outer {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        padding: 8px 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 5. Unified Single-Line Toolbar */
+    .unified-table-toolbar {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 6px 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .toolbar-export-slot {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .btn-toolbar-add {
+        background: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        height: 30px !important;
+        padding: 0 14px !important;
+        border-radius: 5px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        text-decoration: none !important;
+    }
+
+    .btn-toolbar-add:hover {
+        background: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25) !important;
+    }
+
+    .toolbar-search-slot {
+        display: inline-flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter {
+        float: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter label {
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        color: #475569 !important;
+        margin-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input {
+        height: 30px !important;
+        border-radius: 5px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 2px 8px !important;
+        font-size: 12px !important;
+        background: #ffffff !important;
+        width: 170px !important;
+        min-width: 120px !important;
+        margin: 0 !important;
+        outline: none !important;
+    }
+
+    .toolbar-search-slot .dataTables_filter input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+    }
+
+    /* Prevent duplicate default search in wrapper */
+    #example_wrapper > .dataTables_filter {
+        display: none !important;
+    }
+
+    /* 6. High-Density Table with Solid Royal Blue Header & Clean Cell Borders */
+    .table-responsive.table-cus {
+        margin-top: 4px !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        height: 7px !important;
+        width: 7px !important;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f5f9 !important;
         border-radius: 4px !important;
-        height: 41px !important;
-        width: 100%;
-        max-width: 100%;
     }
 
-    .addnew_modal {
-        padding-right: 300px !important;
-        padding-left: 300px;
-        padding-top: 94px;
-        padding-bottom: 94px;
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #94a3b8 !important;
+        border-radius: 4px !important;
     }
 
+    #example {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid #cbd5e1 !important;
+        margin: 0 !important;
+    }
+
+    /* Table Header - Matches Solid Royal Blue (#1e40af) in Screenshot */
+    #example thead th,
+    table.dataTable thead th {
+        background: #1e40af !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: capitalize !important;
+        letter-spacing: 0.01em !important;
+        padding: 8px 10px !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-bottom: 2px solid #1e3a8a !important;
+        vertical-align: middle !important;
+        white-space: nowrap !important;
+        text-align: left !important;
+    }
+
+    #example thead th:last-child {
+        border-right: none !important;
+    }
+
+    /* Row & Column Light Borders */
+    #example tbody tr td {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        color: #1e293b !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        vertical-align: middle !important;
+        background: #ffffff;
+        padding: 6px 10px !important;
+        transition: background 0.1s ease !important;
+    }
+
+    #example tbody tr:hover td {
+        background-color: #f1f5f9 !important;
+    }
+
+    #example tbody tr td:last-child {
+        border-right: none !important;
+    }
+
+    /* 7. Action Cell & Green Pencil Edit Button */
+    .action-cell-wrap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .btn-action-edit {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 4px !important;
+        background: #ecfdf5 !important;
+        border: 1px solid #a7f3d0 !important;
+        color: #059669 !important;
+        font-size: 12px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        text-decoration: none !important;
+    }
+
+    .btn-action-edit:hover {
+        background: #d1fae5 !important;
+        color: #047857 !important;
+        border-color: #6ee7b7 !important;
+    }
+
+    /* Modern Civic Toggle Switch */
     .toggle {
-        --width: 80px;
-        --height: calc(var(--width) / 3);
+        --width: 66px;
+        --height: 22px;
         position: relative;
         display: inline-block;
         width: var(--width);
         height: var(--height);
         border-radius: var(--height);
         cursor: pointer;
+        vertical-align: middle;
+        margin: 0;
     }
 
-        .toggle input {
-            display: none;
-        }
-
-        .toggle .slider {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: var(--height);
-            border: 2px solid #969696;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s ease-in-out;
-        }
-
-            .toggle .slider::before {
-                content: "";
-                position: absolute;
-                top: 3.5px;
-                left: 2px;
-                width: calc(var(--height)*0.6);
-                height: calc(var(--height)*0.6);
-                border-radius: calc(var(--height) / 2);
-                border: 3px solid #969696;
-                background-color: #dbdbdb;
-                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
-                transition: all 0.4s ease-in-out;
-            }
-
-        .toggle input:checked + .slider {
-            border-color: #2196F3;
-        }
-
-            .toggle input:checked + .slider::before {
-                border-color: #2196F3;
-                background-color: #c6e5ff;
-                transform: translateX(calc(var(--width) - var(--height)));
-            }
-
-        .toggle .labels {
-            position: absolute;
-            top: 4.5px;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            color: #4d4d4d;
-            font-size: 12px;
-            font-family: sans-serif;
-            transition: all 0.4s ease-in-out;
-        }
-
-            .toggle .labels::after {
-                content: attr(data-off);
-                position: absolute;
-                right: 5px;
-                opacity: 1;
-                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-                transition: all 0.4s ease-in-out;
-            }
-
-            .toggle .labels::before {
-                content: attr(data-on);
-                position: absolute;
-                left: 5px;
-                opacity: 0;
-                text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
-                transition: all 0.4s ease-in-out;
-            }
-
-        .toggle input:checked ~ .labels::after {
-            opacity: 0;
-        }
-
-        .toggle input:checked ~ .labels::before {
-            opacity: 1;
-        }
-
-    .pencil-class {
-        font-size: 15px;
+    .toggle input {
+        display: none;
     }
 
-    .edit-1 {
+    .toggle .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: var(--height);
+        border: 1px solid #cbd5e1;
+        background: #e2e8f0;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle .slider::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: calc(var(--height) - 6px);
+        height: calc(var(--height) - 6px);
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle input:checked + .slider {
+        border-color: #059669;
+        background-color: #10b981;
+    }
+
+    .toggle input:checked + .slider::before {
+        transform: translateX(calc(var(--width) - var(--height)));
+    }
+
+    .toggle .labels {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
         display: flex;
         align-items: center;
-        gap: 10px;
-        border: none;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .toggle .labels::after {
+        content: "DeActive";
+        position: absolute;
+        right: 6px;
+        color: #64748b;
+        opacity: 1;
+    }
+
+    .toggle .labels::before {
+        content: "Active";
+        position: absolute;
+        left: 6px;
+        color: #ffffff;
+        opacity: 0;
+    }
+
+    .toggle input:checked ~ .labels::after {
+        opacity: 0;
+    }
+
+    .toggle input:checked ~ .labels::before {
+        opacity: 1;
+    }
+
+    /* 8. Image & Avatar Thumbnails */
+    .logo-thumb-frame {
+        width: 38px;
+        height: 38px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        padding: 2px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .logo-thumb-frame:hover {
+        transform: scale(1.15);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        z-index: 5;
+        position: relative;
+    }
+
+    .logo-thumb-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .avatar-thumb-frame {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+        outline: 1px solid #cbd5e1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #f1f5f9;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .avatar-thumb-frame:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 5;
+        position: relative;
+    }
+
+    .avatar-thumb-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    /* 9. Consistent Cell Typography (Matching 'Mohali' in Reference Screenshot) */
+    #example tbody tr td,
+    #example tbody tr td span,
+    #example tbody tr td div {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: #1e293b !important;
+    }
+
+    /* 10. DataTables Controls */
+    .dataTables_wrapper .dataTables_info {
+        font-size: 11.5px !important;
+        font-weight: 500 !important;
+        color: #64748b !important;
+        padding-top: 10px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        padding-top: 8px !important;
+    }
+
+    .dataTables_wrapper .paginate_button {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        padding: 3px 8px !important;
+        border-radius: 4px !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        color: #334155 !important;
+        margin: 0 2px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+    }
+
+    .dataTables_wrapper .paginate_button:hover {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border-color: #94a3b8 !important;
+    }
+
+    .dataTables_wrapper .paginate_button.current,
+    .dataTables_wrapper .paginate_button.current:hover {
+        background: #1e40af !important;
+        border-color: #1e40af !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 4px rgba(30, 64, 175, 0.25) !important;
+    }
+
+    .dataTables_wrapper .paginate_button.disabled,
+    .dataTables_wrapper .paginate_button.disabled:hover {
+        background: #f8fafc !important;
+        color: #cbd5e1 !important;
+        border-color: #e2e8f0 !important;
+        cursor: not-allowed !important;
+    }
+
+    /* Empty State Card */
+    .analytics-empty-state {
+        text-align: center;
+        padding: 36px 20px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 8px;
+        color: #64748b;
+    }
+
+    .analytics-empty-state i {
+        color: #94a3b8;
+        margin-bottom: 10px;
+    }
+
+    .analytics-empty-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 4px;
+    }
+
+    .analytics-empty-desc {
+        font-size: 12px;
+        color: #64748b;
     }
 
     /* ==========================================================================
@@ -564,119 +947,143 @@
 
 
 <div id="main-content">
-    <div class="main-content">
-        <section class="form_dsign">
+    <div class="main-content main-office-container">
+        <!-- Hidden compat placeholder for legacy script references -->
+        <div id="divAction" style="display:none;"></div>
 
-            <div class="container-fluid p-0">
-                <div class="inr_frm_dsgn">
+        <!-- 1. Breadcrumb Bar (Matches Proceedings >> Proceeding Resolutions) -->
+        <h4 id="lblmenuname" class="compact-breadcrumb-bar">Office Administration <span class="crumb-sep">&gt;&gt;</span> Add / Update Home Page</h4>
 
-                    <div class="widget-box " id="divAction">
-                        <div class="widget-header widget-header-flat rounded-top rounded-0">
-                            <h4 class=""> MC Admin </h4>
-                            <div class="widget-toolbar no-border">
-                                @if (CMNirdesh.Models.CurrentSession.RoleID == "18")
-                                {
-                                    <button type="button" class="btn btn-xs btn-primary bigger" data-bs-toggle="modal" data-bs-target="#myModal" style="font-size:14px;" onclick="clearTextBox();"><i class="ace-icon fa fa-pencil-square-o bigger-150"></i> Add New Department</button>
-                                }
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="form_lyot">
 
-                        @if (Model != null)
-                        {
-                            if (Model._ListMCModel.Count() > 0)
-                            {
-                                <div class=" table-responsive ">
-                                    <table id="example" class="table table-hover table-bordered ">
-                                        <thead>
-                                            <tr class="table-heading">
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Action</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">LG/Council/Corporation</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Office Name</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Office Name(Punjabi)</span></th>
-                                                @*<th class="td-heading" style="width:10%"><span class="font-weight-bold">About Office</span></th>*@
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Office Logo</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Head Name</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Head Name(Punjabi)</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Head Designation</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Head Designation(Punjabi)</span></th>
-                                                @*<th class="td-heading" style="width:10%"><span class="font-weight-bold">Head Message</span></th>
-                                                    <th class="td-heading" style="width:10%"><span class="font-weight-bold">Head Message(Punjabi)</span></th>*@
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">Head Photo</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">SubHead Name</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">SubHead Name(Punjabi)</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">SubHead Designation</span></th>
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">SubHead Designation(Punjabi)</span></th>
-                                                @*<th class="td-heading" style="width:10%"><span class="font-weight-bold">SubHeading Message</span></th>
-                                                    <th class="td-heading" style="width:10%"><span class="font-weight-bold">SubHeading Message(Punjabi)</span></th>*@
-                                                <th class="td-heading" style="width:10%"><span class="font-weight-bold">SubHead Photo</span></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody role="alert" aria-live="polite" aria-relevant="all">
-                                            @foreach (var items in Model._ListMCModel)
-                                            {
-                                                <tr>
-                                                    <td class="center td-data " style="font-size:13px; padding: 14px 4px !important">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <div class="hidden-sm hidden-xs action-buttons">
-                                                                <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.Id')">
-                                                                    <i class="ace-icon fa fa-pencil bigger-130"></i>
-                                                                </a>
+        <!-- 3. Section Heading -->
+        <div class="source-heading mb-2">
+            <h4>MC Admin</h4>
+        </div>
 
-                                                            </div>
-                                                            <div class="hidden-sm hidden-xs action-buttons">
-                                                                <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.Id')" value="@items.Id" />
-                                                                <label class="toggle mb-0">
-                                                                    <input type="checkbox" onclick="DeleteDepartmentRecord('@items.Id')" @(Convert.ToBoolean(items.IsDeleted) == false ? "checked='checked'" : string.Empty)>
-                                                                    <span class="slider"></span>
-                                                                    <span class="labels" data-on="Active" data-off="DeActive"></span>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                    </td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.unitname)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MCName)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.MCName_local)</td>
-                                                    @*<td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.AboutMC)</td>*@
-                                                    <td class="center td-data" style="padding: 14px 4px !important"><img src="@Url.Content(@Model.fileacessingUrl + "/" + items.MClogo)" height="100" width="100" /></td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HeadName)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HeadNameLocal)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HeadDesignation)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HeadDesignationLocal)</td>
-                                                    @*<td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HeadMessage)</td>
-                                                        <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.HeadMessageLocal)</td>*@
-                                                    <td class="center td-data" style="padding: 14px 4px !important"><img src="@Url.Content(@Model.fileacessingUrl + "/"  + items.HeadPhoto)" height="100" width="100" /></td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubHeadName)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubHeadNameLocal)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubHeadDesignation)</td>
-                                                    <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubHeadDesignationLocal)</td>
-                                                    @*<td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubHeadMessage)</td>
-                                                        <td class="center td-data" style="padding: 14px 4px !important">@Html.DisplayFor(modelItem => items.SubHeadMessageLocal)</td>*@
-                                                    <td class="center td-data" style="padding: 14px 4px !important"><img src="@Url.Content(@Model.fileacessingUrl + "/"  + items.SubHeadPhoto)" height="100" width="100" /></td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="alert alert-info">
-                                            <strong>There are no record found</strong><br />
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        }
-
-                    </div>
+        <!-- 4. Table Outer Container with Light Border -->
+        <div class="table-outer">
+            <!-- 5. Single-Line Unified Toolbar -->
+            <div id="unifiedTableToolbar" class="unified-table-toolbar">
+                <div class="toolbar-export-slot">
+                    @if (CMNirdesh.Models.CurrentSession.RoleID == "18")
+                    {
+                        <button type="button" class="btn btn-primary btn-sm btn-toolbar-add" data-bs-toggle="modal" data-bs-target="#myModal" onclick="clearTextBox();">
+                            <i class="fa fa-plus-circle me-1"></i> Add New Department
+                        </button>
+                    }
                 </div>
+                <div id="toolbarSearchSlot" class="toolbar-search-slot"></div>
             </div>
+
+            @if (Model != null)
+            {
+                if (Model._ListMCModel.Count() > 0)
+                {
+                    <div class="table-responsive table-cus">
+                        <table id="example" class="table-bordered" style="width:100%;">
+                            <thead>
+                                <tr class="table-heading">
+                                    <th style="width:10%;">Action</th>
+                                    <th style="width:10%;">LG/Council/Corp</th>
+                                    <th style="width:10%;">Office Name</th>
+                                    <th style="width:10%;">Office Name (Punjabi)</th>
+                                    <th style="width:6%; text-align: center;">Office Logo</th>
+                                    <th style="width:9%;">Head Name</th>
+                                    <th style="width:9%;">Head Name (Punjabi)</th>
+                                    <th style="width:8%;">Head Designation</th>
+                                    <th style="width:8%;">Head Desig (Punjabi)</th>
+                                    <th style="width:6%; text-align: center;">Head Photo</th>
+                                    <th style="width:9%;">SubHead Name</th>
+                                    <th style="width:9%;">SubHead Name (Punjabi)</th>
+                                    <th style="width:8%;">SubHead Designation</th>
+                                    <th style="width:8%;">SubHead Desig (Punjabi)</th>
+                                    <th style="width:6%; text-align: center;">SubHead Photo</th>
+                                </tr>
+                            </thead>
+                            <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                @foreach (var items in Model._ListMCModel)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            <div class="action-cell-wrap">
+                                                <a data-rel="tooltip" class="btn-action-edit" title="Edit Office Details" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@items.Id')">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                                <input type="hidden" id="DeleteConfirmFinal" onclick="DeleteID('@items.Id')" value="@items.Id" />
+                                                <label class="toggle mb-0" title="Toggle Active / DeActive">
+                                                    <input type="checkbox" onclick="DeleteDepartmentRecord('@items.Id')" @(Convert.ToBoolean(items.IsDeleted) == false ? "checked='checked'" : string.Empty)>
+                                                    <span class="slider"></span>
+                                                    <span class="labels" data-on="Active" data-off="DeActive"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.unitname)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.MCName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.MCName_local)
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="logo-thumb-frame" title="@items.MCName Logo">
+                                                <img src="@Url.Content(@Model.fileacessingUrl + "/" + items.MClogo)" class="logo-thumb-img" alt="Logo" onerror="this.onerror=null; this.src='/Assets/Home_Images/punjab-logo.png';" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.HeadName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.HeadNameLocal)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.HeadDesignation)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.HeadDesignationLocal)
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="avatar-thumb-frame" title="@items.HeadName">
+                                                <img src="@Url.Content(@Model.fileacessingUrl + "/" + items.HeadPhoto)" class="avatar-thumb-img" alt="Head" onerror="this.onerror=null; this.src='/Assets/Home_Images/user.png';" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.SubHeadName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.SubHeadNameLocal)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.SubHeadDesignation)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => items.SubHeadDesignationLocal)
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="avatar-thumb-frame" title="@items.SubHeadName">
+                                                <img src="@Url.Content(@Model.fileacessingUrl + "/" + items.SubHeadPhoto)" class="avatar-thumb-img" alt="SubHead" onerror="this.onerror=null; this.src='/Assets/Home_Images/user.png';" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="analytics-empty-state">
+                        <i class="fa fa-folder-open fa-3x"></i>
+                        <div class="analytics-empty-title">No Records Found</div>
+                        <div class="analytics-empty-desc">There are currently no office records available in the directory.</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
 
 
             <div class="coman_modal dispatch_modal addnew_modal modal office-details-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -865,9 +1272,6 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-</div>
 
 
 
@@ -882,7 +1286,27 @@
 <script>
     $(document).ready(function () {
         var dropdown = $('#MCSelect');
-        $('#example').DataTable();
+        var table = $('#example').DataTable({
+            "language": {
+                "search": "Search:"
+            }
+        });
+
+        // Sync DataTables search input into the custom unified single-line toolbar slot
+        function syncToolbarSearch() {
+            var $wrapper = $('#example_wrapper');
+            if ($wrapper.length) {
+                var $filter = $wrapper.find('> .dataTables_filter, .dataTables_filter');
+                if ($filter.length && !$('#toolbarSearchSlot').children().length) {
+                    $('#toolbarSearchSlot').empty().append($filter);
+                }
+            }
+        }
+        syncToolbarSearch();
+        $(document).on('init.dt draw.dt', '#example', function () {
+            syncToolbarSearch();
+        });
+
         dropdown.append('<option selected="selected" value="0">Please select</option>');
          var items = @Html.Raw(Json.Encode(ViewBag.MCDropDown));
 
