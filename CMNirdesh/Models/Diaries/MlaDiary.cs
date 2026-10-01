@@ -222,6 +222,7 @@ namespace CMNirdesh.Models.Diaries
 
         // public <MLADairySearch> myDiaryListTest { get; set; }
 
+       
 
 
     }
@@ -1208,6 +1209,12 @@ namespace CMNirdesh.Models.Diaries
 
         public SelectList MinisterList { get; set; }
 
+     
+        public int[] SelectedWardIds { get; set; }
+
+       
+        public SelectList WardList { get; set; }
+
         public SelectList ActList { get; set; }
         public SelectList MemberList { get; set; }
 
@@ -1336,6 +1343,8 @@ namespace CMNirdesh.Models.Diaries
         public List<CoveringLetter> _CoveringLetterList { get; set; }
         
         public List<EndorsementApprovalVM> EndorsementList { get; set; }
+
+
        
     }
 

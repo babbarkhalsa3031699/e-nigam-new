@@ -6,6 +6,12 @@ using CMNirdesh.Extensions;
 using CMNirdesh.Filters;
 using CMNirdesh.Models;
 using CMNirdesh.Models.Diaries;
+using CMNirdesh.Models.Email;
+
+
+
+
+
 //using CMNirdesh.Models.Email;
 
 //using CMNirdesh.Models.Email;
@@ -24,7 +30,7 @@ using iTextSharp.tool.xml.html;
 using Microsoft.Extensions.Primitives;
 using Microsoft.SqlServer.Server;
 using Newtonsoft.Json;
-
+using Newtonsoft.Json.Linq;
 using PuppeteerSharp;
 using PuppeteerSharp.Media;
 using PVSWebSite.Models;
@@ -559,13 +565,10 @@ namespace CMNirdesh.Controllers
         }
 
         public ActionResult Dashboard(string encrString, string type = null)
-
         {
 
             string SiteName = System.Web.Configuration.WebConfigurationManager.AppSettings["serviceName"];
             encrString = Request.QueryString["string"];
-
-
             //DataSet dashboardtype = UserModelFunction.Getdashbaordmenutype(type);
 
             if (encrString != null)
@@ -680,6 +683,8 @@ namespace CMNirdesh.Controllers
 
                     DataSet menuds = UserModelFunction.Getmenutype_dashboard(Convert.ToInt32(type), Convert.ToInt32(CurrentSession.SubUserTypeID));
                     model.Type = type;
+                    
+
                     if (menuds.Tables[0].Rows.Count > 0)
                     {
                         model.RefMenutype = Convert.ToInt32(menuds.Tables[0].Rows[0]["DocumentTypeId"].ToString());
@@ -1381,8 +1386,11 @@ namespace CMNirdesh.Controllers
                 model.SessDatelist = DiaryViewModel.SessionDates();
                 model.MemberList = DiaryViewModel.Members();
                 model.MinisterList = DiaryViewModel.Minister();
+                model.WardList = DiaryViewModel.WardList();
                 string deptName = model.mDepartmentListPbi.Where(x => x.Value == CurrentSession.DeptID).Select(x => x.Text).FirstOrDefault();
                 model.deptname = deptName;
+
+
 
                 model.DocumentTypelist = DiaryViewModel.GetDispatchDocumentTypeList(CurrentSession.UserID.ToString(), "R");
                 if (RefType != "")
@@ -1436,8 +1444,8 @@ namespace CMNirdesh.Controllers
 
                     if (model.IsFileCount > 0 && RefType != "1")
                     {
-                        //List<DepartmentSelectListItem> _list = model.mDepartmentListPbi.Where(x => x.Value == CurrentSession.DeptID || x.Value == "LG00001").ToList();
-                        List<DepartmentSelectListItem> _list = model.mDepartmentListPbi.Where(x=>x.Value == "LG00001").ToList();
+                        List<DepartmentSelectListItem> _list = model.mDepartmentListPbi.Where(x => x.Value == CurrentSession.DeptID).ToList();
+                        //List<DepartmentSelectListItem> _list = model.mDepartmentListPbi.Where(x=>x.Value == "LG00001").ToList();
                         model.mDepartmentListPbi = _list;
                     }
                     else
@@ -10194,8 +10202,6 @@ namespace CMNirdesh.Controllers
                             CurrentSession.MapId = list.MapId.ToString();
                             CurrentSession.RCerificate = list.registeredCert;
                             CurrentSession.SignaturePath = list.SignaturePath;
-
-
                             Models.MenuModel _users = new Models.MenuModel();
                             String menuid = _users.MenuId.ToString();
 
@@ -11493,17 +11499,26 @@ namespace CMNirdesh.Controllers
                 outXml += @"<p style='text-align:right;font-weight:bold'>"
                 + CurrentSession.DesignationLocal + "</br>" + BranchName + @"</p>";
             }
-           
-                    if (!string.IsNullOrWhiteSpace(endormentText))
-                    {
-                        outXml += "</br><div style = 'margin-left:70px'>" + endormentText + "</div>";
-                        outXml += @"<p style='text-align:right;font-weight:bold'>"
-                    + CurrentSession.DesignationLocal + "</br>" + BranchName + @"</p></div>";
-                    }
-                    outXml += @"</body>
-                   </html>";
 
-                    return outXml;
+            if (!string.IsNullOrWhiteSpace(endormentText))
+            {
+                outXml += "</br><div style = 'margin-left:70px'>" + endormentText + "</div>";
+
+                outXml += @"<p style='text-align:right;font-weight:bold'>"
+            + CurrentSession.DesignationLocal + "</br>" + BranchName + @"</p></div>";
+            }
+            else
+            {
+                if (FromDeptID == "UDD0001")
+                {
+                    outXml += "</br><div style = 'margin-left:70px'>ਲੋੜੀਂਦੀ ਕਾਰਵਾਈ ਲਈ :- ਕਾਰਜਕਾਰੀ ਅਧਿਕਾਰੀ ਦਫਤਰ," + DestinationDept + "</div>";
+                    outXml += @"<p style='text-align:right;font-weight:bold'>"
+                    + CurrentSession.DesignationLocal + "</br>" + BranchName + @"</p></div>";
+                }
+            }
+            outXml += @"</body>
+            </html>";
+            return outXml;
         }
 
 
@@ -18458,6 +18473,7 @@ tr { page-break-inside: avoid }
             {
                 return RedirectToAction("Login", "Account", new { area = "" });
             }
+
             StringBuilder sb = new StringBuilder();
 
             try
@@ -18465,7 +18481,8 @@ tr { page-break-inside: avoid }
                 DataSet ds = new DataSet();
 
                 using (SqlConnection con = ClsConnection.GetConnection())
-                using (SqlCommand cmd = new SqlCommand("GetObservationReply", con))
+                using (SqlCommand cmd = new SqlCommand(
+                    "GetObservationReplyFromConceroned", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -18473,10 +18490,13 @@ tr { page-break-inside: avoid }
                         "@UserId",
                         string.IsNullOrWhiteSpace(CurrentSession.UserID)
                             ? (object)DBNull.Value
-                            : CurrentSession.UserID);
+                            : CurrentSession.UserID
+                    );
 
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(ds);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds);
+                    }
                 }
 
                 if (ds != null &&
@@ -18485,170 +18505,466 @@ tr { page-break-inside: avoid }
                 {
                     DataTable dt = ds.Tables[0];
 
-                    sb.Append("<div class='table-responsive'>");
-                    sb.Append("<table id='ObservationReplySearch' ");
-                    sb.Append("class='table table-bordered table-striped table-hover' ");
-                    sb.Append("style='width:100%;font-size:12px;table-layout:auto;'>");
+                    // =========================================================
+                    // CSS - SAME STYLE AS ObservationRaisedSearch
+                    // =========================================================
 
-                    // ================= HEADER =================
-                    sb.Append("<thead>");
-                    sb.Append("<tr>");
+                    sb.Append(@"
+<style>
+
+.obs-table-wrapper {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #aeb8c3;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+#ObservationReplySearch {
+    width: 100% !important;
+    min-width: 1000px;
+    margin: 0 !important;
+    font-size: 12px;
+    border-collapse: collapse !important;
+    border: 1px solid #aeb8c3 !important;
+}
+
+#ObservationReplySearch thead th {
+    background: #1769aa !important;
+    color: #fff !important;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 10px 9px !important;
+    border: 1px solid #0f5a92 !important;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: left;
+}
+
+#ObservationReplySearch tbody td {
+    padding: 9px 10px !important;
+    vertical-align: middle;
+    border: 1px solid #c7d0d9 !important;
+    color: #374151;
+    line-height: 1.45;
+    background: #fff;
+}
+
+#ObservationReplySearch tbody tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+#ObservationReplySearch tbody tr:hover td {
+    background: #eaf4ff !important;
+    border-color: #aebfd0 !important;
+}
+
+.obs-subject {
+    min-width: 350px;
+    max-width: 600px;
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+.obs-resolution {
+    color: #1769aa;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.obs-resolution:hover {
+    color: #0b4f86;
+    text-decoration: underline;
+}
+
+.obs-date {
+    white-space: nowrap;
+    color: #4b5563;
+    font-size: 11px;
+}
+
+.obs-table-wrapper .dataTables_wrapper {
+    width: 100%;
+    padding: 12px;
+}
+
+.obs-table-wrapper .dataTables_filter input {
+    border: 1px solid #c7d0d9;
+    border-radius: 5px;
+    padding: 6px 9px;
+    font-size: 12px;
+    width: 220px;
+    max-width: 100%;
+    outline: none;
+}
+
+.obs-table-wrapper .dataTables_filter input:focus {
+    border-color: #1769aa;
+    box-shadow: 0 0 0 2px rgba(23,105,170,.10);
+}
+
+.obs-table-wrapper .dataTables_length select {
+    border: 1px solid #c7d0d9;
+    border-radius: 5px;
+    padding: 4px 6px;
+    font-size: 12px;
+}
+
+.obs-table-wrapper .dt-button {
+    border: 1px solid #c7d0d9 !important;
+    background: #fff !important;
+    color: #374151 !important;
+    border-radius: 5px !important;
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+    margin-right: 5px !important;
+}
+
+.obs-table-wrapper .dt-button:hover {
+    background: #f1f5f9 !important;
+}
+
+.obs-table-wrapper .dataTables_paginate .paginate_button {
+    padding: 4px 9px !important;
+    font-size: 11px !important;
+    border-radius: 5px !important;
+}
+
+@media (max-width: 992px) {
+
+    #ObservationReplySearch {
+        min-width: 900px;
+    }
+
+    .obs-subject {
+        min-width: 300px;
+        max-width: 450px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .obs-table-wrapper {
+        border-radius: 6px;
+        overflow-x: auto !important;
+    }
+
+    #ObservationReplySearch {
+        min-width: 850px;
+        font-size: 11px;
+    }
+
+    #ObservationReplySearch thead th {
+        font-size: 10px;
+        padding: 8px 7px !important;
+    }
+
+    #ObservationReplySearch tbody td {
+        font-size: 11px;
+        padding: 8px 7px !important;
+    }
+
+    .obs-subject {
+        min-width: 280px;
+        max-width: 350px;
+    }
+
+    .obs-table-wrapper .dataTables_wrapper {
+        padding: 8px;
+    }
+
+    .obs-table-wrapper .dataTables_filter {
+        width: 100%;
+        text-align: left !important;
+        margin-top: 8px;
+    }
+
+    .obs-table-wrapper .dataTables_filter input {
+        width: 100%;
+    }
+
+    .obs-table-wrapper .dt-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .obs-table-wrapper .dt-button {
+        margin-right: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    #ObservationReplySearch {
+        min-width: 800px;
+    }
+
+    #ObservationReplySearch thead th {
+        font-size: 9px;
+        padding: 7px 6px !important;
+    }
+
+    #ObservationReplySearch tbody td {
+        font-size: 10px;
+        padding: 7px 6px !important;
+    }
+
+    .obs-subject {
+        min-width: 250px;
+        max-width: 300px;
+    }
+}
+
+</style>
+");
+
+                    // =========================================================
+                    // TABLE WRAPPER
+                    // =========================================================
+
+                    sb.Append("<div class='obs-table-wrapper'>");
+
+                    sb.Append(
+                        "<table id='ObservationReplySearch' " +
+                        "class='table table-hover'>"
+                    );
+
+                    // =========================================================
+                    // HEADER
+                    // =========================================================
+
+                    sb.Append("<thead><tr>");
 
                     foreach (DataColumn col in dt.Columns)
                     {
-                        // Hide Id & IsReply columns
-                        if (col.ColumnName.Equals("Id", StringComparison.OrdinalIgnoreCase) ||
-                            col.ColumnName.Equals("IsReply", StringComparison.OrdinalIgnoreCase))
+                        // Hide Id and IsReply
+                        if (col.ColumnName.Equals(
+                                "Id",
+                                StringComparison.OrdinalIgnoreCase) ||
+                            col.ColumnName.Equals(
+                                "IsReply",
+                                StringComparison.OrdinalIgnoreCase))
+                        {
                             continue;
+                        }
 
-                        if (col.ColumnName.Equals("Subject", StringComparison.OrdinalIgnoreCase))
+                        string headerClass = "";
+
+                        if (col.ColumnName.Equals(
+                                "Subject",
+                                StringComparison.OrdinalIgnoreCase))
                         {
-                            sb.AppendFormat(
-                                "<th style='width:40%;min-width:400px;white-space:normal;word-break:break-word;background:#1974d2;color:#fff;font-size:12px;font-weight:600;'>{0}</th>",
-                                HttpUtility.HtmlEncode(col.ColumnName));
+                            headerClass = " class='obs-subject'";
                         }
-                        else
-                        {
-                            sb.AppendFormat(
-                                "<th style='white-space:nowrap;background:#1974d2;color:#fff;font-size:12px;font-weight:600;'>{0}</th>",
-                                HttpUtility.HtmlEncode(col.ColumnName));
-                        }
+
+                        sb.AppendFormat(
+                            "<th{0}>{1}</th>",
+                            headerClass,
+                            HttpUtility.HtmlEncode(col.ColumnName)
+                        );
                     }
 
-                    // New Action Column
-                    //sb.Append("<th style='white-space:nowrap;background:#1974d2;color:#fff;font-size:12px;font-weight:600;'>Add Comments</th>");
+                    sb.Append("</tr></thead>");
 
-                    sb.Append("</tr>");
-                    sb.Append("</thead>");
+                    // =========================================================
+                    // BODY
+                    // =========================================================
 
-                    // ================= BODY =================
                     sb.Append("<tbody>");
 
                     foreach (DataRow row in dt.Rows)
                     {
                         sb.Append("<tr>");
 
-                        string id = row["Id"] == DBNull.Value ? "0" : row["Id"].ToString();
-                        string isReply = row["IsReply"] == DBNull.Value ? "0" : row["IsReply"].ToString();
+                        // =====================================================
+                        // GET ID
+                        // =====================================================
+
+                        string id = row["Id"] == DBNull.Value
+                            ? "0"
+                            : Convert.ToString(row["Id"]);
+
+                        string isReply = row["IsReply"] == DBNull.Value
+                            ? "0"
+                            : Convert.ToString(row["IsReply"]);
+
+                        string jsId =
+                            HttpUtility.JavaScriptStringEncode(id);
+
+                        // =====================================================
+                        // COLUMNS
+                        // =====================================================
 
                         foreach (DataColumn col in dt.Columns)
                         {
-                            // Hide Id & IsReply columns
-                            if (col.ColumnName.Equals("Id", StringComparison.OrdinalIgnoreCase) ||
-                                col.ColumnName.Equals("IsReply", StringComparison.OrdinalIgnoreCase))
-                                continue;
-
-                            // Reply File
-                            //if (col.ColumnName.Equals("Reply File", StringComparison.OrdinalIgnoreCase))
-                            //{
-                            //    string fileNo = row[col] == DBNull.Value ? "" : row[col].ToString();
-
-                            //    sb.AppendFormat(
-                            //        "<td style='font-size:12px;' class='td-data'>{0}</td>",
-                            //        HttpUtility.HtmlEncode(fileNo));
-                            //}
-                            // Reply File if (col.ColumnName.Equals("Reply File", StringComparison.OrdinalIgnoreCase)) { string fileNo = row[col] == DBNull.Value ? "" : row[col].ToString(); if (isReply == "0") { sb.AppendFormat( @"<td style='font-size:12px;' class='td-data'> <a href='javascript:void(0);' class='green' onclick=""EditMlaDispatch(this,0,'Diary')""> {0} </a> </td>", HttpUtility.HtmlEncode(fileNo)); } else { sb.AppendFormat( "<td style='font-size:12px;' class='td-data'>{0}</td>", HttpUtility.HtmlEncode(fileNo)); } }
-
-
-                            // Reply File
-                            if (col.ColumnName.Equals("Reply File", StringComparison.OrdinalIgnoreCase))
+                            // Hide Id and IsReply
+                            if (col.ColumnName.Equals(
+                                    "Id",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                col.ColumnName.Equals(
+                                    "IsReply",
+                                    StringComparison.OrdinalIgnoreCase))
                             {
-                                string fileNo = row[col] == DBNull.Value ? "" : row[col].ToString();
-                                isReply = IsReplyExist(fileNo, Convert.ToString(CurrentSession.UserID));
+                                continue;
+                            }
+
+                            // =================================================
+                            // REPLY FILE
+                            // =================================================
+
+                            if (col.ColumnName.Equals(
+                                    "Reply File",
+                                    StringComparison.OrdinalIgnoreCase))
+                            {
+                                string fileNo = row[col] == DBNull.Value
+                                    ? ""
+                                    : Convert.ToString(row[col]);
+
+                                isReply = IsReplyExist(
+                                    fileNo,
+                                    Convert.ToString(CurrentSession.UserID)
+                                );
+
                                 if (isReply == "0")
                                 {
+                                    string jsFileNo =
+                                        HttpUtility.JavaScriptStringEncode(fileNo);
+
+                                    string htmlFileNo =
+                                        HttpUtility.HtmlEncode(fileNo);
+
                                     sb.AppendFormat(
-                                        @"<td style='font-size:12px;' class='td-data'>
-                                        <a href='javascript:void(0);'
-                                           class='green'
-                                           onclick=""EditMlaDispatch('{0}', '0', 'Dispatch')"">
-                                            {0}
-                                        </a>
-                                      </td>",
-                                        HttpUtility.JavaScriptStringEncode(fileNo));
+                                        @"<td>
+                                    <a id='{0}'
+                                       href='javascript:void(0);'
+                                       class='obs-resolution'
+                                       onclick=""EditMlaDispatch(this, '{1}', 'Diary'); return false;"">
+                                        {2}
+                                    </a>
+                                </td>",
+                                        jsFileNo,
+                                        jsId,
+                                        htmlFileNo
+                                    );
                                 }
                                 else
                                 {
                                     sb.AppendFormat(
-                                        @"<td style='font-size:12px;' class='td-data'>{0}</td>",
-                                        HttpUtility.HtmlEncode(fileNo));
+                                        @"<td>
+                                    {0}
+                                </td>",
+                                        HttpUtility.HtmlEncode(fileNo)
+                                    );
                                 }
                             }
 
+                            // =================================================
+                            // RESOLUTION UNIQUE ID
+                            // =================================================
 
-                            // Resolution Unique ID
-                            else if (col.ColumnName.Equals("Resolution Unique ID", StringComparison.OrdinalIgnoreCase))
+                            else if (col.ColumnName.Equals(
+                                        "Resolution Unique ID",
+                                        StringComparison.OrdinalIgnoreCase))
                             {
-                                string referenceId = row[col] == DBNull.Value ? "" : row[col].ToString();
-                                string replyFile = row["Reply File"] == DBNull.Value ? "0" : row["Reply File"].ToString();
+                                string referenceId =
+                                    row[col] == DBNull.Value
+                                        ? ""
+                                        : Convert.ToString(row[col]);
+
+                                string htmlReferenceId =
+                                    HttpUtility.HtmlEncode(referenceId);
 
                                 sb.AppendFormat(
-                                    @"<td class='td-data' style='font-size:12px;'>
+                                    @"<td>
                                 <a href='javascript:void(0);'
-                                   class='green'
+                                   class='obs-resolution'
                                    id='{0}'
-                                   onclick=""EditMlaDispatch('{0}', '0','Diary')"">
-                                   {2}
+                                   onclick=""ViewSingleEdit(this); return false;"">
+                                    {1}
                                 </a>
-                                <input type='hidden' id='hfRefId_{0}' value='{0}' />
-                              </td>",
-                                    HttpUtility.HtmlEncode(referenceId),
-                                    HttpUtility.JavaScriptStringEncode(replyFile),
-                                    HttpUtility.HtmlEncode(referenceId));
+
+                                <input type='hidden'
+                                       id='hfRefId_{0}'
+                                       value='{0}' />
+                            </td>",
+                                    HttpUtility.HtmlAttributeEncode(referenceId),
+                                    htmlReferenceId
+                                );
                             }
-                            // Reply Date
-                            else if (col.ColumnName.Equals("Reply Date", StringComparison.OrdinalIgnoreCase))
+
+                            // =================================================
+                            // REPLY DATE
+                            // =================================================
+
+                            else if (col.ColumnName.Equals(
+                                        "Reply Date",
+                                        StringComparison.OrdinalIgnoreCase))
                             {
                                 string replyDate = "";
 
                                 if (row[col] != DBNull.Value)
                                 {
-                                    replyDate = Convert.ToDateTime(row[col]).ToString("dd-MMM-yyyy");
+                                    DateTime dateValue;
+
+                                    if (DateTime.TryParse(
+                                            Convert.ToString(row[col]),
+                                            out dateValue))
+                                    {
+                                        replyDate =
+                                            dateValue.ToString("dd-MMM-yyyy");
+                                    }
                                 }
 
                                 sb.AppendFormat(
-                                    "<td style='font-size:12px;'>{0}</td>",
-                                    replyDate);
+                                    "<td class='obs-date'>{0}</td>",
+                                    HttpUtility.HtmlEncode(replyDate)
+                                );
                             }
-                            // Subject
-                            else if (col.ColumnName.Equals("Subject", StringComparison.OrdinalIgnoreCase))
+
+                            // =================================================
+                            // SUBJECT
+                            // =================================================
+
+                            else if (col.ColumnName.Equals(
+                                        "Subject",
+                                        StringComparison.OrdinalIgnoreCase))
                             {
-                                sb.AppendFormat(
-                                    "<td style='width:40%;min-width:400px;white-space:normal;word-break:break-word;font-size:12px;'>{0}</td>",
+                                string subject =
                                     row[col] == DBNull.Value
                                         ? ""
-                                        : HttpUtility.HtmlEncode(row[col].ToString()));
+                                        : Convert.ToString(row[col]);
+
+                                sb.AppendFormat(
+                                    "<td class='obs-subject'>{0}</td>",
+                                    HttpUtility.HtmlEncode(subject)
+                                );
                             }
-                            // Other Columns
+
+                            // =================================================
+                            // OTHER COLUMNS
+                            // =================================================
+
                             else
                             {
-                                sb.AppendFormat(
-                                    "<td style='font-size:12px;'>{0}</td>",
+                                string value =
                                     row[col] == DBNull.Value
                                         ? ""
-                                        : HttpUtility.HtmlEncode(row[col].ToString()));
+                                        : Convert.ToString(row[col]);
+
+                                sb.AppendFormat(
+                                    "<td>{0}</td>",
+                                    HttpUtility.HtmlEncode(value)
+                                );
                             }
                         }
-
-                        // ================= ACTION COLUMN =================
-                        //if (isReply == "0")
-                        //{
-                        //    string url = Url.Action("Dashboard", "References", new { type = 7 });
-
-                        //    sb.AppendFormat(
-                        //        @"<td style='text-align:center;font-size:12px;'>
-                        //            <a href='{0}' class='btn btn-sm btn-primary'>
-                        //                Go to Inbox To Add Comments
-                        //            </a>
-                        //        </td>",
-                        //        url
-                        //    );
-                        //}
-                        //else
-                        //{
-                        //    sb.Append(
-                        //        "<td style='text-align:center;font-size:12px;'>-</td>");
-                        //}
 
                         sb.Append("</tr>");
                     }
@@ -18659,20 +18975,38 @@ tr { page-break-inside: avoid }
                 }
                 else
                 {
-                    sb.Append(
-                        "<div class='alert alert-warning text-center mt-3'>" +
-                        "<i class='fa fa-exclamation-circle'></i> No Records Found" +
-                        "</div>");
+                    // =========================================================
+                    // NO RECORDS
+                    // =========================================================
+
+                    sb.Append(@"
+                <div class='alert alert-warning text-center'
+                     style='margin-top:15px;
+                            border-radius:8px;
+                            border:1px solid #e5c46a;'>
+                    <i class='fa fa-info-circle'></i>
+                    &nbsp; No Observation Reply records found.
+                </div>");
                 }
             }
             catch (Exception ex)
             {
+                // =============================================================
+                // ERROR
+                // =============================================================
+
                 sb.Clear();
 
-                sb.Append(
-                    "<div class='alert alert-danger'>" +
-                    HttpUtility.HtmlEncode(ex.Message) +
-                    "</div>");
+                sb.AppendFormat(
+                    @"<div class='alert alert-danger'
+                     style='margin-top:15px;
+                            border-radius:8px;
+                            border:1px solid #e0a4a4;'>
+                <i class='fa fa-exclamation-triangle'></i>
+                &nbsp; {0}
+              </div>",
+                    HttpUtility.HtmlEncode(ex.Message)
+                );
             }
 
             return Content(sb.ToString(), "text/html");
@@ -19234,6 +19568,53 @@ tr { page-break-inside: avoid }
             }
         }
 
+        [HttpPost]
+        public JsonResult DeleteDraftDirect(string draftKey, List<string> data)
+        {
+            try
+            {
+                UserDraft draft = new UserDraft();
+                var res = draft.GetDraft(CurrentSession.UserID, draftKey);
+
+                JObject draftObj = JObject.Parse(res);
+                List<string> draftLs = draftObj.Properties().Select(el => el.Name).ToList();
+
+                var set1 = new HashSet<string>(data);
+                var result = new List<string>();
+
+                foreach (var item in draftLs)
+                {
+                    if (set1.Contains(item))
+                    {
+                        draftObj.Remove(item);
+                    }
+                }
+
+                if (draftObj.Count > 0)
+                {
+                    return SaveDraft(new UserDraft()
+                    {
+                        UserId = CurrentSession.UserID,
+                        DraftKey = draftKey,
+                        DraftContent = draftObj.ToString(Formatting.None)
+                    });
+                }
+                else
+                {
+                    draft.DeleteDraftDirect(CurrentSession.UserID, draftKey);
+                    return Json(new { success = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
         public void UnReadDeleteDraft(string userId, string draftKey)
         {
             UserDraft draft = new UserDraft();
@@ -19372,12 +19753,148 @@ tr { page-break-inside: avoid }
                 });
             }
         }
+
+
+        [HttpPost]
+        public JsonResult NotifyLocalGovtMutiple(string RefId, int NotifyTo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(RefId))
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "RefId is required."
+                    });
+                }
+
+                // Split comma-separated RefIds
+                var refIds = RefId
+                    .Split(',')
+                    .Select(x =>
+                    {
+                        long id;
+                        return long.TryParse(x.Trim(), out id) ? (long?)id : null;
+                    })
+                    .Where(x => x.HasValue)
+                    .Select(x => x.Value)
+                    .Distinct()
+                    .ToList();
+
+                if (refIds.Count == 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Invalid RefId."
+                    });
+                }
+
+                using (SqlConnection con = ClsConnection.GetConnection())
+                {
+                    var parameters = new List<string>();
+
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = con;
+
+                        for (int i = 0; i < refIds.Count; i++)
+                        {
+                            string parameterName = "@RefId" + i;
+
+                            parameters.Add(parameterName);
+
+                            cmd.Parameters.Add(parameterName, SqlDbType.BigInt)
+                                .Value = refIds[i];
+                        }
+
+                        cmd.Parameters.Add("@NotifyTo", SqlDbType.Int)
+                            .Value = NotifyTo;
+
+                        cmd.CommandText = @"
+                        UPDATE mNotification
+                        SET NotifyTo = @NotifyTo
+                        WHERE RefId IN (" + string.Join(",", parameters) + @")
+                        AND NotificationType = 7";
+
+                        con.Open();
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        return Json(new
+                        {
+                            success = rowsAffected > 0,
+                            message = rowsAffected > 0
+                                ? "Notify status updated successfully."
+                                : "Record not found."
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetPartFileDetails(string RefId, string ResRefID)
+        {
+            try
+            {
+                var list = new List<object>();
+
+                using (SqlConnection con = ClsConnection.GetConnection())
+                using (SqlCommand cmd = new SqlCommand("GetPartFileDetails", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@RefId", RefId);
+                    cmd.Parameters.AddWithValue("@ResRefID", ResRefID);
+
+                    con.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            list.Add(new
+                            {
+                                PartFileId = dr["PartFileId"].ToString(),
+                                IsReply = dr["IsReply"].ToString(),
+                                CurrentlyWith = dr["CurrentlyWith"].ToString()
+                            });
+                        }
+                    }
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = list
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
-
-
-
-
 }
+
+
+
+
+
 public class ReminderItem
 {
     public long RefId { get; set; }

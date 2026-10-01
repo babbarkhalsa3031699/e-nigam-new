@@ -1355,6 +1355,54 @@ namespace CMNirdesh.Models
             }
         }
 
+        public static SelectList WardList()
+        {
+            List<SelectListItem> items = new List<SelectListItem>();
+
+            try
+            {
+                SqlConnection connection = ClsConnection.GetConnection();
+
+                if ((connection.State == ConnectionState.Closed) ||
+                    (connection.State == ConnectionState.Broken))
+                {
+                    connection.Open();
+                }
+
+                SqlParameter[] parameterValues = new SqlParameter[] { };
+
+                DataSet ds = SqlHelper.ExecuteDataset(
+                    connection,
+                    "sp_GetWardList",
+                    parameterValues
+                );
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    SelectListItem item = new SelectListItem();
+
+                    item.Text = Convert.ToString(row["WardName"]);
+                    item.Value = Convert.ToString(row["WardId"]);
+
+                    items.Add(item);
+                }
+
+                connection.Close();
+
+                return new SelectList(items, "Value", "Text");
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.WriteToLog(
+                    ex,
+                    System.Reflection.MethodBase.GetCurrentMethod().ToString()
+                );
+
+                return new SelectList(items, "Value", "Text");
+            }
+        }
+
+
 
         public static SelectList GetDocumentTypeList(string userid)
         {

@@ -6,7 +6,7 @@ using CMNirdesh.App_Start;
 using CMNirdesh.Filters;
 using CMNirdesh.Models;
 using CMNirdesh.Models.Diaries;
-
+using CMNirdesh.Models.Email;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.qrcode;
@@ -5152,9 +5152,9 @@ table.maintable tr1,table.maintable tr td1{
             <table class='maintable' id='agendaTable' style='border-collapse:collapse;font-size:12pt;'>
             <colgroup>
                     <col style = 'width:4%'>
-                    <col style = 'width:10%'>
-                    <col style = 'width:67%'>
                     <col style = 'width:20%'>
+                    <col style = 'width:77%'>
+                   
                    </colgroup> ";
             outXml += @"<tfoot>
             <tr>
@@ -5168,7 +5168,6 @@ table.maintable tr1,table.maintable tr td1{
                         <td style='border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid black !important ; padding:0;'> </td>
                         <td style='border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid black !important ; padding:0;'></td>
                         <td style='border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid black !important ; padding:0;'></td>
-                        <td style='border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid black !important ; padding:0;'></td>
                       
                         
           </tr></thead>";
@@ -5176,7 +5175,7 @@ table.maintable tr1,table.maintable tr td1{
             <th style='padding:10px; border:1px solid black;'>Sr. No</th>
             <th style='padding:10px; border:1px solid black;'>Resolution No.</br>Date of Meeting</th>
             <th style='padding:10px; border:1px solid black;word-wrap:break-word;'>Resolution Description</th>
-            <th style='padding:10px; border:1px solid black;word-wrap:break-word;'>Orders of Competent Authority</th>
+           
                   </tr>";
 
 
@@ -5233,10 +5232,11 @@ table.maintable tr1,table.maintable tr td1{
                     }
 
                     outXml += @"" + _subject + " " + LOBText + "<br/>";
+                    outXml += @"<b>Orders of Competent Authority :- </b>" + mdl._LstReferences[i].ActionDescription + "<br/>";
 
-                    outXml += @"<td style='padding:10px; border:1px solid black; text-align:justify;font-size:12px;text-align:justify;'>
-                    " + mdl._LstReferences[i].ActionDescription + @"
-                    </td>";
+                    //outXml += @" < td style='padding:10px; border:1px solid black; text-align:justify;font-size:12px;text-align:justify;'>
+                    //" + mdl._LstReferences[i].ActionDescription + @"
+                    //</td>";
 
 
                     if (i == mdl._LstReferences.Count - 1)
@@ -10507,11 +10507,294 @@ th, td {
 
         }
 
+        //    public string GetProceedingCoveringLetterpdf(int agendaid, string refid, int IsPreview)
+        //    {
+        //        string outXml = "";
+
+        //        string uniqueNumber = ""; 
+        //        if (IsPreview == 1)
+        //        {
+        //            uniqueNumber = "XX/XXXX/XXX/XXXXX";
+        //        }
+        //        else
+        //        {
+        //            uniqueNumber = AgendaModelFunction.GetUniqueNumber(agendaid);
+        //        }
+        //        AgendaDetailModel mdl = new AgendaDetailModel();
+        //        mdl._LstReferences = AgendaModelFunction.GetAdminlobDataForPDF(agendaid);
+        //        mdl._LstResolutionActions = AgendaModelFunction.GetProcedingDataForCommPDF(refid, "0");
+
+        //        var note = AttendenceList.GetNotes(agendaid);
+        //        var HeaderlistofAgenda = AgendaModelFunction.GetAgendaHeader(agendaid);
+
+        //        string meetingdate = HeaderlistofAgenda?.AgendaDate ?? "";
+        //        string meetingtime = HeaderlistofAgenda?.StartTime ?? "";
+        //        string MeetingTypeName = HeaderlistofAgenda?.MeetingTypeName ?? "";
+
+        //        var OfficeType = CurrentSession.officeType;
+        //        string officeTitle = OfficeType == "1"
+        //            ? "ਕਮਿਸ਼ਨਰ ਦਫ਼ਤਰ"
+        //            : "ਕਾਰਜਕਾਰੀ ਅਧਿਕਾਰੀ ਦਫ਼ਤਰ";
+
+        //        outXml += @"<html style='height: 100%;'>   
+        //        <head>
+        //        <meta charset='UTF-8'>
+        //        <title>Digital MC House: ApprovedAgendaReport</title>
+
+        //        <style>
+
+        //        table.maintable {
+        //         width: 100%;
+        //         table-layout: fixed; 
+        //         border-collapse: collapse;      
+        //         border: 1px solid black !important;
+
+        //        }
+
+        //        table.maintable th,
+        //        table.maintable td {
+        //         border: 1px solid black;
+        //         padding: 8px;
+        //         vertical-align: top;
+        //         word-break: break-word;
+        //         overflow-wrap: break-word;
+        //        }
+
+        //        tfoot {
+        //         display: table-footer-group;
+
+        //        }
+
+        //        .pdf-class, table.maintable, .MsoNormalTable, .MsoTableGrid {
+        //         max-width: 100% !important;
+        //        }
+
+        //        body {
+        //         page-break-inside: avoid;
+        //         overflow: visible;
+        //         word-wrap: break-word;
+        //         margin: 0;
+        //         padding: 0;
+        //        }
+
+        //        .MsoNormalTable tr,
+        //        .MsoNormalTable td,
+        //        .MsoNormalTable th,
+        //        .MsoTableGrid tr,
+        //        .MsoTableGrid td,
+        //        .MsoTableGrid th,
+
+        //         #tblfooter tr {
+        //         page-break-inside: avoid !important;                                                                          
+        //         }
+
+        //        .pdf-class .MsoNormal{
+        //         text-wrap: balance;
+        //         white-space: pre-wrap;
+        //         word-wrap: break-word;
+        //        }
+
+        //        .pdf-class .MsoNormalTable td{
+        //         max-width: 65px !important;
+        //         padding: 1px !important;
+        //         overflow-wrap: break-word;
+        //        }
+        //        table.maintable td table {
+        //            width: 100% !important;
+        //            max-width: 100% !important;
+        //            table-layout: fixed !important;
+        //            border-collapse: collapse !important;
+        //        }
+
+        //        table.maintable td table td,
+        //        table.maintable td table th {
+        //            word-break: break-word !important;
+        //            overflow-wrap: break-word !important;
+        //            white-space: normal !important;
+        //        }
+        //        .pdf-class .MsoNormalTable {
+        //         max-width: 700px !important;
+        //         margin-left: 0 !important;
+        //        }
+
+        //        .pdf-class table.MsoNormalTable {
+        //         max-width: 700px !important;
+        //         margin-left: 0 !important;
+        //        }
+
+        //        .pdf-class .MsoTableGrid td{
+        //         max-width: 65px !important;
+        //         white-space: pre-wrap;
+        //         word-wrap: break-word;
+        //        }
+
+        //        .pdf-class .MsoTableGrid {
+        //         max-width: 500px !important;
+        //         margin-left: 0 !important;
+        //        }
+
+        //        .pdf-class table.MsoTableGrid {
+        //         max-width: 500px !important;
+        //         margin-left: 0 !important;
+        //        }
+
+        //        p.MsoListParagraphCxSpFirst,
+        //        p.MsoListParagraphCxSpMiddle,
+        //        p.MsoListParagraphCxSpLast {
+        //         margin-left: 20px;
+        //        }
+
+        //        td {
+        //         vertical-align: top;
+        //        }
+
+        //        @media print {
+        //         .header { display: none; }
+        //        }
+
+        //        ol li { padding:5px; }
+
+        //        </style>
+        //        </head>
+        //        <body>
+        //        <div class='pdf-class' style='width:100%; margin:0; min-height:100%;'>";
+
+
+        //        if (mdl._LstReferences != null && mdl._LstReferences.Count > 0)
+        //        {
+        //                outXml += @"<div>
+        //                <h1 style='font-size:20px;font-weight:700;text-align:center;text-transform:uppercase;'>"
+        //                         + officeTitle + " " + mdl._LstReferences[0].FromDeptLocal + @"</h1>
+
+        //                <p style='font-size:16px;text-align:center;font-weight:bold'>
+        //                Telephone No. " + mdl._LstReferences[0].DeptPhoneNo + @"<br>
+        //                Email: " + mdl._LstReferences[0].DeptEmail + @"</p>
+
+        //                <table style='width:100%;font-size:15px;margin:10px 0;border-collapse:collapse;'>
+        //                    <tr>
+        //                          <td style='text-align:left;font-weight:bold;'>
+        //                            No.: " + uniqueNumber + @"<br/>
+        //                            ..............................................
+        //                        </td>
+        //                        <td style='text-align:right;font-weight:bold;'>
+        //                            Date: " + DateTime.Now.ToString("dd-MM-yyyy") + @"
+        //                        </td>
+        //                    </tr>
+        //                </table>
+
+        //<p style='font-size:16px;text-align:center;font-weight:bold'>
+        //ਵਿਸ਼ਾ:— " + mdl._LstReferences[0].FromDeptLocal + @" ਦੇ " + MeetingTypeName + @" ਮਿਤੀ: "
+        //         + meetingdate + @" ਨੂੰ ਸਮਾਂ " + meetingtime + @" ਵਜੇ ਦੀ ਕਾਰਵਾਈ ਸਬੰਧੀ।
+        //</p>";
+
+        //            outXml += @"<table class='pdf-table maintable' style='font-size:12pt;'>";
+
+        //            outXml += @"<thead>
+        //                            <tr>
+        //                            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //                            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //                            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //                            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //                            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //                            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //                            </tr>
+        //                            </thead>";
+
+
+        //            outXml += @"<colgroup>
+        //            <col style='width:5%;'>
+        //            <col style='width:10%;'>
+        //            <col style='width:60%;'>
+        //            <col style='width:10%;'>
+        //            <col style='width:10%;'>
+        //            <col style='width:10%;'>
+        //            </colgroup>";
+
+        //                            // HEADER
+        //             outXml += @"<tr>
+        //            <th style='font-weight:bold;border:1px solid black;'>Sr. No</th>
+        //            <th style='font-weight:bold;border:1px solid black;'>Resolution No.<br>& Date</th>
+        //            <th style='font-weight:bold;border:1px solid black;'>Resolution Details</th>
+        //            <th style='font-weight:bold;border:1px solid black;'>House/Administrator Decision</th>
+        //            <th style='font-weight:bold;border:1px solid black;'>Whether the Resolution<br>Cover under Act/Rules/Govt. Instructions</th>
+        //            <th style='font-weight:bold;border:1px solid black !important;'>Comments of Comr./ E.O.</th>
+        //            </tr>";
+        //            int j = 0;
+        //            if (mdl._LstResolutionActions != null)
+        //            {
+        //                for (int i = 0; i < mdl._LstResolutionActions.Count; i++)
+        //                {
+        //                    if (mdl._LstResolutionActions[i].TableItem == "0")
+        //                    {
+        //                        if (j == 0)
+        //                        {
+        //                            outXml += @"<tr>
+        //                         <td colspan='6' style='padding:10px; border: 1px solid black;border-collapse: collapse;font-weight:bold'>               
+        //                         Table Items</td></tr>";
+        //                        }
+        //                        j++;
+        //                    }
+
+
+        //                    string subject = mdl._LstResolutionActions[i].Subject ?? "";
+        //                    if (!string.IsNullOrEmpty(subject))
+        //                        subject = "<b>" + subject + " :- </b>";
+
+        //                    outXml += @"<tr>
+        //                    <td style='padding:10px;border:1px solid black;'>" + (i + 1) + @"</td>
+        //                    <td style='padding:10px;border:1px solid black;'>"
+        //                            + mdl._LstResolutionActions[i].DisplaySrNo + "<br>"
+        //                            + mdl._LstResolutionActions[i].AgendaDate + @"</td>
+        //                    <td style='padding:10px;border:1px solid black;text-align: justify;'>"
+        //                            + subject + mdl._LstResolutionActions[i].SubjectDetails + @"</td>
+        //                    <td style='padding:10px;border:1px solid black;text-align: justify;'>"
+        //                            + mdl._LstResolutionActions[i].HouseDecision + @"</td>
+        //                    <td style='padding:10px;border:1px solid black;text-align: justify;'>"
+        //                            + mdl._LstResolutionActions[i].Act + @"</td>
+        //                    <td style='padding:10px;border:1px solid black !important;text-align: justify;'>"
+        //                            + mdl._LstResolutionActions[i].commissioner + @"</td>
+        //                   </tr>";
+        //                }
+        //            }
+
+        //            // FOOTER BORDER FIX
+        //            outXml += @"<tfoot>
+        //            <tr>
+        //            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //            <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+        //            </tr>
+        //            </tfoot>";
+
+
+        //            outXml += @"</table>";
+
+        //            if (OfficeType == "1")
+        //            {
+        //                outXml += @"<p style='text-align:right;font-size:18px;padding-top:20px;'>
+        //                ਕਮਿਸ਼ਨਰ,<br>" + mdl._LstReferences[0].FromDeptLocal.Trim() + "</p>";
+        //            }
+        //            else
+        //            {
+        //                outXml += @"<p style='text-align:right;font-size:18px;padding-top:20px;'>
+        //                ਕਾਰਜ ਸਾਧਕ ਅਫ਼ਸਰ,<br>" + mdl._LstReferences[0].FromDeptLocal.Trim() + "</p>";
+        //            }
+        //        }
+
+        //        outXml += @"</div></body></html>";
+
+        //        return outXml;
+        //    }
+
+
         public string GetProceedingCoveringLetterpdf(int agendaid, string refid, int IsPreview)
         {
             string outXml = "";
 
-            string uniqueNumber = ""; 
+            string uniqueNumber = "";
             if (IsPreview == 1)
             {
                 uniqueNumber = "XX/XXXX/XXX/XXXXX";
@@ -10662,9 +10945,9 @@ th, td {
 
             if (mdl._LstReferences != null && mdl._LstReferences.Count > 0)
             {
-                    outXml += @"<div>
+                outXml += @"<div>
                     <h1 style='font-size:20px;font-weight:700;text-align:center;text-transform:uppercase;'>"
-                             + officeTitle + " " + mdl._LstReferences[0].FromDeptLocal + @"</h1>
+                         + officeTitle + " " + mdl._LstReferences[0].FromDeptLocal + @"</h1>
 
                     <p style='font-size:16px;text-align:center;font-weight:bold'>
                     Telephone No. " + mdl._LstReferences[0].DeptPhoneNo + @"<br>
@@ -10684,39 +10967,36 @@ th, td {
 
     <p style='font-size:16px;text-align:center;font-weight:bold'>
     ਵਿਸ਼ਾ:— " + mdl._LstReferences[0].FromDeptLocal + @" ਦੇ " + MeetingTypeName + @" ਮਿਤੀ: "
-             + meetingdate + @" ਨੂੰ ਸਮਾਂ " + meetingtime + @" ਵਜੇ ਦੀ ਕਾਰਵਾਈ ਸਬੰਧੀ।
+         + meetingdate + @" ਨੂੰ ਸਮਾਂ " + meetingtime + @" ਵਜੇ ਦੀ ਕਾਰਵਾਈ ਸਬੰਧੀ।
     </p>";
 
                 outXml += @"<table class='pdf-table maintable' style='font-size:12pt;'>";
-               
+
                 outXml += @"<thead>
                                 <tr>
                                 <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
                                 <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
                                 <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
                                 <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
-                                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
-                                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                                
                                 </tr>
                                 </thead>";
 
-               
+
                 outXml += @"<colgroup>
                 <col style='width:5%;'>
                 <col style='width:10%;'>
-                <col style='width:60%;'>
-                <col style='width:10%;'>
-                <col style='width:10%;'>
-                <col style='width:10%;'>
+                <col style='width:70%;'>
+                <col style='width:15%;'>
+               
+             
                 </colgroup>";
 
-                                // HEADER
-                 outXml += @"<tr>
+                // HEADER
+                outXml += @"<tr>
                 <th style='font-weight:bold;border:1px solid black;'>Sr. No</th>
                 <th style='font-weight:bold;border:1px solid black;'>Resolution No.<br>& Date</th>
                 <th style='font-weight:bold;border:1px solid black;'>Resolution Details</th>
-                <th style='font-weight:bold;border:1px solid black;'>House/Administrator Decision</th>
-                <th style='font-weight:bold;border:1px solid black;'>Whether the Resolution<br>Cover under Act/Rules/Govt. Instructions</th>
                 <th style='font-weight:bold;border:1px solid black !important;'>Comments of Comr./ E.O.</th>
                 </tr>";
                 int j = 0;
@@ -10738,7 +11018,7 @@ th, td {
 
                         string subject = mdl._LstResolutionActions[i].Subject ?? "";
                         if (!string.IsNullOrEmpty(subject))
-                            subject = "<b>" + subject + " :- </b>";
+                            subject = "<b>" + subject + "</b>";
 
                         outXml += @"<tr>
                         <td style='padding:10px;border:1px solid black;'>" + (i + 1) + @"</td>
@@ -10746,11 +11026,298 @@ th, td {
                                 + mdl._LstResolutionActions[i].DisplaySrNo + "<br>"
                                 + mdl._LstResolutionActions[i].AgendaDate + @"</td>
                         <td style='padding:10px;border:1px solid black;text-align: justify;'>"
-                                + subject + mdl._LstResolutionActions[i].SubjectDetails + @"</td>
+
+                        + subject + mdl._LstResolutionActions[i].SubjectDetails + "<br><br>"
+                                + "<b>House/Administrator Decision :-</b>"
+                                 + mdl._LstResolutionActions[i].HouseDecision + "<br><br>"
+                                   + "<b>Cover under Act/Rules/Govt. Instructions :-</b>"
+
+                                + mdl._LstResolutionActions[i].Act + @" </td>
+
+                
+                        <td style='padding:10px;border:1px solid black !important;text-align: justify;'>"
+                                + mdl._LstResolutionActions[i].commissioner + @"</td>
+                       </tr>";
+                    }
+                }
+
+                // FOOTER BORDER FIX
+                outXml += @"<tfoot>
+                <tr>
+                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                </tr>
+                </tfoot>";
+
+
+                outXml += @"</table>";
+
+                if (OfficeType == "1")
+                {
+                    outXml += @"<p style='text-align:right;font-size:18px;padding-top:20px;'>
+                    ਕਮਿਸ਼ਨਰ,<br>" + mdl._LstReferences[0].FromDeptLocal.Trim() + "</p>";
+                }
+                else
+                {
+                    outXml += @"<p style='text-align:right;font-size:18px;padding-top:20px;'>
+                    ਕਾਰਜ ਸਾਧਕ ਅਫ਼ਸਰ,<br>" + mdl._LstReferences[0].FromDeptLocal.Trim() + "</p>";
+                }
+            }
+
+            outXml += @"</div></body></html>";
+
+            return outXml;
+        }
+
+        public string GetProceedingCoveringFormatedLetterpdf(int agendaid, string refid, int IsPreview)
+        {
+            string outXml = "";
+
+            string uniqueNumber = "";
+            if (IsPreview == 1)
+            {
+                uniqueNumber = "XX/XXXX/XXX/XXXXX";
+            }
+            else
+            {
+                uniqueNumber = AgendaModelFunction.GetUniqueNumber(agendaid);
+            }
+            AgendaDetailModel mdl = new AgendaDetailModel();
+            mdl._LstReferences = AgendaModelFunction.GetAdminlobDataForPDF(agendaid);
+            mdl._LstResolutionActions = AgendaModelFunction.GetProcedingDataForCommPDF(refid, "0");
+
+            var note = AttendenceList.GetNotes(agendaid);
+            var HeaderlistofAgenda = AgendaModelFunction.GetAgendaHeader(agendaid);
+
+            string meetingdate = HeaderlistofAgenda?.AgendaDate ?? "";
+            string meetingtime = HeaderlistofAgenda?.StartTime ?? "";
+            string MeetingTypeName = HeaderlistofAgenda?.MeetingTypeName ?? "";
+
+            var OfficeType = CurrentSession.officeType;
+            string officeTitle = OfficeType == "1"
+                ? "ਕਮਿਸ਼ਨਰ ਦਫ਼ਤਰ"
+                : "ਕਾਰਜਕਾਰੀ ਅਧਿਕਾਰੀ ਦਫ਼ਤਰ";
+
+            outXml += @"<html style='height: 100%;'>   
+            <head>
+            <meta charset='UTF-8'>
+            <title>Digital MC House: ApprovedAgendaReport</title>
+
+            <style>
+
+            table.maintable {
+             width: 100%;
+             table-layout: fixed; 
+             border-collapse: collapse;      
+             border: 1px solid black !important;
+
+            }
+
+            table.maintable th,
+            table.maintable td {
+             border: 1px solid black;
+             padding: 8px;
+             vertical-align: top;
+             word-break: break-word;
+             overflow-wrap: break-word;
+            }
+
+            tfoot {
+             display: table-footer-group;
+
+            }
+
+            .pdf-class, table.maintable, .MsoNormalTable, .MsoTableGrid {
+             max-width: 100% !important;
+            }
+
+            body {
+             page-break-inside: avoid;
+             overflow: visible;
+             word-wrap: break-word;
+             margin: 0;
+             padding: 0;
+            }
+
+            .MsoNormalTable tr,
+            .MsoNormalTable td,
+            .MsoNormalTable th,
+            .MsoTableGrid tr,
+            .MsoTableGrid td,
+            .MsoTableGrid th,
+
+             #tblfooter tr {
+             page-break-inside: avoid !important;                                                                          
+             }
+
+            .pdf-class .MsoNormal{
+             text-wrap: balance;
+             white-space: pre-wrap;
+             word-wrap: break-word;
+            }
+
+            .pdf-class .MsoNormalTable td{
+             max-width: 65px !important;
+             padding: 1px !important;
+             overflow-wrap: break-word;
+            }
+            table.maintable td table {
+                width: 100% !important;
+                max-width: 100% !important;
+                table-layout: fixed !important;
+                border-collapse: collapse !important;
+            }
+
+            table.maintable td table td,
+            table.maintable td table th {
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
+                white-space: normal !important;
+            }
+            .pdf-class .MsoNormalTable {
+             max-width: 700px !important;
+             margin-left: 0 !important;
+            }
+
+            .pdf-class table.MsoNormalTable {
+             max-width: 700px !important;
+             margin-left: 0 !important;
+            }
+
+            .pdf-class .MsoTableGrid td{
+             max-width: 65px !important;
+             white-space: pre-wrap;
+             word-wrap: break-word;
+            }
+
+            .pdf-class .MsoTableGrid {
+             max-width: 500px !important;
+             margin-left: 0 !important;
+            }
+
+            .pdf-class table.MsoTableGrid {
+             max-width: 500px !important;
+             margin-left: 0 !important;
+            }
+
+            p.MsoListParagraphCxSpFirst,
+            p.MsoListParagraphCxSpMiddle,
+            p.MsoListParagraphCxSpLast {
+             margin-left: 20px;
+            }
+
+            td {
+             vertical-align: top;
+            }
+
+            @media print {
+             .header { display: none; }
+            }
+
+            ol li { padding:5px; }
+
+            </style>
+            </head>
+            <body>
+            <div class='pdf-class' style='width:100%; margin:0; min-height:100%;'>";
+
+
+            if (mdl._LstReferences != null && mdl._LstReferences.Count > 0)
+            {
+                outXml += @"<div>
+                    <h1 style='font-size:20px;font-weight:700;text-align:center;text-transform:uppercase;'>"
+                         + officeTitle + " " + mdl._LstReferences[0].FromDeptLocal + @"</h1>
+
+                    <p style='font-size:16px;text-align:center;font-weight:bold'>
+                    Telephone No. " + mdl._LstReferences[0].DeptPhoneNo + @"<br>
+                    Email: " + mdl._LstReferences[0].DeptEmail + @"</p>
+
+                    <table style='width:100%;font-size:15px;margin:10px 0;border-collapse:collapse;'>
+                        <tr>
+                              <td style='text-align:left;font-weight:bold;'>
+                                No.: " + uniqueNumber + @"<br/>
+                                ..............................................
+                            </td>
+                            <td style='text-align:right;font-weight:bold;'>
+                                Date: " + DateTime.Now.ToString("dd-MM-yyyy") + @"
+                            </td>
+                        </tr>
+                    </table>
+
+    <p style='font-size:16px;text-align:center;font-weight:bold'>
+    ਵਿਸ਼ਾ:— " + mdl._LstReferences[0].FromDeptLocal + @" ਦੇ " + MeetingTypeName + @" ਮਿਤੀ: "
+         + meetingdate + @" ਨੂੰ ਸਮਾਂ " + meetingtime + @" ਵਜੇ ਦੀ ਕਾਰਵਾਈ ਸਬੰਧੀ।
+    </p>";
+
+                outXml += @"<table class='pdf-table maintable' style='font-size:12pt;'>";
+
+                outXml += @"<thead>
+                                <tr>
+                                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                                <td style='padding:0;height:0;border-top:0.6px solid #bbb;'></td>
+                                
+                                </tr>
+                                </thead>";
+
+
+                outXml += @"<colgroup>
+                <col style='width:5%;'>
+                <col style='width:10%;'>
+                <col style='width:70%;'>
+                <col style='width:15%;'>
+               
+             
+                </colgroup>";
+
+                // HEADER
+                outXml += @"<tr>
+                <th style='font-weight:bold;border:1px solid black;'>Sr. No</th>
+                <th style='font-weight:bold;border:1px solid black;'>Resolution No.<br>& Date</th>
+                <th style='font-weight:bold;border:1px solid black;'>Resolution Details</th>
+                <th style='font-weight:bold;border:1px solid black !important;'>Comments of Comr./ E.O.</th>
+                </tr>";
+                int j = 0;
+                if (mdl._LstResolutionActions != null)
+                {
+                    for (int i = 0; i < mdl._LstResolutionActions.Count; i++)
+                    {
+                        if (mdl._LstResolutionActions[i].TableItem == "0")
+                        {
+                            if (j == 0)
+                            {
+                                outXml += @"<tr>
+                             <td colspan='6' style='padding:10px; border: 1px solid black;border-collapse: collapse;font-weight:bold'>               
+                             Table Items</td></tr>";
+                            }
+                            j++;
+                        }
+
+
+                        string subject = mdl._LstResolutionActions[i].Subject ?? "";
+                        if (!string.IsNullOrEmpty(subject))
+                            subject = "<b>" + subject + "</b>";
+
+                        outXml += @"<tr>
+                        <td style='padding:10px;border:1px solid black;'>" + (i + 1) + @"</td>
+                        <td style='padding:10px;border:1px solid black;'>"
+                                + mdl._LstResolutionActions[i].DisplaySrNo + "<br>"
+                                + mdl._LstResolutionActions[i].AgendaDate + @"</td>
                         <td style='padding:10px;border:1px solid black;text-align: justify;'>"
-                                + mdl._LstResolutionActions[i].HouseDecision + @"</td>
-                        <td style='padding:10px;border:1px solid black;text-align: justify;'>"
-                                + mdl._LstResolutionActions[i].Act + @"</td>
+                     
+                        + subject + mdl._LstResolutionActions[i].SubjectDetails + "<br><br>"
+                                + "<b>House/Administrator Decision :-</b>"
+                                 + mdl._LstResolutionActions[i].HouseDecision + "<br><br>"
+                                   + "<b>Cover under Act/Rules/Govt. Instructions :-</b>"
+
+                                + mdl._LstResolutionActions[i].Act + @" </td>
+
+                
                         <td style='padding:10px;border:1px solid black !important;text-align: justify;'>"
                                 + mdl._LstResolutionActions[i].commissioner + @"</td>
                        </tr>";
@@ -10790,176 +11357,176 @@ th, td {
         }
 
 
-        public string GetProceedingCoveringFormatedLetterpdf(int agendaid, string refid)
-        {
-            
-            string outXml = "";
-            AgendaDetailModel mdl = new AgendaDetailModel();
-            mdl._LstReferences = AgendaModelFunction.GetAdminlobDataForPDF(agendaid);
-            mdl._LstResolutionActions = AgendaModelFunction.GetProcedingDataForCommPDF(refid, "0");
-            var HeaderlistofAgenda = AgendaModelFunction.GetAgendaHeader(agendaid);
-            string meetingdate = HeaderlistofAgenda?.AgendaDate ?? "";
-            string meetingtime = HeaderlistofAgenda?.StartTime ?? "";
-            string path1 = BlobStorage.GetStorageAcessingPath();
-            string signature = path1 + "/" + CurrentSession.SignaturePath;
-            string imagePath = path1 + "/MC/" + CurrentSession.MCName + "/mc_logo.jpg";
+        //public string GetProceedingCoveringFormatedLetterpdf(int agendaid, string refid)
+        //{
 
-            outXml = outXml + @"<html style='height: 100%;'>   
-                                    <head><meta charset='UTF-8'><title>Digital MC House: ApprovedAgendaReport</title>
-                                     <style>
-                                         table.maintable {
-                                         width: 100%;
-                                         border-collapse: collapse;      
-                                         border-bottom: 1px solid black;
-                                         border-left: 1px solid black;
-                                         border-right: 1px solid black;
-                                         }
-                                         tfoot {
-                                          display: table-footer-group; /* forces this row to appear at bottom of each page */
-                                         }
+        //    string outXml = "";
+        //    AgendaDetailModel mdl = new AgendaDetailModel();
+        //    mdl._LstReferences = AgendaModelFunction.GetAdminlobDataForPDF(agendaid);
+        //    mdl._LstResolutionActions = AgendaModelFunction.GetProcedingDataForCommPDF(refid, "0");
+        //    var HeaderlistofAgenda = AgendaModelFunction.GetAgendaHeader(agendaid);
+        //    string meetingdate = HeaderlistofAgenda?.AgendaDate ?? "";
+        //    string meetingtime = HeaderlistofAgenda?.StartTime ?? "";
+        //    string path1 = BlobStorage.GetStorageAcessingPath();
+        //    string signature = path1 + "/" + CurrentSession.SignaturePath;
+        //    string imagePath = path1 + "/MC/" + CurrentSession.MCName + "/mc_logo.jpg";
 
-                                         table.maintable tr1,table.maintable td1 {
-                                         page-break-inside: avoid;
-                                         }
+        //    outXml = outXml + @"<html style='height: 100%;'>   
+        //                            <head><meta charset='UTF-8'><title>Digital MC House: ApprovedAgendaReport</title>
+        //                             <style>
+        //                                 table.maintable {
+        //                                 width: 100%;
+        //                                 border-collapse: collapse;      
+        //                                 border-bottom: 1px solid black;
+        //                                 border-left: 1px solid black;
+        //                                 border-right: 1px solid black;
+        //                                 }
+        //                                 tfoot {
+        //                                  display: table-footer-group; /* forces this row to appear at bottom of each page */
+        //                                 }
 
-                                         body {
-                                          page-break-inside: avoid;
-                                          overflow: visible;
-                                          word-wrap: break-word;
-                                         }
-                                        .MsoNormalTable tr,.MsoNormalTable td,.MsoNormalTable th,.MsoTableGrid tr,.MsoTableGrid td,.MsoTableGrid th,#tblfooter tr{
-                                         page-break-inside: avoid !important;                                                                          
-                                        }  
-                                    .pdf-class .MsoNormal{
-                                        text-wrap:balance;
-                                        white-space: pre-wrap;
-                                        word-wrap: break-word;
-                                    }
-                                    .pdf-class .MsoNormalTable td{
-                                        max-width: 65px !important;
-                                        padding: 1px !important;
-                                        overflow-wrap: break-word;
-                                    }
+        //                                 table.maintable tr1,table.maintable td1 {
+        //                                 page-break-inside: avoid;
+        //                                 }
 
-                                    .pdf-class .MsoNormalTable {
-                                        max-width: 700px !important;
-                                        margin-left: 0 !important;
-                                    }
-                                    .pdf-class table.MsoNormalTable {
-                                        max-width: 700px !important;
-                                        margin-left: 0 !important;
-                                    }
+        //                                 body {
+        //                                  page-break-inside: avoid;
+        //                                  overflow: visible;
+        //                                  word-wrap: break-word;
+        //                                 }
+        //                                .MsoNormalTable tr,.MsoNormalTable td,.MsoNormalTable th,.MsoTableGrid tr,.MsoTableGrid td,.MsoTableGrid th,#tblfooter tr{
+        //                                 page-break-inside: avoid !important;                                                                          
+        //                                }  
+        //                            .pdf-class .MsoNormal{
+        //                                text-wrap:balance;
+        //                                white-space: pre-wrap;
+        //                                word-wrap: break-word;
+        //                            }
+        //                            .pdf-class .MsoNormalTable td{
+        //                                max-width: 65px !important;
+        //                                padding: 1px !important;
+        //                                overflow-wrap: break-word;
+        //                            }
 
-                                    .pdf-class .MsoTableGrid td{
-                                        max-width: 65px !important;
-                                        text-wrap:balance;
-                                        white-space: pre-wrap;
-                                        word-wrap: break-word;
-                                    }
+        //                            .pdf-class .MsoNormalTable {
+        //                                max-width: 700px !important;
+        //                                margin-left: 0 !important;
+        //                            }
+        //                            .pdf-class table.MsoNormalTable {
+        //                                max-width: 700px !important;
+        //                                margin-left: 0 !important;
+        //                            }
 
-                                    .pdf-class .MsoTableGrid {
-                                        max-width: 500px !important;
-                                        margin-left: 0 !important;
-                                    }
+        //                            .pdf-class .MsoTableGrid td{
+        //                                max-width: 65px !important;
+        //                                text-wrap:balance;
+        //                                white-space: pre-wrap;
+        //                                word-wrap: break-word;
+        //                            }
 
-                                    .pdf-class table.MsoTableGrid {
-                                        max-width: 500px !important;
-                                        margin-left: 0 !important;
-                                    }
-                                    p.MsoListParagraphCxSpFirst,p.MsoListParagraphCxSpMiddle,p.MsoListParagraphCxSpLast {
-                                        margin-left: 20px;
-                                    }
-                                    td {
-                                        vertical-align: top;
-                                    }
-                                        @media print {
-                                            .header {
-                                                display: none;
-                                            }
-                                        }
-                                            table{
-                                            width:100%;
-                                            }
-                                          ol li {
-                                          padding: 5px;
-                                              }
+        //                            .pdf-class .MsoTableGrid {
+        //                                max-width: 500px !important;
+        //                                margin-left: 0 !important;
+        //                            }
 
-                                        </style>
-                                    </head> 
-         <body><div class='pdf-class' style='max-width:1050px; margin:auto;min-height: 100%;'>";
+        //                            .pdf-class table.MsoTableGrid {
+        //                                max-width: 500px !important;
+        //                                margin-left: 0 !important;
+        //                            }
+        //                            p.MsoListParagraphCxSpFirst,p.MsoListParagraphCxSpMiddle,p.MsoListParagraphCxSpLast {
+        //                                margin-left: 20px;
+        //                            }
+        //                            td {
+        //                                vertical-align: top;
+        //                            }
+        //                                @media print {
+        //                                    .header {
+        //                                        display: none;
+        //                                    }
+        //                                }
+        //                                    table{
+        //                                    width:100%;
+        //                                    }
+        //                                  ol li {
+        //                                  padding: 5px;
+        //                                      }
 
-            if (mdl._LstReferences != null && mdl._LstReferences.Count > 0)
-            {
-                //Resolutions list start from here
-                outXml += @"<div><h1 style='font-size: 20px; font-weight: 700; text-align: center;margin: auto;text-transform: uppercase;'>ਕਮਿਸ਼ਨਰ ਦਾ ਦਫ਼ਤਰ "
-                        + mdl._LstReferences[0].FromDeptLocal + "</h1>";
-                outXml += @"<p style='font-size: 16px; text-align: center;font-weight:bold'>Telephone No. " + mdl._LstReferences[0].DeptPhoneNo + "<br> Email:" + mdl._LstReferences[0].DeptEmail + "</p></div>";
+        //                                </style>
+        //                            </head> 
+        // <body><div class='pdf-class' style='max-width:1050px; margin:auto;min-height: 100%;'>";
 
-
-                outXml += @"<table class='pdf-table maintable' style='font-size: 12pt;''>";
-                outXml += @"<tfoot><tr><td colspan='5' style='border-bottom: 1px solid black;'></td></tr></tfoot>";
-                outXml += @"<thead><tr style='border-bottom: 1px solid black;'><td></td><td></td><td></td></tr></thead>";
-                outXml += @"<tbody>";
-                if (mdl._LstResolutionActions != null && mdl._LstResolutionActions.Count > 0)
-                {
-                    int j = 0;
-                    for (int i = 0; i < mdl._LstResolutionActions.Count; i++)
-                    {
-                        if (mdl._LstResolutionActions[i].SerialNo == null || mdl._LstResolutionActions[i].SerialNo == "")
-                        {
-                            if (j == 0)
-                            {
-                                outXml = outXml + @"<tr style ='padding:5px;'>
-                                <td style='padding:10px;font-weight:bold; border: 1px solid black;border-collapse: collapse;vertical-align:top'>Sr. No</th>
-                                <td style='padding:10px;font-weight:bold; border: 1px solid black;border-collapse: collapse;vertical-align:top'>Resolution No. & Date</th> 
-                                <td style='padding:10px;font-weight:bold;border: 1px solid black;border-collapse: collapse;vertical-align:top'>Resolution Details</th>";
-                         
-                            }
-                            j = j + 1;
-                        }
-
-                        outXml += @"<tr>
-        										<td style='padding:10px; border: 1px solid black;border-collapse: collapse;vertical-align:top'>               
-        												" + Convert.ToString(i + 1) + @"<br>    
-        										</td>
-        										<td style='padding: 10px; border: 1px solid black;border - collapse: collapse;vertical-align:top '>
-                                                " + Convert.ToString(mdl._LstResolutionActions[i].LetterNo) + @"<br>" + Convert.ToString(mdl._LstResolutionActions[i].AgendaDate) + @"
-                                                </td>
+        //    if (mdl._LstReferences != null && mdl._LstReferences.Count > 0)
+        //    {
+        //        //Resolutions list start from here
+        //        outXml += @"<div><h1 style='font-size: 20px; font-weight: 700; text-align: center;margin: auto;text-transform: uppercase;'>ਕਮਿਸ਼ਨਰ ਦਾ ਦਫ਼ਤਰ "
+        //                + mdl._LstReferences[0].FromDeptLocal + "</h1>";
+        //        outXml += @"<p style='font-size: 16px; text-align: center;font-weight:bold'>Telephone No. " + mdl._LstReferences[0].DeptPhoneNo + "<br> Email:" + mdl._LstReferences[0].DeptEmail + "</p></div>";
 
 
-                        <td style ='padding:10px; border: 1px solid black;border - collapse: collapse;vertical-align:top'>";
-                        string _SubjectDetails = Convert.ToString(mdl._LstResolutionActions[i].SubjectDetails);
-                        string _subject = Convert.ToString(mdl._LstResolutionActions[i].Subject);
-                        if (_subject != "")
-                        {
+        //        outXml += @"<table class='pdf-table maintable' style='font-size: 12pt;''>";
+        //        outXml += @"<tfoot><tr><td colspan='5' style='border-bottom: 1px solid black;'></td></tr></tfoot>";
+        //        outXml += @"<thead><tr style='border-bottom: 1px solid black;'><td></td><td></td><td></td></tr></thead>";
+        //        outXml += @"<tbody>";
+        //        if (mdl._LstResolutionActions != null && mdl._LstResolutionActions.Count > 0)
+        //        {
+        //            int j = 0;
+        //            for (int i = 0; i < mdl._LstResolutionActions.Count; i++)
+        //            {
+        //                if (mdl._LstResolutionActions[i].SerialNo == null || mdl._LstResolutionActions[i].SerialNo == "")
+        //                {
+        //                    if (j == 0)
+        //                    {
+        //                        outXml = outXml + @"<tr style ='padding:5px;'>
+        //                        <td style='padding:10px;font-weight:bold; border: 1px solid black;border-collapse: collapse;vertical-align:top'>Sr. No</th>
+        //                        <td style='padding:10px;font-weight:bold; border: 1px solid black;border-collapse: collapse;vertical-align:top'>Resolution No. & Date</th> 
+        //                        <td style='padding:10px;font-weight:bold;border: 1px solid black;border-collapse: collapse;vertical-align:top'>Resolution Details</th>";
 
-                            _subject = "<b>" + _subject + " :- </b>";
-                        }
+        //                    }
+        //                    j = j + 1;
+        //                }
+
+        //                outXml += @"<tr>
+        //										<td style='padding:10px; border: 1px solid black;border-collapse: collapse;vertical-align:top'>               
+        //												" + Convert.ToString(i + 1) + @"<br>    
+        //										</td>
+        //										<td style='padding: 10px; border: 1px solid black;border - collapse: collapse;vertical-align:top '>
+        //                                        " + Convert.ToString(mdl._LstResolutionActions[i].LetterNo) + @"<br>" + Convert.ToString(mdl._LstResolutionActions[i].AgendaDate) + @"
+        //                                        </td>
 
 
-                        outXml += @"" + _subject + " " + _SubjectDetails;
-                        outXml += @"<br><b>House Decision:</b><br>" + Convert.ToString(mdl._LstResolutionActions[i].HouseDecision) + @"<br>";
-                        outXml += @"<b>Please specify under which point of instructions dated 10.10.2022 this resolution is covered:</b><br>" + Convert.ToString(mdl._LstResolutionActions[i].Act) + @"<br>";
-                        outXml += @"<b>Comments of Commissioner/ E.O.:</b><br>" + Convert.ToString(mdl._LstResolutionActions[i].commissioner) + @"</td> </tr>";
+        //                <td style ='padding:10px; border: 1px solid black;border - collapse: collapse;vertical-align:top'>";
+        //                string _SubjectDetails = Convert.ToString(mdl._LstResolutionActions[i].SubjectDetails);
+        //                string _subject = Convert.ToString(mdl._LstResolutionActions[i].Subject);
+        //                if (_subject != "")
+        //                {
 
-                       //<td style ='padding:10px;margin-bottom: 20px; border: 1px solid black;border-collapse: collapse;vertical-align:top'>
-                       //                        " + Convert.ToString(mdl._LstResolutionActions[i].Act) + @"                                             
-                       //                         </td><td style ='padding:10px;margin-bottom: 20px; border: 1px solid black;border - collapse: collapse;vertical-align:top'>
-                       //                        " + Convert.ToString(mdl._LstResolutionActions[i].commissioner) + @"
-                       //                         </tr>";
-                    }
-                }
-                outXml += @"</tbody>";
-                outXml += @"</table>";
-                outXml += @"<br/><br/><div style='text-align:right;padding-top:5px'><img src='" + signature + "' alt='Signature' style='height:50px;'></div>";
+        //                    _subject = "<b>" + _subject + " :- </b>";
+        //                }
 
-                outXml += @"<p style ='text-align: right; font-size: 18px;'> 
-                                         ਕਮਿਸ਼ਨਰ,<br>" + mdl._LstReferences[0].FromOfficeLocal.Replace("House", "").Trim()
-                + "</p>";
-                outXml += @"</div></body> </html>";
-            }
-            return outXml;
-        }
+
+        //                outXml += @"" + _subject + " " + _SubjectDetails;
+        //                outXml += @"<br><b>House Decision:</b><br>" + Convert.ToString(mdl._LstResolutionActions[i].HouseDecision) + @"<br>";
+        //                outXml += @"<b>Please specify under which point of instructions dated 10.10.2022 this resolution is covered:</b><br>" + Convert.ToString(mdl._LstResolutionActions[i].Act) + @"<br>";
+        //                outXml += @"<b>Comments of Commissioner/ E.O.:</b><br>" + Convert.ToString(mdl._LstResolutionActions[i].commissioner) + @"</td> </tr>";
+
+        //               //<td style ='padding:10px;margin-bottom: 20px; border: 1px solid black;border-collapse: collapse;vertical-align:top'>
+        //               //                        " + Convert.ToString(mdl._LstResolutionActions[i].Act) + @"                                             
+        //               //                         </td><td style ='padding:10px;margin-bottom: 20px; border: 1px solid black;border - collapse: collapse;vertical-align:top'>
+        //               //                        " + Convert.ToString(mdl._LstResolutionActions[i].commissioner) + @"
+        //               //                         </tr>";
+        //            }
+        //        }
+        //        outXml += @"</tbody>";
+        //        outXml += @"</table>";
+        //        outXml += @"<br/><br/><div style='text-align:right;padding-top:5px'><img src='" + signature + "' alt='Signature' style='height:50px;'></div>";
+
+        //        outXml += @"<p style ='text-align: right; font-size: 18px;'> 
+        //                                 ਕਮਿਸ਼ਨਰ,<br>" + mdl._LstReferences[0].FromOfficeLocal.Replace("House", "").Trim()
+        //        + "</p>";
+        //        outXml += @"</div></body> </html>";
+        //    }
+        //    return outXml;
+        //}
 
         //public async Task<ActionResult> GetPreviewCommisioner(int AgendaId, string refid)
         //{
@@ -11048,7 +11615,7 @@ th, td {
             if (formatType == "1")
                 htmlString = GetProceedingCoveringLetterpdf(AgendaId, refid, 1);
             else
-                htmlString = GetProceedingCoveringFormatedLetterpdf(AgendaId, refid);
+                htmlString = GetProceedingCoveringFormatedLetterpdf(AgendaId, refid, 1);
 
             var pdfOptions = new PuppeteerSharp.PdfOptions
             {
@@ -11282,7 +11849,7 @@ th, td {
                 string value = ConfigurationManager.AppSettings["FormatType"];
                 htmlString = value == "1"
                     ? GetProceedingCoveringLetterpdf(AgendaId, refid, 0)
-                    : GetProceedingCoveringFormatedLetterpdf(AgendaId, refid);
+                    : GetProceedingCoveringFormatedLetterpdf(AgendaId, refid,0);
 
                 // 2️⃣ SHORT filename (path-length safe)
                 filePath = $"Proceedings/P_{AgendaId}_{DateTime.Now:HHmmss}.pdf";
@@ -12002,9 +12569,7 @@ th, td {
                     //<h1 style='font-size: 30px; font-weight: 700; text-align: center; border-bottom: 3px solid #000; padding-top: 20px;'>"
                     //+ HeaderlistofAgenda.AgendaName + "</h1>";
                     //+ HeaderlistofAgenda.Header +
-                    outXml += @"<p style='font-size: 12pt; text-align: justify'>
-                 
-                 ਮਿਉਂਸਪਲ ਕਾਰਪੋਰੇਸ਼ਨ, ਐਸ.ਏ.ਐਸ ਨਗਰ ਦੀ ਸਧਾਰਨ ਮੀਟਿੰਗ ਮਿਤੀ:" + HeaderlistofAgenda.AgendaDate.ToString() + @"ਦਿਨ  : " + dayPunjabi + @"ਨੂੰ ਸਮਾਂ ਸਵੇਰੇ " + HeaderlistofAgenda.StartTime + "ਵਜੇ ਸ੍ਰੀ ਅਮਰਜੀਤ ਸਿੰਘ ਸਿੱਧੂ, ਮੇਅਰ, ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ ਨਗਰ ਦੀ ਪ੍ਰਧਾਨਗੀ ਹੇਠ ਦਫ਼ਤਰ ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ ਨਗਰ ਵਿਖੇ ਹੋਣੀ ਨਿਸ਼ਚਿਤ ਕੀਤੀ ਗਈ ਹੈ। ਇਸ ਦਾ ਏਜੰਡਾ ਹੇਠ ਲਿਖੇ ਅਨੁਸਾਰ ਹੈ:—   </p></div>";
+                    outXml += @"<p style='font-size: 12pt; text-align: justify'>"  + HeaderlistofAgenda.AgendaDate.ToString() + @"ਦਿਨ  : " + dayPunjabi + @"ਨੂੰ ਸਮਾਂ ਸਵੇਰੇ " + HeaderlistofAgenda.StartTime + "ਵਜੇ ਸ੍ਰੀ ਅਮਰਜੀਤ ਸਿੰਘ ਸਿੱਧੂ, ਮੇਅਰ, ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ ਨਗਰ ਦੀ ਪ੍ਰਧਾਨਗੀ ਹੇਠ ਦਫ਼ਤਰ ਨਗਰ ਨਿਗਮ, ਐਸ.ਏ.ਐਸ ਨਗਰ ਵਿਖੇ ਹੋਣੀ ਨਿਸ਼ਚਿਤ ਕੀਤੀ ਗਈ ਹੈ। ਇਸ ਦਾ ਏਜੰਡਾ ਹੇਠ ਲਿਖੇ ਅਨੁਸਾਰ ਹੈ:—   </p></div>";
                 }
             }
             outXml += @"<table  class='pdf-table maintable' style='font-size: 12pt;'>";
@@ -14211,10 +14776,9 @@ th, td {
                 You are kindly requested to ensure your timely presence at the meeting.
                 </p>
 
-                <p><strong>Note:</strong> This is a system-generated email. Please do not reply to this message.</p>
-
                 <p>Regards,<br/>
                 Digital MC House, {MCName}</p>
+                <p><strong>Note:</strong> This is a system-generated email. Please do not reply to this message.</p>
 ";
             }
 
@@ -14230,11 +14794,12 @@ th, td {
                 is being sent to you for your information and further appropriate action.
                 </p>
 
-                <p><strong>Note: This is a system-generated email. Please do not reply to this message.</strong></p>
+                
 
                 <p>Regards,<br/>
                 Digital MC House, {MCName}</p></html>
-";
+                <p><strong>Note: This is a system-generated email. Please do not reply to this message.</strong></p>
+             ";
             }
 
             if (emails == null || !emails.Any() || string.IsNullOrWhiteSpace(subject) || string.IsNullOrWhiteSpace(body))
@@ -14242,71 +14807,107 @@ th, td {
                 return Json(new { success = false, message = "Missing required fields." });
             }
 
+            //try
+            //{
+            //    string emailUser = WebConfigurationManager.AppSettings["emailuser"];
+            //    string emailPwd = WebConfigurationManager.AppSettings["emailpwd"];
+            //    string emailHost = WebConfigurationManager.AppSettings["emailhost"];
+            //    int emailPort = Convert.ToInt32(WebConfigurationManager.AppSettings["emailport"]);
+            //    bool enableSsl = Convert.ToBoolean(WebConfigurationManager.AppSettings["enablessl"]);
+
+            //    using (MailMessage mail = new MailMessage())
+            //    {
+            //        mail.From = new MailAddress(emailUser);
+
+            //        foreach (string email in emails)
+            //        {
+            //            if (!string.IsNullOrWhiteSpace(email))
+            //                mail.To.Add(email.Trim());
+            //        }
+
+            //        mail.Subject = subject;
+            //        mail.Body = body;
+            //        mail.IsBodyHtml = true;
+            //        mail.BodyEncoding = Encoding.UTF8;
+
+            //        // ---------- Main Attachment ----------
+            //        if (!string.IsNullOrWhiteSpace(azureFileUrl))
+            //        {
+            //            byte[] fileBytes = new WebClient().DownloadData(azureFileUrl);
+            //            string fileName = Path.GetFileName(new Uri(azureFileUrl).LocalPath);
+            //            mail.Attachments.Add(new Attachment(new MemoryStream(fileBytes), fileName));
+            //        }
+
+            //        // ---------- Covering Letter Attachments ----------
+            //        if (!string.IsNullOrWhiteSpace(CoveringLetter))
+            //        {
+            //            foreach (var letter in CoveringLetter.Split(','))
+            //            {
+            //                string url = letter.Trim();
+            //                if (string.IsNullOrEmpty(url)) continue;
+
+            //                byte[] fileBytes = new WebClient().DownloadData(url);
+            //                string fileName = Path.GetFileName(new Uri(url).LocalPath);
+            //                mail.Attachments.Add(new Attachment(new MemoryStream(fileBytes), fileName));
+            //            }
+            //        }
+
+            //        System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+            //        using (SmtpClient smtp = new SmtpClient(emailHost, emailPort))
+            //        {
+            //            smtp.UseDefaultCredentials = false;
+            //            smtp.Credentials = new NetworkCredential(emailUser, emailPwd);
+            //            smtp.EnableSsl = enableSsl;
+            //            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            //            smtp.Send(mail);
+            //        }
+            //    }
+
+            //    return Json(new { success = true, message = "Email sent successfully." });
+            //}
+            //catch (SmtpException smtpEx)
+            //{
+            //    return Json(new
+            //    {
+            //        success = false,
+            //        message = "SMTP Error: " + smtpEx.Message,
+            //        detail = smtpEx.InnerException?.Message
+            //    });
+            //}
+            //catch (Exception ex)
+            //{
+            //    return Json(new
+            //    {
+            //        success = false,
+            //        message = "Error sending email.",
+            //        detail = ex.Message
+            //    });
+            //}
+
             try
             {
-                string emailUser = WebConfigurationManager.AppSettings["emailuser"];
-                string emailPwd = WebConfigurationManager.AppSettings["emailpwd"];
-                string emailHost = WebConfigurationManager.AppSettings["emailhost"];
-                int emailPort = Convert.ToInt32(WebConfigurationManager.AppSettings["emailport"]);
-                bool enableSsl = Convert.ToBoolean(WebConfigurationManager.AppSettings["enablessl"]);
+                EmailService emailService =
+                    new EmailService();
 
-                using (MailMessage mail = new MailMessage())
-                {
-                    mail.From = new MailAddress(emailUser);
 
-                    foreach (string email in emails)
-                    {
-                        if (!string.IsNullOrWhiteSpace(email))
-                            mail.To.Add(email.Trim());
-                    }
+                EmailResult result =
+                    emailService.SendEmail(
+                        emails,
+                        subject,
+                        body,
+                        azureFileUrl,
+                        CoveringLetter,
+                        User?.Identity?.Name,
+                        Request.UserHostAddress);
 
-                    mail.Subject = subject;
-                    mail.Body = body;
-                    mail.IsBodyHtml = true;
-                    mail.BodyEncoding = Encoding.UTF8;
 
-                    // ---------- Main Attachment ----------
-                    if (!string.IsNullOrWhiteSpace(azureFileUrl))
-                    {
-                        byte[] fileBytes = new WebClient().DownloadData(azureFileUrl);
-                        string fileName = Path.GetFileName(new Uri(azureFileUrl).LocalPath);
-                        mail.Attachments.Add(new Attachment(new MemoryStream(fileBytes), fileName));
-                    }
-
-                    // ---------- Covering Letter Attachments ----------
-                    if (!string.IsNullOrWhiteSpace(CoveringLetter))
-                    {
-                        foreach (var letter in CoveringLetter.Split(','))
-                        {
-                            string url = letter.Trim();
-                            if (string.IsNullOrEmpty(url)) continue;
-
-                            byte[] fileBytes = new WebClient().DownloadData(url);
-                            string fileName = Path.GetFileName(new Uri(url).LocalPath);
-                            mail.Attachments.Add(new Attachment(new MemoryStream(fileBytes), fileName));
-                        }
-                    }
-
-                    System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-                    using (SmtpClient smtp = new SmtpClient(emailHost, emailPort))
-                    {
-                        smtp.UseDefaultCredentials = false;
-                        smtp.Credentials = new NetworkCredential(emailUser, emailPwd);
-                        smtp.EnableSsl = enableSsl;
-                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        smtp.Send(mail);
-                    }
-                }
-
-                return Json(new { success = true, message = "Email sent successfully." });
-            }
-            catch (SmtpException smtpEx)
-            {
                 return Json(new
                 {
-                    success = false,
-                    message = "SMTP Error: " + smtpEx.Message,
-                    detail = smtpEx.InnerException?.Message
+                    success = result.Success,
+                    status = result.Status,
+                    message = result.Message,
+                    trackingId = result.TrackingId,
+                    recipient = result.ToEmail
                 });
             }
             catch (Exception ex)
@@ -14314,12 +14915,9 @@ th, td {
                 return Json(new
                 {
                     success = false,
-                    message = "Error sending email.",
-                    detail = ex.Message
+                    message = ex.Message
                 });
             }
-
-
         }
 
 
