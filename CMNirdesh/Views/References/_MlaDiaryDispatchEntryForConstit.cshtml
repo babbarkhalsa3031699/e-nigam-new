@@ -843,40 +843,8 @@
     @Html.AntiForgeryToken()
 
     <div class="row">
-
-        @if (Model.PaperEntryType == "NewEntry")
-        {
-            if (SiteName == "CMNirdesh")
-            {
-                <div class="col-md-12 col-lg-12 col-xl-12 row">
-                    <div class=" col-xl-3 col-md-3">
-                    </div>
-                    <div class=" col-xl-3 col-md-3">
-                    </div>
-                    <div class=" col-xl-6 col-md-6">
-                        <div class="dispach_hdr">
-                            <span>Linked Ref Number:</span>
-                            <input type="text" id="txtRefSerach" onkeypress="return allowOnlyNumber(event);" />
-                            <input type="button" id="btnSearch" value="Search" onclick="SearchRefNo('1')" />
-                        </div>
-                    </div>
-                    <br />
-                </div>
-            }
-        }
-        else
-        {
-            <div class="col-md-12 col-lg-12 col-xl-12">
-
-            </div>
-            <br />
-
-        }
-
-
-
         <!-- Section 1: Office Routing -->
-        <div class="form-section-card">
+        <!--<div class="form-section-card">
             <div class="form-section-title"><i class="fa fa-building-o"></i> Office Routing</div>
             <div class="row form-row-group">
                 <div class="col-sm-6 col-md-6 col-lg-6 form-group">
@@ -892,10 +860,10 @@
                 <div class="col-sm-6 col-md-6 col-lg-6 form-group">
                     <span class="fotm_lbl">Office Detail:</span>
                     <div>
-                        <span>
+                        <span>-->
                             @*@Model.officename
                                 @Html.HiddenFor(m => m.FromOfficeId)*@
-                            @Html.DropDownListFor(m => m.FromOfficeId, Model.OfficeList, "-- Select --", new { @id = "ddlFromOffice", @class = "DdlClass", @tabindex = "2" })
+                            <!--@Html.DropDownListFor(m => m.FromOfficeId, Model.OfficeList, "-- Select --", new { @id = "ddlFromOffice", @class = "DdlClass", @tabindex = "2" })
                         </span>
                     </div>
                 </div>
@@ -906,9 +874,9 @@
                     <span class="fotm_lbl">To Office:</span>
                     <div>
                         <span>
-                            <select id="ToDept" name="@Html.NameFor(x => x.ToDeptId)" class="DdlClass" onchange="getdepdata()">
+                            <select id="ToDept" name="@Html.NameFor(x => x.ToDeptId)" class="DdlClass" onchange="getdepdata()">-->
                                 @*<option value="">--Select--</option>*@
-                                @foreach (var dep in Model.mDepartmentListPbi)
+                                <!--@foreach (var dep in Model.mDepartmentListPbi)
                                 {
                                     <option value="@dep.Value" data-num="@dep.FileNo" data-pbi="@dep.TextPbi" data-sec="@dep.SecPbi">@dep.Text</option>
                                 }
@@ -928,7 +896,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <!-- Section 2: Reference Information -->
         <div class="form-section-card">
@@ -987,32 +955,6 @@
                     </div>
                 </div>
             </div>
-
-            @if (SiteName == "CMNirdesh")
-            {
-                <div class="row">
-                    <div class="col-md-12 col-lg-12">
-                        <a class="tamp_ancor" href="#" id="atemplate" onclick="ShowTemplate()">
-                            <i class="fa fa-bookmark-o"></i> Templates:
-                        </a>
-                    </div>
-                </div>
-            }
-
-            <div class="row col-md-12 col-xl-12 col-lg-12">
-                <div class="col-md-6 col-lg-6">
-                    <select id="divTemplates" style="display:none;" class="temp_drop" onchange="GetTemplate()">
-                        @foreach (var temp in Model.TemplateList)
-                        {
-                            <option class="temp_lbls" id="temp_@temp.Id" value="@temp.Id" head="@temp.TemplateHead" subject="@temp.TemplateSubjectEng" body="@temp.BodyTextEng">
-                                @temp.TemplateName
-                            </option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-6 col-lg-6">
-                </div>
-            </div>
         </div>
 
         <!-- Section 3: Subject & Details -->
@@ -1059,119 +1001,6 @@
             </div>
         </div>
 
-
-
-        @if (SiteName == "e-Cabinate")
-        {
-            if (Model.dashboardtype == "1")
-            {
-                <div class="row mt-4">
-                    <div class="col-md-6 col-lg-6">
-                        <span class="fotm_lbl">Appendix-A: Statement of Implementation Schedule:</span>
-                        <span class="fotm_lbl" , style="font-size:10px">(Gist of Decision Required,Project Benefits,Timeframe)</span>
-                        <div class="larg_txt_2">
-                            <input style="font-size: 15px;" id="StatementEnglish" type="file" name="StatementEnglish">
-                            @*@Html.TextBoxFor(m => m.StatementImplementation, new { @id = "txtStatementImplementation", @tabindex = "9" })*@
-                            <div class="col-xl-auto col-lg-10 col-md-6 col-sm-12 col-12 ">
-                                <div id="StatementFile" class="d-flex align-items-center gap-5 ">
-                                    <div class="row">
-                                        <a href="#" id="sfileUrl" target="_blank"> <span id="sfileName" class="file_nameEn"></span> </a>
-                                        <div id="sfileSize" class="file_sizeEn col-6"></div>
-                                        <span id="removeSFile" class="removeUploadEnclosure col-3" onclick="removeStatementfile('')" style="height: 26px;"><i class="fa fa-times"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-6">
-                        <span class="fotm_lbl">Appendix-A: Statement of Implementation  Schedule (in Punjabi):</span>
-                        <span class="fotm_lbl" , style="font-size:10px">(Gist of Decision Required,Project Benefits,Timeframe)</span>
-                        <div class="larg_txt_2">
-                            <input style="font-size: 15px;" id="StatementPunjabi" type="file" name="StatementPunjabi">
-                            @*@Html.TextBoxFor(m => m.StatementImplementation_local, new { @id = "txtStatementImplementation_local", @tabindex = "9" })*@
-                            <div class="col-xl-auto col-lg-10 col-md-6 col-sm-12 col-12 ">
-                                <div id="StatementFilePunjabi" class="d-flex align-items-center gap-5 ">
-                                    <div class="row">
-                                        <a href="#" id="sfileUrlPb" target="_blank"> <span id="sfileNamePb" class="file_nameEn"></span> </a>
-                                        <div id="sfileSizePb" class="file_sizeEn col-6"></div>
-                                        <span id="removeSFilePb" class="removeUploadEnclosure col-3" onclick="removeStatementfile('Pb')" style="height: 26px;"><i class="fa fa-times"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mt-4">
-                    <div class="col-md-6 col-lg-6">
-                        <span class="fotm_lbl">Press Note:</span>
-                        <div class="larg_txt_2">
-
-                            @Html.TextAreaFor(m => m.PressNoteENG, new { @id = "txtpressnote", @tabindex = "9", @style = "height: 100px;" })
-
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-6">
-                        <span class="fotm_lbl">Press Note in Punjabi:</span>
-                        <div class="larg_txt_2">
-
-                            @Html.TextAreaFor(m => m.PressNotePun, new { @id = "txtpressnotePB", @tabindex = "9", @style = "height: 100px;" })
-
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="row mt-4">
-
-
-                    @*<div class="col-md-3 col-lg-">
-                            <span class="fotm_lbl">Time Frame for Implementation (Days): </span>
-                            <div class="larg_txt_2">
-                                @Html.DropDownListFor(m => m.TimelineId, Model.TimeLine, new { @id = "DdlTimeline", @tabindex = "3", @class = "DdlClass", @onchange = "timelinechange()" })
-                            </div>
-                        </div>
-
-                        <div class="col-md-3 col-lg-">
-                            <span class="fotm_lbl">Remarks:</span>
-                            <div class="larg_txt_2">
-                                @Html.TextBoxFor(m => m.TimelineRemarks, new { @id = "txtTimelineRemarks", @tabindex = "9" })
-                            </div>
-                        </div>*@
-
-                    <div class="col-md-6 col-lg-6">
-                        <span class="fotm_lbl">Advice From Department:</span>
-                        <div class="larg_txt_2">
-
-                            <select id="ddldeptlist" name="@Html.NameFor(x => x.DepartmentListIds)" class="DdlClass" multiple='multiple'>
-                                @foreach (var dep in Model.DeparmentList)
-                                {
-                                    <option value="@dep.Value" data-num="@dep.FileNo" data-pbi="@dep.TextPbi" data-sec="@dep.SecPbi">@dep.Text</option>
-                                }
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <span class="fotm_lbl">Approval Checklist:</span>
-
-                        @*@Html.DropDownListFor(m => m.PressNotePun,Model.CMApproval, new { @id = "ddlchecklist", @class = "DdlClass", @multiple = "multiple", @tabindex = "9" })*@
-                        <select id="ddlchecklist" name="@Html.NameFor(x => x.ApprovalListIds)" class="DdlClass" multiple='multiple'>
-
-                            @foreach (var dep in Model.CMApproval)
-                            {
-                                <option value="@dep.Value">@dep.Text</option>
-                            }
-
-                        </select>
-
-                    </div>
-                </div>
-            }
-        }
         <!-- Section 4: Attachments & Additional Details -->
         <div class="form-section-card">
             <div class="form-section-title"><i class="fa fa-paperclip"></i> Annexure & Additional Details</div>
@@ -1288,128 +1117,6 @@
         </div>
 
 
-        @if (SiteName == "PVS")
-        {
-            <div id="pvs" class="filter-part row  m-3" style="width: 97%;">
-                <form class="form row p-3">
-
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-12">
-                        <label for="inputState" class=" fotm_lbl ">Assembly:</label>
-                        @Html.DropDownListFor(m => m.AssemblyCode, Model.AssemblyList, "Select", new { @onchange = "changeAssembly()", @id = "Assembly" })
-
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-12">
-                        <label for="inputState" class=" fotm_lbl ">Session:</label>
-                        @Html.DropDownListFor(m => m.SessionCode, Model.SessionList, "Select", new { @onchange = "changeSession()", @id = "Session" })
-
-                    </div>
-
-
-
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-12">
-                        <label for="inputState" class="fotm_lbl">Session Date:</label>
-                        @Html.DropDownListFor(m => m.Id, Model.SessDatelist, "Select", new { @id = "Date" })
-                    </div>
-
-
-
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-12">
-                        <label for="inputState" class="fotm_lbl">Members:</label>
-                        @Html.DropDownListFor(m => m.Memembercode, Model.MemberList, "Select", new { @id = "ddlmember" })
-                    </div>
-
-
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-12">
-                        <label for="inputState" class="fotm_lbl">Ministers:</label>
-                        @Html.DropDownListFor(m => m.MinisterCode, Model.MinisterList, "Select", new { @id = "ddlminister" })
-                    </div>
-
-
-                </form>
-            </div>
-        }
-
-
-
-
-
-
-
-
-
-        @if (SiteName == "PVS")
-        {
-            <div class="row col-md-12 col-lg-12 col-xl-12" style="margin-top:10px;">
-                <div class=" col-md-12 col-lg-12 col-xl-12 chk_diry">
-                    <span id="spnTitle" class="">
-                        <input type="checkbox" id="chkApplicant" class="DdlClass" />
-                    </span>
-                    <div class="profile-info-name">
-                        Applicant Details:
-                    </div>
-                </div>
-            </div>
-
-            <div class="row col-md-12 col-lg-12 col-xl-12" style="display:none; margin-top:5px;" id="divApplicantDetails">
-                <div class="col-md-3 col-lg-3 col-xl-3">
-                    <span class="fotm_lbl">Applicant Name:</span>
-                    <div>
-
-                        @Html.TextBoxFor(m => m.ApplicantName, new { @id = "TxtApplicantName", @autocomplete = "off", @tabindex = "9", @class = "DdlClass", @onchange = "getdepdata()" })
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-lg-3 col-xl-3">
-                    <span class="fotm_lbl">Applicant Address:</span>
-                    <div>
-                        @Html.TextAreaFor(m => m.ApplicantAddress, new { @id = "TxtApplicantAddress", @tabindex = "10", @class = "DdlClass" })
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-lg-3 col-xl-3">
-                    <span class="fotm_lbl">Applicant Mobile:</span>
-                    <div>
-                        @Html.TextBoxFor(m => m.ApplicantMobile, new { @id = "TxtApplicantMobile", @tabindex = "11", @autocomplete = "off", @class = "DdlClass", @maxlength = "10", @onkeypress = "return allowOnlyNumber(event);" })
-                    </div>
-                </div>
-                <div class="col-md-3 col-lg-3 col-xl-3">
-                    <span class="fotm_lbl">Applicant Email:</span>
-                    <div>
-                        @Html.TextBoxFor(m => m.ApplicantEmail, new { @id = "txtemail", @tabindex = "12", @autocomplete = "off", @class = "DdlClass" })
-                    </div>
-                </div>
-
-
-            </div>
-
-        }
-
-
-
-        @if (SiteName == "Noe-Cabinate")
-        {
-            if (Model.dashboardtype != "1")
-            {
-                <div class="row col-md-12 col-lg-12 col-xl-12" style="">
-                    <div class=" col-md-12 col-lg-12 col-xl-12 chk_diry">
-                        <div class="profile-info-name">
-                            Is Supplementary:
-                        </div>
-                        <span id="spnTitle" class="">
-                            @Html.CheckBoxFor(m => m.IsSup, new { @id = "chkSup", @class = "DdlClass" })
-                        </span>
-
-                    </div>
-                </div>
-                <br />
-            }
-        }
-
-
-
-
-
         <div class="row">
             <div class="col-md-12 col-lg-12 col-xl-12">
                 <div class="dispatch-action-footer">
@@ -1449,23 +1156,14 @@
                 </div>
             </div>
         </div>
-
-
     </div>
-
 }
-
 
 <script>
     var mlfiles = new Array();
     $(document).ready(function () {
-
-
-       //LoadAssemblyData();
-       // LoadSessionData();
-        //LoadDocumentType();
-        //$.noConflict();
         letterfile();
+
         var DeptId = '@Model.DeptId';
 
         $("#chkZeroCost").change(function () {
@@ -1500,56 +1198,8 @@
             });
         }
 
-
-        //$('#ddldeptlist').multipleSelect({
-        //    columns: 1,
-        //    selectAll: false,
-        //    maxHeight: 370,
-        //    animate: 'slide',
-        //    width: '100%',
-        //    placeholder: 'Select  Department',
-        //    filter: true,
-        //    isOpen: false,
-        //    keepOpen: false,
-        //    multiple: true,
-
-        //});
-
-        //$('#ddlchecklist').multipleSelect({
-        //    columns: 1,
-        //    selectAll: false,
-        //    maxHeight: 370,
-        //    animate: 'slide',
-        //    width: '100%',
-        //    placeholder: 'Select  Department',
-        //    filter: true,
-        //    isOpen: false,
-        //    keepOpen: false,
-        //    multiple: true,
-
-        //});
-
-
-        //if (DeptId != '') {
-
-        //    alert(DeptId);
-        //    getdepdata();
-        //}
         var SDPreText = "";
         var SiteName = '@SiteName';
-        @*if (SiteName == "e-Cabinate") {
-            var dashboardtype = '@Model.dashboardtype';
-            if (dashboardtype == "1") {
-                bindOfficeDrpList($("#ToDept").val(), "77");
-            } else {
-                bindOfficeDrpList($("#ToDept").val(), "78");
-            }
-
-            var RefType = '@Model.RefType';
-            var RefTypeName = '@Model.MenuName';
-
-
-        }*@
 
         if (SiteName == "MC") {
             var dashboardtype = '@Model.RefType';
@@ -1564,107 +1214,7 @@
               }
          }
 
-
-
-
-
-        $("#ToDept").change(function () {
-            bindOfficeDrpList($("#ToDept").val(), "0");
-        });
-
-        var menuname = '@Model.MenuName';
-
-       // $('#myref').text(menuname);
-
-        function LoadAssemblyData()
-        {
-
-            $('#Assembly').empty();
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Action("GetAssembly", "References")',
-                dataType: 'json',
-                success: function (data) {
-                    var items = '';
-                    $.each(data, function (i, item) {
-                        var rows = "<option value='" + item.AssemblyCode + "'>" + item.AssemblyName + "</option>";
-                        $('#Assembly').append(rows);
-                    });
-                },
-                error: function (ex) {
-
-                }
-            });
-            return false;
-        }
-
-        function LoadSessionData() {
-            //var assmblycode = $('#Assembly :selected').val();
-            $('#Session').empty();
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Action("GetSession", "References")',
-                dataType: 'json',
-                //data: { AssemblyCode: assmblycode },
-                success: function (data) {
-
-                    var items = '';
-                    $.each(data, function (i, item) {
-                        var rows = "<option value='" + item.SessionCode + "'>" + item.SessionName + "</option>";
-                        $('#Session').append(rows);
-                    });
-                },
-                error: function (ex) {
-
-                }
-            });
-            return false;
-        }
-
-
-        function LoadDocumentType() {
-
-            $('#DdlDoctype').empty();
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Action("GetDocumentTypeVal", "References")',
-                dataType: 'json',
-                /*   data: { id: '' },*/
-                success: function (data) {
-                    var items = '';
-                    $.each(data, function (i, item) {
-                        var rows = "<option value='" + item.DocmentType + "'>" + item.DocumentTypeName + "</option>";
-                        $("#DdlDoctype").append(rows);
-                    });
-                },
-                error: function (ex) {
-
-                }
-            });
-            return false;
-        }
-
-
-        function LoadSessionDatesData() {
-            $('#Date').empty();
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Action("GetSessionDates", "References")',
-                dataType: 'json',
-                //data: { AssemblyCode: assmblycode, SessionCode: sessioncode },
-                success: function (data) {
-                    var items = '';
-                    $.each(data, function (i, item) {
-                        var rows = "<option value='" + item.ID + "'>" + item.SessionDate + "</option>";
-                        $('#Date').append(rows);
-                    });
-                },
-                error: function (ex) {
-
-                }
-            });
-            return false;
-        }
+        var menuname = '@Model.MenuName';        
 
         tinyMCE.init({
             selector: "#SubjectDetails",
@@ -1710,93 +1260,8 @@
                         editor.setContent(SDPreText || ""); // fallback initial value
                     }
                 });
-
-
             }
         });
-
-
-
-
-        //tinyMCE.init({
-        //    selector: "#SubjectDetails",
-        //    branding: false,
-        //    content_style:
-        //        "body {  font-size: 14pt; font-family: inherit; }",
-        //    plugins: 'table',
-        //    toolbar: 'undo redo |  bold italic fontfamily fontsize| alignleft aligncenter alignright alignjustify | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter ',
-        //    table_default_styles: {
-        //        width: '50%'
-        //    },
-        //    formats: {
-        //        // Changes the alignment buttons to add a class to each of the matching selector elements
-        //        alignleft: { selector: 'table', classes: 'left' },
-        //        bold: { inline: 'table', styles: { 'margin-left': '0px !important' } }
-        //    },
-
-        //    branding: false,
-        //    setup: function (editor) {
-        //        editor.on('BeforeSetContent', function (e) {
-        //            e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-        //                // Block a specific font
-
-        //                // console.log(fontFamily);
-        //                if (fontFamily.toLowerCase() === 'asees') {
-        //                    alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-        //                    e.setContent('[b]some[/b] html', { format: 'bbcode' });
-        //                    return ''; // Remove this font-family style
-
-        //                }
-        //                return match;
-        //            });
-        //        });
-        //    },
-
-        //     init_instance_callback(editor) {
-        //        editor.setContent(SDPreText);
-        //    }
-        //});
-
-        //tinyMCE.init({
-        //    selector: "#SubjectDetailsPB",
-        //    branding: false,
-        //    content_style:
-        //        "body {  font-size: 14pt; font-family: inherit; }",
-        //    plugins: 'table',
-        //    toolbar: 'undo redo |  bold italic fontfamily fontsize| alignleft aligncenter alignright alignjustify | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter ',
-        //    table_default_styles: {
-        //        width: '50%'
-        //    },
-        //    formats: {
-        //        // Changes the alignment buttons to add a class to each of the matching selector elements
-        //        alignleft: { selector: 'table', classes: 'left' },
-        //        bold: { inline: 'table', styles: { 'margin-left': '0px !important' } }
-        //    },
-        //    branding: false,
-        //    setup: function (editor) {
-        //        editor.on('BeforeSetContent', function (e) {
-        //            e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-        //                // Block a specific font
-
-        //                // console.log(fontFamily);
-        //                if (fontFamily.toLowerCase() === 'asees') {
-        //                    alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-        //                    e.setContent('[b]some[/b] html', { format: 'bbcode' });
-        //                    return ''; // Remove this font-family style
-
-        //                }
-        //                return match;
-        //            });
-        //        });
-
-
-
-        //    },
-        //    init_instance_callback(editor) {
-        //        editor.setContent(SDPreText);
-        //    }
-        //});
-
 
         $("#chkApplicant").click(function () {
 
@@ -1836,24 +1301,11 @@
         else {
             $("#IsFile").val("N");
         }
-
         //Auto save functionality developed by Joginder
-
-
         //end auto save
-
     });
 
-   // dsfsdfsdfs
 
-    function timelinechange() {
-        var days = $("#DdlTimeline").val();
-        if (days > 1) {
-            $("#txtTimelineRemarks").attr("disabled", "disabled");
-        } else {
-            $("#txtTimelineRemarks").removeAttr("disabled");
-        }
-    }
     function closedispatchrefid() {
         $("#linkModalRef").css("display", "none");
     }
@@ -1942,9 +1394,6 @@
                 },
                 complete: function (results) {
                     $('#loader-wrapper').hide();
-                    //setTimeout(function () {
-                    //    $('#divMsg').slideUp("slow");
-                    //}, 6000);
                 }
             });
         }
@@ -1986,7 +1435,6 @@
 
     }
 
-
     function get() {
         //alert('a');
         var selected = $("#DdlCctype option:selected");
@@ -1996,71 +1444,6 @@
             $("#hdnOfficeIdCC").val(message)
         });
        // alert($("#hdnOfficeIdCC").val());
-    }
-
-    function ShowTemplate() {
-        $("#divTemplates").show();
-        $("#atemplate").attr("onclick", "HideTemplate()");
-
-    }
-
-
-    function ShowLink()
-    {
-        $("#divTemplates").show();
-        $("#atemplate").attr("onclick", "HideTemplate()");
-    }
-
-    function HideTemplate() {
-        $("#divTemplates").hide();
-        $("#atemplate").attr("onclick", "ShowTemplate()");
-
-    }
-
-    function getdepdata() {
-
-
-        var filedate = $("#txtLetterDate").val();
-        var deppbi = $("#ToDept").find(':selected').attr('data-pbi');
-        var filenum = $("#ToDept").find(':selected').attr('data-num');
-        var depsec = $("#ToDept").find(':selected').attr('data-sec');
-        var name = $("#TxtApplicantName").val();
-
-        var body = tinyMCE.activeEditor.getContent();
-
-            body = body.replace("$$Secretary$$", depsec);
-            body = body.replace("$$ecretary$$", depsec);
-            body = body.replace("$$Department$$", deppbi);
-            body = body.replace("$$Department$$", deppbi);
-            body = body.replace("FileNo", filenum);
-            body = body.replace("FileNo", filenum);
-
-        if (name != "") {
-            body = body.replace("$$Name_and_Address$$", name);
-        }
-
-        body = body.replace("$$Date$$", filedate);
-        tinyMCE.get('SubjectDetails').setContent(body);
-
-    }
-
-
-
-
-
-    function GetTemplate() {
-
-        var obj= $("#divTemplates").val();
-        var head = $('#temp_' + obj).attr('head');
-        var subject = $('#temp_'+obj).attr('subject');
-        var body = $('#temp_'+obj).attr('body');
-        $("#TxtSubject").val(subject);
-        body = head + "<br/><b>"+ subject + "</b><br/>" + body;
-        tinyMCE.get('SubjectDetails').setContent(body);
-        var deptid = $("#ToDept").val();
-        if (deptid != '') {
-            getdepdata();
-        }
     }
 
     $('#TxtForwardDate').attr('readonly', true);
@@ -2121,45 +1504,6 @@
 
 
     }
-
-
-    function ministerlist(DeptID) {
-
-        $.ajaxSetup({ cache: false });
-        $.ajax({
-            url: '@Url.Action("MinisterList", "References")',
-            type: 'GET',
-            async: true,
-            data: { deptid: DeptID },
-            success: function (data) {
-                if (data)
-                {
-                    //$("#divToOfficeList").html(data);
-                    //var office = $("#OfficeId").val();
-                    //if (office != "") {
-                    //    $("#ddlToOffice").prepend("<option value='0'>Select</option>");
-                    //    $("#ddlToOffice option[value=" + office + "]").prop("selected", "selected");
-                    //    var utype = $('#DdlUserType').val();
-                    //    if (utype == 4) {
-                    //        $('#ddlToOffice option:not(:selected)').attr('disabled', true);
-                    //    }
-                    //}
-                    //else {
-                    //    $("#ddlToOffice").prepend("<option value='0'>Select</option>");
-                    //    $("#ddlToOffice option[value=0]").prop("selected", "selected");
-                    //}
-                }
-                else {
-
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-                alert(thrownError);
-            }
-        });
-    }
-
 
     function bindToOfficeDrpList(DeptID) {
         $.ajaxSetup({ cache: false });
@@ -2226,7 +1570,6 @@
     })
 
     function Save(draft) {
-        //debugger
         try {
             if (typeof window.tinymce != 'undefined' && $(window.tinymce.editors).length > 0) {
                 $(window.tinymce.editors).each(function (idx) {
@@ -2241,15 +1584,11 @@
                 alert("Please select To Department ?");
                 return false;
             }
-             if ($("#ddlToOffice").val() == "") {
-                alert("Please Select to Office Detail?");
-                return false;
-             }
-            //if ($("#ddlact").val() == "" || $("#ddlact").val() == "0") {
-            //    alert("Please Select Act Details");
-            //    return false;
-            //}
 
+            if ($("#ddlToOffice").val() == "") {
+            alert("Please Select to Office Detail?");
+            return false;
+            }
 
             var radiovalue = document.querySelector('input[name="isLetter"]:checked').value;
 
@@ -2284,26 +1623,10 @@
                 }
             }
 
-
-
-
-             //if ($("#TxtLetterNo").val() == "") {
-             //   alert("Please Enter Letter Number ?");
-             //   return false;
-             //}
-
-             //if ($("#txtLetterDate").val() == "") {
-             //   alert("Please Select Letter Date ?");
-             //   return false;
-             //}
-
              if ($("#TxtSubject").val() == "") {
                 alert("Please Enter Subject ?");
                 return false;
              }
-
-
-
              else {
 
                 var msg = "are you sure you want to Save?";
@@ -2316,12 +1639,10 @@
                     msg = "Please confirm before saving:\n\n" +
                         "Proposal Amount: ₹ " + amount + "\n\n" +
                         "Kindly ensure that the Proposal Amount entered is correct.Do you want to Save?";
-
                 }
 
 
                 if (confirm(msg)) {
-
                      if (draft == "0") {
                          $("#BtnCaption").val("Draft");
                      } else {
@@ -2329,17 +1650,15 @@
                      }
 
                     if ('@Model.PaperEntryType' == "NewEntry") {
-                        //alert('NewEntry');
+                        
                         var storageKey = "SubjectDetails_draft";
                         localStorage.removeItem(storageKey); // clear only on success
-
 
                         var ToDeptId = $("#ToDept").val();
                         var ddlToOffice = $("#ddlToOffice").val();
                         var ToDept = $("#ToDept").val()
                         var ToOffice = $("#ddlToOffice").val()
                         var Doctype = $("#DdlDoctype").val();
-
 
                         var LetterNo = $("#TxtLetterNo").val();
                         var LetterDate = $("#txtLetterDate").val();
@@ -2365,7 +1684,6 @@
 
                         if ($("#formDiaryDispatch").attr("enctype") == "multipart/form-data") {
                             var dataString = new FormData($("#formDiaryDispatch").get(0));
-
                             processData = false;
                         }
 
@@ -2507,53 +1825,6 @@
         }
     }
 
-    function MinistryChanged() {
-        var ministryID = $('#DdlEntryMinister').val();
-        if (ministryID == "0") {
-            $('#MinistryId').val(ministryID);
-            var select = $("#DdlDept");
-            select.empty();
-            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
-            $.ajax({
-                url: pathurl,
-                type: 'GET',
-                async: true,
-                data: { MinistryId: ministryID },
-                success: function (data) {
-                    var opt = document.createElement("option");
-                    document.getElementById("DdlDept").options.add(opt);
-                    opt.text = 'Select Department';
-                    opt.value = 0;
-                }, error: function (data) {
-                    alert("Something wrong...")
-                }
-            })
-        }
-
-        if (ministryID != "" && ministryID != null) {
-            $('#MinistryId').val(ministryID);
-            var select = $("#DdlDept");
-            select.empty();
-            var pathurl = '@Url.Action("GetDepartmentByMinistery", "NoticeDetails", new { Area = "OnlineMemberQuestions" })';
-            $.ajax({
-                url: pathurl,
-                type: 'GET',
-                async: true,
-                data: { MinistryId: ministryID },
-                success: function (data) {
-                    $.each(data, function (index, itemData) {
-                        select.append($('<option/>', {
-                            value: itemData.DepartmentId,
-                            text: itemData.DepartmentName
-                        }));
-                    });
-                }, error: function (data) {
-                    alert("Something wrong...")
-                }
-            })
-        }
-    }
-
     $("#fileupload1").click(function (event) {
         $('#Actionfile').text('No');
         $('#IsFile').val("N");
@@ -2630,7 +1901,6 @@
          });
  });
 
-
     var i = 1;
     $("#fileuploadEnclosure").click(function (event) {
     $('#EnclosureFile').text('No');
@@ -2661,7 +1931,6 @@
     });
     });
 
-
     function AddToFile(pdfname, path, size, pdfuniquename, i) {
         var isPdf = (pdfname || '').toLowerCase().indexOf('.pdf') > -1;
         var iconClass = isPdf ? 'fa fa-file-pdf-o' : 'fa fa-file-text-o';
@@ -2689,6 +1958,7 @@
             FileName: pdfname
         });
     }
+
     function hidevalueForwd() {
         $('.progress1 .progress-bar').fadeOut(500);
         var sim = setTimeout("hidevalueForwd()", 3000);
@@ -2702,20 +1972,6 @@
     function hidevalueActionEnclosure() {
         $('.progressEnclosure .progress-bar').fadeOut(500);
         var sim = setTimeout("hidevalueActionEnclosure()", 3000);
-    }
-
-    function removeStatementfile(lang) {  // Forward File
-        $('#sfileName' + lang).html('');
-        $('#sfileSize' + lang).html('');
-        $("#removeSFile" + lang).hide();
-        $("#removeSFile" + lang).css("display", "none");
-        $('#hdnsfile' + lang).val('');
-
-        $.post("/eFile/RemoveMlaForwardFiles",
-            {
-            },
-            function (data) {
-            });
     }
 
     function removefileupload(i) {  // Forward File
@@ -2750,39 +2006,6 @@
         return true;
     }
 
-    function Disablecontrols() {
-        $("#TxtGrantAmount").prop("readonly", true);
-        $("#TxtApplicantName").prop("readonly", true);
-        $("#TxtApplicantAddress").prop("readonly", true);
-        $("#TxtApplicantMobile").prop("readonly", true);
-        $("#TxtPresentAddress").prop("readonly", true);
-        $("#TxtProposedPlace").prop("readonly", true);
-        $("#TxtRecieveFrom").prop("readonly", true);
-        $("#TxtMobileNo").prop("readonly", true);
-        $("#TxtEnclosureTakenDate").prop("readonly", true);
-        $("#TxtForwardDate").prop("readonly", true);
-        $('#DdlDoctype option:not(:selected)').attr('disabled', true);
-        $('#DdlOffice option:not(:selected)').attr('disabled', true); // --- For kapoor
-        $('#ddFinancialYear option:not(:selected)').attr('disabled', true);
-        $('#DdlMappedMember option:not(:selected)').attr('disabled', true);
-        $("#TxtLetterNo").prop("readonly", true);
-    }
-
-    function MainView() {
-        $.ajaxSetup({ cache: false });
-        var pathurl = '@Url.Action("MlaDiarySearchPage", "References")';
-        $.ajax({
-            url: pathurl,
-            type: 'GET',
-            async: true,
-            success: function (data) {
-                $("#MainDiv").html("");
-                $("#MainDiv").html(data);
-                $("#loader-wrapper").hide();
-            }
-        });
-    }
-
     function MainView1() {
         $("#loader-wrapper").show();
         $.ajaxSetup({ cache: false });
@@ -2802,92 +2025,25 @@
                 alert("Some error occurred,please try again");
             },
         });
-
-
     }
 
     function letterfile() {
-    /*    alert(0);*/
         var radiovalue = document.querySelector('input[name="isLetter"]:checked').value;
 
         if (radiovalue == "Letter") {
             $("#DdlDoctype").show();
             $("#ddlFileDocyype").hide();
-           // $("#btnDraft").show();
-            //$("#btnSave").hide();
-
-          //  $('#myref').text('@Model.MenuName');
 
         }
         else if (radiovalue == "File") {
             $("#DdlDoctype").hide();
             $("#ddlFileDocyype").show();
-            //$("#btnDraft").hide();
-            //$("#btnSave").show();
-
-
 
             var MenuName2 = 'File No.';
             $('#myref').text(MenuName2);
             $("#divActDetails").hide();
-
-
-
         }
-
     }
-
-
-    function changeAssembly() {
-        $('#Session').empty();
-        $('#Date').empty();
-        var assmblycode = $('#Assembly :selected').val();
-
-
-
-        $.ajax({
-            type: 'GET',
-            url: '@Url.Action("GetSessionByAssemblyId", "References")',
-            dataType: 'json',
-            data: { AssemblyCode: assmblycode },
-            success: function (data) {
-                var items = '';
-                $.each(data, function (i, item) {
-                    var rows = "<option value='" + item.SessionCode + "'>" + item.SessionName + "</option>";
-                    $('#Session').append(rows);
-                });
-            },
-            error: function (ex) {
-
-            }
-        });
-        return false;
-    }
-    //change session
-    function changeSession() {
-        $('#Date').empty();
-        var assmblycode = $('#Assembly :selected').val();
-        var sessioncode = $('#Session :selected').val();
-        $.ajax({
-            type: 'GET',
-            url: '@Url.Action("GetSessionDateByAssemblyId", "References")',
-            dataType: 'json',
-            data: { AssemblyCode: assmblycode, SessionCode: sessioncode },
-            success: function (data) {
-                var items = '';
-                $.each(data, function (i, item) {
-                    var rows = "<option value='" + item.ID + "'>" + item.SessionDate + "</option>";
-                    $('#Date').append(rows);
-                });
-            },
-            error: function (ex) {
-
-            }
-        });
-        return false;
-    }
-
-
 </script>
 
 
