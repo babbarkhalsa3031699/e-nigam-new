@@ -844,59 +844,12 @@
 
     <div class="row">
         <!-- Section 1: Office Routing -->
-        <!--<div class="form-section-card">
-            <div class="form-section-title"><i class="fa fa-building-o"></i> Office Routing</div>
-            <div class="row form-row-group">
-                <div class="col-sm-6 col-md-6 col-lg-6 form-group">
-                    <span class="fotm_lbl">From Office:</span>
-                    <div>
-                        <span class="form-control">
-                            @Model.deptname
-                            @Html.HiddenFor(m => m.FromDeptId)
-                        </span>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-6 col-lg-6 form-group">
-                    <span class="fotm_lbl">Office Detail:</span>
-                    <div>
-                        <span>-->
-                            @*@Model.officename
-                                @Html.HiddenFor(m => m.FromOfficeId)*@
-                            <!--@Html.DropDownListFor(m => m.FromOfficeId, Model.OfficeList, "-- Select --", new { @id = "ddlFromOffice", @class = "DdlClass", @tabindex = "2" })
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row form-row-group">
-                <div id="divMember" class="col-sm-6 col-md-6 col-lg-6 col-xl-6 form-group">
-                    <span class="fotm_lbl">To Office:</span>
-                    <div>
-                        <span>
-                            <select id="ToDept" name="@Html.NameFor(x => x.ToDeptId)" class="DdlClass" onchange="getdepdata()">-->
-                                @*<option value="">--Select--</option>*@
-                                <!--@foreach (var dep in Model.mDepartmentListPbi)
-                                {
-                                    <option value="@dep.Value" data-num="@dep.FileNo" data-pbi="@dep.TextPbi" data-sec="@dep.SecPbi">@dep.Text</option>
-                                }
-                            </select>
-                            @Html.HiddenFor(m => m.ToDeptId)
-                        </span>
-                    </div>
-                </div>
-
-                <div id="divofc" class="col-sm-6 col-md-6 col-lg-6 col-xl-6 form-group">
-                    <span class="fotm_lbl">Office Detail:</span>
-                    <div id="divOfficeList">
-                        <span>
-                            @Html.DropDownListFor(m => m.ToOfficeId, Enumerable.Empty<SelectListItem>(), new { @id = "ddlToOffice", @class = "DdlClass", @tabindex = "2" })
-                        </span>
-                        @Html.HiddenFor(m => m.ToOfficeId)
-                    </div>
-                </div>
-            </div>
-        </div>-->
+        <div class="form-section-card" style="display: none;">
+            @Html.HiddenFor(m => m.FromDeptId)
+            @Html.HiddenFor(m => m.FromOfficeId)
+            @Html.Hidden("ToDeptId", Model.FromDeptId)
+            @Html.Hidden("ToOfficeId", 3)
+        </div>
 
         <!-- Section 2: Reference Information -->
         <div class="form-section-card">
@@ -1590,15 +1543,15 @@
             }
 
             tinyMCE.triggerSave(true, true);
-            if ($("#ToDept").val() == "") {
-                alert("Please select To Department ?");
-                return false;
-            }
+            //if ($("#ToDept").val() == "") {
+            //    alert("Please select To Department ?");
+            //    return false;
+            //}
 
-            if ($("#ddlToOffice").val() == "") {
-            alert("Please Select to Office Detail?");
-            return false;
-            }
+            //if ($("#ddlToOffice").val() == "") {
+            //alert("Please Select to Office Detail?");
+            //return false;
+            //}
 
             var radiovalue = document.querySelector('input[name="isLetter"]:checked').value;
 
@@ -1665,7 +1618,7 @@
                         
                         var storageKey = "SubjectDetails_draft";
                         localStorage.removeItem(storageKey); // clear only on success
-
+                        
                         var ToDeptId = $("#ToDept").val();
                         var ddlToOffice = $("#ddlToOffice").val();
                         var ToDept = $("#ToDept").val()
@@ -1915,6 +1868,7 @@
 
     var i = 1;
     $("#fileuploadEnclosure").click(function (event) {
+        debugger
     $('#EnclosureFile').text('No');
     $('#IsEnclosureFile').val("N");
     $('#fileuploadEnclosure').fileupload({

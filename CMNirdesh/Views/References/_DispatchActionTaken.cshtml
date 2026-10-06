@@ -44,10 +44,21 @@
     #panelContainer > .panelone {
         width: 40%;
         min-width: 250px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+        padding: 16px 18px;
         box-sizing: border-box;
         overflow-y: auto;
         overflow-x: hidden;
-        transition: none !important;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    #panelContainer > .panel.panelone:hover,
+    #panelContainer > .panelone:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     }
 
     #panelContainer > .panel.paneltwo,
@@ -1031,6 +1042,433 @@
     .Supplementary {
         color: maroon !important;
     }
+
+    /* ==========================================================================
+       MODERN ACTION NOTING PANEL & FORM CONTROLS (MATCHING PROPOSAL ADD ACTION)
+       ========================================================================== */
+    /* Modern Navigation Tabs */
+    #UpdateTab {
+        border-bottom: 1px solid #e2e8f0 !important;
+        margin-bottom: 16px !important;
+        padding-bottom: 0 !important;
+        display: flex !important;
+        gap: 6px !important;
+        background: transparent !important;
+    }
+
+    #UpdateTab .nav-item {
+        margin-bottom: -1px !important;
+    }
+
+    #UpdateTab .nav-link {
+        border: none !important;
+        border-bottom: 2px solid transparent !important;
+        border-radius: 6px 6px 0 0 !important;
+        color: #64748b !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        padding: 8px 14px !important;
+        background: transparent !important;
+        transition: all 0.15s ease !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+    }
+
+    #UpdateTab .nav-link b {
+        font-weight: inherit !important;
+    }
+
+    #UpdateTab .nav-link:hover {
+        color: #0f172a !important;
+        background: #f8fafc !important;
+    }
+
+    #UpdateTab .nav-link.active,
+    #UpdateTab .nav-link.active:hover,
+    #UpdateTab .nav-link.active:focus {
+        color: #2563eb !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        border: none !important;
+        border-bottom: 2px solid #2563eb !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    #UpdateTab .nav-link.active b {
+        color: #2563eb !important;
+        font-weight: 600 !important;
+    }
+
+    /* Modern Form Labels in Add Noting Panel */
+    .tab-pane[id^="noting_"] .fotm_lbl,
+    #formActionDispatch .tab-pane[id^="noting_"] .fotm_lbl {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #475569 !important;
+        margin-bottom: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+
+    /* Form Fields, Inputs & Select Dropdowns in Add Noting */
+    .tab-pane[id^="noting_"] select,
+    .tab-pane[id^="noting_"] input[type="text"],
+    .tab-pane[id^="noting_"] input[type="date"],
+    .tab-pane[id^="noting_"] .DdlClass {
+        width: 100% !important;
+        height: 36px !important;
+        line-height: 36px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+    }
+
+    .tab-pane[id^="noting_"] select:focus,
+    .tab-pane[id^="noting_"] input[type="text"]:focus,
+    .tab-pane[id^="noting_"] input[type="date"]:focus,
+    .tab-pane[id^="noting_"] .DdlClass:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+    }
+
+    /* Readonly inputs (e.g. Action Date) */
+    .tab-pane[id^="noting_"] #TxtActionTakenDate[readonly],
+    .tab-pane[id^="noting_"] input[readonly] {
+        background-color: #f8fafc !important;
+        color: #475569 !important;
+        border-color: #e2e8f0 !important;
+        cursor: not-allowed !important;
+    }
+
+    /* Action Remark & Modern TinyMCE Container */
+    .tab-pane[id^="noting_"] #FileEditor,
+    #FileEditor {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    }
+
+    .tab-pane[id^="noting_"] #FileEditor:focus-within,
+    #FileEditor:focus-within {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+    }
+
+    /* Draft Watermark */
+    .Draft-editor .tox .tox-edit-area__iframe {
+        background-image: url("/Assets/draft.png") !important;
+        background-size: 140px !important;
+        background-repeat: no-repeat !important;
+        opacity: 0.95;
+    }
+
+    /* Modern Draft Badge / Toggle Pill */
+    .filedraft {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        padding: 4px 10px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        margin-bottom: 0 !important;
+        cursor: pointer !important;
+        user-select: none !important;
+        transition: all 0.15s ease !important;
+    }
+
+    .filedraft:hover {
+        background: #f1f5f9 !important;
+        border-color: #cbd5e1 !important;
+        color: #334155 !important;
+    }
+
+    .filedraft input[type="checkbox"] {
+        accent-color: #2563eb !important;
+        width: 15px !important;
+        height: 15px !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+    }
+
+    /* Action Save Button */
+    #btnActionSave {
+        background: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        padding: 8px 22px !important;
+        box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2) !important;
+        transition: all 0.15s ease !important;
+        cursor: pointer !important;
+    }
+
+    #btnActionSave:hover {
+        background: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* ==========================================================================
+       ACTION ATTACHMENT MODERN REDESIGN
+       ========================================================================== */
+    .action-attachment-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 8px;
+        margin-bottom: 12px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .action-attachment-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .action-attachment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .action-attachment-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+    }
+
+    .action-attachment-hint {
+        font-size: 11px;
+        font-weight: 500;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 2px 8px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .action-attachment-controls {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        min-height: 38px;
+    }
+
+    /* Modern Upload Button */
+    .action-upload-btn-container {
+        position: relative;
+        display: inline-flex;
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    .action-upload-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 14px;
+        background: #f8fafc;
+        color: #1e40af;
+        border: 1px dashed #93c5fd;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        margin: 0;
+    }
+
+    .action-upload-btn:hover {
+        background: #eff6ff;
+        border-color: #3b82f6;
+        border-style: solid;
+        color: #1d4ed8;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .action-upload-btn i {
+        font-size: 14px;
+        color: #3b82f6;
+    }
+
+    .action-upload-native-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+        font-size: 100px;
+    }
+
+    /* "No file chosen" label */
+    .action-no-file-label {
+        font-size: 12px;
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    /* Uploaded File Chip */
+    .action-file-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 5px 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        max-width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .action-file-chip:hover {
+        border-color: #cbd5e1;
+        background: #ffffff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .file-chip-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+        border-radius: 5px;
+        color: #dc2626;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .file-chip-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        line-height: 1.2;
+    }
+
+    .file-chip-name {
+        color: #0f172a !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        text-decoration: none !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 240px;
+        display: block;
+        transition: color 0.15s ease;
+    }
+
+    .file-chip-name:hover {
+        color: #2563eb !important;
+        text-decoration: underline !important;
+    }
+
+    .file-chip-size {
+        font-size: 11px !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
+        margin-top: 2px;
+        display: inline-block;
+    }
+
+    .file-chip-size:empty {
+        display: none !important;
+    }
+
+    /* Redesigned Remove Button */
+    .tab-pane[id^="noting_"] .remove-btn,
+    .file-chip-remove {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        border-radius: 50% !important;
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+        border: 1px solid #fca5a5 !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        margin: 0 0 0 6px !important;
+        transition: all 0.2s ease !important;
+        line-height: 1 !important;
+        text-align: center !important;
+        flex-shrink: 0;
+    }
+
+    .tab-pane[id^="noting_"] .remove-btn:hover,
+    .file-chip-remove:hover {
+        background: #dc2626 !important;
+        color: #ffffff !important;
+        border-color: #b91c1c !important;
+        transform: scale(1.08) !important;
+        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3) !important;
+    }
+
+    .tab-pane[id^="noting_"] .remove-btn i,
+    .file-chip-remove i {
+        font-size: 12px !important;
+        line-height: 1 !important;
+    }
+
+    /* Progress bar styling */
+    .action-upload-progress {
+        height: 3px !important;
+        margin-top: 3px !important;
+        border-radius: 2px !important;
+        overflow: hidden !important;
+        background-color: #e2e8f0 !important;
+        display: none;
+    }
+
+    /* CSS :has dynamic toggles */
+    .action-attachment-controls:has(.file_name1:not(:empty)) #actionFileChip1 {
+        display: inline-flex !important;
+    }
+    .action-attachment-controls:has(.file_name1:not(:empty)) #actionNoFile1 {
+        display: none !important;
+    }
 </style>
 
 
@@ -1451,7 +1889,7 @@
                                 <div class="tab-pane fade" id="noting_@Model.RefId" role="tabpanel" aria-labelledby="profile-tab">
                                     <div class="updat_box ">
                                         <div class="row">
-                                            <div class="col-md-6 col-lg-6 mb-2">
+                                            <div class="col-md-6 col-lg-6 mb-3">
                                                 <div id="divactkndate">
                                                     <div class="fotm_lbl">Action Date:</div>
                                                     <div class="profil_value">
@@ -1460,7 +1898,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 col-lg-6 mb-2">
+                                            <div class="col-md-6 col-lg-6 mb-3">
                                                 <div id="divActiontkn">
                                                     <div class="fotm_lbl">Action Type:</div>
                                                     <div class="profil_value">
@@ -1469,49 +1907,54 @@
                                                 </div>
                                             </div>
 
-
-
-                                            <div class="row col-md-12 col-lg-12 col-xl-12 mb-2" style="margin-top:5px;">
-                                                <div class="col-md-12 col-lg-12 col-xl-12" style="margin-left: 10px;">
-                                                    <label class="fotm_lbl div_inline">Action Attachment:</label>
-                                                </div>
-                                                <div class="row gap-3">
-                                                    <div class="input-group col-lg-2 col-md-2 col-sm-12 col-12">
-                                                        <label class="lbl_file">
-                                                            <span>
-                                                                <input style="font-size: 15px;" id="fileupload1" type="file" tittle=" " name="fileupload1" onclick="FileNotingUpload()" accept=".pdf">
-                                                            </span>
+                                            <div class="col-md-12 col-lg-12 col-xl-12 mb-3" style="padding: 0 12px;">
+                                                <div class="action-attachment-card" id="fileuploadcontant1">
+                                                    <div class="action-attachment-header">
+                                                        <label class="action-attachment-title">
+                                                            <i class="fa fa-paperclip"></i> Action Attachment:
                                                         </label>
+                                                        <span class="action-attachment-hint">
+                                                            <i class="fa fa-info-circle"></i> PDF only
+                                                        </span>
                                                     </div>
-
-                                                    <div class="col-lg-8 col-md-12 col-sm-12 col-12">
-                                                        <div class="d-flex align-items-center gap-5">
-                                                            <div>
-                                                                <a href="#" id="afile_nameEn1" target="_blank">
-                                                                    <span id="file_name1" class="file_name1"></span>
-                                                                </a>
-                                                                <div class="file_size1"></div>
-                                                            </div>
-                                                            <div>
-                                                                <span id="removefileupload1" class="remove-btn" onclick="removefileupload()"><i class="far fa-times"></i></span>
+                                                    <div class="action-attachment-controls">
+                                                        <div class="action-upload-btn-container">
+                                                            <label class="action-upload-btn" title="Choose PDF file to attach">
+                                                                <i class="fa fa-cloud-upload"></i>
+                                                                <span>Choose File</span>
+                                                                <input id="fileupload1" type="file" title=" " name="fileupload1" accept=".pdf" onclick="FileNotingUpload()" class="action-upload-native-input">
+                                                            </label>
+                                                            <div class="progress progress12 action-upload-progress">
+                                                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%"></div>
                                                             </div>
                                                         </div>
 
+                                                        <span class="action-no-file-label" id="actionNoFile1">No file chosen</span>
 
+                                                        <div class="action-file-chip" id="actionFileChip1" style="display: none;">
+                                                            <span class="file-chip-icon">
+                                                                <i class="fa fa-file-pdf-o"></i>
+                                                            </span>
+                                                            <div class="file-chip-info">
+                                                                <a href="#" id="afile_nameEn1" target="_blank" class="file-chip-name" title="View attached document">
+                                                                    <span id="file_name1" class="file_name1"></span>
+                                                                </a>
+                                                                <span class="file_size1 file-chip-size"></span>
+                                                            </div>
+                                                            <span id="removefileupload1" class="remove-btn file-chip-remove" style="display: none;" onclick="removefileupload()" title="Remove file">
+                                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-
                                             </div>
 
-
-
-
-
-
-                                            <div class="col-md-12 col-lg-12 mb-2" style="margin-top:15px;">
+                                            <div class="col-md-12 col-lg-12 mb-3">
                                                 <div id="divRemrks" class="remark_1">
-                                                    <div class="fotm_lbl">Action Remark:</div>
-                                                    <div class="filedraft">@Html.CheckBoxFor(m => m.FileDraft, new { @id = "FileDraft", @class = "table-check", @onclick = "filedraft()", @checked = "true" }) Draft</div>
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <div class="fotm_lbl mb-0">Action Remark:</div>
+                                                        <div class="filedraft mb-0">@Html.CheckBoxFor(m => m.FileDraft, new { @id = "FileDraft", @class = "table-check", @onclick = "filedraft()", @checked = "true" }) Draft</div>
+                                                    </div>
                                                     @{ var editorclass = "";}
                                                     @if (Model.isLetter == "Letter")
                                                     {
@@ -1530,7 +1973,6 @@
 
                                                     }
 
-
                                                     <div id="FileEditor" class="remark_2 @editorclass">
                                                         @Html.TextAreaFor(m => m.ActionDescription, new { @tabindex = "4" })
                                                     </div>
@@ -1538,9 +1980,8 @@
                                                 </div>
                                             </div>
 
-
-                                            <div class="profile-info-row">
-                                                <input type="button" id="btnActionSave" class="btn btn-primary mt-3" value="Save" onclick="SaveContent()">
+                                            <div class="profile-info-row col-md-12 mb-2">
+                                                <input type="button" id="btnActionSave" class="btn btn-primary" value="Save" onclick="SaveContent()">
                                             </div>
 
                                         </div>
@@ -3136,6 +3577,43 @@
 
     <script>
     var itemsRef = [];
+
+    function initActionAttachmentSync() {
+        function syncUI(nameId, chipId, noFileId, removeId) {
+            var $name = $('#' + nameId);
+            var $chip = $('#' + chipId);
+            var $noFile = $('#' + noFileId);
+            var hasText = ($name.text() || '').trim().length > 0;
+            if (hasText) {
+                $chip.css('display', 'inline-flex');
+                $noFile.hide();
+            } else {
+                $chip.hide();
+                $noFile.show();
+            }
+        }
+
+        function bindObserver(nameId, chipId, noFileId, removeId) {
+            syncUI(nameId, chipId, noFileId, removeId);
+            var el = document.getElementById(nameId);
+            if (el && window.MutationObserver) {
+                var obs = new MutationObserver(function () {
+                    syncUI(nameId, chipId, noFileId, removeId);
+                });
+                obs.observe(el, { childList: true, characterData: true, subtree: true });
+            }
+            var remEl = document.getElementById(removeId);
+            if (remEl && window.MutationObserver) {
+                var obsRem = new MutationObserver(function () {
+                    syncUI(nameId, chipId, noFileId, removeId);
+                });
+                obsRem.observe(remEl, { attributes: true, attributeFilter: ['style', 'class'] });
+            }
+        }
+
+        bindObserver('file_name1', 'actionFileChip1', 'actionNoFile1', 'removefileupload1');
+    }
+
     $(document).ready(function () {
 
 
@@ -3163,6 +3641,7 @@
         $("#subjectboxoldD").css("display", "block");
         $("#subjectdetailboxoldD").css("display", "block");
         $('#TxtActionTakenDate').attr('readonly', true);
+        initActionAttachmentSync();
         var EnclosureFiletxt = $("#EnclosureFiletxt").text();
         var ActionFile = $("#Actionfile").text();
         if (EnclosureFiletxt == "Yes") {

@@ -10,10 +10,10 @@
     string URL = System.Web.Configuration.WebConfigurationManager.AppSettings["URL"];
 }
 <input type="hidden" id="subjectold" name="subjectold" value="" />
-<input type="hidden" id="subjectold_local" name="subjectold" value="" />
+@*<input type="hidden" id="subjectold_local" name="subjectold" value="" />*@
 
 <input type="hidden" id="subjectdetailold" name="subjectdetailold" value="" />
-<input type="hidden" id="subjectdetailold_local" name="subjectdetailold" value="" />
+@*<input type="hidden" id="subjectdetailold_local" name="subjectdetailold" value="" />*@
 
 <input type="hidden" id="meetingDate" name="meetingDate" value="" />
 
@@ -903,7 +903,6 @@
     var SDPreText = "";
     var Amt_enable = 0; var office_enable_from = 0;
     $(document).ready(function () {
-
          var actioncode = '@Model.ActionCode';
         if (actioncode == 3) {
             var newOption = $('<option value="3" Selected>Passed</option>');
@@ -912,8 +911,6 @@
             var newOption = $('<option value="2" Selected>Pending</option>');
             $('#DdlActionType').append(newOption);
         }
-
-
 
         $.noConflict();
         //$("#FileDraft").prop('checked', true);
@@ -962,7 +959,7 @@
         //});
         lisfunction();
 
-        GetIncludedRef();
+        //GetIncludedRef();
         getsubjectandsubjectDetails();
         var refid = '@Model.RefId';
         $("#subjectboxold_" + refid).css("display", "block");
@@ -970,7 +967,7 @@
         document.getElementById("Term").selectedIndex = @Model.ReferenceTerm; //Option 10
         //$("#DocumentTypeNameChange").prop("disabled", true);
         $("#ddlOfficeChange").prop("disabled", true);
-        $("#ddlFromOfficeChange").prop("disabled", true);
+        //$("#ddlFromOfficeChange").prop("disabled", true);
 
 
         //$("#DocumentTypeNameChange1").prop("disabled", true);
@@ -992,274 +989,277 @@
         var EnclosureFiletxt = $("#EnclosureFiletxt").text();
         //  var ForwardedFiletxt = $("#ForwardedFiletxt").text();
         var ActionFile = $("#Actionfile").text();
-        //if (EnclosureFiletxt == "Yes") {
-        //    $("#IsEnclosureFile").val("Y");
-        //}
-        //else {
-        //    $("#IsEnclosureFile").val("N");
-        //}
 
-        //if (ActionFile == "Yes") {
-        //    $("#IsFile").val("Y");
-        //}
-        //else {
-        //    $("#IsFile").val("N");
-        //}
+        var officeList = @Html.Raw(Json.Encode(Model.FromOfficeList));
+        var office = officeList.find(el => el.Value == @Model.FromOfficeId.ToString());
+        if (office) {
+            $('#txtOfficeValueOnly').text(office.Text);
+        }        
+        $('#txtOfficeValueOnly').prop("disabled", true);
 
-        //ActionDescription
+    //if (EnclosureFiletxt == "Yes") {
+    //    $("#IsEnclosureFile").val("Y");
+    //}
+    //else {
+    //    $("#IsEnclosureFile").val("N");
+    //}
 
-        //tinyMCE.init({
-        //    selector: "#ActionDescription",
-        //    branding: false,
-        //    menubar: true,
-        //    content_style:
-        //        "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
-        //    plugins: 'anchor',
-        //    toolbar: 'mybutton',
+    //if (ActionFile == "Yes") {
+    //    $("#IsFile").val("Y");
+    //}
+    //else {
+    //    $("#IsFile").val("N");
+    //}
 
-        //});
-        //var items1 = [
-        //    {
-        //        type: 'choiceitem',
-        //        text: 'Note 1',
-        //        value: '101'
-        //    },
-        //    {
-        //        type: 'choiceitem',
-        //        text: 'Note 2',
-        //        value: '202'
-        //    }
-        //];
+    //ActionDescription
 
-        var items = JSON.parse($('#test').attr('test-att'));
-        console.log(items);
+    //tinyMCE.init({
+    //    selector: "#ActionDescription",
+    //    branding: false,
+    //    menubar: true,
+    //    content_style:
+    //        "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+    //    plugins: 'anchor',
+    //    toolbar: 'mybutton',
+
+    //});
+    //var items1 = [
+    //    {
+    //        type: 'choiceitem',
+    //        text: 'Note 1',
+    //        value: '101'
+    //    },
+    //    {
+    //        type: 'choiceitem',
+    //        text: 'Note 2',
+    //        value: '202'
+    //    }
+    //];
+
+    var items = JSON.parse($('#test').attr('test-att'));
+    //console.log(items);
 
 
-            tinymce.init({
-            selector: '#ActionDescription',
+    tinymce.init({
+    selector: '#ActionDescription',
             content_style:
-                        "body {  font-size: 16px; font-family: Poppins, sans-serif ; text-align: justify;}",
+        "body {  font-size: 16px; font-family: Poppins, sans-serif ; text-align: justify;}",
                 toolbar: 'mybutton | undo redo |  bold italic fontfamily fontsize| alignleft aligncenter alignright alignjustify',
             extended_valid_elements: "span[id|class|name|onclick|rel]",
             menubar: true,
 
             setup: function (editor) {
-                    editor.ui.registry.addSplitButton('mybutton', {
-                    text: 'Link Notes',
+            editor.ui.registry.addSplitButton('mybutton', {
+            text: 'Link Notes',
                     onAction: function () {
-                            //editor.insertContent('<p>You clicked the main button</p>');
-                        },
+                    //editor.insertContent('<p>You clicked the main button</p>');
+                },
                         onItemAction: function (api, value) {
-                            var arr = value.split(":");
-                            var text = "Note:"+arr[0];
-                            var id = arr[1];
-                            var achortag = " <span style='color:blue;cursor: pointer;' class='notetag'  id='" + id + "' onclick='openNote(" + id + ")'> <u>" + text + "</u></span> &nbsp; "
+                    var arr = value.split(":");
+                    var text = "Note:"+arr[0];
+                    var id = arr[1];
+                    var achortag = " <span style='color:blue;cursor: pointer;' class='notetag'  id='" + id + "' onclick='openNote(" + id + ")'> <u>" + text + "</u></span> &nbsp; "
 
                         editor.insertContent(achortag);
-                            //editor.insertContent(value);
-                        },
+                    //editor.insertContent(value);
+                },
                     fetch: function (callback) {
-                            callback(items);
-                        }
-                    });
-                    editor.on('click', (e) => {
-                    //alert('Editor was clicked: ' + e.target.parentNode);
-                    //alert('Editor was clicked: ' + e.target.parentNode.onclick);
-                    //console.log(e.target.parentNode.onclick);
-                    var id = e.target.parentNode.id;
+                    callback(items);
+                }
+            });
+            editor.on('click', (e) => {
+                //alert('Editor was clicked: ' + e.target.parentNode);
+                //alert('Editor was clicked: ' + e.target.parentNode.onclick);
+                //console.log(e.target.parentNode.onclick);                
+                //console.log(e.target.parentNode.onclick);                
+                var id = e.target.parentNode.id;
 
-                    if (id != 'undefined' || id != null || id.trim() != tinymce || id != '') {
-                        if (id.length > 10) {
-                            //openRes(id)
-                        } else {
-                            //openNote(id);
-                        }
+                //if (id != 'undefined' || id != null || id.trim() != tinymce || id != '') {
+                //    debugger
+                //    if (id.length > 10) {
+                //        //openRes(id)
+                //    } else {
+                //        //openNote(id);
+                //    }
+
+                //}
+
+
+
+            });
+            editor.on('BeforeSetContent', function (e) {
+                e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
+                    // Block a specific font
+
+                    // console.log(fontFamily);
+                    if (fontFamily.toLowerCase() === 'asees') {
+                        alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
+                        e.setContent('[b]some[/b] html', { format: 'bbcode' });
+                        return ''; // Remove this font-family style
 
                     }
-
-
-
-                    });
-                    editor.on('BeforeSetContent', function (e) {
-                    e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-                        // Block a specific font
-
-                        // console.log(fontFamily);
-                        if (fontFamily.toLowerCase() === 'asees') {
-                            alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-                            e.setContent('[b]some[/b] html', { format: 'bbcode' });
-                            return ''; // Remove this font-family style
-
-                        }
-                        return match;
-                    });
-                    });
-                    editor.on('BeforeSetContent', function (e) {
-                    e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-                        // Block a specific font
-
-                        // console.log(fontFamily);
-                        if (fontFamily.toLowerCase() === 'asees') {
-                            alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-                            e.setContent('[b]some[/b] html', { format: 'bbcode' });
-                            return ''; // Remove this font-family style
-
-                        }
-                        return match;
-                    });
+                    return match;
                 });
+            });
+            editor.on('BeforeSetContent', function (e) {
+                e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
+                    // Block a specific font
 
-              }
+                    // console.log(fontFamily);
+                    if (fontFamily.toLowerCase() === 'asees') {
+                        alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
+                        e.setContent('[b]some[/b] html', { format: 'bbcode' });
+                        return ''; // Remove this font-family style
+
+                    }
+                    return match;
+                });
             });
 
+        }
+    });
 
 
-            tinyMCE.init({
-            selector: "#ActionDescription_Multi",
+
+    tinyMCE.init({
+    selector: "#ActionDescription_Multi",
            branding: false,
            menubar: false,
            toolbar: 'undo redo |  bold italic | alignleft aligncenter alignright alignjustify',
            content_style:
-                "body {  font-size: 16px; font-family: Poppins, sans-serif ; text-align: justify; }",
+        "body {  font-size: 16px; font-family: Poppins, sans-serif ; text-align: justify; }",
                 height: 250,
                 setup: function (editor) {
-                    editor.on('BeforeSetContent', function (e) {
-                        e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-                            // Block a specific font
+            editor.on('BeforeSetContent', function (e) {
+                e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
+                    // Block a specific font
 
-                            // console.log(fontFamily);
-                            if (fontFamily.toLowerCase() === 'asees') {
-                                alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-                                e.setContent('[b]some[/b] html', { format: 'bbcode' });
-                                return ''; // Remove this font-family style
+                    // console.log(fontFamily);
+                    if (fontFamily.toLowerCase() === 'asees') {
+                        alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
+                        e.setContent('[b]some[/b] html', { format: 'bbcode' });
+                        return ''; // Remove this font-family style
 
-                            }
-                            return match;
-                        });
-                    });
-
-                }
-
+                    }
+                    return match;
+                });
             });
 
+        }
 
-        tinyMCE.init({
-            selector: "#subjectdetailforedit",
+    });
+
+
+    tinyMCE.init({
+    selector: "#subjectdetailforedit",
             branding: false,
             content_style:
-                "body {  font-size: 14pt; font-family: inherit; }",
+        "body {  font-size: 14pt; font-family: inherit; }",
             plugins: 'table',
             toolbar: 'undo redo |  bold italic fontfamily fontsize| alignleft aligncenter alignright alignjustify | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter ',
             table_default_styles: {
-                width: '50%'
+        width: '50%'
             },
             formats: {
-                // Changes the alignment buttons to add a class to each of the matching selector elements
-                alignleft: { selector: 'table', classes: 'left' },
+        // Changes the alignment buttons to add a class to each of the matching selector elements
+        alignleft: { selector: 'table', classes: 'left' },
                 bold: { inline: 'table', styles: { 'margin-left': '0px !important' } }
-            },
+        },
             branding: false,
             setup: function (editor) {
-                editor.on('BeforeSetContent', function (e) {
-                    e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-                        // Block a specific font
+            editor.on('BeforeSetContent', function (e) {
+                e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
+                    // Block a specific font
 
-                        // console.log(fontFamily);
-                        if (fontFamily.toLowerCase() === 'asees') {
-                            alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-                            e.setContent('[b]some[/b] html', { format: 'bbcode' });
-                            return ''; // Remove this font-family style
+                    // console.log(fontFamily);
+                    if (fontFamily.toLowerCase() === 'asees') {
+                        alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
+                        e.setContent('[b]some[/b] html', { format: 'bbcode' });
+                        return ''; // Remove this font-family style
 
-                        }
-                        return match;
-                    });
+                    }
+                    return match;
                 });
+            });
 
 
 
-            },
+        },
             init_instance_callback(editor) {
-                editor.setContent(SDPreText);
-            }
-        });
+            editor.setContent(SDPreText);
+        }
+    });
 
-           // tinyMCE.init({
-           // selector: "#subjectdetailforedit",
-           //branding: false,
-           //content_style:
-           //     "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
-           // });
+    // tinyMCE.init({
+    // selector: "#subjectdetailforedit",
+    //branding: false,
+    //content_style:
+    //     "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+    // });
 
-        tinyMCE.init({
-            selector: "#subjectdetailforedit_local",
-            branding: false,
-            content_style:
-                "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
-        });
-
-            if ($('#DdlActionType').val() == '2') {
+    if ($('#DdlActionType').val() == '2') {
            $('#SanctionModal').show();
-            }
+    }
 
-            if ($('#DdlActionType').val() == '6') {
+    if ($('#DdlActionType').val() == '6') {
            $('#SanctionAmountModal').show();
-            }
+    }
 
 
 
-            var switchStatus = false;
+    var switchStatus = false;
        $("#switchbutton").click( function () {
-                if ($(this).is(':checked')) {
-                    switchStatus = $(this).is(':checked');
+        if ($(this).is(':checked')) {
+            switchStatus = $(this).is(':checked');
                //$("#DocumentTypeNameChange").prop("disabled", false);
                     $("#ddlOfficeChange").prop("disabled", false);
-                    $("#ddlFromOfficeChange").prop("disabled", false);
+                    //$("#ddlFromOfficeChange").prop("disabled", false);
                $("#Term").prop("disabled", false);
                $("#PriorityType").prop("disabled", false);
                $("#subjectbox").css("display", "block");
                     $("#subjectdetailbox").css("display", "block");
-                    $("#subjectdetailbox_local").css("display", "block");
-                    var refid = '@Model.RefId';
+                    //$("#subjectdetailbox_local").css("display", "block");
+            var refid = '@Model.RefId';
                 $("#subjectboxold_"+ refid).css("display", "none");
 
                $("#subjectdetailboxold_" + refid).css("display", "none");
                $("#EditUpdateButton").show();
 
-                    S_enable = 1;
-                    SD_enable = 1;
-                    office_enable = 1;
-                    office_enable_from = 1;
-                }
+            S_enable = 1;
+            SD_enable = 1;
+            office_enable = 1;
+            office_enable_from = 1;
+        }
            else {
-                    switchStatus = $(this).is(':checked');
+            switchStatus = $(this).is(':checked');
               // $("#DocumentTypeNameChange").prop("disabled", true);
                     $("#ddlOfficeChange").prop("disabled", true);
-                    $("#ddlFromOfficeChange").prop("disabled", true);
+                    //$("#ddlFromOfficeChange").prop("disabled", true);
                $("#Term").prop("disabled", true);
                $("#PriorityType").prop("disabled", true);
                $("#subjectbox").css("display", "none");
                $("#subjectdetailbox").css("display", "none");
-                    var refid = '@Model.RefId';
+            var refid = '@Model.RefId';
                 $("#subjectboxold_"+ refid).css("display", "block");
 
                $("#subjectdetailboxold_" + refid).css("display", "block");
                $("#EditUpdateButton").hide();
-                    S_enable = 0;
-                    SD_enable = 0;
+            S_enable = 0;
+            SD_enable = 0;
 
-                }
-            });
-
-
+        }
+    });
 
 
-            var isfile = '@Model.isLetter';
 
-            if (isfile == 'Letter') {
+
+    var isfile = '@Model.isLetter';
+
+    if (isfile == 'Letter') {
             $(".one").css("width", "35%");
             $(".two").css("width", "65%");
-            }
-        });
+    }
+});
 
     function openHistoryPopup() {
         $("#HistoryModel").modal('show');
@@ -1284,7 +1284,7 @@
         success: function (data) {
             $('#tbodyRefHistory').html('');
             if (data.length > 0) {
-                console.log(data);
+                //console.log(data);
                 var s_string = ""; var sd_string = "";
                 $.each(data, function (i, item) {
                     if (item.Subject != "") {
@@ -1556,7 +1556,7 @@
             for (var i = 0; i < LGarray.length; i++) {
                 if (LGarray[i] != "") {
                     var ActionBy = LGarray[i].split("::");
-                    console.log(LGarray[i])
+                    //console.log(LGarray[i])
                     var Desg = ActionBy[1].split(",");
 
                     if (i == LGarray.length-1) {
@@ -1744,7 +1744,7 @@
 
 
         $("#MultiUpdate").val(mlarr);
-        console.log($("#MultiUpdate").val());
+        //console.log($("#MultiUpdate").val());
 
         var val = $("#MultiUpdate").val();
         if (val == "") {
@@ -2012,16 +2012,14 @@
                     $("#subjectdetailforedit").val(response[0].SubjectDetails);
                     $("#subjectdetailold").val(response[0].SubjectDetails);
 
-                    $("#subjectforedit_local").val(response[0].Subject_local);
-                    $("#subjectold_local").val(response[0].Subject_local);
+                    //$("#subjectforedit_local").val(response[0].Subject_local);
+                    //$("#subjectold_local").val(response[0].Subject_local);
 
-                    $("#subjectdetailforedit_local").val(response[0].SubjectDetails_local);
-                    $("#subjectdetailold_local").val(response[0].SubjectDetails_local);
+                    //$("#subjectdetailold_local").val(response[0].SubjectDetails_local);
 
                     $("#meetingDate").val(response[0].MeetingDate);
 
                     tinymce.get('subjectdetailforedit').setContent(response[0].SubjectDetails);
-                    tinymce.get('subjectdetailforedit_local').setContent(response[0].SubjectDetails_local);
                 }
                 else {
                     $("#loader-wrapper").hide();
@@ -2490,7 +2488,7 @@
                         var dataString = new FormData($("#formActionDiary").get(0));
                         processData = false;
                     }
-                    console.log(dataString);
+                    //console.log(dataString);
 
                     $.ajax({
                         type: "POST",
@@ -3168,10 +3166,10 @@
             $("#subjectbox").css("display", "block");
         $("#subjectboxold_" + refid).css("display", "none");
         //local
-        $("#subjectbox_local").css("display", "block");
-        $("#local_subjectboxold_" + refid).css("display", "none");
+        //$("#subjectbox_local").css("display", "block");
+        //$("#local_subjectboxold_" + refid).css("display", "none");
         $("#EditUpdateButton").show();
-        this.addClass('green');
+        //this.addClass('green');
     }
 
       function EditAmount()
@@ -3181,7 +3179,7 @@
                 $("#amountbox").css("display", "block");
           $("#amountbox_old").css("display", "none");
               $("#EditUpdateButton").show();
-              this.addClass('green');
+              //this.addClass('green');
               updateEditAmountWords();
           }
 
@@ -3190,11 +3188,11 @@
             SD_enable = 1;
              var refid = '@Model.RefId';
         $("#subjectdetailbox").css("display", "block");
-        $("#subjectdetailbox_local").css("display", "block");
+        //$("#subjectdetailbox_local").css("display", "block");
         $("#subjectdetailboxold_" + refid).css("display", "none");
-        $("#local_subjectdetailboxold_" + refid).css("display", "none");
+        //$("#local_subjectdetailboxold_" + refid).css("display", "none");
         $("#EditUpdateButton").show();
-        this.addClass('green');
+        //this.addClass('green');
     }
 
     function EditOffice()
@@ -3202,15 +3200,15 @@
     office_enable = 1;
     $("#ddlOfficeChange").prop("disabled", false);
     $("#EditUpdateButton").show();
-        this.addClass('green');
+        //this.addClass('green');
     }
 
 
     function EditOfficeFrom() {
         office_enable_from = 1;
-        $("#ddlFromOfficeChange").prop("disabled", false);
+        //$("#ddlFromOfficeChange").prop("disabled", false);
         $("#EditUpdateButton").show();
-        this.addClass('green');
+        //this.addClass('green');
     }
 
 
@@ -3223,8 +3221,8 @@
         var refid = @Model.RefId;
         var subject = $("#subjectforedit").val();
         var subjectold = $("#subjectold").val();
-        var subject_local = $("#subjectforedit_local").val();
-        var subjectold_local = $("#subjectold_local").val();
+        //var subject_local = $("#subjectforedit_local").val();
+        //var subjectold_local = $("#subjectold_local").val();
         if (subject == "") {
             alert("Kindly fill the subject first");
             return false;
@@ -3233,8 +3231,8 @@
         formData.append("refid", refid);
         formData.append("subject", subject);
         formData.append("subjectold", subjectold);
-        formData.append("subject_local", subject_local);
-        formData.append("subjectold_local", subjectold_local);
+        //formData.append("subject_local", subject_local);
+        //formData.append("subjectold_local", subjectold_local);
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("updatesubject", "References")',
@@ -3245,9 +3243,9 @@
                     if (response == "1") {
                         $("#Subject").val(subject);
                         $("#SpanSubject").html(subject);
-                        $("#SpanSubject_local").html(subject_local);
-                        $("#subjectbox_local").css("display", "none");
-                        $("#local_subjectboxold_" + refid).css("display", "block");
+                        //$("#SpanSubject_local").html(subject_local);
+                        //$("#subjectbox_local").css("display", "none");
+                        //$("#local_subjectboxold_" + refid).css("display", "block");
 
                        // alert("Subject Updated Succesfully");
                     }
@@ -3300,7 +3298,6 @@
         var refid = @Model.RefId;
 
         var subjectdetail = tinymce.get('subjectdetailforedit').getContent();
-        var subjectdetail_local = tinymce.get('subjectdetailforedit_local').getContent();
         var subject = $("#subjectforedit").val();
         if (subjectdetail == "" || subjectdetail == null) {
             alert("Kindly fill the subject detail first");
@@ -3310,7 +3307,6 @@
         formData.append("refid", refid);
         //formData.append("subject", subject);
         formData.append("subjectdetail", subjectdetail);
-        formData.append("subjectdetail_local", subjectdetail_local);
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("updatesubjectdetails", "References")',
@@ -3322,9 +3318,8 @@
                        // alert("Details Updated Succesfully");
                         //$("#SubjectDetails").val(subjectdetail);
                         $("#divSubjectDetails").html(subjectdetail);
-                        $("#divSubjectDetails_local").html(subjectdetail_local);
-                        $("#subjectdetailbox_local").css("display", "none");
-                        $("#local_subjectdetailboxold_" + refid).css("display", "block");
+                        //$("#subjectdetailbox_local").css("display", "none");
+                        //$("#local_subjectdetailboxold_" + refid).css("display", "block");
 
                     }
                     if (response == "0") {
@@ -3379,7 +3374,7 @@
  function UpdatefromOffice()
 {
    var refid = @Model.RefId;
-        var officeId = $('#ddlFromOfficeChange').val();
+        var officeId = $('#FromOfficeId').val();
 
    if (officeId == null || officeId == "" || officeId == undefined) {
        alert("Please select Office.");
@@ -4823,297 +4818,27 @@
 
                             }*@
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show" id="Refdetail_local" role="tabpanel" aria-labelledby="det-tab">
+                            <div class="tab-pane fade show active" id="Refdetail" role="tabpanel" aria-labelledby="det-tab">
                                 <div class="widget-main no-padding-right no-padding-left">
                                     <div class="ref_box mb-3">
-
-                                        <div class="mb-2" id="local_subjectboxold_@Model.RefId">
+                                        <div class="mb-2" id="divofc">
                                             <div class="fotm_lbl">
-                                                ਵਿਸ਼ਾ: @if (Model.HideUpdate == "Yes") { }
-                                                else
-                                                {
-                                                    <i class="ace-icon fa fa-pencil hand" onclick="EditSubject()"></i>
-                                                }
+                                                Office Detail:
+                                                @*@if (Model.HideUpdate != "Yes")
+            {
+                if (SiteName == "MC")
+                {
+                    <i class="ace-icon fa fa-pencil hand" onclick="EditOfficeFrom()"></i>
+                }
+            }*@
                                             </div>
                                             <div class="txt_value in_txt_area">
 
-                                                <span id="SpanSubject_local"> @Model.SubjectPB</span>
-                                                @Html.HiddenFor(m => m.SubjectPB)
-
+                                                <span id="txtOfficeValueOnly"></span>
+                                                @Html.HiddenFor(m => m.FromOfficeId)
 
                                             </div>
                                         </div>
-
-                                        <div class="mb-2" id="subjectbox_local" style="display:none;">
-                                            <div class="fotm_lbl">ਵਿਸ਼ਾ :</div>
-                                            <div class="">
-                                                <input type="text" id="subjectforedit_local" name="subjectforedit_local" />
-                                            </div>
-                                        </div>
-
-
-
-
-
-                                        <div class="row">
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                                <div class="fotm_lbl">ਦਫਤਰ ਤੋਂ:</div>
-                                                <div class="txt_value">
-                                                    @Model.FromDept
-                                                    @Html.HiddenFor(m => m.FromDeptId)
-
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divofc">
-                                                <div class="fotm_lbl">ਦਫਤਰ ਦਾ ਵੇਰਵਾ:</div>
-                                                <div class="txt_value">
-
-                                                    <div id="divOfficeList">
-                                                        @Model.FromOffice
-
-                                                    </div>
-                                                    @Html.HiddenFor(m => m.FromOfficeId)
-
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                                <div class="fotm_lbl">ਦਫ਼ਤਰ ਨੂੰ:</div>
-                                                <div class="txt_value">
-                                                    @Model.ToDept
-                                                    @Html.HiddenFor(m => m.ToDeptId)
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-6 mb-2">
-                                                <div class="fotm_lbl">
-                                                    ਦਫਤਰ ਦਾ ਵੇਰਵਾ:
-                                                    @if (Model.HideUpdate == "Yes") { }
-                                                    else
-                                                    {
-                                                        if (SiteName == "MC")
-                                                        {
-                                                            <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
-                                                        }
-
-                                                    }
-                                                </div>
-
-                                                @*@Model.ToOffice*@
-                                                @Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList, "Select Office", new { @id = "ddlOfficeChange1", @tabindex = "28" })
-
-                                                @Html.HiddenFor(m => m.ToOfficeId)
-
-
-
-                                            </div>
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
-                                                <div class="fotm_lbl"> ਟਾਈਪ:</div>
-                                                <div>
-                                                    <span>
-
-                                                        @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameChange1", @tabindex = "29" })
-
-                                                    </span>
-
-                                                </div>
-                                            </div>
-
-
-
-                                            <div class="col-md-6 col-lg-6 mb-2 mb-2">
-                                                <div class="fotm_lbl">ਕਿਸਮ:</div>
-                                                <div class="txt_value">
-                                                    <span class="">
-                                                        @Model.isLetter
-                                                        @Html.HiddenFor(m => m.isLetter)
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6 col-lg-6 mb-2 mb-2">
-                                                <div class="fotm_lbl" id="myref"> ਨੰ.: </div>
-                                                <div class="txt_value">
-                                                    <span class="">
-                                                        @Model.LetterNo
-                                                        @Html.HiddenFor(m => m.LetterNo)
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divLetterNo">
-                                                <div class="fotm_lbl"> ਮਿਤੀ:</div>
-                                                <div class="txt_value">
-                                                    @Model.LetterDateNew
-                                                    @Html.HiddenFor(m => m.LetterDate)
-
-                                                </div>
-                                            </div>
-
-                                            @if (SiteName == "e-Cabinate")
-                                            {
-                                                <div class="col-md-12 col-lg-12 mb-2">
-                                                    <div class="fotm_lbl">
-                                                        ਪ੍ਰੈਸ ਨੋਟ :
-                                                    </div>
-                                                    <div class="txt_value in_txt_area">
-                                                        <div> @Model.PressNotePun</div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-6">
-                                                    <div class="">
-                                                        <b>ਮਨਜ਼ੂਰਸ਼ੁਦਾ ਚੈੱਕਲਿਸਟ:&nbsp;</b>
-                                                        @foreach (var dep in Model.CMApproval)
-                                                        {
-                                                            <span>@dep.Text,</span>
-                                                        }
-
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="col-6">
-                                                    <div class="fotm_lbl">ਲਾਗੂ ਕਰਨ ਦੀ ਸਮਾਂ-ਸਾਰਣੀ:&nbsp;</div>
-                                                    <div class="fotm_lbl" style="font-size:10px">
-                                                        ਲੋੜੀਂਦੇ ਫੈਸਲਿਆਂ ਦਾ ਸੰਖੇਪ,ਪ੍ਰੋਜੈਕਟ ਦੇ ਲਾਭ ,ਲਾਗੂ ਕਰਨ ਦਾ ਸਮਾਂ
-                                                    </div>
-
-                                                    @if (!string.IsNullOrEmpty(Model.StatementImplementation_local))
-                                                    {
-                                                        var Actionpath2 = @Model.StatementImplementation_local;
-
-
-                                                        <a href='@Actionpath2' target="_blank" id="wreqeqwe">
-                                                            <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
-                                                        </a>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span id="EnclosureFiletxt" style="display: none;">No</span>
-
-                                                    }
-
-                                                    @Html.HiddenFor(m => m.StatementImplementation_local, new { id = "enclosure" })
-                                                </div>
-
-                                            }
-
-                                            <div class="col-md-12 col-lg-12 mb-2 mt-4" id="local_subjectdetailboxold_@Model.RefId">
-                                                <div class="fotm_lbl">
-                                                    ਵਿਸ਼ੇ ਦੇ ਵੇਰਵੇ:
-                                                    @if (Model.HideUpdate == "Yes") { }
-                                                    else
-                                                    {
-                                                        <i class="ace-icon fa fa-pencil hand" onclick="EditDetails()"></i>
-                                                    }
-
-                                                </div>
-                                                <div class="txt_value in_txt_area">
-                                                    <div id="divSubjectDetails_local"> @Html.Raw(Model.SubjectDetailsPB)</div>
-                                                    @Html.HiddenFor(m => m.SubjectDetailsPB)
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-md-12 col-lg-12" id="subjectdetailbox_local" style="display:none;">
-                                                <div class="fotm_lbl">ਵਿਸ਼ੇ ਦੇ ਵੇਰਵੇ:</div>
-                                                <div>
-                                                    <textarea type="text" id="subjectdetailforedit_local" name="subjectdetailforedit_local" onchange="updatesubjectdetail();">   </textarea>
-                                                </div>
-
-                                            </div>
-
-                                            <div class="col-md-12 col-lg-12" id="EditUpdateButton1">
-                                                <input type="button" class="btn btn-warning" value="Update" id="btnSDUpdate1" onclick="EditUpdate()" />
-                                            </div>
-
-                                            @if (SiteName == "MC")
-                                            {
-                                                <div class="col-md-12 col-lg-12 mb-2" id="divLetterNo">
-                                                    <div class="fotm_lbl"> Point of Instruction:</div>
-                                                    <div class="txt_value">
-                                                        @Model.ActName
-
-                                                    </div>
-                                                </div>
-                                            }
-
-
-
-                                            @if (!string.IsNullOrEmpty(Model.ApplicantName))
-                                            {
-                                                <div class="col-md-6 col-lg-6">
-                                                    <div class="fotm_lbl">Applicant Name:</div>
-                                                    <div class="txt_value">
-
-                                                        @Html.Raw(Model.ApplicantName)
-                                                        @Html.HiddenFor(m => m.ApplicantName)
-                                                    </div>
-                                                </div>
-                                            }
-
-                                            @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
-
-                                            {
-                                                <div class="col-md-6 col-lg-6">
-                                                    <div class="fotm_lbl">Applicant Address:</div>
-                                                    <div class="txt_value">
-
-                                                        @Html.Raw(Model.ApplicantAddress)
-                                                        @Html.HiddenFor(m => m.ApplicantAddress)
-                                                    </div>
-                                                </div>
-
-                                            }
-
-                                            @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
-
-                                            {
-                                                <div class="col-md-6 col-lg-6">
-                                                    <div class="fotm_lbl">Applicant Mobile:</div>
-                                                    <div class="txt_value">
-
-                                                        @Html.Raw(Model.ApplicantMobile)
-                                                        @Html.HiddenFor(m => m.ApplicantMobile)
-                                                    </div>
-                                                </div>
-                                            }
-
-                                            @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
-
-                                            {
-
-                                                <div class="col-md-6 col-lg-6">
-                                                    <div class="fotm_lbl">Applicant Email:</div>
-                                                    <div class="txt_value">
-
-                                                        @Html.Raw(Model.ApplicantEmail)
-                                                        @Html.HiddenFor(m => m.ApplicantEmail)
-                                                    </div>
-                                                </div>
-                                            }
-
-
-
-                                        </div>
-
-
-
-
-
-                                    </div>
-
-
-
-
-
-                                </div>
-
-                            </div>
-                            <div class="tab-pane fade show active" id="Refdetail" role="tabpanel" aria-labelledby="det-tab">
-                                <div class="widget-main no-padding-right no-padding-left">
-
-
-                                    <div class="ref_box mb-3">
 
                                         <div class="mb-2" id="subjectboxold_@Model.RefId" style="display:none;">
                                             <div class="fotm_lbl">
@@ -5133,17 +4858,17 @@
                                         </div>
 
                                         @*<div class="mb-2" id="local_subjectboxold_@Model.RefId">
-                                                <div class="fotm_lbl">
-                                                    Subject in Local:
-                                                </div>
-                                                <div class="txt_value in_txt_area">
+            <div class="fotm_lbl">
+                Subject in Local:
+            </div>
+            <div class="txt_value in_txt_area">
 
-                                                    <span id="SpanSubject_local"> @Model.SubjectPB</span>
-                                                    @Html.HiddenFor(m => m.SubjectPB)
+                <span id="SpanSubject_local"> @Model.SubjectPB</span>
+                @Html.HiddenFor(m => m.SubjectPB)
 
 
-                                                </div>
-                                            </div>*@
+            </div>
+        </div>*@
                                         <div class="mb-2" id="subjectbox" style="display:none;">
                                             <div class="fotm_lbl">Subject:</div>
                                             <div class="">
@@ -5151,104 +4876,79 @@
                                             </div>
                                         </div>
                                         @*<div class="mb-2" id="subjectbox_local" style="display:none;">
-                                                <div class="fotm_lbl">Subject in Local:</div>
-                                                <div class="">
-                                                    <input type="text" id="subjectforedit_local" name="subjectforedit_local" />
-                                                </div>
-                                            </div>*@
+            <div class="fotm_lbl">Subject in Local:</div>
+            <div class="">
+                <input type="text" id="subjectforedit_local" name="subjectforedit_local" />
+            </div>
+        </div>*@
 
 
 
 
 
                                         <div class="row">
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                                <div class="fotm_lbl">From Office:</div>
-                                                <div class="txt_value">
-                                                    @Model.FromDept
-                                                    @Html.HiddenFor(m => m.FromDeptId)
+                                            @*<div class="col-md-6 col-lg-6 mb-2" id="divMember">
+                <div class="fotm_lbl">From Office:</div>
+                <div class="txt_value">
+                    @Model.FromDept
 
-                                                </div>
-                                            </div>
+
+                </div>
+            </div>*@
 
 
 
 
                                             @*<div class="col-md-6 col-lg-6 mb-2" id="divofc">
-                                                    <div class="fotm_lbl">Office Detail:</div>
-                                                    <div class="txt_value">
+                <div class="fotm_lbl">Office Detail:</div>
+                <div class="txt_value">
 
-                                                        <div id="divOfficeList">
-                                                            @Model.FromOffice
+                    <div id="divOfficeList">
+                        @Model.FromOffice
 
-                                                        </div>
-                                                        @Html.HiddenFor(m => m.FromOfficeId)
+                    </div>
+                    @Html.HiddenFor(m => m.FromOfficeId)
 
-                                                    </div>
-                                                </div>*@
-
-
+                </div>
+            </div>*@
 
 
 
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divofc">
-                                                <div class="fotm_lbl">
-                                                    Office Detail:
-                                                    @if (Model.HideUpdate != "Yes")
-                                                    {
-                                                        if (SiteName == "MC")
-                                                        {
-                                                            <i class="ace-icon fa fa-pencil hand" onclick="EditOfficeFrom()"></i>
-                                                        }
-                                                    }
-                                                </div>
+                                            @*<div class="col-md-6 col-lg-6 mb-2" id="divMember">
+                <div class="fotm_lbl">To Office:</div>
+                <div class="txt_value">
+                    @Model.ToDept
 
-                                                @Html.DropDownListFor(
-                                                         m => m.FromOfficeId,
-                                                         Model.FromOfficeList,
-                                                         "Select Office",
-                                                         new { @id = "ddlFromOfficeChange", @tabindex = "27" }
-                                                     )
-
-                                                @Html.HiddenFor(m => m.FromOfficeId)
-                                            </div>
+                </div>
+            </div>*@
 
 
+                                            @*<div class="col-md-6 col-lg-6 mb-2">
+                <div class="fotm_lbl">
+                    Office Detail:
+                    @if (Model.HideUpdate == "Yes") { }
+                    else
+                    {
+                        if (SiteName == "MC")
+                        {
+                            <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
+                        }
+
+                    }
+                </div>
 
 
-                                            <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                                <div class="fotm_lbl">To Office:</div>
-                                                <div class="txt_value">
-                                                    @Model.ToDept
-                                                    @Html.HiddenFor(m => m.ToDeptId)
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-md-6 col-lg-6 mb-2">
-                                                <div class="fotm_lbl">
-                                                    Office Detail:
-                                                    @if (Model.HideUpdate == "Yes") { }
-                                                    else
-                                                    {
-                                                        if (SiteName == "MC")
-                                                        {
-                                                            <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
-                                                        }
-
-                                                    }
-                                                </div>
-
-
-                                                @Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList,
-                                                    "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28" })
-
-                                                @Html.HiddenFor(m => m.ToOfficeId)
+                @Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList,
+                    "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28" })
 
 
 
-                                            </div>
 
+
+            </div>*@
+                                            @Html.HiddenFor(m => m.FromDeptId)
+                                            @Html.HiddenFor(m => m.ToDeptId)
+                                            @Html.HiddenFor(m => m.ToOfficeId)
 
 
                                             <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
@@ -5368,9 +5068,6 @@
                                                 </div>
                                             </div>
 
-
-
-
                                             <div class="col-md-12 col-lg-12" id="subjectdetailbox" style="display:none;">
                                                 <div class="fotm_lbl">Details:</div>
                                                 <div>
@@ -5379,13 +5076,6 @@
 
                                             </div>
 
-                                            @*<div class="col-md-12 col-lg-12" id="subjectdetailbox_local" style="display:none;">
-                                                    <div class="fotm_lbl">Details in Local:</div>
-                                                    <div>
-                                                        <textarea type="text" id="subjectdetailforedit_local" name="subjectdetailforedit_local" onchange="updatesubjectdetail();">   </textarea>
-                                                    </div>
-
-                                                </div>*@
                                             <div class="col-md-12 col-lg-12 mb-2" id="amountbox_old">
                                                 <div class="fotm_lbl">
                                                     Proposal Amount:
@@ -5413,7 +5103,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-12 col-lg-12" id="EditUpdateButton" style="display:none;">
+                                            <div class="col-md-12 col-lg-12 mb-2" id="EditUpdateButton" style="display:none; text-align: end;">
                                                 <input type="button" class="btn btn-warning" value="Update" id="btnSDUpdate" onclick="EditUpdate()" />
                                             </div>
 
@@ -5438,29 +5128,26 @@
 
                                             }
 
-
-
-
                                             @*<div class="col-md-6 col-lg-6 mb-2">
 
-                                                    <div class="fotm_lbl">
-                                                        Attached Enclosure (File):&nbsp;
-                                                        @if (!string.IsNullOrEmpty(Model.EnclosureFile))
-                                                        {
-                                                            <a href="@CMNirdesh.Models.BlobStorage.GetStorageAcessingPath()@Model.EnclosureFile" target="_blank" id="wreqeqwe">
-                                                                <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
-                                                            </a>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span id="EnclosureFiletxt" style="display: none;">No</span>
+                <div class="fotm_lbl">
+                    Attached Enclosure (File):&nbsp;
+                    @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                    {
+                        <a href="@CMNirdesh.Models.BlobStorage.GetStorageAcessingPath()@Model.EnclosureFile" target="_blank" id="wreqeqwe">
+                            <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                        </a>
+                    }
+                    else
+                    {
+                        <span id="EnclosureFiletxt" style="display: none;">No</span>
 
-                                                        }
+                    }
 
-                                                        @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
-                                                    </div>
+                    @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
+                </div>
 
-                                                </div>*@
+            </div>*@
 
                                             @if (!string.IsNullOrEmpty(Model.ApplicantName))
                                             {
@@ -5514,23 +5201,9 @@
                                                     </div>
                                                 </div>
                                             }
-
-
-
                                         </div>
-
-
-
-
-
                                     </div>
-
-
-
-
-
                                 </div>
-
                             </div>
 
                             @if (Model.HideRef == "Yes") { }
@@ -5600,11 +5273,7 @@
 
                         </div>
                     </div>
-
-
-
                 </div>
-
             </div>
         </div>
 
@@ -5762,19 +5431,19 @@
             }
 
             // 2. Extract Block 1: Subject
-            var subjectContent = ($('#SpanSubject').text() || $('#SpanSubject_local').text() || '').trim();
+            var subjectContent = ($('#SpanSubject').text() || '').trim();
             if (!subjectContent) {
                 subjectContent = '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.Subject ?? Model.SubjectPB ?? ""))'.trim();
             }
             if (!subjectContent) {
-                subjectContent = ($('#subjectforedit').val() || $('#subjectforedit_local').val() || '').trim();
+                subjectContent = ($('#subjectforedit').val() || '').trim();
             }
             if (!subjectContent) {
                 subjectContent = '<span style="color:#64748b; font-style:italic;">No subject specified</span>';
             }
 
             // 3. Extract Block 2: Details
-            var detailsContent = ($('#divSubjectDetails').html() || $('#divSubjectDetails_local').html() || '').trim();
+            var detailsContent = ($('#divSubjectDetails').html() || '').trim();
             if (!detailsContent) {
                 detailsContent = '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.SubjectDetails ?? Model.SubjectDetailsPB ?? ""))'.trim();
             }
