@@ -1,6 +1,7 @@
-﻿using CMNirdesh.Models.Diaries;
+using CMNirdesh.Models.Diaries;
 using CMNirdesh.Models.Session;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Ocsp;
 using Org.BouncyCastle.Tsp;
 using PoliteCaptcha;
@@ -33,6 +34,9 @@ namespace CMNirdesh.Models
         public string ToDeptId { get; set; }
     
         public bool Draftchk { get; set; }
+        public List<ProposalWardModel> WardListItems { get; set; }
+        public string WardListItemsJson { get; set; }
+        public int[] SelectedWardIds { get; set; }
         public bool FileDraft { get; set; }
         public string LGComments { get; set; } 
         public int ToOfficeId { get; set; }
@@ -1402,7 +1406,85 @@ namespace CMNirdesh.Models
             }
         }
 
+        public static bool SaveProposalWards(string refid, List<ProposalWardModel> wardItems, string createdBy = null)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(refid) || wardItems == null || wardItems.Count == 0)
+                {
+                    return false;
+                }
 
+                using (SqlConnection connection = ClsConnection.GetConnection())
+                {
+                    if (connection.State == ConnectionState.Closed || connection.State == ConnectionState.Broken)
+                    {
+                        connection.Open();
+                    }
+
+                    // Remove existing mapping for this refid before saving
+                    SqlParameter[] delParams = new SqlParameter[] {
+                        new SqlParameter("@RefId", refid)
+                    };
+                    SqlHelper.ExecuteNonQuery(connection, "sp_DeleteProposalWardMapping", delParams);
+
+                    foreach (var ward in wardItems)
+                    {
+                        if (ward != null && ward.WardId > 0)
+                        {
+                            SqlParameter[] insParams = new SqlParameter[] {
+                                new SqlParameter("@RefId", refid),
+                                new SqlParameter("@WardId", ward.WardId),
+                                new SqlParameter("@WardName", (object)ward.WardName ?? DBNull.Value),
+                                new SqlParameter("@CreatedBy", (object)createdBy ?? DBNull.Value)
+                            };
+                            SqlHelper.ExecuteNonQuery(connection, "sp_InsertProposalWardMapping", insParams);
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.WriteToLog(ex, System.Reflection.MethodBase.GetCurrentMethod().ToString());
+                return false;
+            }
+        }
+
+        public static List<ProposalWardModel> GetProposalWards(string refid)
+        {
+            List<ProposalWardModel> list = new List<ProposalWardModel>();
+            try
+            {
+                using (SqlConnection connection = ClsConnection.GetConnection())
+                {
+                    if (connection.State == ConnectionState.Closed || connection.State == ConnectionState.Broken)
+                    {
+                        connection.Open();
+                    }
+                    SqlParameter[] p = new SqlParameter[] {
+                        new SqlParameter("@RefId", refid)
+                    };
+                    DataSet ds = SqlHelper.ExecuteDataset(connection, "sp_GetProposalWardsByRefId", p);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in ds.Tables[0].Rows)
+                        {
+                            list.Add(new ProposalWardModel
+                            {
+                                WardId = Convert.ToInt32(row["WardId"]),
+                                WardName = row["WardName"] != DBNull.Value ? Convert.ToString(row["WardName"]) : ""
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLog.WriteToLog(ex, System.Reflection.MethodBase.GetCurrentMethod().ToString());
+            }
+            return list;
+        }
 
         public static SelectList GetDocumentTypeList(string userid)
         {
@@ -4272,6 +4354,12 @@ namespace CMNirdesh.Models
 
                     model.lstDiaryActionViewModel = lstAction;
                     model.MultiFileModel = lstmultifile;
+                    model.WardListItems = GetProposalWards(model.RefId.ToString());
+                    if (model.WardListItems != null && model.WardListItems.Count > 0)
+                    {
+                        model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                        model.WardListItemsJson = JsonConvert.SerializeObject(model.WardListItems);
+                    }
                     lst.Add(model);
                 }
                 return lst[0];
@@ -4489,6 +4577,12 @@ namespace CMNirdesh.Models
                         }
                         
                         model.lstDiaryActionViewModel = lstAction;
+                        model.WardListItems = GetProposalWards(model.RefId.ToString());
+                        if (model.WardListItems != null && model.WardListItems.Count > 0)
+                        {
+                            model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                            model.WardListItemsJson = JsonConvert.SerializeObject(model.WardListItems);
+                        }
                         
                         lst.Add(model);
                     }
@@ -7351,6 +7445,12 @@ namespace CMNirdesh.Models
                         lstAction.Add(diaryActionViewModel);
                     }
                     model.lstDiaryActionViewModel = lstAction;
+                    model.WardListItems = GetProposalWards(model.RefId.ToString());
+                    if (model.WardListItems != null && model.WardListItems.Count > 0)
+                    {
+                        model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                        model.WardListItemsJson = JsonConvert.SerializeObject(model.WardListItems);
+                    }
                     lst.Add(model);
                 }
                 return lst[0];

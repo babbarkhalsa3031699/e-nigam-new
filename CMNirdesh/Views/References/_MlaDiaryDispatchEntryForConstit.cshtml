@@ -337,12 +337,15 @@
         color: #334155 !important;
     }
 
-    #formDiaryDispatch .tox .tox-tbtn--select {
+    #formDiaryDispatch .tox .tox-tbtn--select,
+    #formDiaryDispatch .tox .tox-tbtn--bespoke {
         width: auto !important;
-        min-width: 65px !important;
-        padding: 0 8px !important;
+        min-width: 80px !important;
+        padding: 0 6px !important;
+        height: 28px !important;
     }
 
+    #formDiaryDispatch .tox .tox-tbtn--bespoke .tox-tbtn__select-label,
     #formDiaryDispatch .tox .tox-tbtn__select-label {
         font-size: 12px !important;
         font-weight: 500 !important;
@@ -350,7 +353,8 @@
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        max-width: 130px !important;
+        width: auto !important;
+        max-width: 140px !important;
         display: inline-block !important;
         cursor: pointer !important;
         vertical-align: middle !important;
@@ -360,6 +364,8 @@
         margin-left: 4px !important;
         display: inline-flex !important;
         align-items: center !important;
+        width: 14px !important;
+        min-width: 14px !important;
     }
 
     .tox-tinymce-aux {
@@ -1118,7 +1124,20 @@
                                     @multiple = "multiple",
                                     @tabindex = "15"
                                 })
+                            @Html.HiddenFor(m => m.WardListItemsJson, new { @id = "hdnWardListItemsJson" })
                         </div>
+                        @if (Model.WardListItems != null && Model.WardListItems.Count > 0)
+                        {
+                            <div id="divSelectedWardsBadges" style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px;">
+                                @foreach (var w in Model.WardListItems)
+                                {
+                                    <span class="badge" style="background-color: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;" title="Selected Ward (Read-only / Disabled)">
+                                        <i class="fa fa-map-marker text-danger"></i> @w.WardName
+                                        <i class="fa fa-lock text-muted" style="font-size: 10px;" title="Disabled"></i>
+                                    </span>
+                                }
+                            </div>
+                        }
                     </div>
 
                 </div>
@@ -1212,6 +1231,17 @@
                 allSelectedText: 'All Wards Selected',
                 numberDisplayed: 3
             });
+        }
+
+        var isEditOrView = ('@Model.PaperEntryType' == 'EditEntry' || '@Model.BtnCaption' == 'Update' || ('@Model.RefId' != '' && '@Model.RefId' != '0'));
+        if (isEditOrView) {
+            $('#ddlWard option:selected').prop('disabled', true);
+            $('#ddlWard').prop('disabled', true);
+            if ($.fn.multipleSelect) {
+                try { $('#ddlWard').multipleSelect('disable'); } catch (e) { }
+            } else if ($.fn.multiselect) {
+                try { $('#ddlWard').multiselect('disable'); } catch (e) { }
+            }
         }
 
         var SDPreText = "";
@@ -1353,9 +1383,9 @@
             menubar: 'file edit view insert format tools table',
             toolbar_mode: 'wrap',
             plugins: 'table lists advlist autolink code preview fullscreen wordcount searchreplace',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table tableprops | fullscreen preview code',
-            font_family_formats: 'Raavi=Raavi,Segoe UI,sans-serif; Segoe UI=Segoe UI,sans-serif; Arial=arial,helvetica,sans-serif; Calibri=calibri,sans-serif; Times New Roman=times new roman,times,serif;',
-            font_size_formats: '9pt 10pt 11pt 12pt 13pt 14pt 16pt 18pt 20pt 24pt 28pt 36pt',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough superscript subscript | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table tableprops | fullscreen preview code',
+            font_family_formats: 'Raavi=Raavi,Segoe UI,sans-serif; Segoe UI=Segoe UI,sans-serif; Arial=arial,helvetica,sans-serif; Calibri=calibri,sans-serif; Times New Roman=times new roman,times,serif; Georgia=georgia,serif; Tahoma=tahoma,sans-serif; Verdana=verdana,sans-serif; Courier New=courier new,monospace;',
+            font_size_formats: '8pt 9pt 10pt 11pt 12pt 13pt 14pt 16pt 18pt 20pt 22pt 24pt 28pt 36pt',
             table_default_styles: {
                 'width': '100%',
                 'border-collapse': 'collapse',
@@ -1870,9 +1900,29 @@
                         $("#enclosure").val(fd);
 
 
+                        // Collect selected wards as array of objects: { WardId, WardName }
+                        var selectedWards = [];
+                        $('#ddlWard option:selected').each(function () {
+                            var val = $(this).val();
+                            var txt = $(this).text().trim();
+                            if (val) {
+                                selectedWards.push({
+                                    WardId: parseInt(val),
+                                    WardName: txt
+                                });
+                            }
+                        });
+                        $('#hdnWardListItemsJson').val(JSON.stringify(selectedWards));
+
                         if ($("#formDiaryDispatch").attr("enctype") == "multipart/form-data") {
                             var dataString = new FormData($("#formDiaryDispatch").get(0));
                             processData = false;
+                        }
+
+                        // Explicitly append WardListItems array items to FormData for MVC model binder
+                        for (var w = 0; w < selectedWards.length; w++) {
+                            dataString.append('WardListItems[' + w + '].WardId', selectedWards[w].WardId);
+                            dataString.append('WardListItems[' + w + '].WardName', selectedWards[w].WardName);
                         }
 
                         $.ajax({

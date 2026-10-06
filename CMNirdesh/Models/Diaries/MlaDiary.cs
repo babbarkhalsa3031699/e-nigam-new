@@ -1,4 +1,4 @@
-﻿using CMNirdesh.Error;
+using CMNirdesh.Error;
 using CMNirdesh.Models;
 //using DocumentFormat.OpenXml.EMMA;
 
@@ -911,6 +911,12 @@ namespace CMNirdesh.Models.Diaries
 
     }
 
+    public class ProposalWardModel
+    {
+        public int WardId { get; set; }
+        public string WardName { get; set; }
+    }
+
     [Serializable]
     [Table("mMlaDiary")]
     public class MlaDiaryData
@@ -1211,6 +1217,8 @@ namespace CMNirdesh.Models.Diaries
 
      
         public int[] SelectedWardIds { get; set; }
+        public List<ProposalWardModel> WardListItems { get; set; }
+        public string WardListItemsJson { get; set; }
 
        
         public SelectList WardList { get; set; }

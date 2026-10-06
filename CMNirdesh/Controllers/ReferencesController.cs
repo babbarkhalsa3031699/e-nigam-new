@@ -1568,6 +1568,12 @@ namespace CMNirdesh.Controllers
                     //  model.ActionTypeList = DiaryViewModel.GetAllActionTypeList((Int64)Convert.ToInt64(RefId),"diary");
                     model.mDepartmentList = DiaryViewModel.getDepartment();
                     model.OfficeList = DiaryViewModel.GetOfficeByDept(model.DeptId, CurrentSession.OfficeId);
+                    model.WardList = DiaryViewModel.WardList();
+                    model.WardListItems = DiaryViewModel.GetProposalWards(model.RefId.ToString());
+                    if (model.WardListItems != null && model.WardListItems.Count > 0)
+                    {
+                        model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                    }
                     //model.PaperEntryType = "NewEntry";
                     //model.BtnCaption = "Save";
                     model.PaperEntryType = "EditEntry";
@@ -1662,6 +1668,12 @@ namespace CMNirdesh.Controllers
                     //   model.ActionTypeList = DiaryViewModel.GetAllActionTypeList();
                     model.mDepartmentList = DiaryViewModel.getDepartment();
                     model.OfficeList = DiaryViewModel.GetOfficeByDept(model.DeptId, CurrentSession.OfficeId);
+                    model.WardList = DiaryViewModel.WardList();
+                    model.WardListItems = DiaryViewModel.GetProposalWards(model.RefId.ToString());
+                    if (model.WardListItems != null && model.WardListItems.Count > 0)
+                    {
+                        model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                    }
                     model.PaperEntryType = "NewEntry";
                     model.BtnCaption = "Save";
                     model.PaperEntryType = "EditEntry";
@@ -2190,7 +2202,39 @@ namespace CMNirdesh.Controllers
                         }
                     }
 
+                    // Process and Save Ward Mappings to detail table
+                    if ((model.WardListItems == null || model.WardListItems.Count == 0) && !string.IsNullOrEmpty(model.WardListItemsJson))
+                    {
+                        try
+                        {
+                            model.WardListItems = new JavaScriptSerializer().Deserialize<List<ProposalWardModel>>(model.WardListItemsJson);
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorLog.WriteToLog(ex, "Deserializing WardListItemsJson in SaveUpdateMlaDispatch");
+                        }
+                    }
 
+                    // Fallback: If WardListItems not directly supplied but SelectedWardIds was selected
+                    if ((model.WardListItems == null || model.WardListItems.Count == 0) && model.SelectedWardIds != null && model.SelectedWardIds.Length > 0)
+                    {
+                        var allWards = DiaryViewModel.WardList();
+                        model.WardListItems = new List<ProposalWardModel>();
+                        foreach (var wid in model.SelectedWardIds)
+                        {
+                            var match = allWards.FirstOrDefault(w => w.Value == wid.ToString());
+                            model.WardListItems.Add(new ProposalWardModel
+                            {
+                                WardId = wid,
+                                WardName = match != null ? match.Text : ("Ward " + wid)
+                            });
+                        }
+                    }
+
+                    if (model.WardListItems != null && model.WardListItems.Count > 0)
+                    {
+                        DiaryViewModel.SaveProposalWards(refid.ToString(), model.WardListItems, CurrentSession.Name);
+                    }
 
                     if (model.EnclosureFile != null)
                     {
@@ -5728,6 +5772,12 @@ namespace CMNirdesh.Controllers
                        "Text"
                    );
                 }
+                model.WardList = DiaryViewModel.WardList();
+                model.WardListItems = DiaryViewModel.GetProposalWards(model.RefId.ToString());
+                if (model.WardListItems != null && model.WardListItems.Count > 0)
+                {
+                    model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                }
                 if (model.isLetter == "File")
                 {
                     return PartialView("_ActionTaken", model);
@@ -5845,6 +5895,13 @@ namespace CMNirdesh.Controllers
                 }
                 model.ActionDetailsList = lstDiaryaction;
                 model.MeetingList = DiaryViewModel.GetMeetingList(CurrentSession.OfficeId);
+
+                model.WardList = DiaryViewModel.WardList();
+                model.WardListItems = DiaryViewModel.GetProposalWards(model.RefId.ToString());
+                if (model.WardListItems != null && model.WardListItems.Count > 0)
+                {
+                    model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                }
 
                 if (EditType == "Agenda" || EditType == "PassedAgenda")
                 {
@@ -6191,6 +6248,13 @@ namespace CMNirdesh.Controllers
 
                     //}
 
+                    model.WardList = DiaryViewModel.WardList();
+                    model.WardListItems = DiaryViewModel.GetProposalWards(model.RefId.ToString());
+                    if (model.WardListItems != null && model.WardListItems.Count > 0)
+                    {
+                        model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                    }
+
                     model.EditType = "";
                     if (model.isLetter == "File")
                     {
@@ -6308,6 +6372,12 @@ namespace CMNirdesh.Controllers
                 model.mDepartmentList = DiaryViewModel.getDepartment();
                 model.ReferencePriorityTypeList = DiaryViewModel.GetPriorityTypeList();
                 model.OfficeList = DiaryViewModel.GetOfficeByDept(diaryModel.ToDeptId, "0");
+                model.WardList = DiaryViewModel.WardList();
+                model.WardListItems = DiaryViewModel.GetProposalWards(model.RefId.ToString());
+                if (model.WardListItems != null && model.WardListItems.Count > 0)
+                {
+                    model.SelectedWardIds = model.WardListItems.Select(x => x.WardId).ToArray();
+                }
                 model.PaperEntryType = "NewEntry";
                 model.BtnCaption = "Save";
                 model.PaperEntryType = "EditEntry";
