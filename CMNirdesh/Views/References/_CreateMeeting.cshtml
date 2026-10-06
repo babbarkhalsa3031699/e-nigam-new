@@ -1,52 +1,246 @@
-﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@model CMNirdesh.Models.Diaries.MlaDiaryData
 @using CMNirdesh.Models
 
 <style>
-    body {
-        background: #f4f6fb;
+    /* Modern SaaS Design System for Create Meeting */
+    #CreateMeeting {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: #1e293b;
     }
 
-    .card {
+    #CreateMeeting .card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(0, 0, 0, 0.02);
+        overflow: hidden;
+        margin-top: 4px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .card-header {
-        background: #9cceff;
-        color: #fff;
+    #CreateMeeting .card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 20px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    #CreateMeeting .card-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .meeting-header-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .meeting-icon-box {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #dbeafe;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+    }
+
+    .meeting-title-text {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .meeting-subtitle-text {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .meeting-header-badge {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        font-size: 11px;
         font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        letter-spacing: 0.02em;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
     }
 
-    .txt_label {
-        font-weight: 600;
-        color: #374151;
+    #CreateMeeting .card-body {
+        padding: 22px 24px;
     }
 
-    .timepicker-input {
-        min-width: 120px;
-        text-align: center;
-    }
-
-    .section-title {
-        font-weight: 600;
-        color: #9cceff;
+    #CreateMeeting .txt_label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #475569;
         margin-bottom: 6px;
     }
 
-    .header-preview {
-        background: #ffffff;
-        border: 1px dashed #cfd6df;
-        border-radius: 8px;
-        padding: 14px;
-        white-space: pre-line;
-        font-weight: 600;
-        line-height: 1.7;
-        color: #111827;
+    #CreateMeeting .txt_label i {
+        color: #3b82f6;
+        font-size: 11px;
     }
 
-    .btn-primary {
-        background-color: #1e3a8a;
-        border-color: #1e3a8a;
+    #CreateMeeting .form-control,
+    #CreateMeeting select.form-control,
+    #CreateMeeting input.form-control {
+        height: 38px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        box-shadow: none !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-sizing: border-box !important;
+    }
+
+    #CreateMeeting .form-control:focus,
+    #CreateMeeting select.form-control:focus,
+    #CreateMeeting input.form-control:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+        outline: none !important;
+        background-color: #ffffff !important;
+    }
+
+    #CreateMeeting .form-control:hover {
+        border-color: #94a3b8 !important;
+    }
+
+    /* Auto-Generated Agenda Header Card */
+    .preview-card-container {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .preview-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .preview-card-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #334155;
+        margin: 0;
+    }
+
+    .preview-card-title i {
+        color: #2563eb;
+    }
+
+    .preview-chip {
+        background: #e2e8f0;
+        color: #475569;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 4px;
+        margin-left: 6px;
+    }
+
+    .preview-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #ffffff;
+        color: #2563eb;
+        border: 1px solid #cbd5e1;
+        font-size: 11.5px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+
+    .preview-edit-btn:hover {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+    }
+
+    #HeaderPreview {
+        background: #ffffff !important;
+        border: 1.5px dashed #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 14px 16px !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        line-height: 1.7 !important;
+        color: #1e293b !important;
+        min-height: 72px !important;
+        white-space: pre-line !important;
+        transition: all 0.2s ease !important;
+    }
+
+    #HeaderPreview:focus {
+        border-style: solid !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+        outline: none !important;
+        background: #ffffff !important;
+    }
+
+    /* Primary Action Button */
+    .btn-create-meeting {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 9px 24px !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        cursor: pointer !important;
+    }
+
+    .btn-create-meeting:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+        transform: translateY(-1px) !important;
     }
 </style>
 @*<link href="~/Content/flatpickr.min.css" rel="stylesheet" />
@@ -61,7 +255,7 @@
 
     function generateHeader() {
 
-        var ulb   = '@Model.deptnamelocal';
+        var ulb   = '@Model.deptname';
         var type  = $("#MeetingTypeId option:selected").text();
         var date = $("#txtallocationdate").val();
         if (date) {
@@ -73,8 +267,7 @@
         var chair = $("#ChairPerson").val();
         var desig = $("#ChairDesignation").val();
 
-        var Type = '';
-        var headerText = `${ulb} ਦੀ ${type} ਜੋ ਕਿ ਮਿਤੀ: ${formattedDate} ਨੂੰ ਸਮਾਂ: ${time} ਵਜੇ ${chair}, ${desig} ਦੀ ਪ੍ਰਧਾਨਗੀ ਹੇਠ, ${ulb} ਦੇ ਮੀਟਿੰਗ ਹਾਲ ਵਿੱਚ ਆਯੋਜਿਤ ਕੀਤੀ ਜਾਣੀ ਨਿਸ਼ਚਿਤ ਕੀਤੀ ਗਈ ਹੈ।`;
+        var headerText = `The ${type} of ${ulb} is scheduled to be held on Date: ${formattedDate} at Time: ${time} under the chairmanship of ${chair}, ${desig}, in the Meeting Hall of ${ulb}.`;
 
 
         $("#CreateMeetingHeader").val(headerText);
@@ -96,12 +289,11 @@
             generateHeader
         );
 
-        $(document).on(
-            "keyup change",
-            "#Proceedingfirstpageheader, #meetingname,#meetingdate,#tChairPerson,#tChairpersonDesignation",
-            // generateHeaderUpdate
-
-        );
+        // $(document).on(
+        //     "keyup change",
+        //     "#Proceedingfirstpageheader, #meetingname,#meetingdate,#tChairPerson,#tChairpersonDesignation",
+        //     generateHeaderUpdate
+        // );
 
 
     });
@@ -209,7 +401,14 @@
 
                     <div class="card">
                         <div class="card-header">
-                            Create Meeting
+                            <div class="meeting-header-title">
+                                <span class="meeting-icon-box"><i class="fa fa-calendar-plus-o"></i></span>
+                                <div>
+                                    <h5 class="meeting-title-text">Create Meeting</h5>
+                                    <span class="meeting-subtitle-text">Configure schedule & agenda details</span>
+                                </div>
+                            </div>
+                            <span class="meeting-header-badge"><i class="fa fa-clock-o"></i> Schedule</span>
                         </div>
 
                         <div class="card-body">
@@ -218,7 +417,7 @@
 
                                 <!-- Meeting Date -->
                                 <div class="col-md-3 mb-3">
-                                    <label class="txt_label">Meeting Date</label>
+                                    <label class="txt_label"><i class="fa fa-calendar"></i> Meeting Date</label>
                                     @Html.TextBoxFor(m => m.CreateMeeting.AgendaDate,
                                         new
                                              {
@@ -231,7 +430,7 @@
 
                                 <!-- Start Time -->
                                 <div class="col-md-3 mb-3">
-                                    <label class="txt_label">Start Time</label>
+                                    <label class="txt_label"><i class="fa fa-clock-o"></i> Start Time</label>
 
                                     <div class="input-group">
                                         @Html.TextBoxFor(m => m.CreateMeeting.StartTime,
@@ -244,16 +443,12 @@
                                                 autocomplete = "off",
                                                 required = "required"
                                             })
-                                        @*<span class="input-group-text">
-                                            <i class="fa fa-clock-o"></i>
-                                        </span>*@
                                     </div>
                                 </div>
 
                                 <!-- Meeting Name -->
                                 <div class="col-md-3 mb-3">
-                                   
-                                    <label class="txt_label">Meeting Name</label>
+                                    <label class="txt_label"><i class="fa fa-bookmark"></i> Meeting Name</label>
                                     @Html.TextBoxFor(m => m.CreateMeeting.AgendaName,
                                         new
                                              {
@@ -266,7 +461,7 @@
 
                                 <!-- Meeting Type -->
                                 <div class="col-md-3 mb-3">
-                                    <label class="txt_label">Meeting Type</label>
+                                    <label class="txt_label"><i class="fa fa-list-ul"></i> Meeting Type</label>
                                     @Html.DropDownListFor(
                                         m => m.CreateMeeting.MeetingType,
                                         new SelectList(Model._MeetingType, "MeetingTypeId", "MeetingTypeName"),
@@ -281,64 +476,61 @@
 
                                 <!-- Chair Person -->
                                 <div class="col-md-3 mb-3">
-                                    <label class="txt_label">Chair Person (Punjabi)</label>
-                                    @*<input type="text"
-                                        id="ChairPerson"
-                                        class="form-control"
-                                        placeholder="ਚੇਅਰਪਰਸਨ"
-                                        required />*@
-
+                                    <label class="txt_label"><i class="fa fa-user"></i> Chair Person</label>
                                     @Html.TextBoxFor(m => m.CreateMeeting.ChairPerson,
                                       new
                                            {
                                           id = "ChairPerson",
                                           @class = "form-control",
-                                          required = "required"
+                                          required = "required",
+                                          placeholder = "Please Enter"
                                       })
                                 </div>
 
                                 <!-- Designation -->
                                 <div class="col-md-3 mb-3">
-                                    <label class="txt_label">Designation (Punjabi)</label>
-                                    @*<input type="text"
-                                        id="ChairDesignation"
-                                        class="form-control"
-                                        placeholder="ਚੇਅਰਪਰਸਨ ਅਹੁਦਾ"
-                                        required />*@
-
+                                    <label class="txt_label"><i class="fa fa-id-badge"></i> Designation</label>
                                     @Html.TextBoxFor(m => m.CreateMeeting.ChairPersonDesignation,
                                       new
                                           {
                                           id = "ChairDesignation",
                                           @class = "form-control",
-                                          required = "required"
+                                          required = "required",
+                                          placeholder = "Please Enter"
                                       })
                                 </div>
 
                             </div>
 
                             <!-- HEADER PREVIEW -->
-                            <div class="mt-4">
-                                <div class="fw-bold mb-2">
-                                    Auto-Generated Agenda Header
-                                    <i class="fas fa-pen text-primary"
-                                       id="editHeaderPreview"
-                                       style="cursor:pointer;"
-                                       title="Edit"></i>
+                            <div class="preview-card-container">
+                                <div class="preview-card-top">
+                                    <div class="preview-card-title">
+                                        <i class="fa fa-file-text-o"></i>
+                                        <span>Auto-Generated Agenda Header</span>
+                                        <span class="preview-chip">Live Preview</span>
+                                    </div>
+                                    <button type="button"
+                                            class="preview-edit-btn"
+                                            id="editHeaderPreview"
+                                            title="Click to edit Agenda Header">
+                                        <i class="fa fa-pencil"></i>
+                                        <span>Edit Header</span>
+                                    </button>
                                 </div>
                                 <div id="HeaderPreview"
-                                     class="p-3 bg-light"
                                      contenteditable="false"
-                                     style="min-height: 4.5em;border: 2px dotted #6c757d;border-radius: 0.5rem;">
+                                     title="Agenda Header Preview">
                                 </div>
                             </div>
 
                             <!-- BUTTON -->
-                            <div class="text-end mt-4">
+                            <div class="text-end mt-4 pt-2 border-top">
                                 <button type="button"
-                                        class="btn btn-primary px-4"
+                                        class="btn-create-meeting"
                                         onclick="SaveMeeting()">
-                                    Create Meeting
+                                    <i class="fa fa-check-circle"></i>
+                                    <span>Create Meeting</span>
                                 </button>
                             </div>
 
