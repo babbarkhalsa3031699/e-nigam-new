@@ -1143,58 +1143,246 @@
             });
 
 
+        // Helper function to sanitize pasted text and tables for clean A4 alignment
+        function sanitizeA4ContentNodeAction(node) {
+            if (!node) return;
+
+            // 1. Sanitize all tables: enforce strict A4 width containment and clean borders
+            var tables = node.querySelectorAll('table');
+            for (var i = 0; i < tables.length; i++) {
+                var tbl = tables[i];
+                tbl.removeAttribute('width');
+                tbl.removeAttribute('height');
+
+                tbl.style.width = '100%';
+                tbl.style.maxWidth = '100%';
+                tbl.style.tableLayout = 'fixed';
+                tbl.style.borderCollapse = 'collapse';
+                tbl.style.boxSizing = 'border-box';
+                tbl.style.margin = '14px 0';
+                tbl.style.marginLeft = 'auto';
+                tbl.style.marginRight = 'auto';
+
+                if (!tbl.getAttribute('border')) {
+                    tbl.setAttribute('border', '1');
+                }
+
+                var colElements = tbl.querySelectorAll('col, colgroup');
+                for (var c = 0; c < colElements.length; c++) {
+                    colElements[c].removeAttribute('width');
+                    colElements[c].style.width = '';
+                    colElements[c].style.minWidth = '';
+                    colElements[c].style.maxWidth = '';
+                }
+
+                var rowElements = tbl.querySelectorAll('tr');
+                for (var r = 0; r < rowElements.length; r++) {
+                    rowElements[r].removeAttribute('height');
+                    rowElements[r].style.height = '';
+                }
+
+                var cells = tbl.querySelectorAll('th, td');
+                for (var j = 0; j < cells.length; j++) {
+                    var cell = cells[j];
+                    cell.removeAttribute('width');
+                    cell.removeAttribute('height');
+                    cell.style.width = '';
+                    cell.style.minWidth = '';
+                    cell.style.maxWidth = '';
+                    cell.style.height = '';
+
+                    cell.style.border = '1px solid #94a3b8';
+                    cell.style.padding = '8px 10px';
+                    cell.style.wordBreak = 'break-word';
+                    cell.style.overflowWrap = 'anywhere';
+                    cell.style.whiteSpace = 'normal';
+                    cell.style.verticalAlign = 'top';
+                    cell.style.boxSizing = 'border-box';
+
+                    if (cell.tagName.toLowerCase() === 'th') {
+                        cell.style.backgroundColor = '#f8fafc';
+                        cell.style.fontWeight = '600';
+                    }
+                }
+            }
+
+            // 2. Sanitize all text elements: clean typography, strip messy styles & align
+            var allEls = node.querySelectorAll('*');
+            for (var k = 0; k < allEls.length; k++) {
+                var el = allEls[k];
+                var tag = el.tagName.toLowerCase();
+
+                // Clean Microsoft Word class names
+                if (el.className && typeof el.className === 'string') {
+                    var cleanClass = el.className.replace(/\bMso\w+\b/g, '').trim();
+                    if (cleanClass) {
+                        el.className = cleanClass;
+                    } else {
+                        el.removeAttribute('class');
+                    }
+                }
+
+                // Disallow Asees/Joy fonts; normalize other non-Unicode fonts to document font
+                if (el.style.fontFamily) {
+                    var ff = el.style.fontFamily.toLowerCase();
+                    if (ff.indexOf('asees') !== -1 || ff.indexOf('joy') !== -1) {
+                        el.style.fontFamily = '';
+                    } else if (ff.indexOf('raavi') !== -1) {
+                        el.style.fontFamily = 'Raavi, "Segoe UI", sans-serif';
+                    } else {
+                        el.style.fontFamily = '';
+                    }
+                }
+
+                // Strip fixed font-size and line-height so standard A4 styling applies
+                if (tag !== 'h1' && tag !== 'h2' && tag !== 'h3' && tag !== 'h4') {
+                    el.style.fontSize = '';
+                }
+                el.style.lineHeight = '';
+
+                // Strip unwanted background highlights (preserve table headers)
+                if (tag !== 'th') {
+                    el.style.backgroundColor = '';
+                    el.style.background = '';
+                }
+
+                // Clean paragraph/block margins and alignments
+                if (tag === 'p' || tag === 'div') {
+                    el.style.marginTop = '';
+                    el.style.marginBottom = '';
+                    if (el.style.textAlign === 'left' || el.style.textAlign === 'justify') {
+                        el.style.textAlign = '';
+                    }
+                }
+            }
+        }
+
+        var a4CommonContentStyle =
+            "html { background-color: #eef2f6 !important; margin: 0; padding: 0; min-height: 100%; }" +
+            "body { width: 100% !important; max-width: 794px !important; min-height: 1123px !important; margin: 24px auto !important; padding: 25mm 20mm !important; box-sizing: border-box !important; background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; border-radius: 2px !important; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04) !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Raavi, Arial, sans-serif !important; font-size: 13pt !important; line-height: 1.6 !important; color: #1e293b !important; text-align: justify !important; }" +
+            "p { margin-top: 0 !important; margin-bottom: 12px !important; text-align: inherit; line-height: 1.6 !important; }" +
+            "h1, h2, h3, h4, h5, h6 { color: #0f172a !important; font-weight: 700 !important; margin-top: 18px !important; margin-bottom: 8px !important; line-height: 1.3 !important; }" +
+            "table { width: 100% !important; max-width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin: 14px 0 !important; background-color: #ffffff !important; box-sizing: border-box !important; }" +
+            "table, th, td { border: 1px solid #94a3b8 !important; }" +
+            "th, td { padding: 8px 10px !important; word-break: break-word !important; overflow-wrap: anywhere !important; white-space: normal !important; vertical-align: top !important; font-size: 12pt !important; line-height: 1.45 !important; box-sizing: border-box !important; }" +
+            "th { background-color: #f8fafc !important; font-weight: 600 !important; color: #0f172a !important; text-align: left !important; }" +
+            "ul, ol { margin: 8px 0 14px 24px !important; padding: 0 !important; }" +
+            "li { margin-bottom: 4px !important; line-height: 1.55 !important; }" +
+            "blockquote { border-left: 3px solid #3b82f6 !important; margin: 12px 0 !important; padding: 6px 16px !important; background: #f8fafc !important; color: #475569 !important; }" +
+            "@@media print { html { background-color: #ffffff !important; } body { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; min-height: auto !important; } }";
+
         tinyMCE.init({
             selector: "#subjectdetailforedit",
             branding: false,
-            content_style:
-                "body {  font-size: 14pt; font-family: inherit; }",
-            plugins: 'table',
-            toolbar: 'undo redo |  bold italic fontfamily fontsize| alignleft aligncenter alignright alignjustify | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter ',
+            height: 750,
+            menubar: 'file edit view insert format tools table',
+            toolbar_mode: 'wrap',
+            plugins: 'table lists advlist autolink code preview fullscreen wordcount searchreplace',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table tableprops | fullscreen preview code',
+            font_family_formats: 'Raavi=Raavi,Segoe UI,sans-serif; Segoe UI=Segoe UI,sans-serif; Arial=arial,helvetica,sans-serif; Calibri=calibri,sans-serif; Times New Roman=times new roman,times,serif;',
+            font_size_formats: '9pt 10pt 11pt 12pt 13pt 14pt 16pt 18pt 20pt 24pt 28pt 36pt',
             table_default_styles: {
-                width: '50%'
+                'width': '100%',
+                'border-collapse': 'collapse',
+                'table-layout': 'fixed'
             },
-            formats: {
-                // Changes the alignment buttons to add a class to each of the matching selector elements
-                alignleft: { selector: 'table', classes: 'left' },
-                bold: { inline: 'table', styles: { 'margin-left': '0px !important' } }
+            table_default_attributes: {
+                'border': '1'
             },
-            branding: false,
+            table_responsive_width: true,
+            table_grid: true,
+            table_resize_bars: true,
+            paste_data_images: false,
+            paste_as_text: false,
+            paste_block_drop: false,
+            content_style: a4CommonContentStyle,
             setup: function (editor) {
-                editor.on('BeforeSetContent', function (e) {
-                    e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-                        // Block a specific font
-
-                        // console.log(fontFamily);
-                        if (fontFamily.toLowerCase() === 'asees') {
-                            alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-                            e.setContent('[b]some[/b] html', { format: 'bbcode' });
-                            return ''; // Remove this font-family style
-
-                        }
-                        return match;
-                    });
+                editor.on('PastePreProcess', function (e) {
+                    if (e.content) {
+                        e.content = e.content.replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '');
+                        e.content = e.content.replace(/<style[\s\S]*?<\/style>/gi, '');
+                        e.content = e.content.replace(/mso-[\w\-]+:[^;"]+;?/gi, '');
+                        e.content = e.content.replace(/font-family:\s*([^;]*);/gi, function (match, fontFamily) {
+                            if (fontFamily.toLowerCase().indexOf('asees') !== -1 || fontFamily.toLowerCase().indexOf('joy') !== -1) {
+                                return '';
+                            }
+                            return match;
+                        });
+                    }
                 });
 
+                editor.on('PastePostProcess', function (e) {
+                    if (e.node) {
+                        sanitizeA4ContentNodeAction(e.node);
+                    }
+                });
 
+                editor.on('BeforeSetContent', function (e) {
+                    if (e.content) {
+                        e.content = e.content.replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '');
+                        e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
+                            if (fontFamily.toLowerCase().indexOf('asees') !== -1 || fontFamily.toLowerCase().indexOf('joy') !== -1) {
+                                return '';
+                            }
+                            return match;
+                        });
+                    }
+                });
 
+                editor.on('SetContent', function (e) {
+                    try {
+                        var doc = editor.getDoc();
+                        if (doc && doc.body) {
+                            sanitizeA4ContentNodeAction(doc.body);
+                        }
+                    } catch (err) { }
+                });
             },
             init_instance_callback(editor) {
                 editor.setContent(SDPreText);
             }
         });
 
-           // tinyMCE.init({
-           // selector: "#subjectdetailforedit",
-           //branding: false,
-           //content_style:
-           //     "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
-           // });
-
         tinyMCE.init({
             selector: "#subjectdetailforedit_local",
             branding: false,
-            content_style:
-                "body {  font-size: 16px; font-family: Poppins, sans-serif ; }",
+            height: 750,
+            menubar: 'file edit view insert format tools table',
+            toolbar_mode: 'wrap',
+            plugins: 'table lists advlist autolink code preview fullscreen wordcount searchreplace',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table tableprops | fullscreen preview code',
+            font_family_formats: 'Raavi=Raavi,Segoe UI,sans-serif; Segoe UI=Segoe UI,sans-serif; Arial=arial,helvetica,sans-serif; Calibri=calibri,sans-serif; Times New Roman=times new roman,times,serif;',
+            font_size_formats: '9pt 10pt 11pt 12pt 13pt 14pt 16pt 18pt 20pt 24pt 28pt 36pt',
+            table_default_styles: {
+                'width': '100%',
+                'border-collapse': 'collapse',
+                'table-layout': 'fixed'
+            },
+            table_default_attributes: {
+                'border': '1'
+            },
+            table_responsive_width: true,
+            table_grid: true,
+            table_resize_bars: true,
+            paste_data_images: false,
+            paste_as_text: false,
+            paste_block_drop: false,
+            content_style: a4CommonContentStyle,
+            setup: function (editor) {
+                editor.on('PastePostProcess', function (e) {
+                    if (e.node) {
+                        sanitizeA4ContentNodeAction(e.node);
+                    }
+                });
+                editor.on('SetContent', function (e) {
+                    try {
+                        var doc = editor.getDoc();
+                        if (doc && doc.body) {
+                            sanitizeA4ContentNodeAction(doc.body);
+                        }
+                    } catch (err) { }
+                });
+            }
         });
 
             if ($('#DdlActionType').val() == '2') {
