@@ -347,7 +347,7 @@
        $("#subjectbox_"+refid).css("display", "block");
         $("#subjectboxold_" + refid).css("display", "none");
         $("#EditUpdateButton").show();
-        this.addClass('green');
+        //this.addClass('green');
     }
 
             function openRes(IDD) {
@@ -408,7 +408,7 @@
             $("#subjectdetailbox_"+refid).css("display", "block");
         $("#subjectdetailboxold_" + refid).css("display", "none");
         $("#EditUpdateButton").show();
-        this.addClass('green');
+        //this.addClass('green');
     }
 
     function EditOffice()
@@ -416,7 +416,7 @@
     office_enable = 1;
     $("#ddlOfficeChange").prop("disabled", false);
     $("#EditUpdateButton").show();
-        this.addClass('green');
+        //this.addClass('green');
     }
 
     function updatesubject() {
@@ -1232,293 +1232,6 @@
 
                     }*@
                 <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show" id="Refdetail_local" role="tabpanel" aria-labelledby="det-tab">
-                        <div class="widget-main no-padding-right no-padding-left">
-                            <div class="ref_box mb-3">
-
-                                <div class="mb-2" id="local_subjectboxold_@Model.RefId">
-                                    <div class="fotm_lbl">
-                                        ਵਿਸ਼ਾ:
-                                    </div>
-                                    <div class="txt_value in_txt_area">
-
-                                        <span id="SpanSubject_local"> @Model.SubjectPB</span>
-                                        @Html.HiddenFor(m => m.SubjectPB)
-
-
-                                    </div>
-                                </div>
-
-
-                                <div class="mb-2" id="subjectbox_local11" style="display:none;">
-                                    <div class="fotm_lbl">ਵਿਸ਼ਾ :</div>
-                                    <div class="">
-                                        <input type="text" id="subjectforedit_local" name="subjectforedit_local" />
-                                    </div>
-                                </div>
-
-
-                                @*by Rajeev*@
-
-
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="">
-                                            <b>ਮਨਜ਼ੂਰਸ਼ੁਦਾ ਚੈੱਕਲਿਸਟ:&nbsp;</b>
-                                            @foreach (var dep in Model.CMApproval)
-                                            {
-                                                <span>@dep.Text,</span>
-                                            }
-
-                                        </div>
-
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="fotm_lbl">ਲਾਗੂ ਕਰਨ ਦੀ ਸਮਾਂ-ਸਾਰਣੀ:&nbsp;</div>
-
-                                        @if (!string.IsNullOrEmpty(Model.StatementImplementation_local))
-                                        {
-                                            var Actionpath2 = @Model.StatementImplementation_local;
-
-
-                                            <a href='@Actionpath2' target="_blank" id="wreqeqwe">
-                                                <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <span id="EnclosureFiletxt" style="display: none;">No</span>
-
-                                        }
-
-                                        @Html.HiddenFor(m => m.StatementImplementation_local, new { id = "enclosure" })
-                                    </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                            <div class="fotm_lbl">ਦਫਤਰ ਤੋਂ:</div>
-                                            <div class="txt_value">
-                                                @Model.FromDept
-                                                @Html.HiddenFor(m => m.FromDeptId)
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-lg-6 mb-2" id="divofc">
-                                            <div class="fotm_lbl">ਦਫਤਰ ਦਾ ਵੇਰਵਾ:</div>
-                                            <div class="txt_value">
-
-                                                <div id="divOfficeList">
-                                                    @Model.FromOffice
-
-                                                </div>
-                                                @Html.HiddenFor(m => m.FromOfficeId)
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                            <div class="fotm_lbl">ਦਫ਼ਤਰ ਨੂੰ:</div>
-                                            <div class="txt_value">
-                                                @Model.ToDept
-                                                @Html.HiddenFor(m => m.ToDeptId)
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-lg-6 mb-2">
-                                            <div class="fotm_lbl">
-                                                ਦਫਤਰ ਦਾ ਵੇਰਵਾ:
-                                                @if (Model.HideUpdate == "Yes") { }
-                                                else
-                                                {
-                                                    if (SiteName == "MC")
-                                                    {
-                                                        <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
-                                                    }
-
-                                                }
-                                            </div>
-
-                                            @*@Model.ToOffice*@
-                                            @Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList, "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28", @disabled = "true" })
-
-                                            @Html.HiddenFor(m => m.ToOfficeId)
-
-
-
-                                        </div>
-                                        <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
-                                            <div class="fotm_lbl"> ਟਾਈਪ:</div>
-                                            <div>
-                                                <span>
-
-                                                    @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameChange1", @tabindex = "29", })
-
-                                                </span>
-
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="col-md-6 col-lg-6 mb-2 mb-2">
-                                            <div class="fotm_lbl">ਕਿਸਮ:</div>
-                                            <div class="txt_value">
-                                                <span class="">
-                                                    @Model.isLetter
-                                                    @Html.HiddenFor(m => m.isLetter)
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6 col-lg-6 mb-2 mb-2">
-                                            <div class="fotm_lbl" id="myref"> ਨੰ.: </div>
-                                            <div class="txt_value">
-                                                <span class="">
-                                                    @Model.LetterNo
-                                                    @Html.HiddenFor(m => m.LetterNo)
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6 col-lg-6 mb-2" id="divLetterNo">
-                                            <div class="fotm_lbl"> ਮਿਤੀ:</div>
-                                            <div class="txt_value">
-                                                @Model.LetterDateNew
-                                                @Html.HiddenFor(m => m.LetterDate)
-
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-12 col-lg-12 mt-2 ">
-                                            <div class="fotm_lbl">
-                                                ਪ੍ਰੈਸ ਨੋਟ :
-                                            </div>
-                                            <div class="txt_value in_txt_area">
-                                                <div> @Model.PressNotePun</div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-12 col-lg-12 mb-2" id="local_subjectdetailboxold_@Model.RefId">
-                                            <div class="fotm_lbl">
-                                                ਵਿਸ਼ੇ ਦੇ ਵੇਰਵੇ:
-                                                @if (Model.HideUpdate == "Yes") { }
-                                                else
-                                                {
-                                                    @*<i class="ace-icon fa fa-pencil hand" onclick="EditDetails()"></i>*@
-                                                }
-
-                                            </div>
-                                            <div class="txt_value in_txt_area">
-                                                <div id="divSubjectDetails_local"> @Html.Raw(Model.SubjectDetailsPB)</div>
-                                                @Html.HiddenFor(m => m.SubjectDetailsPB)
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-12 col-lg-12" id="subjectdetailbox_local" style="display:none;">
-                                            <div class="fotm_lbl">ਵਿਸ਼ੇ ਦੇ ਵੇਰਵੇ:</div>
-                                            <div>
-                                                <textarea type="text" id="subjectdetailforedit_local" name="subjectdetailforedit_local" onchange="updatesubjectdetail();">   </textarea>
-                                            </div>
-
-                                        </div>
-
-                                       
-
-                                        @if (SiteName == "MC")
-                                        {
-                                            <div class="col-md-12 col-lg-12 mb-2" id="divLetterNo">
-                                                <div class="fotm_lbl"> Point of Instruction:</div>
-                                                <div class="">
-
-                                                    @if (Model.ActName == "" || Model.ActName == null)
-                                                    {
-
-                                                        @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlactpb", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="txt_value">
-                                                            @Model.ActName
-                                                        </div>
-                                                    }
-
-                                                </div>
-                                            </div>
-                                        }
-
-
-
-                                        @if (!string.IsNullOrEmpty(Model.ApplicantName))
-                                        {
-                                            <div class="col-md-6 col-lg-6">
-                                                <div class="fotm_lbl">Applicant Name:</div>
-                                                <div class="txt_value">
-
-                                                    @Html.Raw(Model.ApplicantName)
-                                                    @Html.HiddenFor(m => m.ApplicantName)
-                                                </div>
-                                            </div>
-                                        }
-
-                                        @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
-
-                                        {
-                                            <div class="col-md-6 col-lg-6">
-                                                <div class="fotm_lbl">Applicant Address:</div>
-                                                <div class="txt_value">
-
-                                                    @Html.Raw(Model.ApplicantAddress)
-                                                    @Html.HiddenFor(m => m.ApplicantAddress)
-                                                </div>
-                                            </div>
-
-                                        }
-
-                                        @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
-
-                                        {
-                                            <div class="col-md-6 col-lg-6">
-                                                <div class="fotm_lbl">Applicant Mobile:</div>
-                                                <div class="txt_value">
-
-                                                    @Html.Raw(Model.ApplicantMobile)
-                                                    @Html.HiddenFor(m => m.ApplicantMobile)
-                                                </div>
-                                            </div>
-                                        }
-
-                                        @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
-
-                                        {
-
-                                            <div class="col-md-6 col-lg-6">
-                                                <div class="fotm_lbl">Applicant Email:</div>
-                                                <div class="txt_value">
-
-                                                    @Html.Raw(Model.ApplicantEmail)
-                                                    @Html.HiddenFor(m => m.ApplicantEmail)
-                                                </div>
-                                            </div>
-                                        }
-
-
-
-                                    </div>
-
-
-
-
-
-                                </div>
-
-
-
-
-
-                            </div>
-
-                    </div>
                     <div class="tab-pane fade show active" id="Refdetail" role="tabpanel" aria-labelledby="det-tab">
                         <div class="widget-main no-padding-right no-padding-left">
 
@@ -1727,7 +1440,7 @@
 
 
 
-                                <div class="col-md-12 col-lg-12" id="subjectdetailbox_@Model.RefId" style="display:none;">
+                                <div class="col-md-12 col-lg-12 mb-2" id="subjectdetailbox_@Model.RefId" style="display:none;">
                                     <div class="fotm_lbl">Details:</div>
                                     <div>
                                         <textarea type="text" id="subjectdetailforedit_@Model.RefId" name="subjectdetailforedit" onchange="updatesubjectdetail();">   </textarea>
