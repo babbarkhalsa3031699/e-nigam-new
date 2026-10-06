@@ -1304,23 +1304,46 @@
             paste_block_drop: false,
             content_style: a4CommonContentStyle,
             setup: function (editor) {
-                editor.on('BeforeSetContent', function (e) {
-                    e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
-                        // Block a specific font
-
-                        // console.log(fontFamily);
-                        if (fontFamily.toLowerCase() === 'asees') {
-                            alert("Content contains Asees Font.Please Use only Raavi Unicode Font.");
-                            e.setContent('[b]some[/b] html', { format: 'bbcode' });
-                            return ''; // Remove this font-family style
-
-                        }
-                        return match;
-                    });
+                editor.on('PastePreProcess', function (e) {
+                    if (e.content) {
+                        e.content = e.content.replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '');
+                        e.content = e.content.replace(/<style[\s\S]*?<\/style>/gi, '');
+                        e.content = e.content.replace(/mso-[\w\-]+:[^;"]+;?/gi, '');
+                        e.content = e.content.replace(/font-family:\s*([^;]*);/gi, function (match, fontFamily) {
+                            if (fontFamily.toLowerCase().indexOf('asees') !== -1 || fontFamily.toLowerCase().indexOf('joy') !== -1) {
+                                return '';
+                            }
+                            return match;
+                        });
+                    }
                 });
 
+                editor.on('PastePostProcess', function (e) {
+                    if (e.node) {
+                        sanitizeA4ContentNodeAction(e.node);
+                    }
+                });
 
+                editor.on('BeforeSetContent', function (e) {
+                    if (e.content) {
+                        e.content = e.content.replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '');
+                        e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
+                            if (fontFamily.toLowerCase().indexOf('asees') !== -1 || fontFamily.toLowerCase().indexOf('joy') !== -1) {
+                                return '';
+                            }
+                            return match;
+                        });
+                    }
+                });
 
+                editor.on('SetContent', function (e) {
+                    try {
+                        var doc = editor.getDoc();
+                        if (doc && doc.body) {
+                            sanitizeA4ContentNodeAction(doc.body);
+                        }
+                    } catch (err) { }
+                });
             },
             init_instance_callback(editor) {
                 editor.setContent(SDPreText);
