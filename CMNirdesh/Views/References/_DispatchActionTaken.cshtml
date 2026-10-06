@@ -2066,9 +2066,9 @@
 
 
 
-                                            @Html.DropDownListFor(m => m.SentFromUserId, Model.FromUserList, "--Select User--", new { @id = "ddlfromUser", @tabindex = "2", @class = "DdlClass" })
-                                            @Html.DropDownListFor(m => m.SentToUserId, Model.ToUserList, "--Select User--", new { @id = "ddlToUser", @tabindex = "2", @class = "DdlClass" })
-                                            @Html.DropDownListFor(m => m.SentMlaUserId, Model.MlaUserList, "--Select User--", new { @id = "ddlMlaUser", @tabindex = "2", @class = "DdlClass" })
+                                            @Html.DropDownListFor(m => m.SentFromUserId, Model.FromUserList, "--Select User--", new { @id = "ddlfromUser", @tabindex = "2", @class = "" })
+                                            @Html.DropDownListFor(m => m.SentToUserId, Model.ToUserList, "--Select User--", new { @id = "ddlToUser", @tabindex = "2", @class = "" })
+                                            @Html.DropDownListFor(m => m.SentMlaUserId, Model.MlaUserList, "--Select User--", new { @id = "ddlMlaUser", @tabindex = "2", @class = "" })
 
                                         </div>
 
@@ -3722,22 +3722,40 @@
                 });
 
                 editor.on('click', (e) => {
-                    //alert('Editor was clicked: ' + e.target.parentNode);
-                    //alert('Editor was clicked: ' + e.target.parentNode.onclick);
-                    //console.log(e.target.parentNode.onclick);
-                    var id = e.target.parentNode.id;
-
-                    if (id != 'undefined' || id != null || id.trim() !=tinymce || id!='') {
-                        if (id.length > 10) {
-                            openRes(id)
-                        } else {
-                            openNote(id);
-                        }
-
+                    if (!e || !e.target) return;
+                    if (e.target.nodeName === 'A') {
+                        if (e.target.href) window.open(e.target.href, '_blank');
+                        return;
                     }
 
+                    var target = e.target;
+                    var noteEl = target.closest ? target.closest('.notetag') : null;
+                    if (!noteEl && target.classList && target.classList.contains('notetag')) {
+                        noteEl = target;
+                    }
+                    if (!noteEl && target.parentNode && target.parentNode.classList && target.parentNode.classList.contains('notetag')) {
+                        noteEl = target.parentNode;
+                    }
 
+                    var id = '';
+                    if (noteEl && noteEl.id) {
+                        id = noteEl.id;
+                    } else if (target.parentNode && target.parentNode.id) {
+                        id = target.parentNode.id;
+                    } else if (target.id) {
+                        id = target.id;
+                    }
 
+                    if (id && typeof id === 'string') {
+                        id = id.trim();
+                        if (id !== '' && id !== 'undefined' && id !== 'null' && id !== 'tinymce') {
+                            if (id.length > 10) {
+                                if (typeof openRes === 'function') openRes(id);
+                            } else {
+                                if (typeof openNote === 'function') openNote(id);
+                            }
+                        }
+                    }
                 });
                 //tinymce.ScriptLoader.load('../Scripts/tinyscript.js');
 
@@ -3770,8 +3788,6 @@
             plugins: 'table',
             toolbar: 'undo redo | bold italic | table',
             forced_root_block: 'p', // ensures Enter creates <p>
-            force_br_newlines: false,
-            force_p_newlines: true,
             paste_as_text: false, // allow formatting when pasting
             valid_elements: 'p,b,i,br,table[border|cellpadding|cellspacing|width],tbody,tr,td[colspan|rowspan],th[colspan|rowspan]',
             formats: {
@@ -4020,18 +4036,16 @@
 }
 
     function openNote(id) {
-        var note = $("#note_" + id).html();
-        var clas = $("#note_" + id).attr("class");
-        var html = "<li class='" + clas + "'>" + note + "</li>"
+        if (!id) return;
+        var $el = $("#note_" + id);
+        if (!$el.length) return;
+        var note = $el.html();
+        if (!note || note.trim() === '' || note.trim() === 'undefined') return;
+        var clas = $el.attr("class") || "";
+        var html = "<li class='" + clas + "'>" + note + "</li>";
 
-        if (note.trim() == 'undefined') {
-
-        } else {
-            $("#ulnote").html(html);
-            $("#NoteModal").modal('show');
-        }
-
-
+        $("#ulnote").html(html);
+        $("#NoteModal").modal('show');
     }
 
     function closeNoteModal() {
@@ -5314,22 +5328,40 @@ $.ajax({
                 });
 
                 editor.on('click', (e) => {
-                    //alert('Editor was clicked: ' + e.target.parentNode);
-                    //alert('Editor was clicked: ' + e.target.parentNode.onclick);
-                    //console.log(e.target.parentNode.onclick);
-                    var id = e.target.parentNode.id;
-
-                    if (id != 'undefined' || id != null || id.trim() != tinymce || id != '') {
-                        if (id.length > 10) {
-                            openRes(id)
-                        } else {
-                            openNote(id);
-                        }
-
+                    if (!e || !e.target) return;
+                    if (e.target.nodeName === 'A') {
+                        if (e.target.href) window.open(e.target.href, '_blank');
+                        return;
                     }
 
+                    var target = e.target;
+                    var noteEl = target.closest ? target.closest('.notetag') : null;
+                    if (!noteEl && target.classList && target.classList.contains('notetag')) {
+                        noteEl = target;
+                    }
+                    if (!noteEl && target.parentNode && target.parentNode.classList && target.parentNode.classList.contains('notetag')) {
+                        noteEl = target.parentNode;
+                    }
 
+                    var id = '';
+                    if (noteEl && noteEl.id) {
+                        id = noteEl.id;
+                    } else if (target.parentNode && target.parentNode.id) {
+                        id = target.parentNode.id;
+                    } else if (target.id) {
+                        id = target.id;
+                    }
 
+                    if (id && typeof id === 'string') {
+                        id = id.trim();
+                        if (id !== '' && id !== 'undefined' && id !== 'null' && id !== 'tinymce') {
+                            if (id.length > 10) {
+                                if (typeof openRes === 'function') openRes(id);
+                            } else {
+                                if (typeof openNote === 'function') openNote(id);
+                            }
+                        }
+                    }
                 });
                 //tinymce.ScriptLoader.load('../Scripts/tinyscript.js');
 

@@ -1068,24 +1068,40 @@
                 }
             });
             editor.on('click', (e) => {
-                //alert('Editor was clicked: ' + e.target.parentNode);
-                //alert('Editor was clicked: ' + e.target.parentNode.onclick);
-                //console.log(e.target.parentNode.onclick);                
-                //console.log(e.target.parentNode.onclick);                
-                var id = e.target.parentNode.id;
+                if (!e || !e.target) return;
+                if (e.target.nodeName === 'A') {
+                    if (e.target.href) window.open(e.target.href, '_blank');
+                    return;
+                }
 
-                //if (id != 'undefined' || id != null || id.trim() != tinymce || id != '') {
-                //    debugger
-                //    if (id.length > 10) {
-                //        //openRes(id)
-                //    } else {
-                //        //openNote(id);
-                //    }
+                var target = e.target;
+                var noteEl = target.closest ? target.closest('.notetag') : null;
+                if (!noteEl && target.classList && target.classList.contains('notetag')) {
+                    noteEl = target;
+                }
+                if (!noteEl && target.parentNode && target.parentNode.classList && target.parentNode.classList.contains('notetag')) {
+                    noteEl = target.parentNode;
+                }
 
-                //}
+                var id = '';
+                if (noteEl && noteEl.id) {
+                    id = noteEl.id;
+                } else if (target.parentNode && target.parentNode.id) {
+                    id = target.parentNode.id;
+                } else if (target.id) {
+                    id = target.id;
+                }
 
-
-
+                if (id && typeof id === 'string') {
+                    id = id.trim();
+                    if (id !== '' && id !== 'undefined' && id !== 'null' && id !== 'tinymce') {
+                        if (id.length > 10) {
+                            if (typeof openRes === 'function') openRes(id);
+                        } else {
+                            if (typeof openNote === 'function') openNote(id);
+                        }
+                    }
+                }
             });
             editor.on('BeforeSetContent', function (e) {
                 e.content = e.content.replace(/font-family:\s*([^;]*);/g, function (match, fontFamily) {
@@ -1552,18 +1568,16 @@
     }
 
     function openNote(id) {
-        var note = $("#note_" + id).html();
-        var clas = $("#note_" + id).attr("class");
-        var html = "<li class='" + clas + "'>" + note + "</li>"
+        if (!id) return;
+        var $el = $("#note_" + id);
+        if (!$el.length) return;
+        var note = $el.html();
+        if (!note || note.trim() === '' || note.trim() === 'undefined') return;
+        var clas = $el.attr("class") || "";
+        var html = "<li class='" + clas + "'>" + note + "</li>";
 
-        if (note.trim() == 'undefined') {
-
-        } else {
-            $("#ulnote").html(html);
-            $("#NoteModal").modal('show');
-        }
-
-
+        $("#ulnote").html(html);
+        $("#NoteModal").modal('show');
     }
 
     function closeNoteModal() {
