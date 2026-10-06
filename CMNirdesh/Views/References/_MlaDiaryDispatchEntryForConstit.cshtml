@@ -1087,9 +1087,12 @@
                                     @autocomplete = "off",
                                     @tabindex = "14",
                                     @class = "DdlClass",
-                                    @oninput = "this.value = this.value.replace(/[^0-9.]/g, '')",
-                                         @maxlength = "14"
+                                    @oninput = "this.value = this.value.replace(/[^0-9.]/g, ''); updateProposalAmountInWords();",
+                                    @maxlength = "14"
                                 })
+                        </div>
+                        <div id="proposalAmountInWords" style="display: none; font-size: 12px; color: #1d4ed8; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 5px 9px; margin-top: 6px; font-weight: 500; line-height: 1.4;">
+                            <i class="fa fa-info-circle text-primary" style="margin-right: 4px;"></i><span id="proposalAmountInWordsText"></span>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 form-group">
@@ -1176,7 +1179,14 @@
                     .prop("disabled", false)
                     .val("");
             }
+            updateProposalAmountInWords();
         });
+
+        $("#txtProposalAmount").on("input keyup change", function () {
+            updateProposalAmountInWords();
+        });
+
+        updateProposalAmountInWords();
 
         if ($.fn.multipleSelect) {
             $('#ddlWard').multipleSelect({
@@ -1635,9 +1645,11 @@
                 if (radiovalue == "Letter") {
 
                     var amount = $("#txtProposalAmount").val();
+                    var words = convertNumberToWordsIndian(amount);
+                    var wordsLine = words ? " (" + words + ")" : "";
 
                     msg = "Please confirm before saving:\n\n" +
-                        "Proposal Amount: ₹ " + amount + "\n\n" +
+                        "Proposal Amount: ₹ " + amount + wordsLine + "\n\n" +
                         "Kindly ensure that the Proposal Amount entered is correct.Do you want to Save?";
                 }
 
@@ -2042,6 +2054,124 @@
             var MenuName2 = 'File No.';
             $('#myref').text(MenuName2);
             $("#divActDetails").hide();
+        }
+    }
+
+    function convertNumberToWordsIndian(numStr) {
+        if (!numStr || numStr.toString().trim() === "") return "";
+        numStr = numStr.toString().trim();
+        if (isNaN(numStr)) return "";
+
+        var parts = numStr.split('.');
+        var integerPart = parts[0];
+        var decimalPart = parts.length > 1 ? parts[1].substring(0, 2) : "";
+
+        integerPart = integerPart.replace(/^0+/, "");
+        if (integerPart === "" && (decimalPart === "" || decimalPart === "00" || decimalPart === "0")) {
+            return "Zero Rupees Only";
+        }
+
+        var a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+        var b = ['', '', 'Twenty ', 'Thirty ', 'Forty ', 'Fifty ', 'Sixty ', 'Seventy ', 'Eighty ', 'Ninety '];
+
+        function convertGroupOfTwo(n) {
+            n = parseInt(n, 10);
+            if (n === 0) return '';
+            if (n < 20) return a[n];
+            return b[Math.floor(n / 10)] + a[n % 10];
+        }
+
+        function convertGroupOfThree(n) {
+            var str = '';
+            var num = parseInt(n, 10);
+            if (num === 0) return '';
+            var hundreds = Math.floor(num / 100);
+            var rest = num % 100;
+            if (hundreds > 0) {
+                str += a[hundreds] + 'Hundred ';
+            }
+            if (rest > 0) {
+                str += convertGroupOfTwo(rest);
+            }
+            return str;
+        }
+
+        var words = '';
+
+        if (integerPart !== "") {
+            var len = integerPart.length;
+            if (len > 15) {
+                return "Amount is too large";
+            }
+
+            var lastThree = integerPart.substring(Math.max(0, len - 3));
+            var remaining = integerPart.substring(0, Math.max(0, len - 3));
+            var hundredsStr = convertGroupOfThree(lastThree);
+
+            var units = ['Thousand ', 'Lakh ', 'Crore ', 'Arab ', 'Kharab '];
+            var unitIndex = 0;
+            var partsArr = [];
+
+            while (remaining.length > 0) {
+                var chunk = remaining.substring(Math.max(0, remaining.length - 2));
+                remaining = remaining.substring(0, Math.max(0, remaining.length - 2));
+                var chunkNum = parseInt(chunk, 10);
+                if (chunkNum > 0) {
+                    var chunkWords = convertGroupOfTwo(chunkNum) + units[unitIndex];
+                    partsArr.unshift(chunkWords);
+                }
+                unitIndex++;
+            }
+
+            words = partsArr.join('') + hundredsStr;
+            words = words.trim();
+            if (words !== "") {
+                words = words + " Rupees";
+            }
+        }
+
+        if (decimalPart !== "") {
+            if (decimalPart.length === 1) decimalPart += "0";
+            var paiseNum = parseInt(decimalPart, 10);
+            if (paiseNum > 0) {
+                var paiseWords = convertGroupOfTwo(paiseNum).trim() + " Paise";
+                if (words !== "") {
+                    words += " and " + paiseWords;
+                } else {
+                    words = paiseWords;
+                }
+            }
+        }
+
+        if (words === "") return "";
+        return words.trim() + " Only";
+    }
+
+    function updateProposalAmountInWords() {
+        var isZeroCost = $("#chkZeroCost").is(":checked");
+        var val = $("#txtProposalAmount").val();
+        var container = $("#proposalAmountInWords");
+        var textSpan = $("#proposalAmountInWordsText");
+
+        if (isZeroCost) {
+            textSpan.text("Zero Cost (Nil)");
+            container.show();
+            return;
+        }
+
+        if (!val || val.toString().trim() === "") {
+            container.hide();
+            textSpan.text("");
+            return;
+        }
+
+        var inWords = convertNumberToWordsIndian(val);
+        if (inWords) {
+            textSpan.text(inWords);
+            container.show();
+        } else {
+            container.hide();
+            textSpan.text("");
         }
     }
 </script>

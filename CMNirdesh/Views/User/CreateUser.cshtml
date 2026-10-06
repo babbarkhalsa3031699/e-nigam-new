@@ -1,486 +1,1288 @@
-﻿@model  CMNirdesh.Models.UserModel
+@model CMNirdesh.Models.UserModel
 
 @{
+    ViewBag.Title = "User Registration";
     var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
     string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
 }
+
+<link href="~/toastr/toastr.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+
 <style>
-    .pic {
-        float: right;
-        margin-top: -209px;
-        margin-right: 210px;
+    /* ==========================================================================
+       User Registration & Management - Modern Executive UI
+       ========================================================================== */
+    .user-reg-container {
+        padding: 10px 15px 40px 15px;
+        font-family: inherit;
     }
 
-    .sign {
-        float: right;
-        margin-right: 160px;
-        margin-top: -57px;
+    /* Hero Banner */
+    .user-reg-hero {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        border-radius: 14px;
+        padding: 24px 28px;
+        color: #ffffff;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
     }
 
-    .addnew_modal {
-        padding-right: 300px !important;
-        padding-left: 300px;
-        padding-top: 94px;
-        padding-bottom: 94px;
+    .user-reg-hero-left {
+        display: flex;
+        align-items: center;
+        gap: 18px;
     }
 
-    autocomplete-off {
-        position: fixed !important;
-        opacity: 0 !important;
-        top: -1000px !important;
-        left: -1000px !important;
-        height: 0 !important;
-        width: 0 !important;
-        border: 0 !important;
+    .user-reg-hero-icon {
+        width: 54px;
+        height: 54px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
+        flex-shrink: 0;
+    }
+
+    .user-reg-hero-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0 0 4px 0;
+        color: #ffffff;
+        letter-spacing: -0.3px;
+    }
+
+    .user-reg-hero-subtitle {
+        font-size: 13px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.88);
+        font-weight: 400;
+        max-width: 650px;
+        line-height: 1.45;
+    }
+
+    .user-reg-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 7px 16px;
+        border-radius: 9999px;
+        font-size: 12.5px;
+        font-weight: 600;
+        backdrop-filter: blur(6px);
+        color: #ffffff;
+    }
+
+    /* Alert Banners */
+    .user-reg-alert {
+        border-radius: 10px;
+        padding: 12px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13.5px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        animation: fadeIn 0.25s ease;
+    }
+
+    .user-reg-alert-danger {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+    }
+
+    .user-reg-alert-success {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #166534;
+    }
+
+    /* Card Wrapper */
+    .user-reg-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        margin-bottom: 28px;
+        overflow: hidden;
+    }
+
+    .user-reg-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .user-reg-card-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-reg-card-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .user-reg-card-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .user-reg-card-desc {
+        font-size: 12.5px;
+        color: #64748b;
+        margin: 2px 0 0 0;
+    }
+
+    .user-reg-card-body {
+        padding: 24px 28px;
+        background: #ffffff;
+    }
+
+    /* Fix ASP.NET Site.css 280px max-width clamp */
+    .user-reg-container input,
+    .user-reg-container select,
+    .user-reg-container textarea,
+    .user-reg-container .user-form-control {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Form Fields */
+    .user-field-group {
+        margin-bottom: 16px;
+        width: 100%;
+    }
+
+    .user-field-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 6px;
+    }
+
+    .user-field-label .req {
+        color: #dc2626;
+        font-weight: bold;
+    }
+
+    .user-form-control {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 40px;
+        padding: 8px 12px;
+        font-size: 13.5px;
+        color: #1e293b;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        box-sizing: border-box;
+        display: block;
+    }
+
+    .user-form-control:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        background: #ffffff;
+    }
+
+    .user-form-control:disabled {
+        background: #f1f5f9;
+        cursor: not-allowed;
+        color: #64748b;
+    }
+
+    /* Password Input with Visibility Toggle */
+    .user-password-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .user-password-wrap .user-form-control {
+        padding-right: 40px;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .btn-toggle-pwd {
+        position: absolute;
+        right: 8px;
+        background: transparent;
+        border: none;
+        color: #64748b;
+        cursor: pointer;
+        padding: 6px 8px;
+        font-size: 14px;
+        border-radius: 6px;
+        transition: color 0.15s;
+    }
+
+    .btn-toggle-pwd:hover {
+        color: #1e293b;
+    }
+
+    .user-field-help {
+        font-size: 11.5px;
+        color: #64748b;
+        margin-top: 4px;
+    }
+
+
+
+    .user-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+        flex-shrink: 0;
+    }
+
+    .user-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .user-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .25s;
+        border-radius: 24px;
+    }
+
+    .user-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .25s;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .user-switch input:checked + .user-slider {
+        background-color: #2563eb;
+    }
+
+    .user-switch input:checked + .user-slider:before {
+        transform: translateX(20px);
+    }
+
+    /* Upload Dropzones */
+    .user-upload-box {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 155px;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    .user-upload-box:hover {
+        border-color: #3b82f6;
+        background: #f1f5f9;
+    }
+
+    .user-upload-preview-area {
+        margin-bottom: 8px;
+        position: relative;
+    }
+
+    .user-photo-preview {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #cbd5e1;
+        background: #f1f5f9;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .user-sign-preview {
+        width: 140px;
+        height: 48px;
+        border-radius: 6px;
+        object-fit: contain;
+        border: 1px dashed #cbd5e1;
+        background: #ffffff;
+        padding: 4px;
+    }
+
+    .user-upload-placeholder-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: #3b82f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 4px;
+    }
+
+    .user-upload-title {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 2px;
+    }
+
+    .user-upload-subtitle {
+        font-size: 11px;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .btn-choose-file {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        color: #334155;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-choose-file:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+
+    .user-file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .user-badge-info {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        margin-top: 8px;
+        display: inline-block;
+    }
+
+    /* Form Actions Footer */
+    .user-reg-actions-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 24px;
+    }
+
+    .user-btn-primary {
+        background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+        border: none;
+        color: #ffffff;
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .user-btn-primary:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        transform: translateY(-1px);
+        color: #ffffff;
+    }
+
+    .user-btn-secondary {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .user-btn-secondary:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+
+    /* Modal Redesign Overrides */
+    #myModal .modal-dialog {
+        max-width: 780px;
+        margin: 1.75rem auto;
+    }
+
+    #myModal .modal-content {
+        border-radius: 14px;
+        border: none;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+    }
+
+    #myModal .modal-header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        color: #ffffff;
+        padding: 18px 24px;
+        border-bottom: none;
+    }
+
+    #myModal .modal-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+    }
+
+    #myModal .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.85;
+    }
+
+    #myModal .btn-close:hover {
+        opacity: 1;
+    }
+
+    #myModal .modal-body {
+        padding: 24px;
+        background: #f8fafc;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    #myModal .modal-footer {
+        padding: 14px 24px;
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .modal-preview-box {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: #ffffff;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        margin-top: 6px;
+    }
+
+    .modal-preview-thumb {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #cbd5e1;
+        background: #f1f5f9;
+    }
+
+    .modal-preview-thumb-sign {
+        width: 140px;
+        height: 50px;
+        border-radius: 6px;
+        object-fit: contain;
+        border: 1px dashed #cbd5e1;
+        background: #ffffff;
+    }
+
+    /* Delete Confirmation Modal */
+    #DeleteConfirmation .modal-dialog {
+        max-width: 420px;
+        margin: 2rem auto;
+    }
+
+    #DeleteConfirmation .modal-content {
+        border-radius: 14px;
+        border: none;
+        overflow: hidden;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    #DeleteConfirmation .modal-body {
+        padding: 32px 24px 24px 24px;
+    }
+
+    .delete-modal-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #fef2f2;
+        color: #dc2626;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin-bottom: 16px;
+    }
+
+    .delete-modal-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 6px 0;
+    }
+
+    .delete-modal-text {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0;
+    }
+
+    #DeleteConfirmation .modal-footer {
+        padding: 14px 24px 20px 24px;
+        border: none;
+        justify-content: center;
+        gap: 12px;
     }
 </style>
-<body>
-    <div id="main-content">
-        <div class="main-content cm_fund fund_rcipt">
 
+<div id="main-content" class="user-reg-container">
+    <!-- Hero Banner -->
+    <div class="user-reg-hero">
+        <div class="user-reg-hero-left">
+            <div class="user-reg-hero-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div>
+                <h1 class="user-reg-hero-title">User Account & Role Management</h1>
+                <p class="user-reg-hero-subtitle">Register municipal officers and operators, assign organizational roles, configure authorization levels, and manage digital credentials.</p>
+            </div>
+        </div>
+        <div class="user-reg-hero-badge">
+            <i class="fas fa-users"></i>
+            <span>@(Model._LstUser != null ? Model._LstUser.Count : 0) Registered Accounts</span>
+        </div>
+    </div>
+
+    <!-- Session Feedback Banners -->
+    @if (Session["userExist"] != null && !string.IsNullOrEmpty(Session["userExist"].ToString()))
+    {
+        <div class="user-reg-alert user-reg-alert-danger">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-exclamation-circle text-danger fs-5"></i>
+                <span>@Session["userExist"]</span>
+            </div>
+            <button type="button" class="btn-close" onclick="$(this).parent().fadeOut();"></button>
+        </div>
+    }
+
+    @if (Session["userAdded"] != null && !string.IsNullOrEmpty(Session["userAdded"].ToString()))
+    {
+        <div class="user-reg-alert user-reg-alert-success">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-check-circle text-success fs-5"></i>
+                <span>@Session["userAdded"]</span>
+            </div>
+            <button type="button" class="btn-close" onclick="$(this).parent().fadeOut();"></button>
+        </div>
+    }
+
+    @if (ViewBag.Error != null && !string.IsNullOrEmpty(ViewBag.Error.ToString()))
+    {
+        <div class="user-reg-alert user-reg-alert-danger">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-exclamation-triangle text-danger fs-5"></i>
+                <span>@ViewBag.Error</span>
+            </div>
+            <button type="button" class="btn-close" onclick="$(this).parent().fadeOut();"></button>
+        </div>
+    }
+
+    <!-- Registration Form Card -->
+    <div class="user-reg-card">
+        <div class="user-reg-card-header">
+            <div class="user-reg-card-title-group">
+                <div class="user-reg-card-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div>
+                    <h3 class="user-reg-card-title">New User Registration</h3>
+                    <p class="user-reg-card-desc">Enter account details, allocate municipal branch, and attach official credentials.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-reg-card-body">
             @using (Html.BeginForm("SaveUser", "User", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data", @autocomplete = "off" }))
             {
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">User Registration</h3>
+                <div class="row g-3">
+                    @Html.HiddenFor(model => model.Apex)
+
+                    <!-- Row 1: Department, Office, Role -->
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="DdlDepartment" class="user-field-label">
+                                <i class="fas fa-building text-primary"></i> Department: <span class="req">*</span>
+                            </label>
+                            @Html.DropDownListFor(
+                                m => m.DeptId,
+                                Model.mDepartmentList,
+                                "-- Select Department --",
+                                new
+                                {
+                                    @id = "DdlDepartment",
+                                    @tabindex = "1",
+                                    @class = "user-form-control",
+                                    @required = "required",
+                                    @Onchange = "GetDepartment();"
+                                })
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="DdlOffice" class="user-field-label">
+                                <i class="fas fa-landmark text-primary"></i> Office / Municipal Body: <span class="req">*</span>
+                            </label>
+                            @Html.DropDownListFor(
+                                m => m.OfficeId,
+                                Model.OfficeList,
+                                "-- Select Office --",
+                                new
+                                {
+                                    @id = "DdlOffice",
+                                    @tabindex = "2",
+                                    @class = "user-form-control",
+                                    @required = "required"
+                                })
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="DdlRole" class="user-field-label">
+                                <i class="fas fa-user-tag text-primary"></i> System Role: <span class="req">*</span>
+                            </label>
+                            @Html.DropDownListFor(
+                                m => m.RoleId,
+                                Model.RoleList,
+                                "-- Select Role --",
+                                new
+                                {
+                                    @id = "DdlRole",
+                                    @tabindex = "10",
+                                    @class = "user-form-control",
+                                    @required = "required"
+                                })
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Full Name, Designation, Mobile Number -->
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="txtName" class="user-field-label">
+                                <i class="fas fa-user text-primary"></i> Full Name: <span class="req">*</span>
+                            </label>
+                            @Html.TextBoxFor(
+                                m => m.Name,
+                                new
+                                {
+                                    @id = "txtName",
+                                    @tabindex = "3",
+                                    @class = "user-form-control",
+                                    @placeholder = "e.g. Gurpreet Singh",
+                                    @required = "required"
+                                })
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="txtdes" class="user-field-label">
+                                <i class="fas fa-briefcase text-primary"></i> Designation: <span class="req">*</span>
+                            </label>
+                            @Html.TextBoxFor(
+                                m => m.Designation,
+                                new
+                                {
+                                    @id = "txtdes",
+                                    @tabindex = "4",
+                                    @class = "user-form-control",
+                                    @placeholder = "e.g. Executive Officer (EO)",
+                                    @required = "required"
+                                })
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="txtMobile" class="user-field-label">
+                                <i class="fas fa-phone-alt text-primary"></i> Mobile Number: <span class="req">*</span>
+                            </label>
+                            @Html.TextBoxFor(
+                                m => m.MobileNo,
+                                new
+                                {
+                                    @id = "txtMobile",
+                                    @tabindex = "5",
+                                    @class = "user-form-control",
+                                    @placeholder = "10-digit mobile number",
+                                    @maxlength = "10",
+                                    @required = "required"
+                                })
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Official Email, Username, Login Password -->
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="txtemail" class="user-field-label">
+                                <i class="fas fa-envelope text-primary"></i> Official Email: <span class="req">*</span>
+                            </label>
+                            @Html.TextBoxFor(
+                                m => m.Email,
+                                new
+                                {
+                                    @id = "txtemail",
+                                    @type = "email",
+                                    @tabindex = "6",
+                                    @class = "user-form-control",
+                                    @placeholder = "user@punjab.gov.in",
+                                    @required = "required"
+                                })
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="txtUsername" class="user-field-label">
+                                <i class="fas fa-at text-primary"></i> Username: <span class="req">*</span>
+                            </label>
+                            @Html.TextBoxFor(
+                                model => model.UserName,
+                                new
+                                {
+                                    @id = "txtUsername",
+                                    @tabindex = "7",
+                                    @class = "user-form-control",
+                                    @placeholder = "e.g. mchargobindpur.eo",
+                                    @autocomplete = "off",
+                                    @required = "required"
+                                })
+                            <div class="user-field-help">Recommended in lowercase (e.g. mcname.designation)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                        <div class="user-field-group">
+                            <label for="txtPassword" class="user-field-label">
+                                <i class="fas fa-lock text-primary"></i> Login Password: <span class="req">*</span>
+                            </label>
+                            <div class="user-password-wrap">
+                                @Html.TextBoxFor(
+                                    m => m.Password,
+                                    new
+                                    {
+                                        @type = "password",
+                                        @id = "txtPassword",
+                                        @tabindex = "8",
+                                        @class = "user-form-control",
+                                        @placeholder = "Enter initial password",
+                                        @required = "required",
+                                        @autocomplete = "new-password"
+                                    })
+                                <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility('txtPassword', this);">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
+                            <div class="user-field-help">Encrypted with salted SHA-256 before transmission.</div>
+                        </div>
+                    </div>
 
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="inputEmail4" class="txt_label">Department:</label>
-                                        @Html.DropDownListFor(m => m.DeptId, Model.mDepartmentList, "Select", new { @id = "DdlDepartment", @tabindex = "1", @class = "form-control txt_design", @required = "required", @Onchange = "GetDepartment();" })
-                                    </div>
-
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="inputEmail4" class="txt_label">Office:</label>
-                                        @Html.DropDownListFor(m => m.OfficeId, Model.OfficeList, "Select", new { @id = "DdlOffice", @tabindex = "2", @class = "form-control txt_design", @required = "required" })
-                                    </div>
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="name" class="txt_label">Name:</label>
-                                        @Html.TextBoxFor(m => m.Name, new { @id = "txtName", @tabindex = "3", @class = "form-control", @required = "required" })
-                                    </div>
-
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="name" class="txt_label">Designation :</label>
-                                        @Html.TextBoxFor(m => m.Designation, new { @id = "txtdes", @tabindex = "4", @class = "form-control", @required = "required" })
-                                    </div>
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12">
-                                        <label for="name" class="txt_label">Upload Profile Photo:</label>
-                                        <input type="file" style="display:block !important" name="filephoto" id="filephoto" tabindex="9" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                        @Html.HiddenFor(model => model.PhotoLocation)
-                                        <input type="hidden" id="projectDochdn" />
-                                        @Html.HiddenFor(model => model.PhotoFileName)
-
-
-                                    </div>
-
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="name" class="txt_label">Mobile No:</label>
-                                        @Html.TextBoxFor(m => m.MobileNo, new { @id = "txtMobile", @tabindex = "5", @class = "form-control", @required = "required" })
-                                    </div>
-
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="name" class="txt_label">Email:</label>
-                                        @Html.TextBoxFor(m => m.Email, new { @id = "txtemail", @tabindex = "6", @class = "form-control", @required = "required" })
+                    <!-- Profile Photo Upload -->
+                    <div class="col-xl-6 col-lg-6 col-md-12">
+                        <div class="user-field-group mb-0">
+                            <label class="user-field-label">
+                                <i class="fas fa-camera text-primary"></i> Official Profile Photograph:
+                            </label>
+                            <div class="user-upload-box" id="dropzonePhoto">
+                                <div class="user-upload-preview-area">
+                                    <img id="imgphoto" src="" class="user-photo-preview" style="display:none;" alt="Profile Photo" />
+                                    <div id="phHolderPhoto" class="user-upload-placeholder-icon">
+                                        <i class="fas fa-user"></i>
                                     </div>
                                 </div>
-                                <div class="row">
-
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="name" class="txt_label">Username:</label>
-                                        @*@Html.TextBoxFor(m => m.UserName, new { @id = "txtUsername", @tabindex = "7", @class = "form-control autocomplete-off", @autofill = "off", @required = "required", @autocomplete = "off" })*@
-                                        @Html.TextBoxFor(model => model.UserName, new { @id = "txtUsername", @tabindex = "7", @class = "form-control",@autocomplete = "off", @required = "required" })
-                                    </div>
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="name" class="txt_label">Password:</label>
-                                        @Html.TextBoxFor(m => m.Password, new { @type = "Password", @id = "txtPassword", @tabindex = "8", @class = "form-control", @required = "required", @autocomplete = "new-password" })
-                                    </div>
-
-                                    <div class="form-group  col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-
-                                        <label for="name" class="txt_label">Upload Signature:</label>
-                                        <input type="file" style="display:block !important" name="filesignature" id="filesignature" tabindex="10" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                        @Html.HiddenFor(model => model.SignLocation)
-                                        <input type="hidden" id="projectDochdn" />
-                                        @Html.HiddenFor(model => model.SignFileName)
-
-
-                                    </div>
-
-
-                                </div>
-                                <div class="pic">
-                                    <img id="imgphoto" src="" width="120" height="150" style="display:none" />
-                                </div>
-                                <div class="sign">
-                                    <img id="imgsign" src="" width="180" height="60" style="display:none" />
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                        <label for="inputEmail4" class="txt_label">User Role:</label>
-                                        @Html.DropDownListFor(m => m.RoleId, Model.RoleList, "Select", new { @id = "DdlRole", @tabindex = "10", @class = "form-control txt_design", @required = "required" })
-                                    </div>
-                                    <div class="form-group col-sm-7 col-md-7 col-lg-7">
-                                        <br />  <label for="IsApexUser">
-                                            @Html.CheckBoxFor(model => model.Apex, new { @id = "IsApexUser" })
-                                            <label for="name" class="txt_label">
-                                                Is Apex
-                                            </label>
-                                        </label>
-                                        @Html.HiddenFor(model => model.Apex)
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-5"></div>
-                                    <div class="form-group col-sm-7 col-md-7 col-lg-7">
-                                        <input type="submit" value="Add User" class="btn add_btn" tabindex="11" />
-                                    </div>
-
-                                </div>
-
-
+                                <div class="user-upload-title" id="lblPhotoTitle">Choose Profile Photo</div>
+                                <div class="user-upload-subtitle">Allowed formats: JPG, JPEG, PNG, BMP (Max 2 MB)</div>
+                                <label class="btn-choose-file">
+                                    <i class="fas fa-upload"></i> Browse Photo
+                                    <input type="file" name="filephoto" id="filephoto" tabindex="9" accept=".jpg,.jpeg,.bmp,.png,.gif" class="user-file-input" />
+                                </label>
+                                @Html.HiddenFor(model => model.PhotoLocation)
+                                @Html.HiddenFor(model => model.PhotoFileName)
+                                <input type="hidden" id="filephotohdn" />
+                                <input type="hidden" id="projectDochdn" />
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Signature Upload -->
+                    <div class="col-xl-6 col-lg-6 col-md-12">
+                        <div class="user-field-group mb-0">
+                            <label class="user-field-label">
+                                <i class="fas fa-pen-nib text-primary"></i> Authorized Digital Signature:
+                            </label>
+                            <div class="user-upload-box" id="dropzoneSign">
+                                <div class="user-upload-preview-area">
+                                    <img id="imgsign" src="" class="user-sign-preview" style="display:none;" alt="Signature" />
+                                    <div id="phHolderSign" class="user-upload-placeholder-icon">
+                                        <i class="fas fa-signature"></i>
+                                    </div>
+                                </div>
+                                <div class="user-upload-title" id="lblSignTitle">Choose Official Signature</div>
+                                <div class="user-upload-subtitle">Clear signature on white background (Max 2 MB)</div>
+                                <label class="btn-choose-file">
+                                    <i class="fas fa-upload"></i> Browse Signature
+                                    <input type="file" name="filesignature" id="filesignature" tabindex="10" accept=".jpg,.jpeg,.bmp,.png,.gif" class="user-file-input" />
+                                </label>
+                                @Html.HiddenFor(model => model.SignLocation)
+                                @Html.HiddenFor(model => model.SignFileName)
+                                <input type="hidden" id="filesignaturehdn" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Action Buttons -->
+                    <div class="col-12">
+                        <div class="user-reg-actions-row">
+                            <button type="reset" class="user-btn-secondary" onclick="resetUploadPreviews();">
+                                <i class="fas fa-undo"></i> Reset Form
+                            </button>
+                            <button type="submit" class="user-btn-primary" tabindex="11">
+                                <i class="fas fa-user-check"></i> Register User Account
+                            </button>
                         </div>
                     </div>
                 </div>
             }
-            <!-- Button to trigger the modal -->
-            <!-- Modal -->
-            <div class="coman_modal dispatch_modal addnew_modal modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal=lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel">Edit User</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="department">Department:</label>
-                                    @Html.DropDownListFor(m => m.DeptId, Model.mDepartmentList, "Select", new { @id = "department", @tabindex = "1", @class = "form-control", @required = "required", @Onchange = "GetOffice();" })
-                                    <input type="hidden" id="UserId" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="office">Office:</label>
-                                    @Html.DropDownListFor(m => m.OfficeId, Model.OfficeList, "Select", new { @id = "office", tabindex = "2", @class = "form-control", required = "required" })
+        </div>
+    </div>
 
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Name:</label>
-                                    <input type="text" class="form-control" id="name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="designation">Designation:</label>
-                                    <input type="text" class="form-control" id="designation" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="mobile">Mobile No:</label>
-                                    <input type="text" class="form-control" id="mobile" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email:</label>
-                                    <input type="email" class="form-control" id="email" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="username">Username:</label>
-
-
-                                    <input type="text" disabled class="form-control" id="username" required>
-                                </div>
-                                @*<div class="form-group">
-                                        <label for="password">Password:</label>
-                                        <input type="password" class="form-control" id="password" required>
-                                    </div>*@
-                                <div>
-                                    <label for="ProfilePhoto" class="form-group">Profile Photo:</label>
-                                    <input type="file" name="file" style="display:block!important" class="form-control" id="profilephoto" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                    <img src="https://placehold.jp/100x100.png" id="profilephotopreview" class="form-control" style="width:100px; height:100px !important; border:1px solid red;" alt="Load Image" />
-                                    <input type="hidden" id="DocumentIconName" />
-                                </div>
-                                <br />
-                                <div>
-                                    <label for="SubHeading Photo" class="form-group">Signature Photo:</label>
-                                    <input type="file" name="file2" style="display:block!important" class="form-control" id="signaturephoto" accept=".jpg,.jpeg,.bmp,.png,.gif" />
-                                    <img src="https://placehold.jp/100x100.png" id="signaturephotopreview" class="form-control" style="width:100px; height:100px !important; border:1px solid red;" alt="Load Image" />
-                                    <input type="hidden" id="DocumentIconName" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="office">User Role:</label>
-                                    @Html.DropDownListFor(m => m.RoleId, Model.RoleList, "Select", new { @id = "Role", @tabindex = "10", @class = "form-control txt_design", @required = "required" })
-
-                                </div>
-                                <label for="IsApex">
-                                    <input type="checkbox" class="checkbox" id="IsApex" name="IsApex" />
-                                    Is Apex
-                                </label>
-
-
-
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="validateForm()">Save</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="fas fa-user-edit"></i> Edit User Account
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="UserId" />
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="department" class="user-field-label">Department: <span class="req">*</span></label>
+                                @Html.DropDownListFor(
+                                    m => m.DeptId,
+                                    Model.mDepartmentList,
+                                    "-- Select Department --",
+                                    new
+                                    {
+                                        @id = "department",
+                                        @tabindex = "1",
+                                        @class = "user-form-control",
+                                        @required = "required",
+                                        @Onchange = "GetOffice();"
+                                    })
+                            </div>
 
+                            <div class="col-md-6">
+                                <label for="office" class="user-field-label">Office / Branch: <span class="req">*</span></label>
+                                @Html.DropDownListFor(
+                                    m => m.OfficeId,
+                                    Model.OfficeList,
+                                    "-- Select Office --",
+                                    new
+                                    {
+                                        @id = "office",
+                                        @tabindex = "2",
+                                        @class = "user-form-control",
+                                        @required = "required"
+                                    })
+                            </div>
 
-            <div class="row">
-                @{Html.RenderPartial("~/Views/User/_UserList.cshtml", Model);}
-            </div>
+                            <div class="col-md-6">
+                                <label for="name" class="user-field-label">Full Name: <span class="req">*</span></label>
+                                <input type="text" class="user-form-control" id="name" required placeholder="User full name" />
+                            </div>
 
+                            <div class="col-md-6">
+                                <label for="designation" class="user-field-label">Designation: <span class="req">*</span></label>
+                                <input type="text" class="user-form-control" id="designation" required placeholder="Official designation" />
+                            </div>
 
-            <div class="modal fade" id="DeleteConfirmation">
-                <div class="modal-dialog" style="width:320px">
-                    <div class="modal-content">
-                        <div class="modal header">
-                            <a href="#" class="close" data-dismiss="modal">&times;</a>
-                        </div>
-                        <div class="modal-body">
-                            <h4 style="font-size:14pt">Are you sure? You want to Delete this record.</h4>
-                            <div class="modal-footer">
-                                <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="CloseDeletePopup()">Cancel</a>
-                                <a href="#" class="btn btn-danger" id="Delete" onclick="ConfirmDelete()">Confirm</a>
+                            <div class="col-md-6">
+                                <label for="mobile" class="user-field-label">Mobile Number: <span class="req">*</span></label>
+                                <input type="text" class="user-form-control" id="mobile" required placeholder="10-digit mobile" maxlength="10" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="user-field-label">Email Address: <span class="req">*</span></label>
+                                <input type="email" class="user-form-control" id="email" required placeholder="user@punjab.gov.in" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="username" class="user-field-label">Username:</label>
+                                <input type="text" disabled class="user-form-control" id="username" required />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="Role" class="user-field-label">System Role: <span class="req">*</span></label>
+                                @Html.DropDownListFor(
+                                    m => m.RoleId,
+                                    Model.RoleList,
+                                    "-- Select Role --",
+                                    new
+                                    {
+                                        @id = "Role",
+                                        @tabindex = "10",
+                                        @class = "user-form-control",
+                                        @required = "required"
+                                    })
+                            </div>
+
+                            <div class="col-12">
+                                <div class="user-apex-card" onclick="$('#IsApex').click();">
+                                    <div class="user-apex-info">
+                                        <div class="user-apex-icon">
+                                            <i class="fas fa-crown"></i>
+                                        </div>
+                                        <div>
+                                            <p class="user-apex-text-title">Is Apex User</p>
+                                            <p class="user-apex-text-sub">Enable supervisory privileges across all entities.</p>
+                                        </div>
+                                    </div>
+                                    <label class="user-switch" onclick="event.stopPropagation();">
+                                        <input type="checkbox" id="IsApex" name="IsApex" />
+                                        <span class="user-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Photo & Sign updates in Modal -->
+                            <div class="col-md-6">
+                                <label class="user-field-label">Update Profile Photo:</label>
+                                <input type="file" name="file" class="user-form-control mb-2" id="profilephoto" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                <div class="modal-preview-box">
+                                    <img src="~/Content/images/user-placeholder.png" id="profilephotopreview" class="modal-preview-thumb" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\' viewBox=\'0 0 24 24\' fill=\'%23cbd5e1\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>';" alt="Profile Preview" />
+                                    <div>
+                                        <div style="font-size: 12px; font-weight:600; color:#334155;">Current / New Photo</div>
+                                        <div style="font-size: 11px; color:#64748b;">Square portrait recommended</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="DocumentIconName" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="user-field-label">Update Signature Photo:</label>
+                                <input type="file" name="file2" class="user-form-control mb-2" id="signaturephoto" accept=".jpg,.jpeg,.bmp,.png,.gif" />
+                                <div class="modal-preview-box">
+                                    <img src="~/Content/images/sign-placeholder.png" id="signaturephotopreview" class="modal-preview-thumb-sign" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'140\' height=\'50\' viewBox=\'0 0 140 50\' fill=\'%23f8fafc\'><rect width=\'140\' height=\'50\' fill=\'%23f1f5f9\' stroke=\'%23cbd5e1\' stroke-dasharray=\'4\'/><text x=\'50%25\' y=\'55%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%2394a3b8\' font-size=\'11\' font-family=\'sans-serif\'>Signature</text></svg>';" alt="Signature Preview" />
+                                    <div>
+                                        <div style="font-size: 12px; font-weight:600; color:#334155;">Current / New Signature</div>
+                                        <div style="font-size: 11px; color:#64748b;">Black/blue ink on white paper</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="user-btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="user-btn-primary" onclick="validateForm();">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-</body>
 
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>User Registration</title>
-    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
-    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
-    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
-    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
-    <script src="~/Scripts/datatables/jszip.min.js"></script>
-    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
-    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
-    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
-    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
-    <script src="~/Scripts/jquery.ui.widget.js"></script>
-    <script src="~/Scripts/jquery.fileupload.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- Registered Users List Section -->
+    <div class="row">
+        @{ Html.RenderPartial("~/Views/User/_UserList.cshtml", Model); }
+    </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="DeleteConfirmation" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="delete-modal-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h4 class="delete-modal-title">Delete User Account?</h4>
+                    <p class="delete-modal-text">Are you sure you want to delete this user record? This action will permanently remove access privileges and cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="user-btn-secondary" onclick="CloseDeletePopup();">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger px-4 py-2" id="Delete" onclick="ConfirmDelete();" style="border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-trash-alt me-1"></i> Confirm Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script src="~/toastr/toastr.min.js"></script>
+<script src="~/Scripts/datatables/jquery.dataTables.js"></script>
+<script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/datatables/jszip.min.js"></script>
+<script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
+<script src="~/Scripts/datatables/vfs-fonts.js"></script>
+<script src="~/Scripts/datatables/buttons.print.min.js"></script>
+<script src="~/Scripts/datatables/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
+<script>
+    // Password visibility toggle
+    function togglePasswordVisibility(inputId, btn) {
+        var input = document.getElementById(inputId);
+        var icon = $(btn).find('i');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.type = "password";
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    }
 
-    <script>
-        $(document).ready(function () {
-            
-             var useralert = "@Session["userExist"]";
-             var useradded = "@Session["userAdded"]";
+    // Reset upload previews
+    function resetUploadPreviews() {
+        $('#imgphoto').hide().attr('src', '');
+        $('#phHolderPhoto').show();
+        $('#lblPhotoTitle').text('Choose Profile Photo');
 
+        $('#imgsign').hide().attr('src', '');
+        $('#phHolderSign').show();
+        $('#lblSignTitle').text('Choose Official Signature');
+    }
 
-            if (useralert == "") {
-
-            } else {
-               alert(useralert);
-            }
-
-           if (useradded == "") {
-
-           } else {
-               alert(useradded);
-               $("input[type=text]").each(function () {
-                   $(this).val("");
-               });
-           }
-
-        });
-
-        $(function () {
-            $('[type="date"]').prop('max', function () {
-                return new Date().toJSON().split('T')[0];
-            });
-            $('#txtfundamount').val('');
-            $('#filephoto').show();
-
-        });
-
-
+    $(document).ready(function () {
+        // Image validation triggers
         $("#filephoto").change(function () {
-            CheckImage("#filephoto", "filephoto", "#PhotoLocation", "#PhotoFileName", "#imgphoto");
+            CheckImage("#filephoto", "filephoto", "#PhotoLocation", "#PhotoFileName", "#imgphoto", "#phHolderPhoto", "#lblPhotoTitle");
         });
 
         $("#filesignature").change(function () {
-            CheckImage("#filesignature", "filesignature", "#SignLocation", "#SignFileName", "#imgsign");
+            CheckImage("#filesignature", "filesignature", "#SignLocation", "#SignFileName", "#imgsign", "#phHolderSign", "#lblSignTitle");
         });
 
-        function CheckImage(input, name, hdnfileloc, hdnfilename,photoid) {
-
-
-
-            var sizeInKB = $(input)[0].files[0].size / 1024;
-            var filename = $(input)[0].files[0].name;
-            var dots = $(input).val().split(".").length - 1;
-            var sizeLimit = 2048;
-
-
-            if ($(input).val().length > 0 && !(/\.(jpg|jpeg|bmp|png|gif)$/i).test($(input).val())) {
-                toastr.error('You must select file in format of jpg,jpeg,bmp,png,gif .');
-                $('#Photo').val('');
-                $('#Photo').focus();
-            }
-
-            else if (dots > 1) {
-                toastr.error('Invalid file Format.');
-                $(input).val('');
-                $(input).focus();
-                $(input + "hdn").val('');
-                $(input).val('');
-            }
-
-
-            else {
-                var inpt = "input[name=" + name + "]";
-
-                var inputElement1 = $(inpt);
-
-                readImage(inputElement1).done(function (base64Data) {
-
-                    $(input + "hdn").val(base64Data);
-                    $(hdnfileloc).val(base64Data);
-                    $(hdnfilename).val(filename);
-                    $(photoid).attr("src", base64Data);
-                    $(photoid).show();
-                });
-            }
-
-        }
-        function readImage(inputElement) {
-            var deferred = $.Deferred();
-            var files = inputElement.get(0).files;
-            if (files && files[0]) {
-                var fr = new FileReader();
-                fr.onload = function (e) {
-                    deferred.resolve(e.target.result);
-                };
-                fr.readAsDataURL(files[0]);
-            } else {
-                deferred.resolve(undefined);
-            }
-            return deferred.promise();
-        }
-
+        // Focusout password hashing with SHA-256 + salt
         $("#txtPassword").focusout(function () {
-            var password = $('#txtPassword').val();
-            var randomSalt = generateRandomSalt();
-            document.getElementById("txtPassword").value = generateSHA256Hash(password) + generateSHA256Hash(randomSalt);
+            hashPasswordIfNeeded();
         });
 
-        function generateRandomSalt() {
-            var salt = '';
-            var array = new Uint8Array(32);
-            window.crypto.getRandomValues(array);
+        // Form submit safety: hash password if not yet hashed
+        $('#formActionUser').on('submit', function () {
+            hashPasswordIfNeeded();
+            return true;
+        });
 
-            for (var i = 0; i < array.length; i++) {
-                salt += (array[i] < 16 ? '0' : '') + array[i].toString(16);
-            }
-
-            return salt;
-        }
-
-        function generateSHA256Hash(data) {
-            return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
-        }
-
-
-        $("#fileupload1").click(function (event) {
-            $('#Actionfile').text('No');
-            $('#IsFile').val("N");
-
-            $('#fileupload1').fileupload({
-
-                dataType: 'json',
-                async: true,
-                url: "/eFile/UploadFundFiles",
-                autoUpload: true,
-
-                done: function (e, data) {
-                 var sim = setTimeout("hidevalueAction()", 1000);
-                  $('.file_nameEn').html(data.result.name);
-                $('#afile_nameEn').attr("href", "@path" + data.result.name);
-                    $('#removefileupload1').show();
+        // Modal image live previews
+        var profilePhotoInput = document.getElementById('profilephoto');
+        if (profilePhotoInput) {
+            profilePhotoInput.onchange = function () {
+                const [file] = this.files;
+                if (file) {
+                    $("#profilephotopreview").attr('src', URL.createObjectURL(file));
                 }
-            }).on('fileuploadprogressall', function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('.progress12 .progress-bar').css('width', progress + '%');
-                $('#removefileupload1').css('display', 'none');
-            });
+            };
+        }
 
+        var signaturePhotoInput = document.getElementById('signaturephoto');
+        if (signaturePhotoInput) {
+            signaturePhotoInput.onchange = function () {
+                const [file] = this.files;
+                if (file) {
+                    $("#signaturephotopreview").attr('src', URL.createObjectURL(file));
+                }
+            };
+        }
+    });
+
+    function hashPasswordIfNeeded() {
+        var pwdField = document.getElementById("txtPassword");
+        if (!pwdField) return;
+        var password = pwdField.value;
+        if (password && password.length < 64) {
+            var randomSalt = generateRandomSalt();
+            pwdField.value = generateSHA256Hash(password) + generateSHA256Hash(randomSalt);
+        }
+    }
+
+    function generateRandomSalt() {
+        var salt = '';
+        var array = new Uint8Array(32);
+        window.crypto.getRandomValues(array);
+        for (var i = 0; i < array.length; i++) {
+            salt += (array[i] < 16 ? '0' : '') + array[i].toString(16);
+        }
+        return salt;
+    }
+
+    function generateSHA256Hash(data) {
+        return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
+    }
+
+    function CheckImage(input, name, hdnfileloc, hdnfilename, photoid, phHolderId, lblTitleId) {
+        var files = $(input)[0].files;
+        if (!files || files.length === 0) return;
+
+        var file = files[0];
+        var sizeInKB = file.size / 1024;
+        var filename = file.name;
+        var dots = $(input).val().split(".").length - 1;
+        var sizeLimit = 2048; // 2 MB
+
+        if (!/\.(jpg|jpeg|bmp|png|gif)$/i.test($(input).val())) {
+            showNotification('You must select a file in JPG, JPEG, BMP, or PNG format.', 'error');
+            $(input).val('');
+            return;
+        }
+
+        if (dots > 1) {
+            showNotification('Invalid file format: filename cannot contain multiple extensions.', 'error');
+            $(input).val('');
+            return;
+        }
+
+        if (sizeInKB > sizeLimit) {
+            showNotification('File size exceeds the 2 MB limit.', 'error');
+            $(input).val('');
+            return;
+        }
+
+        var inpt = "input[name=" + name + "]";
+        var inputElement1 = $(inpt);
+
+        readImage(inputElement1).done(function (base64Data) {
+            $(input + "hdn").val(base64Data);
+            $(hdnfileloc).val(base64Data);
+            $(hdnfilename).val(filename);
+            $(photoid).attr("src", base64Data).show();
+            if (phHolderId) $(phHolderId).hide();
+            if (lblTitleId) $(lblTitleId).text(filename);
         });
+    }
 
-
-
-        function hidevalueForwd() {
-            $('.progress1 .progress-bar').fadeOut(500);
-            var sim = setTimeout("hidevalueForwd()", 3000);
+    function readImage(inputElement) {
+        var deferred = $.Deferred();
+        var files = inputElement.get(0).files;
+        if (files && files[0]) {
+            var fr = new FileReader();
+            fr.onload = function (e) {
+                deferred.resolve(e.target.result);
+            };
+            fr.readAsDataURL(files[0]);
+        } else {
+            deferred.resolve(undefined);
         }
+        return deferred.promise();
+    }
 
-        function hidevalueAction() {
-            $('.progress12 .progress-bar').fadeOut(500);
-            var sim = setTimeout("hidevalueAction()", 3000);
+    function showNotification(msg, type) {
+        if (window.toastr) {
+            if (type === 'error') toastr.error(msg);
+            else if (type === 'success') toastr.success(msg);
+            else toastr.info(msg);
+        } else {
+            alert(msg);
         }
+    }
 
-        function hidevalueActionEnclosure() {
-            $('.progressEnclosure .progress-bar').fadeOut(500);
-            var sim = setTimeout("hidevalueActionEnclosure()", 3000);
-        }
+    function GetDepartment() {
+        var id = $("#DdlDepartment").val();
+        $('#DdlOffice').empty().append('<option value="">-- Select Office --</option>');
 
-        function RemoveActionEnclosureFiles() {
-
-            $('.file_nameEn').html('');
-            $('.file_sizeEn').html('');
-            $('.progressEnclosure .progress-bar').css('width', '0%');
-            $("#removeUploadEnclosure").hide();
-            $('#fileuploadcontantEnclosure').css('border', '0px solid rgb(244, 239, 239)');
-            $.post("/eFile/RemoveActionEnclosureFiles",
-                {
-                },
-                function (data) {
-                });
-
-        }
-
-
-
-        function removefileupload() { //ActionFile
-            $('.file_nameEn').html('');
-            $('.file_size1').html('');
-            $('.progress12 .progress-bar').css('width', '0%');
-            $("#removefileupload1").hide();
-            $('#fileuploadcontant1').css('border', '0px solid rgb(244, 239, 239)');
-            //$.post("/eFile/RemoveMlaForwardFiles",
-            //    {
-            //    },
-            //    function (data) {
-            //    });
-
-        }
-
-          function GetDepartment() {
-              var id = $("#DdlDepartment").val();
-              $('#DdlOffice').empty().append('<option value="0">-Select-</option>');
-
+        if (!id || id === "0") return;
 
         $.ajax({
             type: "GET",
@@ -491,15 +1293,16 @@
                 $.each(data, function (index, value) {
                     $('#DdlOffice').append('<option value="' + value.id + '">' + value.name + '</option>');
                 });
-
-                //$('#DdlOffice').val(0);
             }
         });
-        }
-        function GetOffice() {
-              var id = $("#department").val();
-              $('#office').empty().append('<option value="0">-Select-</option>');
+    }
 
+    var officeid;
+    function GetOffice() {
+        var id = $("#department").val();
+        $('#office').empty().append('<option value="">-- Select Office --</option>');
+
+        if (!id || id === "0") return;
 
         $.ajax({
             type: "GET",
@@ -509,80 +1312,76 @@
             success: function (data) {
                 $.each(data, function (index, value) {
                     $('#office').append('<option value="' + value.id + '">' + value.name + '</option>');
-                    $("#office").val(officeid);
                 });
-
-                //$('#DdlOffice').val(0);
+                if (officeid) {
+                    $("#office").val(officeid);
+                }
             }
         });
+    }
+
+    // Listener for Edit modal population from _UserList
+    window.document.addEventListener('partialValue', function (e) {
+        var data = e.detail;
+        $("#username").val(data.username);
+        $("#email").val(data.email);
+        $("#mobile").val(data.mobile);
+        $("#designation").val(data.designation);
+        $("#department").val(data.department);
+        $("#name").val(data.name);
+        $("#Role").val(data.role);
+        $('#UserId').val(data.userid);
+        $('#IsApex').prop('checked', data.Apex);
+
+        officeid = data.office;
+        GetOffice();
+
+        if (data.profilephoto) {
+            var photoUrl = data.profilephoto.indexOf('http') === 0 ? data.profilephoto : '/mlaDiary/' + data.profilephoto;
+            $("#profilephotopreview").attr('src', photoUrl);
         }
-        var officeid;
-        window.document.addEventListener('partialValue', function (e) {
-            //console.log(e);
-                var username = e.detail.username;
-                var password = e.detail.password;
-                var email = e.detail.email;
-                var mobile = e.detail.mobile;
-                var designation = e.detail.designation;
-                var name = e.detail.name;
-            var department = e.detail.department;
-            var profilephoto = e.detail.profilephoto;
-            var signaturephoto = e.detail.signaturephoto;
-            var userid = e.detail.userid;
-            var Apex = e.detail.Apex;
-            var role = e.detail.role;
+        if (data.signaturephoto) {
+            var signUrl = data.signaturephoto.indexOf('http') === 0 ? data.signaturephoto : '/mlaDiary/' + data.signaturephoto;
+            $("#signaturephotopreview").attr('src', signUrl);
+        }
+    });
 
+    function validateForm() {
+        var department = document.getElementById('department');
+        var office = document.getElementById('office');
+        var role = document.getElementById('Role');
+        var name = document.getElementById('name');
+        var designation = document.getElementById('designation');
+        var mobile = document.getElementById('mobile');
+        var email = document.getElementById('email');
+        var username = document.getElementById('username');
 
-            var office = e.detail.office;
-            $("#username").val(username);
-            //$("#password").val(password);
-            $("#email").val(email);
-            $("#mobile").val(mobile);
-            $("#designation").val(designation);
-            $("#department").val(department);
-            GetOffice();
+        if (!department.value || !office.value || !role.value || !name.value ||
+            !designation.value || !mobile.value || !email.value || !username.value) {
+            showNotification('Please fill in all required fields.', 'error');
+            return;
+        }
 
-            $("#name").val(name);
-            $("#profilephotopreview").attr('src', '/mlaDiary/' + profilephoto);
-            $("#signaturephotopreview").attr('src', '/mlaDiary/' + signaturephoto);
-            $("#office").val(office);// alert(role);
-            $("#Role").val(role);
-            officeid = office;
-            //var office = $("#office");
-            //alert(office.val());
-            //var selectedValue = office;
-            //$("#office").val(selectedValue).attr("tabindex", 2);
-            $('#UserId').val(userid);
-            $('#IsApex').prop('checked', Apex);
+        Update();
+    }
 
-
-
-
-
-        });
-
-        function Update() {
-
+    function Update() {
         if (window.FormData !== undefined) {
-
             var fileUpload = $("#profilephoto").get(0);
             var fileUpload1 = $("#signaturephoto").get(0);
             var files = fileUpload.files;
             var files2 = fileUpload1.files;
-            // Create FormData object
+
             var fileData = new FormData();
-            // Looping over all files and add it to FormData object
             for (var i = 0; i < files.length; i++) {
                 fileData.append("file", files[i]);
             }
             for (var j = 0; j < files2.length; j++) {
                 fileData.append("file2", files2[j]);
             }
-            const courseDto = {
-                //  MCName: $("#MCNameDropDown option:selected").text(),
-                //  MCName_local: $("#MCLocalNameDropDown option:selected").text(),
+
+            var courseDto = {
                 username: $('#username').val(),
-                //password: $('#password').val(),
                 email: $('#email').val(),
                 MobileNo: $('#mobile').val(),
                 PhotoFileName: $('#profilephoto').val().split('\\').pop().split('/').pop(),
@@ -593,106 +1392,67 @@
                 OfficeId: $('#office').val(),
                 RoleId: $('#Role').val(),
                 UserId: $('#UserId').val(),
-                Apex: $("#IsApex").prop("checked"),
+                Apex: $("#IsApex").prop("checked")
             };
-            Object.entries(courseDto).map(([key, value]) =>
-                fileData.append(key, value)
-            );
-            debugger
-            // Adding one more key to FormData object
+
+            Object.entries(courseDto).forEach(([key, value]) => {
+                fileData.append(key, value);
+            });
+
             $.ajax({
                 url: '@Url.Action("UpdateUser", "User")',
                 type: "POST",
-                contentType: false, // Not to set any content header
-                processData: false, // Not to process data
+                contentType: false,
+                processData: false,
                 data: fileData,
                 success: function (result) {
                     if (result == 1) {
-                        alert("Updated Successfully");
-                        $('#myModal').hide();
+                        alert("User Updated Successfully");
+                        $('#myModal').modal('hide');
                         location.reload();
-                    }
-                    else {
-
-
-                        var errorMessage = "Something Went Wrong";
-                        // Handle the error message here
-                        alert(errorMessage);
-                        $('#myModal').hide();
+                    } else {
+                        alert("Failed to update user. Please try again.");
+                        $('#myModal').modal('hide');
                         location.reload();
-
-
                     }
                 },
-
+                error: function () {
+                    alert("An error occurred while updating the user record.");
+                }
             });
         } else {
-            alert("FormData is not supported.");
+            alert("FormData is not supported in this browser.");
         }
     }
-        function validateForm() {
-            // Get the form inputs
-            var department = document.getElementById('department');
-            var office = document.getElementById('office');
-            var role = document.getElementById('Role');
-            var name = document.getElementById('name');
-            var designation = document.getElementById('designation');
-            var mobile = document.getElementById('mobile');
-            var email = document.getElementById('email');
-            var username = document.getElementById('username');
-            //var password = document.getElementById('password');
 
-            // Check if any of the inputs are empty
-            if (department.value === '' || office.value === '' || role.value==='' || name.value === '' || designation.value === '' ||
-                mobile.value === '' || email.value === '' || username.value === '') {
-                alert('Please fill in all the fields.');
-                return;
+    var MyApp = {};
+    function DeleteUserRecord(xyz) {
+        $('#DeleteConfirmation').modal("show");
+        MyApp = xyz;
+    }
 
-            }
-            else {
-                Update();
-            }
-        }
+    function ConfirmDelete() {
+        DeleteID();
+    }
 
-        document.getElementById('profilephoto').onchange = function (e) {
-            const [file] = profilephoto.files;
-            if (file) {
-                $("#profilephotopreview").attr('src', URL.createObjectURL(file));
-            }
-        };
-        document.getElementById('signaturephoto').onchange = function (e) {
-            const [file] = signaturephoto.files;
-            if (file) {
-                $("#signaturephotopreview").attr('src', URL.createObjectURL(file));
-            }
-        };
+    function CloseDeletePopup() {
+        $('#DeleteConfirmation').modal("hide");
+    }
 
-
-        var MyApp = {};
-        function DeleteUserRecord(xyz) {
-            $('#DeleteConfirmation').modal("show");
-            MyApp = xyz;
-        }
-        function ConfirmDelete() {
-            DeleteID();
-        }
-        function CloseDeletePopup() {
-            $('#DeleteConfirmation').modal("hide");
-        }
-        function DeleteID() {
-            var userid = MyApp;
-            $.ajax({
+    function DeleteID() {
+        var userid = MyApp;
+        $.ajax({
             type: "GET",
             url: '@Url.Action("Delete", "User")',
             data: { UserId: userid },
-            //url: "/User/Delete?UserId=" + userid,
             success: function (result) {
                 $("#DeleteConfirmation").modal("hide");
                 alert("Deleted Successfully");
                 location.reload();
-                }
-            });
-        }
-
-    </script>
-</head>
+            },
+            error: function () {
+                alert("Failed to delete user record.");
+            }
+        });
+    }
+</script>

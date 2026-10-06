@@ -1,4 +1,4 @@
-﻿@model  CMNirdesh.Models.UserModel
+@model  CMNirdesh.Models.UserModel
 
 @{
     var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
@@ -6,8 +6,223 @@
 
 }
 <style>
-    input[type="file"] {
-        display: none !important;
+    .user-table-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-bottom: 30px;
+        width: 100%;
+    }
+
+    .user-table-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .user-table-card-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-table-card-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .user-table-card-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .user-table-card-desc {
+        font-size: 12.5px;
+        color: #64748b;
+        margin: 2px 0 0 0;
+    }
+
+    .user-table-filter-bar {
+        padding: 14px 24px;
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .user-table-filter-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .user-table-filter-label {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #475569;
+        margin: 0;
+    }
+
+    /* Table & Rows */
+    #fundreport {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    #fundreport thead th {
+        background: #f8fafc !important;
+        color: #334155 !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        padding: 12px 14px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-top: none !important;
+    }
+
+    #fundreport tbody td {
+        padding: 12px 14px !important;
+        font-size: 13px !important;
+        color: #334155 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        border-top: none !important;
+        vertical-align: middle !important;
+    }
+
+    #fundreport tbody tr:hover {
+        background: #f8fafc !important;
+    }
+
+    /* Avatar and Signature Thumbnails */
+    .user-avatar-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .user-table-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e2e8f0;
+        background: #f1f5f9;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .user-table-avatar-fallback {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .user-table-sign {
+        max-width: 68px;
+        max-height: 28px;
+        object-fit: contain;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 2px;
+        background: #ffffff;
+    }
+
+    /* Apex Badges */
+    .user-apex-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+    }
+
+    .user-apex-badge.apex-yes {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .user-apex-badge.apex-no {
+        background: #f1f5f9;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* Action Buttons */
+    .user-action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-user-action {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.15s ease;
+        text-decoration: none !important;
+    }
+
+    .btn-user-action.btn-action-edit {
+        background: #eff6ff;
+        color: #2563eb;
+        border-color: #dbeafe;
+    }
+
+    .btn-user-action.btn-action-edit:hover {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    .btn-user-action.btn-action-delete {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fee2e2;
+    }
+
+    .btn-user-action.btn-action-delete:hover {
+        background: #dc2626;
+        color: #ffffff;
+        border-color: #dc2626;
     }
 </style>
 
@@ -247,94 +462,111 @@
 
  
     <div class="col-lg-12">
-        <!-- BAR CHART -->
-        <div class="card card-success">
-            <div class="card-header">
-                <h3 class="card-title">User List</h3>
-            </div>
-            <div class="card-body">
-                <div class="row" id="filter">
-                  
-                    <div class="col-sm-6 col-md-3 col-lg-3 mb-3">
-                        <label class="txt_label">Department:</label>
-                            <p class="pera_txt_design">
-                            </p>
+        <div class="user-table-card">
+            <div class="user-table-card-header">
+                <div class="user-table-card-title-group">
+                    <div class="user-table-card-icon">
+                        <i class="fas fa-users-cog"></i>
                     </div>
-                    
+                    <div>
+                        <h3 class="user-table-card-title">Registered Users Directory</h3>
+                        <p class="user-table-card-desc">Active municipal accounts, organizational roles, and digital authorization signatures.</p>
+                    </div>
                 </div>
+            </div>
+
+            <div class="user-table-filter-bar">
+                <div class="user-table-filter-item" id="filter">
+                    <label class="user-table-filter-label"><i class="fas fa-filter text-primary"></i> Filter by Department:</label>
+                    <p class="pera_txt_design m-0"></p>
+                </div>
+            </div>
+
+            <div class="p-3">
                 <div class="table-responsive">
-                    <table id="fundreport" class="table table-bordered  dataTable">
+                    <table id="fundreport" class="table table-hover dataTable">
                         <thead>
                             <tr>
-                                @*
-                                <th class="center td-heading" display:none">Id</th>*@
-                                <th class="center td-heading">UserName</th>
-                                <th class="center td-heading">Department</th>
-                                <th class="center td-heading">Office</th>
-                                <th class="center td-heading">Name</th>
-                                <th class="center td-heading">Designation</th>
-                                <th class="center td-heading">Email</th>
-                                <th class="center td-heading">Mobile</th>
-                                @*
-                                <th class="center td-heading">Role</th>*@
-                                <th class="center td-heading">Photo & Sign</th>
-                                <th class="center td-heading">IsApex</th>
-                                <th>Edit</th>
+                                <th class="center">User Profile</th>
+                                <th class="center">Department</th>
+                                <th class="center">Office / Branch</th>
+                                <th class="center">Designation</th>
+                                <th class="center">Contact Info</th>
+                                <th class="center">Digital Assets</th>
+                                <th class="center text-center">Privilege</th>
+                                <th class="center text-center" style="width: 80px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-
-                            @foreach (var mdl in Model._LstUser)
+                            @if (Model._LstUser != null)
                             {
-                            <tr id="row_@mdl.UserId">
-                                @*
-        <td>@mdl.UserId</td>*@
-                                <td>@mdl.UserName</td>
-                                <td>@mdl.DepartmentName</td>
-                                <td>@mdl.OfficeName</td>
-                                <td>@mdl.Name</td>
-                                <td>@mdl.Designation</td>
-                                <td>@mdl.Email</td>
-                                <td>@mdl.MobileNo</td>
-                                @*
-        <td>@mdl.RoleName</td>*@
-                                <td>
-                                    @if (mdl.Photo != "")
-                                    {
-                                        <img id="adocLoc" src="@Url.Content(@Model.fileacessingUrl+"/"+@mdl.Photo)" width="50" height="50" /><br />
-                                    }
-                                    @if (mdl.Signature != "")
-                                    {
-                                        <img id="adocLoc" src="@Url.Content(@Model.fileacessingUrl+"/"+@mdl.Signature)" width="100" height="50" />
-                                    }
-
-
-                                </td>
-                                <td class="center td-data" style="padding: 14px 4px !important">
-                                    <input type="checkbox" @(Convert.ToBoolean(mdl.Apex) ? "checked" : "") readonly onclick="return false;" />
-                                    @Html.HiddenFor(modelItem => mdl.Apex)
-                                </td>
-                                <td>
-                                    <a data-rel="tooltip" class="tooltip-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@mdl.UserId')">
-
-                                        <i class="ace-icon fa fa-pencil bigger-130"></i>
-                                    </a>
-                                    <a data-rel="tooltip" class="red tooltip-error" onclick="DeleteUserRecord('@mdl.UserId')">
-                                        <i class="ace-icon fa fa-trash bigger-130"></i>
-                                    </a>
-                                </td>
-
-                            </tr>
+                                foreach (var mdl in Model._LstUser)
+                                {
+                                    <tr id="row_@mdl.UserId">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                @if (!string.IsNullOrEmpty(mdl.Photo))
+                                                {
+                                                    <img class="user-table-avatar" src="@Url.Content(@Model.fileacessingUrl + "/" + @mdl.Photo)" alt="@mdl.Name" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'38\' height=\'38\' viewBox=\'0 0 24 24\' fill=\'%2394a3b8\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>';" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="user-table-avatar-fallback">@(!string.IsNullOrEmpty(mdl.Name) ? mdl.Name.Substring(0, 1).ToUpper() : "U")</div>
+                                                }
+                                                <div>
+                                                    <div style="font-weight: 600; color: #0f172a; font-size: 13.5px;">@mdl.Name</div>
+                                                    <div style="font-size: 11.5px; color: #64748b;">@@@mdl.UserName</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-light text-dark border">@mdl.DepartmentName</span></td>
+                                        <td><span style="font-size: 13px; color: #334155; font-weight: 500;">@mdl.OfficeName</span></td>
+                                        <td><span style="font-size: 13px; color: #334155;">@mdl.Designation</span></td>
+                                        <td>
+                                            <div style="font-size: 12.5px; color: #1e293b;"><i class="fas fa-envelope text-muted me-1"></i>@mdl.Email</div>
+                                            <div style="font-size: 12px; color: #64748b;"><i class="fas fa-phone-alt text-muted me-1"></i>@mdl.MobileNo</div>
+                                        </td>
+                                        <td>
+                                            <div class="user-avatar-cell">
+                                                @if (!string.IsNullOrEmpty(mdl.Signature))
+                                                {
+                                                    <img class="user-table-sign" src="@Url.Content(@Model.fileacessingUrl + "/" + @mdl.Signature)" alt="Signature" title="Digital Signature" onerror="this.style.display='none';" />
+                                                }
+                                                else
+                                                {
+                                                    <span style="font-size: 11px; color: #94a3b8; font-style: italic;">No signature</span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (Convert.ToBoolean(mdl.Apex))
+                                            {
+                                                <span class="user-apex-badge apex-yes"><i class="fas fa-crown"></i> Apex</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="user-apex-badge apex-no">Standard</span>
+                                            }
+                                            @Html.HiddenFor(modelItem => mdl.Apex)
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="user-action-buttons justify-content-center">
+                                                <button type="button" class="btn-user-action btn-action-edit" data-bs-toggle="modal" data-bs-target="#myModal" onclick="getbyID('@mdl.UserId')" title="Edit User">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </button>
+                                                <button type="button" class="btn-user-action btn-action-delete" onclick="DeleteUserRecord('@mdl.UserId')" title="Delete User">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
                             }
-
                         </tbody>
                     </table>
                 </div>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
-
     </div>
 
 

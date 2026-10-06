@@ -1,635 +1,1199 @@
-﻿@model  CMNirdesh.Models.PermissionModel
+@model CMNirdesh.Models.PermissionModel
 
 @{
+    ViewBag.Title = "Role-Wise Permissions";
     var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
     string path = System.Web.Configuration.WebConfigurationManager.AppSettings["SiteUrl"] + "/MlaDiary/TempFile/";
 }
 
-
-<link href="~/Content/style_ms.css" rel="stylesheet" />
-<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/multiple-select.css" rel="stylesheet" />
+<link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
 
 <style>
+    /* ==========================================================================
+       Role-Wise Permissions (RBAC) - Modern UI Styles
+       ========================================================================== */
+    .rbac-container {
+        padding: 10px 15px 40px 15px;
+        font-family: inherit;
+    }
+
+    /* Hero Banner */
+    .rbac-hero {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        border-radius: 14px;
+        padding: 22px 28px;
+        color: #ffffff;
+        margin-bottom: 22px;
+        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .rbac-hero-left {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .rbac-hero-icon-box {
+        width: 52px;
+        height: 52px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
+        flex-shrink: 0;
+    }
+
+    .rbac-hero-title {
+        font-size: 21px;
+        font-weight: 700;
+        margin: 0 0 4px 0;
+        color: #ffffff;
+        letter-spacing: -0.3px;
+    }
+
+    .rbac-hero-subtitle {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.85);
+        margin: 0;
+    }
+
+    .rbac-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 9999px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
+    }
+
+    /* Role Selector Card */
+    .rbac-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+        margin-bottom: 22px;
+        overflow: hidden;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .rbac-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.06);
+    }
+
+    .rbac-filter-card {
+        padding: 20px 24px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        margin-bottom: 22px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .rbac-filter-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .rbac-filter-col {
+        flex: 1;
+        min-width: 260px;
+        max-width: 480px;
+    }
+
+    .rbac-filter-label {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .rbac-role-select {
+        height: 44px;
+        width: 100%;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 9px;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+        background-color: #f8fafc;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .rbac-role-select:focus,
+    .rbac-role-select:hover {
+        border-color: #2563eb;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Section Cards */
+    .rbac-section-header {
+        padding: 16px 22px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #ffffff;
+    }
+
+    .rbac-section-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .rbac-section-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .icon-blue { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
+    .icon-purple { background: #f5f3ff; color: #7c3aed; border: 1px solid #ede9fe; }
+    .icon-emerald { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+    .icon-amber { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+
+    .rbac-section-title {
+        font-size: 15.5px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 2px 0;
+    }
+
+    .rbac-section-desc {
+        font-size: 12px;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .rbac-section-body {
+        padding: 20px;
+        background: #fafafa;
+    }
+
+    /* Column Container for Embedded MultiSelects */
+    .rbac-field-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .rbac-field-box:focus-within {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .rbac-field-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .rbac-field-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .rbac-tag-badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    /* Embedded Multiple Select Plugin Overrides */
+    .rbac-field-box .ms-parent {
+        width: 100% !important;
+        display: block !important;
+        position: relative !important;
+    }
+
+    .rbac-field-box .ms-choice {
+        display: none !important;
+    }
+
+    .rbac-field-box .ms-drop {
+        position: static !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+        display: block !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .rbac-field-box .ms-search {
+        padding: 8px 10px !important;
+        background: #f8fafc !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        display: flex !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+    }
+
+    .rbac-field-box .ms-search input {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 7px !important;
+        padding: 6px 12px !important;
+        font-size: 12.5px !important;
+        width: 100% !important;
+        outline: none !important;
+        background: #ffffff !important;
+        color: #1e293b !important;
+        box-sizing: border-box !important;
+        transition: border-color 0.15s, box-shadow 0.15s !important;
+    }
+
+    .rbac-field-box .ms-search input:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+    }
+
+    .rbac-field-box .ms-drop ul {
+        padding: 6px 8px !important;
+        margin: 0 !important;
+        max-height: 320px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        list-style: none !important;
+    }
+
+    .rbac-field-box .ms-drop ul::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .rbac-field-box .ms-drop ul::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    /* Reset list items so they never float side-by-side, wrap unexpectedly, or collapse */
+    .rbac-field-box .ms-drop ul > li,
+    .rbac-field-box .ms-drop ul > li.multiple,
+    .rbac-field-box .ms-drop ul > li.group,
+    .rbac-field-box .ms-drop .multiple {
+        list-style: none !important;
+        display: block !important;
+        float: none !important;
+        clear: both !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        margin: 2px 0 !important;
+        padding: 0 !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+        transition: background 0.12s ease !important;
+    }
+
+    .rbac-field-box .ms-drop ul > li:hover {
+        background: #f1f5f9 !important;
+    }
+
+    /* Optgroup Parent Header Item */
+    .rbac-field-box .ms-drop ul > li.group,
+    .rbac-field-box .ms-drop ul > li.optgroup {
+        border-top: 1px solid #e2e8f0 !important;
+        margin-top: 8px !important;
+        padding-top: 4px !important;
+        background: transparent !important;
+    }
+
+    .rbac-field-box .ms-drop ul > li.group:first-child,
+    .rbac-field-box .ms-drop ul > li.optgroup:first-child {
+        border-top: none !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Item Label: Flex container that separates checkbox and text completely */
+    .rbac-field-box .ms-drop ul > li label,
+    .rbac-field-box .ms-drop label {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 10px !important;
+        position: relative !important;
+        width: 100% !important;
+        min-height: 32px !important;
+        padding: 6px 10px !important;
+        margin: 0 !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #334155 !important;
+        cursor: pointer !important;
+        user-select: none !important;
+        white-space: normal !important;
+        box-sizing: border-box !important;
+        line-height: 1.4 !important;
+        text-indent: 0 !important;
+    }
+
+    .rbac-field-box .ms-drop ul > li label:hover {
+        color: #0f172a !important;
+    }
+
+    /* Optgroup Header Label Styling */
+    .rbac-field-box .ms-drop ul > li label.optgroup,
+    .rbac-field-box .ms-drop label.optgroup {
+        font-weight: 700 !important;
+        color: #1e40af !important;
+        font-size: 12px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        background: #f8fafc !important;
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
+    }
+
+    .rbac-field-box .ms-drop ul > li label.optgroup:hover {
+        background: #e2e8f0 !important;
+        color: #1e3a8a !important;
+    }
+
+    /* Indent child options under optgroup */
+    .rbac-field-box .ms-drop ul > li.option-level-1 label,
+    .rbac-field-box .ms-drop ul > li:not(.group):not(.optgroup) label[data-group] {
+        padding-left: 20px !important;
+    }
+
+    /* CRITICAL FIX FOR CHECKBOX OVERLAP:
+       Completely neutralize position: absolute and negative margins from multi-select.min.css */
+    .rbac-field-box .ms-drop input[type="checkbox"],
+    .rbac-field-box .ms-drop input[type="radio"],
+    .rbac-field-box .ms-drop ul > li input[type="checkbox"],
+    .rbac-field-box .ms-drop ul > li label input[type="checkbox"] {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        float: none !important;
+        display: inline-block !important;
+        width: 17px !important;
+        height: 17px !important;
+        min-width: 17px !important;
+        max-width: 17px !important;
+        min-height: 17px !important;
+        max-height: 17px !important;
+        margin: 0 !important;
+        margin-right: 10px !important;
+        margin-left: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        cursor: pointer !important;
+        flex: 0 0 17px !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        accent-color: #2563eb !important;
+        vertical-align: middle !important;
+        box-sizing: border-box !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Text Span inside Label */
+    .rbac-field-box .ms-drop ul > li label span,
+    .rbac-field-box .ms-drop label span {
+        display: inline-block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        line-height: 1.4 !important;
+        color: inherit !important;
+        flex: 1 1 auto !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+
+    /* Disabled State */
+    .rbac-field-box .ms-drop ul > li .disabled,
+    .rbac-field-box .ms-drop ul > li label.disabled {
+        opacity: 0.45 !important;
+        cursor: not-allowed !important;
+    }
+
+    /* Empty State */
+    .rbac-empty-card {
+        padding: 60px 24px;
+        text-align: center;
+        background: #ffffff;
+        border: 1px dashed #cbd5e1;
+        border-radius: 14px;
+    }
+
+    .rbac-empty-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: #2563eb;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin-bottom: 16px;
+    }
+
+    .rbac-empty-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .rbac-empty-desc {
+        font-size: 13.5px;
+        color: #64748b;
+        max-width: 460px;
+        margin: 0 auto;
+    }
+
+    /* Live Toast Notification */
+    #rbacToast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #0f172a;
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        z-index: 99999;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        pointer-events: none;
+    }
+
+    #rbacToast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
 </style>
 
-<body>
-    <div id="main-content">
+<div id="main-content" class="rbac-container">
+    <!-- Hero Banner -->
+    <div class="rbac-hero">
+        <div class="rbac-hero-left">
+            <div class="rbac-hero-icon-box">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div>
+                <h1 class="rbac-hero-title">Role-Wise Permissions</h1>
+                <p class="rbac-hero-subtitle">Configure module access, menus, workflow statuses, and operational actions for each user role.</p>
+            </div>
+        </div>
+        @if (Model != null && Model.IsOpen)
+        {
+            <div class="rbac-hero-badge">
+                <i class="fas fa-check-circle text-white"></i> Active Role Loaded
+            </div>
+        }
+    </div>
 
+    <!-- Role Selector Card -->
+    <div class="rbac-filter-card">
+        @using (Html.BeginForm("GetRoleWisePermissionList", "User", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data" }))
+        {
+            <div class="rbac-filter-row">
+                <div class="rbac-filter-col">
+                    <label for="ddluser" class="rbac-filter-label">
+                        <i class="fas fa-id-badge text-primary"></i> Select User Role:
+                    </label>
+                    @Html.DropDownListFor(
+                        m => m.UserTypeId,
+                        Model.UserList,
+                        "-- Select Role --",
+                        new
+                        {
+                            @id = "ddluser",
+                            @tabindex = "1",
+                            @class = "rbac-role-select",
+                            @required = "required",
+                            @Onchange = "Getdata();"
+                        })
+                </div>
+                <input id="btngetuser" type="submit" value="Get User" style="display:none;" />
+            </div>
+        }
+    </div>
 
-        <div class="main-content cm_fund fund_rcipt">
-            <div class="row">
-
-                <div class="card p-0">
-                    <div class="card-header">
-                        <h3 class="card-title">User Permission</h3>
+    @if (Model != null && Model.IsOpen)
+    {
+        <div class="permission-matrix">
+            <!-- 1. Menu Permissions Card -->
+            <div class="rbac-card">
+                <div class="rbac-section-header">
+                    <div class="rbac-section-title-group">
+                        <div class="rbac-section-icon icon-blue">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <div>
+                            <h3 class="rbac-section-title">Navigation & Menu Permissions</h3>
+                            <p class="rbac-section-desc">Manage sidebar menus visibility and action authorization on menu entries.</p>
+                        </div>
                     </div>
-                    <div class="card-body">
-
-                        @using (Html.BeginForm("GetRoleWisePermissionList", "User", FormMethod.Post, new { @id = "formActionUser", enctype = "multipart/form-data" }))
-                        {
-                            <div class="row align-items-center">
-                                <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                                    <label for="inputEmail4" class="txt_label">User Role:</label>
-                                    @Html.DropDownListFor(m => m.UserTypeId, Model.UserList, "Select", new { @id = "ddluser", @tabindex = "1", @class = "txt_design", @required = "required", @Onchange = "Getdata();" })
-
+                </div>
+                <div class="rbac-section-body">
+                    <div class="row g-3">
+                        <div class="col-xl-6 col-lg-6 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-bars text-primary"></i> Accessible Menus:
+                                    </label>
+                                    <span class="rbac-tag-badge">Sidebar</span>
                                 </div>
-                                <input id="btngetuser" type="submit" value="Get User" class="btn add_btn" style="display:none" />
-                            </div>
-                        }
-
-                        @if (Model.IsOpen)
-                        {
-                            <div class="permission">
-                                <div class="row p-3">
-                                    <h5>Menu Permissions</h5>
-                                    <hr class="dropdown-divider" />
-                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">Menu :</label>
-                                        <select id='ddlmenu' multiple='multiple'>
-                                            @foreach (CMNirdesh.Models.MenuModel menu in Model.MenuList)
-                                            {
-                                                <optgroup id="@menu.MenuId" label="@menu.MenuName">
-                                                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                                <select id='ddlmenu' multiple='multiple'>
+                                    @if (Model.MenuList != null)
+                                    {
+                                        foreach (CMNirdesh.Models.MenuModel menu in Model.MenuList)
+                                        {
+                                            <optgroup id="@menu.MenuId" label="@menu.MenuName">
+                                                @if (menu._LstSubmenu != null)
+                                                {
+                                                    foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
                                                     {
                                                         <option value='@submenu.SubMenuId'>@submenu.SubMenuName</option>
                                                     }
-                                                </optgroup>
-                                            }
+                                                }
+                                            </optgroup>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
 
-                                        </select>
-
-                                    </div>
-
-                                    <div class="form-group col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">Add/Update Option on Menu Items:</label>
-                                        @*@Html.DropDownListFor(m => m.addupdate, Model.addupdateList, new { @id = "ddladdupdate", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
-                                        <select id='ddladdupdate' multiple='multiple'>
-
-                                            @foreach (CMNirdesh.Models.MenuModel menu in Model.addupdateList)
-                                            {
-                                                <optgroup id="grp_@menu.MenuName.Replace(" "," ")" label="@menu.MenuName">
-                                                    @foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
+                        <div class="col-xl-6 col-lg-6 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-edit text-primary"></i> Add / Update Rights on Menu Items:
+                                    </label>
+                                    <span class="rbac-tag-badge">Actions</span>
+                                </div>
+                                <select id='ddladdupdate' multiple='multiple'>
+                                    @if (Model.addupdateList != null)
+                                    {
+                                        foreach (CMNirdesh.Models.MenuModel menu in Model.addupdateList)
+                                        {
+                                            <optgroup id="grp_@menu.MenuName.Replace(" ", " ")" label="@menu.MenuName">
+                                                @if (menu._LstSubmenu != null)
+                                                {
+                                                    foreach (CMNirdesh.Models.SubMenuModel submenu in menu._LstSubmenu)
                                                     {
                                                         <option id="sub_@submenu.SubMenuId" value='@submenu.SubMenuId'>@submenu.SubMenuName</option>
                                                     }
-                                                </optgroup>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                                <div class="row p-3" id="diarydiv">
-                                    <h5>LG/UDD Permissions</h5>
-                                    <hr class="dropdown-divider" />
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">References Type:</label>
-                                        <select id='ddlref' multiple='multiple'>
-
-                                            <optgroup id="1" label="References">
-                                                @foreach (SelectListItem submenu in Model.References)
-                                                {
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
                                                 }
                                             </optgroup>
-
-                                            <optgroup id="2" label="File">
-                                                @foreach (SelectListItem submenu in Model.FundReferences)
-                                                {
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
-                                                }
-                                            </optgroup>
-
-                                        </select>
-
-                                    </div>
-
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
-                                        <select id='ddlstatusdiary' multiple='multiple'>
-
-                                            <optgroup id="1" label="References">
-                                                @foreach (SelectListItem submenu in Model.Actions)
-                                                {
-
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
-                                                }
-                                            </optgroup>
-
-                                            <optgroup id="2" label="File">
-                                                @foreach (SelectListItem submenu in Model.ActionFiles)
-                                                {
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
-                                                }
-                                            </optgroup>
-
-                                        </select>
-                                        @*@Html.DropDownListFor(m => m.ActionId, Model.Actions, new { @id = "ddlstatusdiary", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
-
-
-                                    </div>
-
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">Add/Update (User Wise):</label>
-                                        @Html.DropDownListFor(m => m.ActionId, Model.DiaryButton, new { @id = "ddladdupdatestatusDiary", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
-
-                                    </div>
-
-                                </div>
-
-                                <div class="row p-3" id="dispatch">
-                                    <h5>MC Permissions</h5>
-                                    <hr class="dropdown-divider" />
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">References Type:</label>
-
-                                        <select id='ddlrefdispatch' multiple='multiple'>
-
-
-                                            <optgroup id="1" label="References">
-                                                @foreach (SelectListItem submenu in Model.References)
-                                                {
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
-                                                }
-                                            </optgroup>
-
-                                            <optgroup id="2" label="File">
-                                                @foreach (SelectListItem submenu in Model.FundReferences)
-                                                {
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
-                                                }
-                                            </optgroup>
-
-                                        </select>
-
-                                    </div>
-
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
-
-                                        <select id='ddlstatusdispatch' multiple='multiple'>
-
-                                            <optgroup id="1" label="References">
-                                                @foreach (SelectListItem submenu in Model.ActionsDispatch)
-                                                {
-
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
-                                                }
-                                            </optgroup>
-
-                                            <optgroup id="2" label="File">
-                                                @foreach (SelectListItem submenu in Model.ActionsFileDispatch)
-                                                {
-                                                    <option value='@submenu.Value'>@submenu.Text</option>
-                                                }
-                                            </optgroup>
-
-                                        </select>
-
-                                        @*@Html.DropDownListFor(m => m.ActionId, Model.ActionsDispatch, new { @id = "ddlstatusdispatch", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })*@
-
-                                    </div>
-
-
-
-
-
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">Add/Update (User Wise):</label>
-                                      
-                                        @Html.DropDownListFor(m => m.ActionId, Model.DispatchButton, new { @id = "ddladdupdatestatusDispatch", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
-
-                                    </div>
-                                </div>
-
-
-                                <div class="row p-3" id="dispatch">
-                                    <h5>Project Permissions</h5>
-                                    <hr class="dropdown-divider" />
-
-                                    <div class="form-group col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 p-3">
-                                        <label for="inputEmail4" class="txt_label">Action Status:</label>
-                                        @Html.DropDownListFor(m => m.ActionId, Model.ProjectActions, new { @id = "ddlProjectAction", @tabindex = "1", @class = "", @required = "required", @multiple = "multiple" })
-
-                                    </div>
-                                </div>
+                                        }
+                                    }
+                                </select>
                             </div>
-                        }
-
-
-
+                        </div>
                     </div>
-
-
                 </div>
-
-
             </div>
 
+            <!-- 2. LG / UDD Permissions Card -->
+            <div class="rbac-card" id="diarydiv">
+                <div class="rbac-section-header">
+                    <div class="rbac-section-title-group">
+                        <div class="rbac-section-icon icon-purple">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <div>
+                            <h3 class="rbac-section-title">LG / UDD Department Permissions</h3>
+                            <p class="rbac-section-desc">Manage document reference categories, workflow lifecycle status, and modification rights.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rbac-section-body">
+                    <div class="row g-3">
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-folder-open text-purple"></i> References Type:
+                                    </label>
+                                    <span class="rbac-tag-badge">Categories</span>
+                                </div>
+                                <select id='ddlref' multiple='multiple'>
+                                    <optgroup id="1" label="References">
+                                        @if (Model.References != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.References)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                    <optgroup id="2" label="File">
+                                        @if (Model.FundReferences != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.FundReferences)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
 
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-tasks text-purple"></i> Action Status:
+                                    </label>
+                                    <span class="rbac-tag-badge">Lifecycle</span>
+                                </div>
+                                <select id='ddlstatusdiary' multiple='multiple'>
+                                    <optgroup id="1" label="References">
+                                        @if (Model.Actions != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.Actions)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                    <optgroup id="2" label="File">
+                                        @if (Model.ActionFiles != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.ActionFiles)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-user-cog text-purple"></i> Add / Update Controls:
+                                    </label>
+                                    <span class="rbac-tag-badge">User Wise</span>
+                                </div>
+                                @Html.DropDownListFor(
+                                    m => m.ActionId,
+                                    Model.DiaryButton ?? Enumerable.Empty<SelectListItem>(),
+                                    new
+                                    {
+                                        @id = "ddladdupdatestatusDiary",
+                                        @tabindex = "1",
+                                        @class = "",
+                                        @required = "required",
+                                        @multiple = "multiple"
+                                    })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. MC Permissions Card -->
+            <div class="rbac-card" id="dispatch">
+                <div class="rbac-section-header">
+                    <div class="rbac-section-title-group">
+                        <div class="rbac-section-icon icon-emerald">
+                            <i class="fas fa-city"></i>
+                        </div>
+                        <div>
+                            <h3 class="rbac-section-title">Municipal Corporation (MC) Permissions</h3>
+                            <p class="rbac-section-desc">Manage municipal proposals, references, agenda workflow actions, and dispatch operations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rbac-section-body">
+                    <div class="row g-3">
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-file-alt text-success"></i> References Type:
+                                    </label>
+                                    <span class="rbac-tag-badge">Categories</span>
+                                </div>
+                                <select id='ddlrefdispatch' multiple='multiple'>
+                                    <optgroup id="1" label="References">
+                                        @if (Model.References != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.References)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                    <optgroup id="2" label="File">
+                                        @if (Model.FundReferences != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.FundReferences)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-check-double text-success"></i> Action Status:
+                                    </label>
+                                    <span class="rbac-tag-badge">Lifecycle</span>
+                                </div>
+                                <select id='ddlstatusdispatch' multiple='multiple'>
+                                    <optgroup id="1" label="References">
+                                        @if (Model.ActionsDispatch != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.ActionsDispatch)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                    <optgroup id="2" label="File">
+                                        @if (Model.ActionsFileDispatch != null)
+                                        {
+                                            foreach (SelectListItem submenu in Model.ActionsFileDispatch)
+                                            {
+                                                <option value='@submenu.Value'>@submenu.Text</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-sliders-h text-success"></i> Add / Update Controls:
+                                    </label>
+                                    <span class="rbac-tag-badge">User Wise</span>
+                                </div>
+                                @Html.DropDownListFor(
+                                    m => m.ActionId,
+                                    Model.DispatchButton ?? Enumerable.Empty<SelectListItem>(),
+                                    new
+                                    {
+                                        @id = "ddladdupdatestatusDispatch",
+                                        @tabindex = "1",
+                                        @class = "",
+                                        @required = "required",
+                                        @multiple = "multiple"
+                                    })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Project Permissions Card -->
+            <div class="rbac-card" id="project_permissions">
+                <div class="rbac-section-header">
+                    <div class="rbac-section-title-group">
+                        <div class="rbac-section-icon icon-amber">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div>
+                            <h3 class="rbac-section-title">Priority Project Permissions</h3>
+                            <p class="rbac-section-desc">Manage action statuses and project tracking rights for developmental works.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rbac-section-body">
+                    <div class="row g-3">
+                        <div class="col-xl-4 col-lg-5 col-md-12">
+                            <div class="rbac-field-box">
+                                <div class="rbac-field-header">
+                                    <label class="rbac-field-label">
+                                        <i class="fas fa-clipboard-check text-warning"></i> Action Status:
+                                    </label>
+                                    <span class="rbac-tag-badge">Projects</span>
+                                </div>
+                                @Html.DropDownListFor(
+                                    m => m.ActionId,
+                                    Model.ProjectActions ?? Enumerable.Empty<SelectListItem>(),
+                                    new
+                                    {
+                                        @id = "ddlProjectAction",
+                                        @tabindex = "1",
+                                        @class = "",
+                                        @required = "required",
+                                        @multiple = "multiple"
+                                    })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</body>
+    }
+    else
+    {
+        <div class="rbac-empty-card">
+            <div class="rbac-empty-icon">
+                <i class="fas fa-user-lock"></i>
+            </div>
+            <h3 class="rbac-empty-title">Select a Role to Manage Permissions</h3>
+            <p class="rbac-empty-desc">Choose a user role from the dropdown above to load and customize its navigation rights, workflow actions, and access privileges.</p>
+        </div>
+    }
+</div>
 
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>User Permission</title>
-    <link href="~/Scripts/datatables/datatable.min.css" rel="stylesheet" />
-    <link href="~/Scripts/datatables/buttons.dataTables.min.css" rel="stylesheet" />
-    <script src="~/Scripts/datatables/jquery.dataTables.js"></script>
-    <script src="~/Scripts/datatables/dataTables.buttons.min.js"></script>
-    <script src="~/Scripts/datatables/jszip.min.js"></script>
-    <script src="~/Scripts/datatables/pdfmake.min.js.js"></script>
-    <script src="~/Scripts/datatables/vfs-fonts.js"></script>
-    <script src="~/Scripts/datatables/buttons.print.min.js"></script>
-    <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
-    <script src="~/Scripts/jquery.ui.widget.js"></script>
-    <script src="~/Scripts/jquery.fileupload.js"></script>
-    @*<link href="~/Content/MultiSelectList/multiple-select.css" rel="stylesheet" />*@
-    <link href="~/Scripts/MultiSelectBox/multi-select.min.css" rel="stylesheet" />
+<!-- Floating Real-Time Feedback Toast -->
+<div id="rbacToast">
+    <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+    <span>Permission updated successfully</span>
+</div>
 
-</head>
-
-<link href="~/Content/multiple-select.css" rel="stylesheet" />
-
-@*<script src="~/Scripts/MultiSelectBox/jquery.multiple.select.js"></script>*@
 <script src="~/Scripts/MultiSelectBox/multi-select.min.js"></script>
+
 <script>
+    // Live Toast Feedback Helper
+    function showRbacToast(msg, isSuccess) {
+        var toast = $('#rbacToast');
+        var icon = isSuccess !== false ? '<i class="fas fa-check-circle" style="color: #4ade80;"></i>' : '<i class="fas fa-exclamation-circle" style="color: #f87171;"></i>';
+        toast.html(icon + '<span>' + (msg || 'Permission updated successfully') + '</span>');
+        toast.addClass('show');
+        clearTimeout(window.rbacToastTimer);
+        window.rbacToastTimer = setTimeout(function () {
+            toast.removeClass('show');
+        }, 2200);
+    }
+
     $(document).ready(function () {
         $('#ddlmenu').multipleSelect({
             columns: 1,
             selectAll: false,
             animate: 'slide',
-            maxHeight: 350,
+            maxHeight: 320,
             width: '100%',
-            placeholder: 'Select Menu',
+            placeholder: 'Search & select menus...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
-                //alert(view.text);
-                //alert(view.value);
-                //alert(view.selected);
                 var usertypeid = $('#ddluser').val();
                 var menuid = view.value;
                 var menuname = view.text;
                 var checked = view.selected;
                 addremovemenu(usertypeid, menuid, checked, menuname);
-
             },
             onOptgroupClick: function (view) {
                 $.each(view.children, function (i, item) {
-                   // alert(view.children[i].value);
-                   // alert(view.children[i].selected);
                     var usertypeid = $('#ddluser').val();
                     var menuid = view.children[i].value;
                     var menuname = view.children[i].text;
                     var checked = view.children[i].selected;
                     addremovemenu(usertypeid, menuid, checked, menuname);
                 });
-            },
+            }
         });
 
         $('#ddlstatusdiary').multipleSelect({
             columns: 1,
             selectAll: false,
-            maxHeight: 350,
+            maxHeight: 320,
             animate: 'slide',
             width: '100%',
-            placeholder: 'Select Action',
+            placeholder: 'Search & select actions...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
-
+            multiple: false,
             onClick: function (view) {
-                //alert(view.text);
-                //alert(view.value);
-                //alert(view.selected);
                 var usertypeid = $('#ddluser').val();
                 var Actionid = view.value;
                 var checked = view.selected;
                 var menuname = view.text;
                 addremoveAction(usertypeid, Actionid, menuname, checked, "Diary");
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
-                    //alert(view.children[i].value);
-                    //alert(view.children[i].selected);
                     var usertypeid = $('#ddluser').val();
                     var Actionid = view.children[i].value;
                     var checked = view.children[i].selected;
                     var menuname = view.children[i].text;
                     addremoveAction(usertypeid, Actionid, menuname, checked, "Diary");
                 });
-            },
+            }
         });
-
-
 
         $('#ddladdupdatestatusDiary').multipleSelect({
             columns: 1,
             selectAll: false,
-            maxHeight: 350,
+            maxHeight: 320,
             animate: 'slide',
-            width: '80%',
-            placeholder: 'Select Button',
+            width: '100%',
+            placeholder: 'Search & select controls...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
-                //alert(view.text);
-                //alert(view.value);
-                //alert(view.selected);
                 var usertypeid = $('#ddluser').val();
                 var Actionid = view.value;
                 var checked = view.selected;
-
                 addremoveStatusButton(usertypeid, Actionid, checked, "Diary");
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
-                    //alert(view.children[i].value);
-                    //alert(view.children[i].selected);
                     var usertypeid = $('#ddluser').val();
                     var Actionid = view.children[i].value;
                     var checked = view.children[i].selected;
                     addremoveStatusButton(usertypeid, Actionid, checked, "Diary");
                 });
-            },
-
+            }
         });
 
         $('#ddladdupdatestatusDispatch').multipleSelect({
             columns: 1,
             selectAll: false,
-            maxHeight: 350,
+            maxHeight: 320,
             animate: 'slide',
             width: '100%',
-            placeholder: 'Select Button',
+            placeholder: 'Search & select controls...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
-                //alert(view.text);
-                //alert(view.value);
-                //alert(view.selected);
                 var usertypeid = $('#ddluser').val();
                 var Actionid = view.value;
                 var checked = view.selected;
                 addremoveStatusButton(usertypeid, Actionid, checked, "Dispatch");
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
-                    //alert(view.children[i].value);
-                    //alert(view.children[i].selected);
                     var usertypeid = $('#ddluser').val();
                     var Buttonid = view.children[i].value;
                     var checked = view.children[i].selected;
-                    addremoveStatusButton(usertypeid, Actionid, checked, "Dispatch");
+                    addremoveStatusButton(usertypeid, Buttonid, checked, "Dispatch");
                 });
-            },
-
+            }
         });
+
         $('#ddlstatusdispatch').multipleSelect({
             columns: 1,
             selectAll: false,
-            maxHeight: 350,
+            maxHeight: 320,
             animate: 'slide',
             width: '100%',
-            placeholder: 'Select Action',
+            placeholder: 'Search & select actions...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
-                //alert(view.text);
-                //alert(view.value);
-                //alert(view.selected);
                 var usertypeid = $('#ddluser').val();
                 var Actionid = view.value;
                 var checked = view.selected;
                 var menuname = view.text;
                 addremoveAction(usertypeid, Actionid, menuname, checked, "Dispatch");
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
-                    //alert(view.children[i].value);
-                    //alert(view.children[i].selected);
                     var usertypeid = $('#ddluser').val();
                     var Actionid = view.children[i].value;
                     var checked = view.children[i].selected;
                     var menuname = view.children[i].text;
                     addremoveAction(usertypeid, Actionid, menuname, checked, "Dispatch");
                 });
-            },
+            }
         });
 
         $('#ddladdupdate').multipleSelect({
             columns: 1,
             selectAll: false,
-            maxHeight: 350,
+            maxHeight: 320,
             animate: 'slide',
             width: '100%',
-            placeholder: 'Select Button',
+            placeholder: 'Search & select controls...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
-                //alert(view.text);
-                //alert(view.value);
-                //alert(view.selected);
                 var userid = $('#ddluser').val();
                 var Buttonid = view.value;
                 var checked = view.selected;
                 addremoveButton(userid, Buttonid, checked);
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
-                    //alert(view.children[i].value);
-                    //alert(view.children[i].selected);
                     var userid = $('#ddluser').val();
                     var Buttonid = view.children[i].value;
                     var checked = view.children[i].selected;
                     addremoveButton(userid, Buttonid, checked);
                 });
-            },
-
-        });
-
-        $('#ddlstatus').multipleSelect({
-            columns: 1,
-            selectAll: false,
-            maxHeight: 350,
-            animate: 'slide',
-            width: '100%',
-            placeholder: 'Select Action',
-            filter: true,
-            isOpen: true,
-            keepOpen: true,
-            multiple: true,
-
-            onClick: function (view) {
-                //alert(view.text);
-                //alert(view.value);
-                //alert(view.selected);
-                var userid = $('#ddluser').val();
-                var Actionid = view.value;
-                var checked = view.selected;
-                var menuname = view.text;
-                addremoveAction(userid, Actionid, menuname, checked, "Diary");
-
-            },
-            onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
-                $.each(view.children, function (i, item) {
-                    //alert(view.children[i].value);
-                    //alert(view.children[i].selected);
-                    var userid = $('#ddluser').val();
-                    var Actionid = view.children[i].value;
-                    var checked = view.children[i].selected;
-                    var menuname = view.children[i].text;
-                    addremoveAction(userid, Actionid, menuname, checked, "Diary");
-                });
-            },
-            //onCheckAll: function (view) {
-            //    //var $select = $('#optgroup')
-            //   // alert('status Selected values: ' + $select.multipleSelect('getSelects'));
-            //    var userid = $('#ddluser').val();
-            //    var selected = $('#ddlstatus').multipleSelect('getSelects');
-            //    if (selected != "") {
-            //        var menulist = selected.toString().split(",");
-            //        console.log(menulist);
-            //        $.each(menulist, function (i) {
-            //            console.log(menulist[i]);
-            //            addremoveAction(userid, menulist[i], 1);
-            //        });
-            //    }
-            //},
-            //onUncheckAll: function (view) {
-            //    var userid = $('#ddluser').val();
-            //    alert('status onUncheckAll call: ');
-            //    $('select#ddlstatus').find('option').each(function () {
-            //        //console.log($(this).val());
-            //        var Actionid = $(this).val();
-            //        addremoveAction(userid, Actionid, 0);
-            //    });
-            //},
+            }
         });
 
         $('#ddlref').multipleSelect({
-
             columns: 1,
             selectAll: false,
-            maxHeight: 370,
+            maxHeight: 320,
             animate: 'slide',
             width: '100%',
-            placeholder: 'Select  References',
+            placeholder: 'Search & select references...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
-               
                 var usertypeid = $('#ddluser').val();
-              
                 var docid = view.value;
-               
                 var checked = view.selected;
-               
                 addremoveDoc(usertypeid, docid, checked, "Diary");
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
                     var usertypeid = $('#ddluser').val();
                     var docid = view.children[i].value;
                     var checked = view.children[i].selected;
                     addremoveDoc(usertypeid, docid, checked, "Diary");
                 });
-            },
+            }
         });
+
         $('#ddlrefdispatch').multipleSelect({
             columns: 1,
             selectAll: false,
-            maxHeight: 370,
+            maxHeight: 320,
             animate: 'slide',
             width: '100%',
-            placeholder: 'Select  References',
+            placeholder: 'Search & select references...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
                 var usertypeid = $('#ddluser').val();
                 var docid = view.value;
                 var checked = view.selected;
                 addremoveDoc(usertypeid, docid, checked, "Dispatch");
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
                     var usertypeid = $('#ddluser').val();
                     var docid = view.children[i].value;
                     var checked = view.children[i].selected;
                     addremoveDoc(usertypeid, docid, checked, "Dispatch");
                 });
-            },
+            }
         });
+
         $('#ddlProjectAction').multipleSelect({
             columns: 1,
             selectAll: false,
-            maxHeight: 350,
+            maxHeight: 320,
             animate: 'slide',
             width: '100%',
-            placeholder: 'Select Button',
+            placeholder: 'Search & select actions...',
             filter: true,
             isOpen: true,
             keepOpen: true,
-            multiple: true,
+            multiple: false,
             onClick: function (view) {
                 var usertypeid = $('#ddluser').val();
                 var Actionid = view.value;
                 var checked = view.selected;
                 var menuname = view.text;
                 addremoveAction(usertypeid, Actionid, menuname, checked, "Project");
-
             },
             onOptgroupClick: function (view) {
-                console.log('onOptgroupClick event fire! view: ' + JSON.stringify(view.children) + '\n')
                 $.each(view.children, function (i, item) {
                     var usertypeid = $('#ddluser').val();
                     var Buttonid = view.children[i].value;
                     var checked = view.children[i].selected;
-                    addremoveAction(usertypeid, Actionid, menuname, checked, "Project");
+                    addremoveAction(usertypeid, Buttonid, menuname, checked, "Project");
                 });
-            },
+            }
         });
-        var menulist = "@Model.menuids";
-        var diaryactionlist = '@Model.Diaryactionids';
-        var dispatchactionlist = '@Model.Dispatchactionids';
-        var Diaryaddupdateidslist = '@Model.Diaryaddupdateids';
-        var Dispatchaddupdateidslist = '@Model.Dispatchaddupdateids';
-        var reflist = '@Model.refids';
-        var DisReflist = '@Model.DispatchRefids';
-        var projectbuttonlist='@Model.Projectaddupdateids';
-      
+
+        var menulist = "@(Model != null ? Model.menuids : "")";
+        var diaryactionlist = '@(Model != null ? Model.Diaryactionids : "")';
+        var dispatchactionlist = '@(Model != null ? Model.Dispatchactionids : "")';
+        var Diaryaddupdateidslist = '@(Model != null ? Model.Diaryaddupdateids : "")';
+        var Dispatchaddupdateidslist = '@(Model != null ? Model.Dispatchaddupdateids : "")';
+        var reflist = '@(Model != null ? Model.refids : "")';
+        var DisReflist = '@(Model != null ? Model.DispatchRefids : "")';
+        var projectbuttonlist = '@(Model != null ? Model.Projectaddupdateids : "")';
+
         var mlarr = new Array();
         var alarr = new Array();
         var disactarr = new Array();
@@ -639,40 +1203,37 @@
         var disdocarr = new Array();
         var projectblarr = new Array();
 
-
         var ml = menulist.toString().split(",");
-        for (var i = 0; i < ml.length ; i++) {
-            mlarr.push(ml[i]);
+        for (var i = 0; i < ml.length; i++) {
+            if (ml[i]) mlarr.push(ml[i]);
         }
-        var al = diaryactionlist.toString().split(","); console.log(diaryactionlist);
+        var al = diaryactionlist.toString().split(",");
         for (var i = 0; i < al.length; i++) {
-            alarr.push(al[i]);
+            if (al[i]) alarr.push(al[i]);
         }
-        var disal = dispatchactionlist.toString().split(","); //console.log(dispatchactionlist);
+        var disal = dispatchactionlist.toString().split(",");
         for (var i = 0; i < disal.length; i++) {
-            disactarr.push(disal[i]);
+            if (disal[i]) disactarr.push(disal[i]);
         }
         var diaryaddupdtal = Diaryaddupdateidslist.toString().split(",");
-        console.log(Diaryaddupdateidslist);
         for (var i = 0; i < diaryaddupdtal.length; i++) {
-            aladdupdtarr.push(diaryaddupdtal[i]);
+            if (diaryaddupdtal[i]) aladdupdtarr.push(diaryaddupdtal[i]);
         }
         var disaddupdtal = Dispatchaddupdateidslist.toString().split(",");
-        console.log(Dispatchaddupdateidslist);
         for (var i = 0; i < disaddupdtal.length; i++) {
-            disaddupdtactarr.push(disaddupdtal[i]);
+            if (disaddupdtal[i]) disaddupdtactarr.push(disaddupdtal[i]);
         }
-        var dl = reflist.toString().split(","); console.log(reflist);
+        var dl = reflist.toString().split(",");
         for (var i = 0; i < dl.length; i++) {
-            dlarr.push(dl[i]);
+            if (dl[i]) dlarr.push(dl[i]);
         }
-        var disdl = DisReflist.toString().split(","); console.log(DisReflist);
+        var disdl = DisReflist.toString().split(",");
         for (var i = 0; i < disdl.length; i++) {
-            disdocarr.push(disdl[i]);
+            if (disdl[i]) disdocarr.push(disdl[i]);
         }
         var projectbl = projectbuttonlist.toString().split(",");
         for (var i = 0; i < projectbl.length; i++) {
-            projectblarr.push(projectbl[i]);
+            if (projectbl[i]) projectblarr.push(projectbl[i]);
         }
 
         $('#ddlmenu').multipleSelect('setSelects', mlarr);
@@ -680,35 +1241,21 @@
         $('#ddlstatusdispatch').multipleSelect('setSelects', disactarr);
         $('#ddladdupdate').multipleSelect('setSelects', mlarr);
         $('#ddladdupdatestatusDiary').multipleSelect('setSelects', aladdupdtarr);
-
-       
-
         $('#ddladdupdatestatusDispatch').multipleSelect('setSelects', disaddupdtactarr);
-
-
-
         $('#ddlref').multipleSelect('setSelects', dlarr);
         $('#ddlrefdispatch').multipleSelect('setSelects', disdocarr);
         $('#ddlProjectAction').multipleSelect('setSelects', projectblarr);
-
-        });
-
+    });
 
     function addremovemenu(usertypeid, menuid, checked, menuname) {
-        //alert(userid + " " + menuid + " " + checked + " " + menuname );
         var pathurl = '';
         if (checked == 1) {
-            //var pathurl = '/User/AddMenu';
-             pathurl='@Url.Action("AddUserTypeMenu", "User")';
-            var opt = '<optgroup id=grp_' + menuname.replace(" ","") + ' label="' + menuname + '"><option id=sub_' + menuid +' value="' + menuid + '">' + menuname +'</option></optgroup>';
-            //var opt = '<option value="' + menuid + '">' + menuname +'</option>';
+            pathurl = '@Url.Action("AddUserTypeMenu", "User")';
+            var opt = '<optgroup id=grp_' + menuname.replace(" ", "") + ' label="' + menuname + '"><option id=sub_' + menuid + ' value="' + menuid + '">' + menuname + '</option></optgroup>';
             $('#ddladdupdate').append(opt).multipleSelect('refresh');
         } else {
-
-          //  var pathurl = '/User/RemoveMenu';
-            pathurl='@Url.Action("RemoveUserTypeMenu", "User")';
+            pathurl = '@Url.Action("RemoveUserTypeMenu", "User")';
             $("#ddladdupdate #sub_" + menuid).remove();
-
             $('#ddladdupdate').multipleSelect('refresh');
         }
 
@@ -717,31 +1264,26 @@
             type: 'GET',
             data: { UserTypeId: usertypeid, MenuId: menuid },
             success: function (result) {
-
+                showRbacToast('Menu permission updated', true);
+            },
+            error: function () {
+                showRbacToast('Failed to update permission', false);
             }
-
-
         });
         $("#ddladdupdate #grp_" + menuname.replace(" ", "").replace(".", "")).remove();
     }
 
     function addremoveAction(usertypeid, Actionid, menuname, checked, type) {
-        //alert(menuname + " " + type);
-        //alert(userid + " " + menuid + " " + checked + " " + type);
         var pathurl = '';
         if (checked == 1) {
             var opt = '<option id=sub_' + Actionid + ' value="' + Actionid + '">' + menuname + '</option>';
-
-            //var opt = '<option value="' + menuid + '">' + menuname +'</option>';
             $('#ddladdupdatestatus' + type).append(opt).multipleSelect('refresh');
-              pathurl= '@Url.Action("AddUserTypeAction", "User")';
-            //var pathurl = '/User/AddAction';
+            pathurl = '@Url.Action("AddUserTypeAction", "User")';
         } else {
-            var ddlid = "#ddladdupdatestatus" + type + "  option[value = '"+ Actionid +"']";
+            var ddlid = "#ddladdupdatestatus" + type + " option[value = '" + Actionid + "']";
             $(ddlid).remove();
             $('#ddladdupdatestatus' + type).multipleSelect('refresh');
-            //var pathurl = '/User/RemoveAction';
-             pathurl= '@Url.Action("RemoveUserTypeAction", "User")';
+            pathurl = '@Url.Action("RemoveUserTypeAction", "User")';
         }
 
         $.ajax({
@@ -749,27 +1291,20 @@
             type: 'GET',
             data: { UserTypeId: usertypeid, ActionId: Actionid, type: type },
             success: function (result) {
-
+                showRbacToast('Action status updated', true);
+            },
+            error: function () {
+                showRbacToast('Failed to update action', false);
             }
-
-
         });
-
     }
 
-
     function addremoveButton(userid, Buttonid, checked) {
-
-        //alert(userid + " " + menuid + " " + checked);
         var pathurl = '';
         if (checked == 1) {
-            //var pathurl = '/User/AddButton';
-             pathurl= '@Url.Action("AddButton", "User")';
-
+            pathurl = '@Url.Action("AddButton", "User")';
         } else {
-
-            //var pathurl = '/User/RemoveButton';
-               pathurl= '@Url.Action("RemoveButton", "User")';
+            pathurl = '@Url.Action("RemoveButton", "User")';
         }
 
         $.ajax({
@@ -777,29 +1312,20 @@
             type: 'GET',
             data: { UserId: userid, ButtonId: Buttonid },
             success: function (result) {
-
+                showRbacToast('Button permission updated', true);
+            },
+            error: function () {
+                showRbacToast('Failed to update button', false);
             }
-
-
         });
-
     }
 
-
-
     function addremoveStatusButton(usertypeid, Actionid, checked, type) {
-        //ddladdupdatestatus
-        //alert(userid + " " + Buttonid + " " + checked + " " + type);
         var pathurl = '';
         if (checked == 1) {
-
-            //var pathurl = '/User/AddStatusButton';
-              pathurl= '@Url.Action("AddUserTypeAddUpdateAction", "User")';
+            pathurl = '@Url.Action("AddUserTypeAddUpdateAction", "User")';
         } else {
-
-
-           // var pathurl = '/User/RemoveStatusButton';
-              pathurl= '@Url.Action("RemoveUserTypeAddUpdateAction", "User")';
+            pathurl = '@Url.Action("RemoveUserTypeAddUpdateAction", "User")';
         }
 
         $.ajax({
@@ -807,55 +1333,41 @@
             type: 'GET',
             data: { UserTypeId: usertypeid, ActionId: Actionid, type: type },
             success: function (result) {
-
+                showRbacToast('Add/Update control updated', true);
+            },
+            error: function () {
+                showRbacToast('Failed to update control', false);
             }
-
-
         });
-
     }
+
     function addremoveDoc(UserTypeId, docid, checked, type) {
-      
-
-    var pathurl = '';
-    if (checked == 1) {
-         pathurl='@Url.Action("AddUserTypeRefAction", "User")';
-        
-    } else {
-        pathurl= '@Url.Action("RemoveUserTypeRefAction", "User")';
-      
-    }
-
-    $.ajax({
-        url: pathurl,
-        type: 'GET',
-        data: { UserTypeId: UserTypeId, DocTypeId: docid, type: type },
-        success: function (result) {
-
+        var pathurl = '';
+        if (checked == 1) {
+            pathurl = '@Url.Action("AddUserTypeRefAction", "User")';
+        } else {
+            pathurl = '@Url.Action("RemoveUserTypeRefAction", "User")';
         }
 
-
-    });
-
-}
-
-        $(function () {
-            $('[type="date"]').prop('max', function () {
-                return new Date().toJSON().split('T')[0];
-            });
-            $('#txtfundamount').val('');
-
+        $.ajax({
+            url: pathurl,
+            type: 'GET',
+            data: { UserTypeId: UserTypeId, DocTypeId: docid, type: type },
+            success: function (result) {
+                showRbacToast('Reference type updated', true);
+            },
+            error: function () {
+                showRbacToast('Failed to update reference type', false);
+            }
         });
+    }
 
     function Getdata() {
         var usertypeid = $("#ddluser").val();
-
-        if (usertypeid != "") {
-
+        if (usertypeid != "" && usertypeid != "0") {
             $('#btngetuser').click();
         } else {
-
-            $('.permission').hide();
+            $('.permission-matrix').hide();
         }
     }
 </script>
