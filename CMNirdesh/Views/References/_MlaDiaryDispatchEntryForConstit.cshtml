@@ -390,6 +390,44 @@
         color: #64748b !important;
     }
 
+    .larg_txt_1 {
+        width: 100% !important;
+        overflow-x: auto !important;
+        background: #ffffff !important;
+        padding: 16px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+    }
+
+    .larg_txt_1 table {
+        width: auto !important;
+        min-width: 100% !important;
+        max-width: none !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+        margin: 10px 0 !important;
+    }
+
+    .larg_txt_1 table, .larg_txt_1 table th, .larg_txt_1 table td {
+        border: 1px solid #94a3b8 !important;
+    }
+
+    .larg_txt_1 table th, .larg_txt_1 table td {
+        padding: 8px 12px !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        vertical-align: top !important;
+        box-sizing: border-box !important;
+    }
+
+    .larg_txt_1 table th {
+        background-color: #f8fafc !important;
+        font-weight: 600 !important;
+        color: #0f172a !important;
+        white-space: nowrap !important;
+    }
+
     /* Annexure Modern Dropzone & Card */
     #formDiaryDispatch #divEnfile,
     .annexure-upload-zone {
@@ -908,7 +946,10 @@
             @Html.HiddenFor(m => m.FromDeptId)
             @Html.HiddenFor(m => m.FromOfficeId)
             @Html.Hidden("ToDeptId", Model.FromDeptId)
-            @Html.Hidden("ToOfficeId", 3)
+            @{
+                int defaultToOfficeId = (Model.isLetter == "File" || Model.dashboardtype == "2") ? 3 : 2;
+            }
+            @Html.Hidden("ToOfficeId", defaultToOfficeId, new { @id = "ToOfficeId" })
         </div>
 
         <!-- Section 2: Reference Information -->
@@ -989,12 +1030,14 @@
                 <span class="fotm_lbl">Details:</span>
                     <div class="a4-editor-wrapper">
                         <div>
-                            <div class="larg_txt_1">
+                            
                                 @if (Model.PaperEntryType == "EditEntry")
                                 {
+                                    <div class="larg_txt_1">
                                     @Html.Raw(Model.SubjectDetails)
+                                    </div>
                                 }
-                            </div>
+                            
                             @if (Model.PaperEntryType != "EditEntry")
                             {
                                 <div class="larg_txt_2">
@@ -1261,66 +1304,68 @@
          }
 
         var menuname = '@Model.MenuName';        
+        try { letterfile(); } catch (e) { }        
 
         // Helper function to sanitize pasted text and tables for clean A4 alignment
-        function sanitizeA4ContentNode(node) {
+        function sanitizeA4ContentNode(node, isPaste) {
             if (!node) return;
 
-            // 1. Sanitize all tables: enforce strict A4 width containment and clean borders
-            var tables = node.querySelectorAll('table');
-            for (var i = 0; i < tables.length; i++) {
-                var tbl = tables[i];
-                tbl.removeAttribute('width');
-                tbl.removeAttribute('height');
+            // 1. Sanitize tables: On paste, auto-adjust columns and strip fixed widths so columns never squeeze
+            if (isPaste) {
+                var tables = node.querySelectorAll('table');
+                for (var i = 0; i < tables.length; i++) {
+                    var tbl = tables[i];
+                    tbl.removeAttribute('width');
+                    tbl.removeAttribute('height');
 
-                tbl.style.width = '100%';
-                tbl.style.maxWidth = '100%';
-                tbl.style.tableLayout = 'fixed';
-                tbl.style.borderCollapse = 'collapse';
-                tbl.style.boxSizing = 'border-box';
-                tbl.style.margin = '14px 0';
-                tbl.style.marginLeft = 'auto';
-                tbl.style.marginRight = 'auto';
+                    tbl.style.width = '100%';
+                    tbl.style.height = '';
+                    tbl.style.borderCollapse = 'collapse';
+                    tbl.style.boxSizing = 'border-box';
+                    tbl.style.margin = '14px 0';
 
-                if (!tbl.getAttribute('border')) {
-                    tbl.setAttribute('border', '1');
-                }
+                    if (!tbl.getAttribute('border')) {
+                        tbl.setAttribute('border', '1');
+                    }
 
-                var colElements = tbl.querySelectorAll('col, colgroup');
-                for (var c = 0; c < colElements.length; c++) {
-                    colElements[c].removeAttribute('width');
-                    colElements[c].style.width = '';
-                    colElements[c].style.minWidth = '';
-                    colElements[c].style.maxWidth = '';
-                }
+                    var colElements = tbl.querySelectorAll('col, colgroup');
+                    for (var c = 0; c < colElements.length; c++) {
+                        colElements[c].removeAttribute('width');
+                        colElements[c].removeAttribute('height');
+                        colElements[c].style.width = '';
+                        colElements[c].style.height = '';
+                    }
 
-                var rowElements = tbl.querySelectorAll('tr');
-                for (var r = 0; r < rowElements.length; r++) {
-                    rowElements[r].removeAttribute('height');
-                    rowElements[r].style.height = '';
-                }
+                    var rowElements = tbl.querySelectorAll('tr');
+                    for (var r = 0; r < rowElements.length; r++) {
+                        rowElements[r].removeAttribute('height');
+                        rowElements[r].style.height = '';
+                    }
 
-                var cells = tbl.querySelectorAll('th, td');
-                for (var j = 0; j < cells.length; j++) {
-                    var cell = cells[j];
-                    cell.removeAttribute('width');
-                    cell.removeAttribute('height');
-                    cell.style.width = '';
-                    cell.style.minWidth = '';
-                    cell.style.maxWidth = '';
-                    cell.style.height = '';
+                    var cells = tbl.querySelectorAll('th, td');
+                    for (var j = 0; j < cells.length; j++) {
+                        var cell = cells[j];
+                        cell.removeAttribute('width');
+                        cell.removeAttribute('height');
+                        cell.style.width = '';
+                        cell.style.height = '';
 
-                    cell.style.border = '1px solid #94a3b8';
-                    cell.style.padding = '8px 10px';
-                    cell.style.wordBreak = 'break-word';
-                    cell.style.overflowWrap = 'anywhere';
-                    cell.style.whiteSpace = 'normal';
-                    cell.style.verticalAlign = 'top';
-                    cell.style.boxSizing = 'border-box';
+                        cell.style.border = '1px solid #94a3b8';
+                        cell.style.padding = '6px 10px';
+                        cell.style.verticalAlign = 'top';
+                        cell.style.boxSizing = 'border-box';
+                        cell.style.lineHeight = '1.4';
 
-                    if (cell.tagName.toLowerCase() === 'th') {
-                        cell.style.backgroundColor = '#f8fafc';
-                        cell.style.fontWeight = '600';
+                        // Natural word wrap: allow wrapping so columns can be resized narrower
+                        cell.style.wordBreak = 'normal';
+                        cell.style.overflowWrap = 'break-word';
+                        cell.style.whiteSpace = 'normal';
+
+                        if (cell.tagName.toLowerCase() === 'th') {
+                            cell.style.backgroundColor = '#f8fafc';
+                            cell.style.fontWeight = '600';
+                            cell.style.color = '#0f172a';
+                        }
                     }
                 }
             }
@@ -1353,7 +1398,7 @@
                     }
                 }
 
-                // Strip fixed font-size and line-height so standard A4 styling applies
+                // Strip fixed font-size and line-height so standard A4 styling applies (preserve headings)
                 if (tag !== 'h1' && tag !== 'h2' && tag !== 'h3' && tag !== 'h4') {
                     el.style.fontSize = '';
                 }
@@ -1383,36 +1428,48 @@
             menubar: 'file edit view insert format tools table',
             toolbar_mode: 'wrap',
             plugins: 'table lists advlist autolink code preview fullscreen wordcount searchreplace',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough superscript subscript | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table tableprops | fullscreen preview code',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough superscript subscript | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fullscreen preview code',
+            table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow tablerowprops | tableinsertcolbefore tableinsertcolafter tabledeletecol | tablecellprops',
             font_family_formats: 'Raavi=Raavi,Segoe UI,sans-serif; Segoe UI=Segoe UI,sans-serif; Arial=arial,helvetica,sans-serif; Calibri=calibri,sans-serif; Times New Roman=times new roman,times,serif; Georgia=georgia,serif; Tahoma=tahoma,sans-serif; Verdana=verdana,sans-serif; Courier New=courier new,monospace;',
             font_size_formats: '8pt 9pt 10pt 11pt 12pt 13pt 14pt 16pt 18pt 20pt 22pt 24pt 28pt 36pt',
             table_default_styles: {
                 'width': '100%',
-                'border-collapse': 'collapse',
-                'table-layout': 'fixed'
+                'border-collapse': 'collapse'
             },
             table_default_attributes: {
                 'border': '1'
             },
-            table_responsive_width: true,
             table_grid: true,
             table_resize_bars: true,
+            table_column_resizing: 'preservetable',
+            table_sizing_mode: 'auto',
+            object_resizing: true,
+            table_appearance_options: true,
+            table_advtab: true,
+            table_cell_advtab: true,
+            table_row_advtab: true,
             paste_data_images: false,
             paste_as_text: false,
             paste_block_drop: false,
             content_style:
-                "html { background-color: #eef2f6 !important; margin: 0; padding: 0; min-height: 100%; }" +
-                "body { width: 100% !important; max-width: 794px !important; min-height: 1123px !important; margin: 24px auto !important; padding: 25mm 20mm !important; box-sizing: border-box !important; background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; border-radius: 2px !important; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04) !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Raavi, Arial, sans-serif !important; font-size: 13pt !important; line-height: 1.6 !important; color: #1e293b !important; text-align: justify !important; }" +
+                "html { background-color: #eef2f6 !important; margin: 0; padding: 0; min-height: 100%; position: relative !important; overflow-x: auto !important; }" +
+                "body { width: fit-content !important; min-width: 794px !important; min-height: 1123px !important; margin: 24px auto !important; padding: 25mm 20mm !important; box-sizing: border-box !important; background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; border-radius: 2px !important; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04) !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Raavi, Arial, sans-serif !important; font-size: 13pt !important; line-height: 1.6 !important; color: #1e293b !important; text-align: justify !important; overflow: visible !important; }" +
                 "p { margin-top: 0 !important; margin-bottom: 12px !important; text-align: inherit; line-height: 1.6 !important; }" +
                 "h1, h2, h3, h4, h5, h6 { color: #0f172a !important; font-weight: 700 !important; margin-top: 18px !important; margin-bottom: 8px !important; line-height: 1.3 !important; }" +
-                "table { width: 100% !important; max-width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin: 14px 0 !important; background-color: #ffffff !important; box-sizing: border-box !important; }" +
+                "table { border-collapse: collapse !important; margin: 14px 0 !important; background-color: #ffffff !important; box-sizing: border-box !important; max-width: none !important; }" +
                 "table, th, td { border: 1px solid #94a3b8 !important; }" +
-                "th, td { padding: 8px 10px !important; word-break: break-word !important; overflow-wrap: anywhere !important; white-space: normal !important; vertical-align: top !important; font-size: 12pt !important; line-height: 1.45 !important; box-sizing: border-box !important; }" +
-                "th { background-color: #f8fafc !important; font-weight: 600 !important; color: #0f172a !important; text-align: left !important; }" +
+                "tr { }" +
+                "th, td { padding: 6px 10px !important; min-width: 24px; word-break: normal; overflow-wrap: break-word; vertical-align: top; font-size: 11.5pt; line-height: 1.4; box-sizing: border-box; }" +
+                "th { background-color: #f8fafc !important; font-weight: 600 !important; color: #0f172a !important; text-align: left !important; white-space: normal !important; overflow-wrap: break-word !important; word-break: normal !important; }" +
+                ".ephox-snooker-resizer-bar { background-color: #2563eb !important; opacity: 0 !important; z-index: 10000 !important; pointer-events: auto !important; }" +
+                ".ephox-snooker-resizer-bar:hover { opacity: 0.65 !important; background-color: #2563eb !important; }" +
+                ".ephox-snooker-resizer-bar.ephox-snooker-resizer-bar-dragging { opacity: 0.95 !important; background-color: #1d4ed8 !important; }" +
+                ".ephox-snooker-resizer-cols { cursor: col-resize !important; }" +
+                ".ephox-snooker-resizer-rows { cursor: row-resize !important; }" +
                 "ul, ol { margin: 8px 0 14px 24px !important; padding: 0 !important; }" +
                 "li { margin-bottom: 4px !important; line-height: 1.55 !important; }" +
                 "blockquote { border-left: 3px solid #3b82f6 !important; margin: 12px 0 !important; padding: 6px 16px !important; background: #f8fafc !important; color: #475569 !important; }" +
-                "@@media print { html { background-color: #ffffff !important; } body { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; min-height: auto !important; } }",
+                "@@media print { html { background-color: #ffffff !important; } body { width: 100% !important; max-width: 100% !important; min-width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; min-height: auto !important; } }",
 
             setup: function (editor) {
                 const storageKey = editor.id + "_draft"; // unique per editor
@@ -1429,13 +1486,28 @@
                             }
                             return match;
                         });
+                        // Strip inline widths and heights from pasted table elements so columns auto-adjust
+                        e.content = e.content.replace(/<table([^>]*)>/gi, function (match, attrs) {
+                            var clean = attrs.replace(/\s*(width|height)=["'][^"']*["']/gi, '');
+                            clean = clean.replace(/style=["'][^"']*["']/gi, function (styleMatch) {
+                                return styleMatch.replace(/(width|height|table-layout)\s*:\s*[^;"]+;?/gi, '');
+                            });
+                            return '<table' + clean + '>';
+                        });
+                        e.content = e.content.replace(/<(td|th|tr|col|colgroup)([^>]*)>/gi, function (match, tag, attrs) {
+                            var clean = attrs.replace(/\s*(width|height)=["'][^"']*["']/gi, '');
+                            clean = clean.replace(/style=["'][^"']*["']/gi, function (styleMatch) {
+                                return styleMatch.replace(/(width|height)\s*:\s*[^;"]+;?/gi, '');
+                            });
+                            return '<' + tag + clean + '>';
+                        });
                     }
                 });
 
                 // 🔹 Clean pasted DOM elements (DOM-level table & text alignment to A4 page)
                 editor.on('PastePostProcess', function (e) {
                     if (e.node) {
-                        sanitizeA4ContentNode(e.node);
+                        sanitizeA4ContentNode(e.node, true);
                     }
                 });
 
@@ -1452,12 +1524,12 @@
                     }
                 });
 
-                // 🔹 When content is set or draft restored, ensure all tables & text fit A4 page
+                // 🔹 When content is set or draft restored, keep dimensions intact and sanitize fonts
                 editor.on('SetContent', function (e) {
                     try {
                         var doc = editor.getDoc();
                         if (doc && doc.body) {
-                            sanitizeA4ContentNode(doc.body);
+                            sanitizeA4ContentNode(doc.body, false);
                         }
                     } catch (err) { }
                 });
@@ -1914,9 +1986,17 @@
                         });
                         $('#hdnWardListItemsJson').val(JSON.stringify(selectedWards));
 
+                        var selectedRadio = document.querySelector('input[name="isLetter"]:checked');
+                        var radioVal = selectedRadio ? selectedRadio.value : "";
+                        var targetToOfficeId = (radioVal == "File" || '@Model.dashboardtype' == "2") ? "3" : "2";
+                        $("#ToOfficeId").val(targetToOfficeId);
+
                         if ($("#formDiaryDispatch").attr("enctype") == "multipart/form-data") {
                             var dataString = new FormData($("#formDiaryDispatch").get(0));
                             processData = false;
+                        }
+                        if (dataString) {
+                            dataString.set("ToOfficeId", targetToOfficeId);
                         }
 
                         // Explicitly append WardListItems array items to FormData for MVC model binder
@@ -2017,11 +2097,19 @@
                                 return false;
                             }
                         }
+                        var selectedRadio = document.querySelector('input[name="isLetter"]:checked');
+                        var radioVal = selectedRadio ? selectedRadio.value : "";
+                        var targetToOfficeId = (radioVal == "File" || '@Model.dashboardtype' == "2") ? "3" : "2";
+                        $("#ToOfficeId").val(targetToOfficeId);
+
                         var action = $("#formDiaryDispatch").attr("action");
                         if ($("#formDiaryDispatch").attr("enctype") == "multipart/form-data") {
 
                             var dataString = new FormData($("#formDiaryDispatch").get(0));
                             processData = false;
+                        }
+                        if (dataString) {
+                            dataString.set("ToOfficeId", targetToOfficeId);
                         }
                         $.ajax({
                             type: "POST",
@@ -2266,16 +2354,18 @@
     }
 
     function letterfile() {
-        var radiovalue = document.querySelector('input[name="isLetter"]:checked').value;
+        var radioEl = document.querySelector('input[name="isLetter"]:checked');
+        var radiovalue = radioEl ? radioEl.value : "";
 
         if (radiovalue == "Letter") {
             $("#DdlDoctype").show();
             $("#ddlFileDocyype").hide();
-
+            $("#ToOfficeId").val(2);
         }
         else if (radiovalue == "File") {
             $("#DdlDoctype").hide();
             $("#ddlFileDocyype").show();
+            $("#ToOfficeId").val(3);
 
             var MenuName2 = 'File No.';
             $('#myref').text(MenuName2);
