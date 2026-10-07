@@ -25,195 +25,504 @@
 <link href="~/Content/Layout/style.css" rel="stylesheet" />
 
 <style>
-    #myTab .nav-item .active {
-        padding: 8px 16px;
-        border-top-left-radius: 6px !important;
-        border-top-right-radius: 6px !important;
-        color: brown;
-        font-size: 18px;
-        font-weight: bold;
+    /* ==========================================================================
+       MODERN SAAS DESIGN SYSTEM FOR ACTION SINGLE (Matching View Proposal)
+       Preserves 100% of functional IDs, classes, handlers, and behaviors.
+       ========================================================================== */
+
+    /* Typography & Base Reset */
+    #formActionDiary {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: #1e293b;
+        font-size: 13px;
+        background-color: #f8fafc;
+        padding: 4px 8px;
     }
 
-    input#enablefund {
-        height: 14px;
-    }
-
-    th {
-        background-color: grey;
-    }
-
-    input[type="file" i] {
-        color: #fff;
-    }
-
-    .ui-datepicker {
-        width: 25em;
-        /*padding: .2em .2em 0;*/
-        display: none;
-        border: 1px solid;
-        font-weight: bolder;
-    }
-
-
-    .Mytextarea {
-        font-size: 10px;
-        height: 14px !important;
-        color: #333 !important;
-        font-family: inherit;
-    }
-
-    .profile-info-name {
-        width: 1% !important;
-    }
-
-    .width {
-        width: 76% !important;
-    }
-
-    .fund {
-        width: 11px !important;
-        padding-right: 100px;
-        padding-left: 3px;
-    }
-
-    .tfund {
-        float: left
-    }
-
-    .fundval {
-        padding-right: 20px;
-        font-weight: bold;
-    }
-
-    .tfund {
-        width: 50%;
-    }
-
-    .mar {
-        padding-top: 12px !important;
-    }
-
-    .fundtd {
-        padding: 1px !important;
-        border: 1px solid #ddd;
-        text-align: center;
-        color: green;
-    }
-
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-    }
-
-        /* Hide default HTML checkbox */
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+        #formActionDiary * {
+            box-sizing: border-box;
         }
 
-    /* The slider */
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
+        /* Top Utility & Header Bar */
+        #formActionDiary .modal_row > .col-md-12 > .row.align-items-center {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin: 0 0 16px 0 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         }
 
-    input:checked + .slider {
-        background-color: #2196F3;
+        #formActionDiary .top-tools {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+            #formActionDiary .top-tools h4.form_heading {
+                font-size: 13px !important;
+                font-weight: 500 !important;
+                color: #334155 !important;
+                background: #f1f5f9;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                padding: 6px 14px;
+                margin: 0 !important;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                letter-spacing: 0.01em;
+            }
+
+        /* Refresh Icon Button */
+        #formActionDiary .fa-refresh {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #10b981 !important;
+            font-size: 16px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+            #formActionDiary .fa-refresh:hover {
+                background: #f0fdf4;
+                border-color: #86efac;
+                color: #059669 !important;
+                transform: rotate(180deg);
+            }
+
+        /* Annexure Row */
+        #formActionDiary .pdfrow.row {
+            width: 100% !important;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #formActionDiary .pdfrow h4.form_heading {
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b !important;
+            margin-bottom: 0 !important;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        #formActionDiary .pdfrow .btn-primary {
+            font-size: 12px !important;
+            padding: 4px 10px !important;
+            border-radius: 6px !important;
+            background: #eff6ff !important;
+            border: 1px solid #bfdbfe !important;
+            color: #1d4ed8 !important;
+            box-shadow: none !important;
+            text-decoration: none;
+            margin-right: 6px;
+            display: inline-block;
+        }
+
+            #formActionDiary .pdfrow .btn-primary:hover {
+                background: #dbeafe !important;
+                border-color: #93c5fd !important;
+                color: #1e40af !important;
+            }
+
+    /* Two-Column Split Workspace (Panel Container) */
+    div#formActionDiary div#panelContainer,
+    div#panelContainer,
+    #panelContainer {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        background: transparent !important;
+        margin: 0 !important;
+        overflow-x: hidden !important;
+        gap: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
+    div#formActionDiary #panelContainer.is-resizing,
+    #panelContainer.is-resizing {
+        cursor: col-resize !important;
+        user-select: none !important;
     }
 
-    input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-    }
+        div#formActionDiary div#panelContainer .panel.one,
+        div#panelContainer .panel.one,
+        #panelContainer .panel.one {
+            width: 38%;
+            min-width: 250px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            padding: 18px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
 
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-    }
+        div#formActionDiary div#panelContainer .panel.two,
+        div#panelContainer .panel.two,
+        #panelContainer .panel.two {
+            flex: 1;
+            min-width: 260px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            padding: 18px 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
 
-        .slider.round:before {
+            div#formActionDiary div#panelContainer .panel.one:hover,
+            div#formActionDiary div#panelContainer .panel.two:hover,
+            #panelContainer .panel.one:hover,
+            #panelContainer .panel.two:hover {
+                border-color: #cbd5e1;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            }
+
+        /* Draggable Splitter Divider */
+        div#formActionDiary div#panelContainer .slider,
+        div#panelContainer .slider,
+        .slider {
+            z-index: 100 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: relative !important;
+            flex: 0 0 16px !important;
+            width: 16px !important;
+            min-width: 16px !important;
+            max-width: 16px !important;
+            align-self: stretch !important;
+            background-color: transparent !important;
+            cursor: col-resize !important;
+            user-select: none !important;
+            padding: 0 !important;
+            margin: 0 4px !important;
+            box-sizing: border-box !important;
+            transition: background-color 0.15s ease;
+        }
+
+            /* Subtle vertical line in the divider */
+            .slider::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 2px;
+                background: #cbd5e1;
+                border-radius: 2px;
+                transition: background-color 0.15s ease, width 0.15s ease;
+            }
+
+            .slider:hover::before,
+            .slider.is-resizing::before,
+            #panelContainer.is-resizing .slider::before {
+                background: #3b82f6 !important;
+                width: 3px !important;
+            }
+
+        /* Floating Arrow Handle Controls */
+        .slider-handle {
+            position: sticky;
+            top: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            padding: 6px 3px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            z-index: 101;
+            cursor: default;
+        }
+
+        .sliderLeft, .sliderRight {
+            color: #64748b;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
 
-    .nodelete {
-        display: none;
+            .sliderLeft:hover, .sliderRight:hover {
+                color: #2563eb;
+                background: #eff6ff;
+                transform: scale(1.15);
+            }
+
+    /* Modern Navigation Tabs */
+    #UpdateTab, #myTab {
+        border-bottom: 1px solid #e2e8f0 !important;
+        margin-bottom: 16px !important;
+        padding-bottom: 0 !important;
+        display: flex !important;
+        gap: 6px !important;
+        background: transparent !important;
     }
 
-    .hand {
+        #UpdateTab .nav-item, #myTab .nav-item, #myTab li {
+            margin-bottom: -1px !important;
+        }
+
+        #UpdateTab .nav-link, #myTab .nav-link {
+            border: none !important;
+            border-bottom: 2px solid transparent !important;
+            border-radius: 6px 6px 0 0 !important;
+            color: #64748b !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 8px 14px !important;
+            background: transparent !important;
+            transition: all 0.15s ease !important;
+            cursor: pointer;
+        }
+
+            #UpdateTab .nav-link:hover, #myTab .nav-link:hover {
+                color: #0f172a !important;
+                background: #f8fafc !important;
+            }
+
+            #UpdateTab .nav-link.active, #myTab .nav-link.active, #myTab .nav-item .active, #myTab li .active {
+                color: #2563eb !important;
+                font-size: 13px !important;
+                font-weight: 600 !important;
+                border-bottom: 2px solid #2563eb !important;
+                background: transparent !important;
+                border-top: none !important;
+                border-left: none !important;
+                border-right: none !important;
+                box-shadow: none !important;
+            }
+
+    /* Form Labels */
+    .fotm_lbl {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        color: #64748b !important;
+        margin-bottom: 6px !important;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Form Fields, Inputs & Select Dropdowns */
+    #formActionDiary select,
+    #formActionDiary input[type="text"],
+    #formActionDiary input[type="date"],
+    #formActionDiary input[type="search"] {
+        width: 100% !important;
+        height: 36px !important;
+        line-height: 36px !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        outline: none !important;
+    }
+
+        #formActionDiary select:focus,
+        #formActionDiary input[type="text"]:focus,
+        #formActionDiary input[type="date"]:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+        }
+
+    /* Readonly inputs */
+    #TxtActionTakenDate[readonly],
+    input[readonly] {
+        background-color: #f8fafc !important;
+        color: #475569 !important;
+        border-color: #e2e8f0 !important;
+        cursor: not-allowed !important;
+    }
+
+    /* Static Field Value Containers (.txt_value) */
+    .txt_value {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 7px 12px;
+        font-size: 13px;
+        color: #1e293b;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        word-break: break-word;
+        transition: border-color 0.15s ease;
+    }
+
+        .txt_value.in_txt_area {
+            min-height: 38px;
+            padding: 8px 12px;
+        }
+
+    /* Inline Edit Icons (Pencil) */
+    .ace-icon.fa-pencil {
+        font-size: 11px !important;
+        color: #94a3b8 !important;
+        padding: 3px 5px !important;
+        border-radius: 4px !important;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+        .ace-icon.fa-pencil:hover {
+            color: #2563eb !important;
+            background: #eff6ff !important;
+            border-color: #bfdbfe !important;
+            transform: scale(1.08);
+        }
+
+    /* Action Remark & Modern TinyMCE Container */
+    #FileEditor {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #ffffff;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+        #FileEditor:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+    /* Buttons: View History & Primary Submit */
+    #formActionDiary a.btn-primary[onclick*="openHistoryPopup"],
+    #formActionDiary a[onclick*="openHistoryPopup"] {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        padding: 6px 14px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.15s ease !important;
+        float: right;
+        text-decoration: none !important;
         cursor: pointer;
     }
-    
 
-    .refhide {
-        display: none;
+        #formActionDiary a.btn-primary[onclick*="openHistoryPopup"]:hover,
+        #formActionDiary a[onclick*="openHistoryPopup"]:hover {
+            background: #f8fafc !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+        }
+
+    #btnSave, #btnSave_Multi, #btnSDUpdate, #btnActionSave {
+        background: #2563eb !important;
+        border: 1px solid #1d4ed8 !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        padding: 8px 20px !important;
+        box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2) !important;
+        transition: all 0.15s ease !important;
+        cursor: pointer;
     }
 
-    .refshow {
-        display: block;
+        #btnSave:hover, #btnSave_Multi:hover, #btnSDUpdate:hover, #btnActionSave:hover {
+            background: #1d4ed8 !important;
+            border-color: #1e40af !important;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3) !important;
+        }
+
+    /* Modern Note Items in History */
+    .voting-list {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        transition: border-color 0.15s ease;
     }
 
+        .voting-list:hover {
+            border-color: #cbd5e1;
+        }
+
+        .voting-list.Draft-list {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+    .act_lft_fst, .act_lft_fst.bg_light {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    /* Preserve existing utility styles */
+    input#enablefund { height: 14px; }
+    th { background-color: grey; }
+    .ui-datepicker { width: 25em; display: none; border: 1px solid; font-weight: bolder; }
+    .Mytextarea { font-size: 10px; height: 14px !important; color: #333 !important; font-family: inherit; }
+    .profile-info-name { width: 1% !important; }
+    .width { width: 76% !important; }
+    .fund { width: 11px !important; padding-right: 100px; padding-left: 3px; }
+    .tfund { float: left; width: 50%; }
+    .fundval { padding-right: 20px; font-weight: bold; }
+    .mar { padding-top: 12px !important; }
+    .fundtd { padding: 1px !important; border: 1px solid #ddd; text-align: center; color: green; }
+    .hand { cursor: pointer; }
+    .refhide { display: none; }
+    .refshow { display: block; }
     .rotingtxt1 {
-        -webkit-transform: rotate(20deg);
-        -moz-transform: rotate(20deg);
-        -o-transform: rotate(20deg);
-        transform: rotate(20deg);
-        font-size: 3em;
-        color: rgba(255, 5, 5, 0.17);
-        /*position: absolute;*/
-        font-family: 'Denk One', sans-serif;
-        text-transform: uppercase;
-        width: 30px;
-        margin-bottom: -42px !important;
+        -webkit-transform: rotate(20deg); transform: rotate(20deg);
+        font-size: 3em; color: rgba(255, 5, 5, 0.17);
+        font-family: 'Denk One', sans-serif; text-transform: uppercase; width: 30px; margin-bottom: -42px !important;
     }
-
-    .filedraft {
-        text-align: right;
-        font-weight:;
-    }
-
-    .pdfrow1 {
-        position: fixed;
-        width: 90%;
-    }
-    .abc.col-lg-6 {
-        float: right;
-        margin-top: -74px;
-        padding-left: 141px;
-    }
+    .filedraft { display: inline-flex !important; align-items: center !important; gap: 6px !important; font-size: 12px !important; font-weight: 600 !important; color: #64748b !important; padding: 4px 10px !important; background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 6px !important; margin-bottom: 8px; }
 </style>
 <script>
-
-
-
-
-
     var menuname = $("#RefMenuName").val();
 
     var MenuName2 = 'No.:';
@@ -228,17 +537,18 @@
     $(document).ready(function () {
         $.noConflict();
 
-        
-         
-    //var PannelId = $("#PannelId").val();
-    ////alert(PannelId);
-    //if (PannelId == "") {
-    //    Swipe(2);
-    //} else {
-    //    Swipe(PannelId);
-    //}
+
+
+        initPanelSplitter();
+        Swipe(2);
         var refid = @Model.RefId;
 
+        var officeList = @Html.Raw(Json.Encode(Model.FromOfficeList));
+        var office = officeList.find(el => el.Value == @Model.FromOfficeId.ToString());
+        if (office) {
+            $('#txtOfficeValueOnly').text(office.Text);
+        }
+        $('#txtOfficeValueOnly').prop("disabled", true);
 
 
         tinymce.remove("#subjectdetailforedit_" + refid);
@@ -329,7 +639,9 @@
                          $("#subjectold_"+refid).val(response[0].subject);
                         $("#subjectdetailforedit_"+refid).val(response[0].SubjectDetails);
                         $("#subjectdetailold_"+refid).val(response[0].SubjectDetails);
-                        tinymce.get('subjectdetailforedit_'+refid).setContent(response[0].SubjectDetails);
+                        if (tinymce.get('subjectdetailforedit_' + refid)) {
+                            tinymce.get('subjectdetailforedit_' + refid).setContent(response[0].SubjectDetails);
+                        }
                     }
                     else {
                         $("#loader-wrapper").hide();
@@ -376,7 +688,9 @@
                 if (data) {
                     $("#SingleModelEdit").css("display", "block");
                     $('#SingleModelEditbody').html(data);
-                    $(".yellow-list").animate({ scrollTop: $('ul.yellow-list li:last').offset().top + 30 });
+                    if ($('ul.yellow-list li:last').length > 0 && $('ul.yellow-list li:last').offset()) {
+                        $(".yellow-list").animate({ scrollTop: $('ul.yellow-list li:last').offset().top + 30 });
+                    }
 
 
 
@@ -581,7 +895,329 @@
 
         }
         }
-}
+    }
+
+    var lastPanelOneWidth = 38;
+
+    function Swipe(val) {
+        var $panelOne = $(".panel.one");
+        var $panelTwo = $(".panel.two");
+
+        if (val == 1) {
+            $panelOne.css({
+                "width": "0%",
+                "flex-basis": "0%",
+                "min-width": "0",
+                "max-width": "0%",
+                "padding-left": "0",
+                "padding-right": "0",
+                "overflow": "hidden",
+                "border": "none",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $panelTwo.css({
+                "width": "100%",
+                "flex-basis": "100%",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $("#PannelId").val(1);
+        } else {
+            var restoreWidth = lastPanelOneWidth || 38;
+            if (restoreWidth < 20) restoreWidth = 38;
+            if (restoreWidth > 78) restoreWidth = 38;
+            $panelOne.css({
+                "width": restoreWidth + "%",
+                "flex-basis": restoreWidth + "%",
+                "min-width": "",
+                "max-width": "",
+                "padding-left": "",
+                "padding-right": "",
+                "overflow": "",
+                "border": "",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $panelTwo.css({
+                "width": (100 - restoreWidth) + "%",
+                "flex-basis": (100 - restoreWidth) + "%",
+                "display": "",
+                "height": "",
+                "flex": ""
+            });
+            $("#PannelId").val(2);
+        }
+    }
+
+    function initPanelSplitter() {
+        var $divider = $("#panelDivider");
+        var $container = $("#panelContainer");
+        var $panelOne = $(".panel.one");
+        var $panelTwo = $(".panel.two");
+
+        $panelOne.add($panelTwo).css({ "display": "", "height": "", "flex": "" });
+        $divider.off("mousedown.panelSplitter touchstart.panelSplitter mousedown touchstart");
+        $container.off("mousemove touchmove");
+
+        $divider.on("mousedown.panelSplitter touchstart.panelSplitter", function (e) {
+            if ($(e.target).closest(".sliderLeft, .sliderRight").length > 0) {
+                return;
+            }
+
+            e.preventDefault();
+            var isDragging = true;
+
+            $container.addClass("is-resizing");
+            $divider.addClass("is-resizing");
+            $("iframe").css("pointer-events", "none");
+            $("body").css({ "user-select": "none", "cursor": "col-resize" });
+
+            var containerOffset = $container.offset().left;
+            var containerWidth = $container.width();
+
+            function onMove(evt) {
+                if (!isDragging) return;
+
+                var clientX = evt.pageX;
+                if (typeof clientX === "undefined" && evt.originalEvent && evt.originalEvent.touches && evt.originalEvent.touches.length > 0) {
+                    clientX = evt.originalEvent.touches[0].pageX;
+                }
+                if (typeof clientX === "undefined" || isNaN(clientX)) return;
+
+                var relativeX = clientX - containerOffset;
+                var pct = (relativeX / containerWidth) * 100;
+
+                var minLeftPct = Math.max(18, (250 / containerWidth) * 100);
+                var maxLeftPct = Math.min(80, ((containerWidth - 280) / containerWidth) * 100);
+
+                if (pct < minLeftPct) pct = minLeftPct;
+                if (pct > maxLeftPct) pct = maxLeftPct;
+
+                $panelOne.css({
+                    "width": pct + "%",
+                    "flex-basis": pct + "%",
+                    "display": "",
+                    "height": "",
+                    "flex": ""
+                });
+                $panelTwo.css({
+                    "width": (100 - pct) + "%",
+                    "flex-basis": (100 - pct) + "%",
+                    "display": "",
+                    "height": "",
+                    "flex": ""
+                });
+
+                lastPanelOneWidth = pct;
+                $("#PannelId").val(2);
+            }
+
+            function onEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+
+                $container.removeClass("is-resizing");
+                $divider.removeClass("is-resizing");
+                $("iframe").css("pointer-events", "");
+                $("body").css({ "user-select": "", "cursor": "" });
+
+                $(document).off("mousemove.panelSplitter touchmove.panelSplitter", onMove);
+                $(document).off("mouseup.panelSplitter touchend.panelSplitter", onEnd);
+            }
+
+            $(document).on("mousemove.panelSplitter touchmove.panelSplitter", onMove);
+            $(document).on("mouseup.panelSplitter touchend.panelSplitter", onEnd);
+        });
+    }
+
+    function openHistoryPopup() {
+        $("#HistoryModel").modal('show');
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable("#tableRefHistory")) {
+            $('#tableRefHistory').DataTable().destroy();
+        }
+        $('#tableRefHistory').html('');
+        $('#tbodyRefHistory').html('');
+        var refId = $("#RefId").val() || '@Model.RefId';
+        var html = "<thead id='theadPrzt'><tr class='table-heading'><th style='padding:10px !important; border: 1px solid black;border-collapse: collapse;'>Proposal Description</th></tr></thead><tbody id='tbodyRefHistory'></tbody>";
+        $('#tableRefHistory').append(html);
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("getRefHistory", "References")',
+            data: { refId: refId },
+            success: function (data) {
+                $('#tbodyRefHistory').html('');
+                if (data && data.length > 0) {
+                    var s_string = ""; var sd_string = "";
+                    $.each(data, function (i, item) {
+                        if (item.Subject && item.Subject != "") {
+                            s_string = "<b>Subject:</b> " + item.Subject + "</br>";
+                        } else {
+                            s_string = "";
+                        }
+                        if (item.SubjectDetails && item.SubjectDetails != "") {
+                            sd_string = "<b>Subject Details: </b>" + item.SubjectDetails + "</br>";
+                        } else {
+                            sd_string = "";
+                        }
+                        var tr = "<tr><td style='border: 1px solid black;border-collapse: collapse;'>" + s_string + sd_string + "</td></tr>";
+                        $('#tbodyRefHistory').append(tr);
+                    });
+                } else {
+                    $('#tbodyRefHistory').append("<tr><td style='border: 1px solid black;border-collapse: collapse;'>No history found</td></tr>");
+                }
+            }
+        });
+    }
+
+    function PopUpRefresh() {
+        var ID = '@Model.RefId';
+        var mainRefid = $('#RefId').val() || '@Model.MainRefId';
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EditSingleEntry", "References")',
+            data: { ID: ID, MainRefId: mainRefid },
+            success: function (response) {
+                $("#SingleModelEditbody").html(response);
+            }
+        });
+    }
+
+    function printActionAndReferenceDetails() {
+        try {
+            var $actionsClone = $('#divDetails, #view_' + ('@Model.RefId') + ' #divDetails').first().clone();
+            if ($actionsClone.length === 0 || $actionsClone.find('li').length === 0) {
+                $actionsClone = $('#ulnoting').clone();
+            }
+            $actionsClone.find('button, input, select, .fa-unlock, .fa-lock, .fa-pencil, .ace-icon, script').remove();
+            $actionsClone.find('a[href*="BlobStorage"], a#actionlink').each(function () {
+                var href = $(this).attr('href');
+                var filename = href ? href.split('/').pop() : 'Attachment';
+                $(this).replaceWith('<span class="note-enclosure"><strong>Enclosure:</strong> ' + filename + '</span>');
+            });
+            var notesHtml = '';
+            if ($actionsClone.length > 0 && $actionsClone.find('li').length > 0) {
+                notesHtml = $actionsClone.html();
+            } else {
+                notesHtml = '<div style="color: #64748b; font-style: italic; padding: 6px 0;">No actions taken recorded.</div>';
+            }
+
+            var subjectContent = ($('#SpanSubject_' + '@Model.RefId').text() || $('#SpanSubject').text() || '').trim();
+            if (!subjectContent) {
+                subjectContent = '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.Subject ?? Model.SubjectPB ?? ""))'.trim();
+            }
+            if (!subjectContent) {
+                subjectContent = ($('#subjectforedit_' + '@Model.RefId').val() || $('#subjectforedit').val() || '').trim();
+            }
+            if (!subjectContent) {
+                subjectContent = '<span style="color:#64748b; font-style:italic;">No subject specified</span>';
+            }
+
+            var detailsContent = ($('#divSubjectDetails_' + '@Model.RefId').html() || $('#divSubjectDetails').html() || '').trim();
+            if (!detailsContent) {
+                detailsContent = '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.SubjectDetails ?? Model.SubjectDetailsPB ?? ""))'.trim();
+            }
+            if (!detailsContent) {
+                detailsContent = '<span style="color:#64748b; font-style:italic;">No details recorded</span>';
+            }
+
+            var instructionContent = '';
+            var ddlActVal = ($('#ddlact option:selected').text() || '').trim();
+            if (ddlActVal && ddlActVal !== 'Select' && ddlActVal !== '--Select--') {
+                instructionContent = ddlActVal;
+            }
+            if (!instructionContent) {
+                instructionContent = '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.ActName ?? ""))'.trim();
+            }
+
+            var headerSub = 'ID: #' + ('@Model.RefId' || '');
+            var fromOfficeDisplay = '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.FromDept ?? ""))'.trim();
+            if (!fromOfficeDisplay) {
+                fromOfficeDisplay = ($('#divMember .txt_value').first().text() || '').trim();
+            }
+
+            var now = new Date();
+            var day = String(now.getDate()).padStart(2, '0');
+            var month = String(now.getMonth() + 1).padStart(2, '0');
+            var year = now.getFullYear();
+            var hours = now.getHours();
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            var strHours = String(hours).padStart(2, '0');
+            var genDateStr = day + '-' + month + '-' + year + ' ' + strHours + ':' + minutes + ' ' + ampm;
+
+            var printDoc = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="utf-8" />
+                    <title>${headerSub}</title>
+                    <style>
+                        @@page { size: A4 portrait; margin: 10mm 12mm 10mm 12mm; }
+                        * { box-sizing: border-box !important; }
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+                            color: #0f172a; background: #fff; margin: 0; padding: 0; font-size: 12.5px; line-height: 1.55;
+                            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+                        }
+                        .print-header { border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 12px; }
+                        .print-title { font-size: 16px; font-weight: 700; color: #0284c7; margin: 0; }
+                        .section-title { background: #f1f5f9; border-left: 4px solid #0284c7; padding: 4px 10px; font-size: 12px; font-weight: 700; margin: 12px 0 6px 0; text-transform: uppercase; }
+                        .section-body { padding: 4px 6px; font-size: 12.5px; }
+                        ul.note-list, ul.yellow-list { list-style: none; padding: 0; margin: 0; }
+                        li.voting-list { border-bottom: 1px dashed #cbd5e1; padding: 6px 0; margin-bottom: 6px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-header">
+                        <div class="print-title">${headerSub}</div>
+                        ${fromOfficeDisplay ? '<div>Office: ' + fromOfficeDisplay + '</div>' : ''}
+                    </div>
+                    <div class="section-title">Subject</div>
+                    <div class="section-body">${subjectContent}</div>
+                    <div class="section-title">Details</div>
+                    <div class="section-body">${detailsContent}</div>
+                    ${instructionContent ? '<div class="section-title">Point of Instruction</div><div class="section-body">' + instructionContent + '</div>' : ''}
+                    <div class="section-title">Actions Taken</div>
+                    <div class="section-body"><ul class="note-list">${notesHtml}</ul></div>
+                    <div style="margin-top: 15px; font-size: 10px; color: #64748b; text-align: right; border-top: 1px solid #e2e8f0; padding-top: 4px;">Generated on: ${genDateStr}</div>
+                </body>
+                </html>
+            `;
+
+            var iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            document.body.appendChild(iframe);
+
+            var frameDoc = iframe.contentWindow || iframe.contentDocument;
+            if (frameDoc.document) frameDoc = frameDoc.document;
+            frameDoc.open();
+            frameDoc.write(printDoc);
+            frameDoc.close();
+
+            setTimeout(function () {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+                setTimeout(function () {
+                    document.body.removeChild(iframe);
+                }, 1000);
+            }, 400);
+
+        } catch (ex) {
+            console.error("Print error:", ex);
+            window.print();
+        }
+    }
 </script>
 
 
@@ -591,71 +1227,57 @@
 {
     @Html.AntiForgeryToken()
 
-    DateTime crdt = Convert.ToDateTime(Model.CreatedDate);
-    string dt = crdt.ToString("dd/MM/yyyy");
-    string sec = crdt.ToString("hh:mm tt");
+    DateTime crdt;
+    string dt = "";
+    string sec = "";
+    if (Model.CreatedDate != null && DateTime.TryParse(Convert.ToString(Model.CreatedDate), out crdt))
+    {
+        dt = crdt.ToString("dd/MM/yyyy");
+        sec = crdt.ToString("hh:mm tt");
+    }
 
-<div class="pdfrow1 col-lg-12">
-        <div class="abc col-lg-6">
-            <h4 class="widget-title form_heading mb-0">
-                Annexure:
-            </h4>
-            @foreach (var item1 in Model.MultiFileModel)
-            {
-
-                <a class="btn btn-primary" target="_blank" href="@BlobPath@item1.FileName">@item1.name</a>
-            }
-        </div>
-    </div>
     <div class="row modal_row">
-
-
 
         <div class="col-md-12 col-lg-12 col-xl-12 ">
             <div class="row px-lg-3 align-items-center mb-3">
-                @*<div class="col-md-1 col-sm-2 col-12 ">
-                    <label class="switch" style="display:none;" id="switchbuttondiv">
-                        <input type="checkbox" id="switchbutton">
-                        <span class="slider round"> </span>
-                    </label>
-                </div>*@
-
-                <div class="col-md-12 col-sm-12 col-12 ">
+                <div class="col-md-10 col-sm-10 col-12 ">
                     <div class="top-tools ">
                         <h4 class="widget-title form_heading mb-0">
-                            ID: #@Model.RefId @*| Date: @dt&nbsp;@sec*@
-
+                            ID: #@Model.RefId @if(@Model.ProposalAmount > 0) { <text>| ProposalAmount: @Model.ProposalAmount</text> }
                         </h4>
-
-
-                        @*<div style="display: flex;">
-                                <h4 id="myreff">
-                                </h4>
-                                <h4>
-                                    #@Model.LetterNo
-                                </h4>
-                            </div>*@
-
-
-
-
-
                     </div>
-
-
                 </div>
-
-
+                <div class="col-md-2 col-sm-2 col-1 d-flex align-items-center justify-content-end gap-2" style="margin-left: auto;">
+                    <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center" onclick="printActionAndReferenceDetails();"
+                            title="Print Details" style="font-weight: 600; padding: 8px 10px; font-size: 13px; gap: 5px; background-color: #428bca !important; border: none; border-radius: 6px; color: #fff;">
+                        <i class="fa fa-print"></i>
+                    </button>
+                    <i class="ace-icon fa fa-refresh hand" style="color: #0c9b44; font-size: 26px;" title="Refresh" onclick="PopUpRefresh();"></i>
+                </div>
+                @if (Model.MultiFileModel != null && Model.MultiFileModel.Count > 0)
+                {
+                    <div class="pdfrow row">
+                        <div class="col-12 text-center">
+                            <h4 class="widget-title form_heading mb-0">
+                                Annexure:
+                            </h4>
+                            @foreach (var item1 in Model.MultiFileModel)
+                            {
+                                <a class="btn btn-primary" target="_blank" href="@BlobPath@item1.FileName">@item1.name</a>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
-
-
         </div>
 
-        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
-            <ul class="nav tabtop-space nav-tabs" id="UpdateTab" role="tablist">
-                <li id="ViewTab" class="nav-item hand" role="presentation">
-                    <a class="nav-link active" id="view-tab" data-bs-toggle="tab" data-bs-target="#view_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">Action Taken</a>
-                </li>
+        <div id="panelContainer">
+            <div class="panel one">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <ul class="nav tabtop-space nav-tabs" id="UpdateTab" role="tablist">
+                        <li id="ViewTab" class="nav-item hand" role="presentation">
+                            <a class="nav-link active" id="view-tab" data-bs-toggle="tab" data-bs-target="#view_@Model.RefId" role="tab" aria-controls="home" aria-selected="true">Actions Taken</a>
+                        </li>
                 @if (Model.HideUpdate == "Yes") { }
                 else
                 {
@@ -687,7 +1309,7 @@
             </ul>
             <div class="tab-content" id="myUpdateContent">
                 <div class="tab-pane fade show active" id="view_@Model.RefId" role="tabpanel" aria-labelledby="home-tab">
-                    @if (Model.ActionDetailsList.ToList().Count > 0)
+                    @if (Model.ActionDetailsList != null && Model.ActionDetailsList.Count > 0)
                     {
                         <div id="divDetails">
 
@@ -707,10 +1329,17 @@
                                     <ul id="ulnoting" class="list-unstyled @clss">
                                         @foreach (var item1 in Model.ActionDetailsList)
                                         {
-
-                                            DateTime aDate = Convert.ToDateTime(item1.ActionDate);
-                                            string s1 = aDate.ToString("dd/MM/yyyy");
-                                            string s2 = aDate.ToString("hh:mm tt");
+                                            string s1 = "";
+                                            string s2 = "";
+                                            if (item1.ActionDate != DateTime.MinValue)
+                                            {
+                                                s1 = item1.ActionDate.ToString("dd/MM/yyyy");
+                                                s2 = item1.ActionDate.ToString("hh:mm tt");
+                                            }
+                                            else
+                                            {
+                                                s1 = item1.ActionDate.ToString() ?? "";
+                                            }
                                             var dftclss = "";
                                             if (item1.isDraft == "1")
                                             {
@@ -851,24 +1480,27 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach (var fund in Model._LstFundReport)
+                                                    @if (Model._LstFundReport != null)
                                                     {
+                                                        foreach (var fund in Model._LstFundReport)
+                                                        {
 
-                                                        if (@Model.DocumentTypeName == @fund.FundType)
-                                                        {
-                                                            <tr>
-                                                                <td class="td-data">@fund.FundType</td>
-                                                                <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
-                                                                <td class="td-data"><input class="form-control tfund" type="text" value="0" max="@fund.FundAvaiable" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
-                                                            </tr>
-                                                        }
-                                                        else
-                                                        {
-                                                            <tr>
-                                                                <td class="td-data">@fund.FundType</td>
-                                                                <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
-                                                                <td class="td-data"><input class="form-control nonfund" type="text" max="@fund.FundAvaiable" value="0" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
-                                                            </tr>
+                                                            if (@Model.DocumentTypeName == @fund.FundType)
+                                                            {
+                                                                <tr>
+                                                                    <td class="td-data">@fund.FundType</td>
+                                                                    <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
+                                                                    <td class="td-data"><input class="form-control tfund" type="text" value="0" max="@fund.FundAvaiable" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
+                                                                </tr>
+                                                            }
+                                                            else
+                                                            {
+                                                                <tr>
+                                                                    <td class="td-data">@fund.FundType</td>
+                                                                    <td class="td-data" style="text-align:right">₹ @(String.Format(Indian, "{0:N}", @fund.FundAvaiable).Replace(".00",""))</td>
+                                                                    <td class="td-data"><input class="form-control nonfund" type="text" max="@fund.FundAvaiable" value="0" id="txt_@fund.FundType.Replace(" ", "")" name="fundtype_@fund.FundTypeId" onfocusout="seteditorvalue('@fund.FundType.Replace(" ", "")');" /> </td>
+                                                                </tr>
+                                                            }
                                                         }
                                                     }
                                                 </tbody>
@@ -888,7 +1520,7 @@
 
 
                                 </div>
-                                if (@Model._LstFundSactioned.ToList().Count > 0)
+                                if (Model._LstFundSactioned != null && Model._LstFundSactioned.Count > 0)
                                 {
                                     <div id="SanctionAmountModal" style="display:none">
                                         <input type="hidden" id="hdnisfund" name="isfund" value="@Model.isfund" />
@@ -1159,30 +1791,36 @@
 
                     </div>*@
             </div>
-        </div>
-        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-            <div class="act_lft_fst bg_light">
+            </div>
+            </div>
+            <div class="slider" id="panelDivider" title="Drag to resize panels">
+                <div class="slider-handle">
+                    <span class="grip-icon">
+                        <i class="fa fa-pause"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="panel two">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="act_lft_fst bg_light">
+                    <ul class="nav nav-tabs tabtop-space position-relative" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            @{ var tabname = ""; }
+                            @if (Model.isLetter == "Letter")
+                            {
+                                //tabname = "Reference";
+                                tabname = @Model.DocumentTypeName;
 
-                <ul class="nav nav-tabs tabtop-space position-relative" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-
-
-                        @{ var tabname = ""; }
-                        @if (Model.isLetter == "Letter")
-                        {
-                            //tabname = "Reference";
-                            tabname = @Model.DocumentTypeName;
-
-                        }
-                        else
-                        {
-                            tabname = "File";
-                        }
-                        @*<a class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Refdetail_local" role="tab" aria-controls="home" aria-selected="true" onclick="ShowRefTab(0)"><b> ਪੰਜਾਬੀ </b></a>*@
-                    </li>
-                    <li>
-                        <a class="nav-link hand active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Refdetail" role="tab" aria-controls="home" aria-selected="false"><b>Reference</b></a> @*onclick="ShowRefTab(0)"*@
-                    </li>
+                            }
+                            else
+                            {
+                                tabname = "File";
+                            }
+                            @*<a class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Refdetail_local" role="tab" aria-controls="home" aria-selected="true" onclick="ShowRefTab(0)"><b> ਪੰਜਾਬੀ </b></a>*@
+                        </li>
+                        <li>
+                            <a class="nav-link hand active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Refdetail" role="tab" aria-controls="home" aria-selected="false"><b>Reference</b></a> @*onclick="ShowRefTab(0)"*@
+                        </li>
                     @if (Model.HideRef == "Yes") { }
                     else
                     {
@@ -1216,7 +1854,7 @@
                     }
 
                 </ul>
-
+                
 
                 @if (Model.PaperEntryType == "NewEntry")
                 {
@@ -1236,6 +1874,13 @@
                         <div class="widget-main no-padding-right no-padding-left">
 
                             <div class="ref_box mb-3">
+                                <div class="mb-2" id="divofc">
+                                    <div class="fotm_lbl">Office/Branch:</div>
+                                    <div class="txt_value in_txt_area">
+                                        <span id="txtOfficeValueOnly"></span>
+                                        @Html.HiddenFor(m => m.FromOfficeId)
+                                    </div>
+                                </div>
 
                                 <div class="mb-2" id="subjectboxold_@Model.RefId" style="display:none;">
                                     <div class="fotm_lbl">
@@ -1287,9 +1932,12 @@
                                         <div class="col-6">
                                             <div class="">
                                                 <b>Approved Checklist:&nbsp;</b>
-                                                @foreach (var dep in Model.CMApproval)
+                                                @if (Model.CMApproval != null)
                                                 {
-                                                    <span>@dep.Text,</span>
+                                                    foreach (var dep in Model.CMApproval)
+                                                    {
+                                                        <span>@dep.Text,</span>
+                                                    }
                                                 }
 
                                             </div>
@@ -1318,259 +1966,248 @@
                                     </div>
                                 }
 
-                            <div class="row">
-                                <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                    <div class="fotm_lbl">From Office:</div>
-                                    <div class="txt_value">
-                                        @Model.FromDept
-                                        @Html.HiddenFor(m => m.FromDeptId)
+                                <div class="row">
+                                    @*<div class="col-md-6 col-lg-6 mb-2" id="divMember">
+            <div class="fotm_lbl">From Office:</div>
+            <div class="txt_value">*@
+                                    @*@Model.FromDept*@
+                                    @Html.HiddenFor(m => m.FromDeptId)
 
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-6 mb-2" id="divofc">
-                                    <div class="fotm_lbl">Office Detail:</div>
-                                    <div class="txt_value">
+                                    @*</div>
+            </div>*@
 
-                                        <div id="divOfficeList">
-                                            @Model.FromOffice
+                                    @*<div class="col-md-6 col-lg-6 mb-2" id="divMember">
+            <div class="fotm_lbl">To Office:</div>
+            <div class="txt_value">*@
+                                    @*@Model.ToDept*@
+                                    @Html.HiddenFor(m => m.ToDeptId)
+                                    @*</div>
+            </div>*@
+                                    <!--<div class="col-md-6 col-lg-6 mb-2">
+            <div class="fotm_lbl">
+                Office Detail:
+                @if (Model.HideUpdate == "Yes") { }
+                else
+                {
+                    if (SiteName == "MC")
+                    {
+                        <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
+                    }
 
-                                        </div>
-                                        @Html.HiddenFor(m => m.FromOfficeId)
-
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-6 mb-2" id="divMember">
-                                    <div class="fotm_lbl">To Office:</div>
-                                    <div class="txt_value">
-                                        @Model.ToDept
-                                        @Html.HiddenFor(m => m.ToDeptId)
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-6 mb-2">
-                                    <div class="fotm_lbl">
-                                        Office Detail:
-                                        @if (Model.HideUpdate == "Yes") { }
-                                        else
-                                        {
-                                            if (SiteName == "MC")
-                                            {
-                                                <i class="ace-icon fa fa-pencil hand" onclick="EditOffice()"></i>
-                                            }
-
-                                        }
-                                    </div>
-
+                }
+            </div>-->
                                     @*@Model.ToOffice*@
-                                    @Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList, "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28", @disabled="true" })
+                                    <!--@Html.DropDownListFor(m => m.ToOfficeId, Model.ToOfficeList, "Select Office", new { @id = "ddlOfficeChange", @tabindex = "28", @disabled="true" })-->
 
                                     @Html.HiddenFor(m => m.ToOfficeId)
 
 
 
-                                </div>
-                                <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
-                                    <div class="fotm_lbl"> Type:</div>
-                                    <div>
-                                        <span>
+                                    @*</div>*@
+                                    <div class="col-md-6 col-lg-6 mb-2" id="divdoc">
+                                        <div class="fotm_lbl"> Type:</div>
+                                        <div>
+                                            <span>
 
-                                            @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameChange", @tabindex = "29", @disabled="True" })
+                                                @Html.DropDownListFor(m => m.DocmentType, Model.DocumentTypelist, "Select Action", new { @id = "DocumentTypeNameChange", @tabindex = "29", @disabled = "True" })
 
-                                        </span>
+                                            </span>
 
+                                        </div>
                                     </div>
-                                </div>
 
 
 
-                                <div class="col-md-6 col-lg-6 mb-2 mb-2">
-                                    <div class="fotm_lbl">Reference Nature:</div>
-                                    <div class="txt_value">
-                                        <span class="">
-                                            @Model.isLetter
-                                            @Html.HiddenFor(m => m.isLetter)
-                                        </span>
+                                    <div class="col-md-6 col-lg-6 mb-2 mb-2">
+                                        <div class="fotm_lbl">Reference Nature:</div>
+                                        <div class="txt_value">
+                                            <span class="">
+                                                @Model.isLetter
+                                                @Html.HiddenFor(m => m.isLetter)
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-6 col-lg-6 mb-2 mb-2">
-                                    <div class="fotm_lbl" id="myref"> No.: </div>
-                                    <div class="txt_value">
-                                        <span class="">
-                                            @Model.LetterNo
-                                            @Html.HiddenFor(m => m.LetterNo)
-                                        </span>
+                                    <div class="col-md-6 col-lg-6 mb-2 mb-2">
+                                        <div class="fotm_lbl" id="myref"> No.: </div>
+                                        <div class="txt_value">
+                                            <span class="">
+                                                @Model.LetterNo
+                                                @Html.HiddenFor(m => m.LetterNo)
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-6 col-lg-6 mb-2" id="divLetterNo">
-                                    <div class="fotm_lbl"> Date:</div>
-                                    <div class="txt_value">
-                                        @Model.LetterDateNew
-                                        @Html.HiddenFor(m => m.LetterDate)
+                                    <div class="col-md-6 col-lg-6 mb-2" id="divLetterNo">
+                                        <div class="fotm_lbl"> Date:</div>
+                                        <div class="txt_value">
+                                            @Model.LetterDateNew
+                                            @Html.HiddenFor(m => m.LetterDate)
 
+                                        </div>
                                     </div>
-                                </div>
-                                @if (SiteName == "e-Cabinate") { 
-                                    <div class="col-md-12 col-lg-12 mb-2">
+                                    @if (SiteName == "e-Cabinate")
+                                    {
+                                        <div class="col-md-12 col-lg-12 mb-2">
+                                            <div class="fotm_lbl">
+                                                Press Note :
+                                            </div>
+                                            <div class="txt_value in_txt_area">
+                                                <div> @Model.PressNoteENG</div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="col-md-12 col-lg-12 mb-2" id="subjectdetailboxold_@Model.RefId" style="display:none;">
                                         <div class="fotm_lbl">
-                                            Press Note :
-                                        </div>
-                                        <div class="txt_value in_txt_area">
-                                            <div> @Model.PressNoteENG</div>
-                                        </div>
-                                    </div>
-                                }
-
-                                <div class="col-md-12 col-lg-12 mb-2" id="subjectdetailboxold_@Model.RefId" style="display:none;">
-                                    <div class="fotm_lbl">
-                                        Details:
-                                        @if (Model.HideUpdate == "Yes") { }
-                                        else
-                                        {
-                                            <i class="ace-icon fa fa-pencil hand" onclick="EditDetails()"></i>
-                                        }
-
-                                    </div>
-                                    <div class="txt_value in_txt_area">
-                                        <div id="divSubjectDetails_@Model.RefId"> @Html.Raw(Model.SubjectDetails)</div>
-                                        @Html.HiddenFor(m => m.SubjectDetails)
-                                    </div>
-                                </div>
-
-
-
-
-                                <div class="col-md-12 col-lg-12 mb-2" id="subjectdetailbox_@Model.RefId" style="display:none;">
-                                    <div class="fotm_lbl">Details:</div>
-                                    <div>
-                                        <textarea type="text" id="subjectdetailforedit_@Model.RefId" name="subjectdetailforedit" onchange="updatesubjectdetail();">   </textarea>
-                                    </div>
-
-                                </div>
-
-                                @*<div class="col-md-12 col-lg-12" id="subjectdetailbox_local" style="display:none;">
-            <div class="fotm_lbl">Details in Local:</div>
-            <div>
-                <textarea type="text" id="subjectdetailforedit_local" name="subjectdetailforedit_local" onchange="updatesubjectdetail();">   </textarea>
-            </div>
-
-        </div>*@
-
-                                <div class="col-md-12 col-lg-12" id="EditUpdateButton" style="display:none;">
-                                    <input type="button" class="btn btn-warning" value="Update" id="btnSDUpdate" onclick="EditUpdate()" />
-                                </div>
-
-                                @if (SiteName == "MC")
-                                {
-                                    <div class="col-md-12 col-lg-12 mb-2" id="divLetterNo">
-                                        <div class="fotm_lbl"> Point of Instruction:</div>
-
-                                        @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
-
-                                        @*@if (Model.ActName == "" || Model.ActName == null )
-                                            {
-
-                                                @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
-                                            }
+                                            Details:
+                                            @if (Model.HideUpdate == "Yes") { }
                                             else
                                             {
-                                                <div class="txt_value">
-                                                    @Model.ActName
-                                                </div>
-                                            }*@
+                                                <i class="ace-icon fa fa-pencil hand" onclick="EditDetails()"></i>
+                                            }
 
-
-                                    </div>
-
-
-                                }
-
-
-
-
-                                @*<div class="col-md-6 col-lg-6 mb-2">
-
-            <div class="fotm_lbl">
-                Attached Enclosure (File):&nbsp;
-                @if (!string.IsNullOrEmpty(Model.EnclosureFile))
-                {
-                    <a href="@CMNirdesh.Models.BlobStorage.GetStorageAcessingPath()@Model.EnclosureFile" target="_blank" id="wreqeqwe">
-                        <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
-                    </a>
-                }
-                else
-                {
-                    <span id="EnclosureFiletxt" style="display: none;">No</span>
-
-                }
-
-                @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
-            </div>
-
-        </div>*@
-
-                                @if (!string.IsNullOrEmpty(Model.ApplicantName))
-                                {
-                                    <div class="col-md-6 col-lg-6">
-                                        <div class="fotm_lbl">Applicant Name:</div>
-                                        <div class="txt_value">
-
-                                            @Html.Raw(Model.ApplicantName)
-                                            @Html.HiddenFor(m => m.ApplicantName)
                                         </div>
-                                    </div>
-                                }
-
-                                @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
-
-                                {
-                                    <div class="col-md-6 col-lg-6">
-                                        <div class="fotm_lbl">Applicant Address:</div>
-                                        <div class="txt_value">
-
-                                            @Html.Raw(Model.ApplicantAddress)
-                                            @Html.HiddenFor(m => m.ApplicantAddress)
+                                        <div class="txt_value in_txt_area">
+                                            <div id="divSubjectDetails_@Model.RefId"> @Html.Raw(Model.SubjectDetails)</div>
+                                            @Html.HiddenFor(m => m.SubjectDetails)
                                         </div>
                                     </div>
 
-                                }
 
-                                @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
 
-                                {
-                                    <div class="col-md-6 col-lg-6">
-                                        <div class="fotm_lbl">Applicant Mobile:</div>
-                                        <div class="txt_value">
 
-                                            @Html.Raw(Model.ApplicantMobile)
-                                            @Html.HiddenFor(m => m.ApplicantMobile)
+                                    <div class="col-md-12 col-lg-12 mb-2" id="subjectdetailbox_@Model.RefId" style="display:none;">
+                                        <div class="fotm_lbl">Details:</div>
+                                        <div>
+                                            <textarea type="text" id="subjectdetailforedit_@Model.RefId" name="subjectdetailforedit" onchange="updatesubjectdetail();">   </textarea>
                                         </div>
+
                                     </div>
-                                }
 
-                                @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
+                                    @*<div class="col-md-12 col-lg-12" id="subjectdetailbox_local" style="display:none;">
+                <div class="fotm_lbl">Details in Local:</div>
+                <div>
+                    <textarea type="text" id="subjectdetailforedit_local" name="subjectdetailforedit_local" onchange="updatesubjectdetail();">   </textarea>
+                </div>
 
-                                {
+            </div>*@
 
-                                    <div class="col-md-6 col-lg-6">
-                                        <div class="fotm_lbl">Applicant Email:</div>
-                                        <div class="txt_value">
+                                    <div class="col-md-12 col-lg-12" id="EditUpdateButton" style="display:none;">
+                                        <input type="button" class="btn btn-warning" value="Update" id="btnSDUpdate" onclick="EditUpdate()" />
+                                    </div>
 
-                                            @Html.Raw(Model.ApplicantEmail)
-                                            @Html.HiddenFor(m => m.ApplicantEmail)
+                                    @if (SiteName == "MC")
+                                    {
+                                        <div class="col-md-12 col-lg-12 mb-2" id="divLetterNo">
+                                            <div class="fotm_lbl"> Point of Instruction:</div>
+
+                                            @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
+
+                                            @*@if (Model.ActName == "" || Model.ActName == null )
+                    {
+
+                        @Html.DropDownListFor(m => m.ActId, Model.ActList, "Select", new { @id = "ddlact", @class = "", @Onchange = "updateAct(" + Model.RefId + ",this);" })
+                    }
+                    else
+                    {
+                        <div class="txt_value">
+                            @Model.ActName
+                        </div>
+                    }*@
+
+
                                         </div>
-                                    </div>
-                                }
+
+
+                                    }
+
+
+
+
+                                    @*<div class="col-md-6 col-lg-6 mb-2">
+
+                <div class="fotm_lbl">
+                    Attached Enclosure (File):&nbsp;
+                    @if (!string.IsNullOrEmpty(Model.EnclosureFile))
+                    {
+                        <a href="@CMNirdesh.Models.BlobStorage.GetStorageAcessingPath()@Model.EnclosureFile" target="_blank" id="wreqeqwe">
+                            <img src="~/Assets/Home_Images/PDF.png" alt="Download" title="Download Enclosure" width="24" height="24" />
+                        </a>
+                    }
+                    else
+                    {
+                        <span id="EnclosureFiletxt" style="display: none;">No</span>
+
+                    }
+
+                    @Html.HiddenFor(m => m.EnclosureFile, new { id = "enclosure" })
+                </div>
+
+            </div>*@
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantName))
+                                    {
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Name:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantName)
+                                                @Html.HiddenFor(m => m.ApplicantName)
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantAddress))
+
+                                    {
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Address:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantAddress)
+                                                @Html.HiddenFor(m => m.ApplicantAddress)
+                                            </div>
+                                        </div>
+
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantMobile))
+
+                                    {
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Mobile:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantMobile)
+                                                @Html.HiddenFor(m => m.ApplicantMobile)
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.ApplicantEmail))
+
+                                    {
+
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class="fotm_lbl">Applicant Email:</div>
+                                            <div class="txt_value">
+
+                                                @Html.Raw(Model.ApplicantEmail)
+                                                @Html.HiddenFor(m => m.ApplicantEmail)
+                                            </div>
+                                        </div>
+                                    }
+
+
+
+                                </div>
+
+
 
 
 
                             </div>
-
-
-
-
-
-                                </div>
 
 
 
@@ -1613,13 +2250,8 @@
                     </div>
                 </div>
             </div>
-
-
-
+            </div>
+            </div>
         </div>
-
-
     </div>
-
-
-    }
+}

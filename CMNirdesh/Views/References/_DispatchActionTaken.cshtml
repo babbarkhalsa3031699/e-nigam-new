@@ -5275,7 +5275,9 @@ $.ajax({
                     if (data) {
                         $("#SingleModelEdit").css("display", "block");
                         $('#SingleModelEditbody').html(data);
-                        $(".yellow-list").animate({ scrollTop: $('ul.yellow-list li:last').offset().top + 30 });
+                        if ($('ul.yellow-list li:last').length > 0 && $('ul.yellow-list li:last').offset()) {
+                            $(".yellow-list").animate({ scrollTop: $('ul.yellow-list li:last').offset().top + 30 });
+                        }
 
                     } else { alert("error"); }
                 },
