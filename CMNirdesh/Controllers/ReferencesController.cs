@@ -7002,6 +7002,48 @@ namespace CMNirdesh.Controllers
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult AddMultipleToFile(string refids, string mainRefid, string MeetingId)
+        {
+            int addedCount = 0;
+            int alreadyCount = 0;
+            try
+            {
+                DiaryViewModel dvm = new DiaryViewModel();
+                var createdBy = (CurrentSession.UserID != null) ? CurrentSession.UserID.ToString() : "";
+                var meetingIdInt = string.IsNullOrEmpty(MeetingId) ? 0 : Convert.ToInt32(MeetingId);
+                var mainRefIdLong = Convert.ToInt64(mainRefid);
+
+                if (!string.IsNullOrEmpty(refids))
+                {
+                    var idList = refids.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var id in idList)
+                    {
+                        var refIdLong = Convert.ToInt64(id.Trim());
+                        var check = dvm.CheckInFile(refIdLong, mainRefIdLong);
+                        if (check == "0")
+                        {
+                            var res = dvm.AddToFile(refIdLong, mainRefIdLong, meetingIdInt, createdBy);
+                            if (res == "1")
+                            {
+                                addedCount++;
+                            }
+                        }
+                        else
+                        {
+                            alreadyCount++;
+                        }
+                    }
+                }
+                return Json(new { success = true, added = addedCount, already = alreadyCount, total = (addedCount + alreadyCount) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Some technical error occur, please try after some time." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
 
 
         [HttpGet]
