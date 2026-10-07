@@ -3666,7 +3666,7 @@
                             <table class="table table-bordered" id="DispatchTableagenda" style="overflow-y: auto; max-height:80%;">
                                 <thead>
                                     <tr class="table-heading">
-                                        <th class="td-heading"><span class="font-weight-bold"></span></th>
+                                        <th class="td-heading" style="text-align: center; width: 40px;"><input type="checkbox" id="chkSelectAllAgendaInbox" title="Select All" onchange="toggleSelectAllAgendaInbox(this)" /></th>
                                         <th class="td-heading"><span class="font-weight-bold">No. & Date</span></th>
                                         <th class="td-heading"><span class="font-weight-bold">Subject</span></th>
                                         @*<th class="td-heading"><span class="font-weight-bold ">Release Date </span></th>*@
@@ -3682,7 +3682,12 @@
                                 <tbody></tbody>
                             </table>
                         </div>
-
+                        <div class="col-12 mt-3 mb-2" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                            <button type="button" class="btn btn-secondary" onclick="closeagenda()">Close</button>
+                            <button type="button" class="btn btn-primary" id="btnAddSelectedToAgenda" onclick="AddSelectedItemsToAgenda()">
+                                <i class="fa fa-plus me-1"></i> Add
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -5601,8 +5606,11 @@ $.ajax({
      }
 
     function getTableListDispatchAgenda(tableData) {
-        $("#DispatchTableagenda").DataTable().destroy();
+        if ($.fn.DataTable.isDataTable('#DispatchTableagenda')) {
+            $("#DispatchTableagenda").DataTable().destroy();
+        }
         $("#DispatchTableagenda tbody").html('');
+        $('#chkSelectAllAgendaInbox').prop('checked', false);
         $.each(tableData, function (index, response) {
             if (response.ReferencePriorityType == 1) {
                 //var img = '<img src="Assets/Home_Images/highPriority.png" alt="High Priority" width="70" height="45" />';
@@ -5643,7 +5651,7 @@ $.ajax({
 
                 $("#DispatchTableagenda tbody").append(
                     "<tr role='row' class='odd'>" +
-                    "<td style='' > <input onclick=checkInAgendaD(this) type='checkbox' id='" + response.RefId + "' ></td > " +
+                    "<td style='text-align: center;'><input class='chkAgendaItem' type='checkbox' id='chk_agenda_" + response.RefId + "' value='" + response.RefId + "' data-refid='" + response.RefId + "'></td>" +
                     "<td style=''>" + LetterNo + "</br>" + Letterdate + "</td>" +
                     "<td style=''>" + response.Subject + "</td>" +
                     /*"<td style=''><span >" + response.LetterDate + "</span></td>" +*/
@@ -5668,6 +5676,111 @@ $.ajax({
                 'excel', 'pdf'
             ]
 
+        });
+    }
+
+    function toggleSelectAllAgendaInbox(master) {
+        var isChecked = $(master).is(':checked');
+        if ($.fn.DataTable.isDataTable('#DispatchTableagenda')) {
+            $('#DispatchTableagenda').DataTable().$('input.chkAgendaItem').prop('checked', isChecked);
+        } else {
+            $('#DispatchTableagenda input.chkAgendaItem').prop('checked', isChecked);
+        }
+    }
+
+    $(document).on('change', '#DispatchTableagenda .chkAgendaItem', function () {
+        var total = 0;
+        var checked = 0;
+        if ($.fn.DataTable.isDataTable('#DispatchTableagenda')) {
+            var $boxes = $('#DispatchTableagenda').DataTable().$('input.chkAgendaItem');
+            total = $boxes.length;
+            checked = $boxes.filter(':checked').length;
+        } else {
+            var $boxes = $('#DispatchTableagenda input.chkAgendaItem');
+            total = $boxes.length;
+            checked = $boxes.filter(':checked').length;
+        }
+        $('#chkSelectAllAgendaInbox').prop('checked', total > 0 && total === checked);
+    });
+
+    function AddSelectedItemsToAgenda() {
+        var selectedIds = [];
+        if ($.fn.DataTable.isDataTable('#DispatchTableagenda')) {
+            $('#DispatchTableagenda').DataTable().$('input.chkAgendaItem:checked').each(function () {
+                var val = $(this).val() || $(this).data('refid') || $(this).attr('id');
+                if (val && selectedIds.indexOf(val) === -1) {
+                    selectedIds.push(val);
+                }
+            });
+        } else {
+            $('#DispatchTableagenda input.chkAgendaItem:checked').each(function () {
+                var val = $(this).val() || $(this).data('refid') || $(this).attr('id');
+                if (val && selectedIds.indexOf(val) === -1) {
+                    selectedIds.push(val);
+                }
+            });
+        }
+
+        if (selectedIds.length === 0) {
+            alert("Please select at least one item to add.");
+            return false;
+        }
+
+        var mainRefid = $("#RefId").val();
+        if (!mainRefid) {
+            alert("RefId is empty.");
+            return false;
+        }
+
+        var meetingId = '@Model.agendaId';
+        if (!meetingId) {
+            meetingId = '0';
+        }
+
+        if (!confirm("Are you sure you want to add the selected " + selectedIds.length + " item(s) to Agenda?")) {
+            return false;
+        }
+
+        $("#loader-wrapper").show();
+        $("#btnAddSelectedToAgenda").prop("disabled", true);
+
+        var formData = new FormData();
+        formData.append("refids", selectedIds.join(','));
+        formData.append("mainRefid", mainRefid);
+        formData.append("MeetingId", meetingId);
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddMultipleToFile", "References")',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $("#loader-wrapper").hide();
+                $("#btnAddSelectedToAgenda").prop("disabled", false);
+                if (response && response.success) {
+                    var msg = "";
+                    if (response.added > 0) {
+                        msg += response.added + " item(s) added successfully to Agenda.";
+                    }
+                    if (response.already > 0) {
+                        msg += (msg ? "\n" : "") + response.already + " item(s) were already added.";
+                    }
+                    if (!msg) {
+                        msg = "No items were added.";
+                    }
+                    alert(msg);
+                    closeagenda();
+                    GetIncludedRef();
+                } else {
+                    alert((response && response.message) ? response.message : "Failed to add items to Agenda.");
+                }
+            },
+            error: function (error) {
+                $("#loader-wrapper").hide();
+                $("#btnAddSelectedToAgenda").prop("disabled", false);
+                alert("An error occurred while adding items to Agenda.");
+            }
         });
     }
 
@@ -5768,6 +5881,10 @@ $.ajax({
 
     function closeagenda() {
         $("#ModalAgenda").css("display", "none");
+        $("#ModalAgenda").hide();
+        if (typeof $("#ModalAgenda").modal === 'function') {
+            try { $("#ModalAgenda").modal('hide'); } catch(e) {}
+        }
        // Getdata();
 
     }
