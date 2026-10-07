@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.Diaries.MlaDiaryData
+@model CMNirdesh.Models.Diaries.MlaDiaryData
 
 @{
     var FileSettings = CMNirdesh.Models.FileSetting.GetSecureFileSettingLocation();
@@ -13,41 +13,62 @@
     }
 </style>
 
+<script src="@Url.Content("~/Scripts/datatables/jquery.dataTables.min.js")"></script>
 <script>
     $(document).ready(function () {
 
-       
         $('#txtAgendaName').val('');
 
         /* ========= EU Date Sorting ========= */
-        $.extend($.fn.dataTableExt.oSort, {
-            "date-eu-pre": function (dateString) {
-                if (!dateString) return 0;
-                var parts = dateString.split('/');
-                if (parts.length !== 3) return 0;
-                return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
-            },
-            "date-eu-asc": function (a, b) {
-                return a - b;
-            },
-            "date-eu-desc": function (a, b) {
-                return b - a;
-            }
-        });
+        if (typeof $ !== 'undefined' && $.fn && $.fn.dataTableExt && $.fn.dataTableExt.oSort) {
+            $.extend($.fn.dataTableExt.oSort, {
+                "date-eu-pre": function (dateString) {
+                    if (!dateString) return 0;
+                    var parts = dateString.split('/');
+                    if (parts.length !== 3) return 0;
+                    return new Date(parts[2], parts[1] - 1, parts[0]).getTime() || 0;
+                },
+                "date-eu-asc": function (a, b) {
+                    return a - b;
+                },
+                "date-eu-desc": function (a, b) {
+                    return b - a;
+                }
+            });
+        } else if (typeof $ !== 'undefined' && $.fn && $.fn.dataTable && $.fn.dataTable.ext && $.fn.dataTable.ext.type && $.fn.dataTable.ext.type.order) {
+            $.extend($.fn.dataTable.ext.type.order, {
+                "date-eu-pre": function (dateString) {
+                    if (!dateString) return 0;
+                    var parts = dateString.split('/');
+                    if (parts.length !== 3) return 0;
+                    return new Date(parts[2], parts[1] - 1, parts[0]).getTime() || 0;
+                },
+                "date-eu-asc": function (a, b) {
+                    return a - b;
+                },
+                "date-eu-desc": function (a, b) {
+                    return b - a;
+                }
+            });
+        }
 
         /* ========= DataTable Init ========= */
-        var table = $('#fundreport').DataTable({
-            bLengthChange: false,
-            pageLength: 10,
-            searching: true,
-            order: [[1, 'desc']],
-            columnDefs: [
-                {
-                    targets: 1,
-                    type: 'date-eu'
-                }
-            ]
-        });
+        if (typeof $ !== 'undefined' && $.fn && typeof $.fn.DataTable === 'function' && $('#fundreport').length) {
+            if (!$.fn.DataTable.isDataTable('#fundreport')) {
+                var table = $('#fundreport').DataTable({
+                    bLengthChange: false,
+                    pageLength: 10,
+                    searching: true,
+                    order: [[1, 'desc']],
+                    columnDefs: [
+                        {
+                            targets: 1,
+                            type: 'date-eu'
+                        }
+                    ]
+                });
+            }
+        }
 
     });
 

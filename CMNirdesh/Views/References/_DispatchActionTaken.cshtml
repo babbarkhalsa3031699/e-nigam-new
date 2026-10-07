@@ -48,7 +48,7 @@
         border: 1px solid #e2e8f0;
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-        padding: 16px 18px;
+        /*padding: 16px 18px;*/
         box-sizing: border-box;
         overflow-y: auto;
         overflow-x: hidden;
@@ -776,7 +776,7 @@
     .brownfile img.logo-img_file {
         display: block !important;
         margin: 0 auto 10px auto !important;
-        max-height: 64px !important;
+        max-height: 100px !important;
         width: auto !important;
         padding: 0 !important;
     }
@@ -2296,14 +2296,6 @@
                                                 <h4 class="widget-title">Dispatch Detail</h4>
                                             }
 
-
-
-
-
-
-
-
-
                                             <div class="widget-main no-padding-right no-padding-left">
                                                 <div class="ref_box mb-3">
                                                     <div class="row">
@@ -2318,7 +2310,7 @@
 
                                                         <div class="col-12 text-center header-block-container mb-4">
                                                             <img class="logo-img_file" src="~/Assets/Home_Images/punjab-logo.png" alt="Emblem of Punjab">
-                                                            <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 22px;">Government of Punjab</h2>
+                                                            <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 22px;">Chandigarh Administration</h2>
                                                             @if (!string.IsNullOrEmpty(Model.FromDept))
                                                             {
                                                                 <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 17px; margin-top: 4px;">@Model.FromDept</h2>
@@ -2328,14 +2320,6 @@
                                                                 <h2 class="mb-0 Brand-name fw-bold" style="text-align:center; font-size: 16px; margin-top: 2px;">@Model.FromOffice</h2>
                                                             }
                                                         </div>
-
-
-
-
-
-
-
-
 
                                                         <div class="col-md-12 col-lg-12 mb-2" id="subjectboxoldD" style="display:none;">
                                                             <div class="fotm_lbl">Subject:</div>
@@ -2472,13 +2456,13 @@
 
                                                             </div>
                                                         </div>
-                                                        <div id="divLetterNo" class="col-md-6 col-lg-6 mb-2">
+                                                        <!--<div id="divLetterNo" class="col-md-6 col-lg-6 mb-2">
                                                             <div class="fotm_lbl">To Office:</div>
-                                                            <div class="txt_value">
+                                                            <div class="txt_value">-->
                                                                 @*@dt&nbsp;@sec*@
-                                                                @Model.ToOffice
+                                                                <!--@Model.ToOffice
                                                             </div>
-                                                        </div>
+                                                        </div>-->
                                                         @if (!(Model.LinkRefID == 0))
                                                         {
                                                             <h6 class="widget-title">
@@ -2671,7 +2655,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="panel paneltwo">
+                    <div class="panel paneltwo" style="background: rgb(255, 255, 255); border: 1px solid rgb(226, 232, 240); border-radius: 12px;">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3">
 
 
@@ -2925,11 +2909,7 @@
                                                     {
                                                         <div class="col-16">
                                                             <div id="PreviewPdf_pro">
-
                                                                 <div class="container my-2">
-
-
-
                                                                     <!-- Buttons Grouped Horizontally -->
                                                                     <div class="d-flex flex-wrap gap-2" style="padding-right:50px">
                                                                         <span class="fw-bold text-success small">
@@ -2955,9 +2935,6 @@
                                                                                 </a>
                                                                             </div>
                                                                         }
-
-
-
 
                                                                         <!-- Approved Proceeding PDF -->
                                                                         <a href="@Model.ProceedingPdf"
@@ -3001,12 +2978,6 @@
                                                                         transition: all 0.3s ease;
                                                                     }
                                                                 </style>
-
-
-
-
-
-
                                                             </div>
 
                                                             @if (CurrentSession.SubUserTypeID == "3")
@@ -3103,13 +3074,10 @@
                                                                                         <span class="text-dark small">Digitally Signed Proceedings</span>
                                                                                     </a>
                                                                                 }
-
                                                                             }
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
-
                                                             }
                                                             else
                                                             {
@@ -3131,29 +3099,13 @@
                                                                                 <i class="fa fa-file-pdf text-danger me-1 fs-5"></i>
                                                                                 <span class="small">Approved Proceedings</span>
                                                                             </a>
-
-
                                                                         </div>
                                                                     </div>
                                                                 }
-
-
                                                             }
-
-
-
-
                                                         </div>
-
-
-
                                                     }
-
-
                                                 </div>
-
-
-
                                             }
 
                                             else if (CurrentSession.SubUserTypeID == "1")  //House Secretary
@@ -3389,7 +3341,6 @@
                                                 </div>
                                             }
                                         </div>
-
 
                                         <div class="row" style="display:none">
                                             <div class="col-sm-10 col-md-10 col-lg-10 mb-3"></div>
