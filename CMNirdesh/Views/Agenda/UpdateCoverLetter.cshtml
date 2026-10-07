@@ -1,4 +1,4 @@
-﻿@model CMNirdesh.Models.PdfCoverLetterViewModel
+@model CMNirdesh.Models.PdfCoverLetterViewModel
 @using CMNirdesh;
 @{
     ViewBag.Title = "Edit Contact Us";
@@ -143,29 +143,45 @@
         var deptId = $("#DeptId").val();
         var AgendaID = $("#AgendaId").val();
         var DocumentType1 = $("#DocumentType").val();
-        var coverHtml = tinymce.get('CoverHtml').getContent();
+        var coverHtml = (typeof tinymce !== 'undefined' && tinymce.get('CoverHtml')) 
+                        ? tinymce.get('CoverHtml').getContent() 
+                        : $("#CoverHtml").val();
+
+        var payload = {
+            DeptId: deptId,
+            AgendaID: AgendaID,
+            DocumentType: DocumentType1,
+            CoverHtml: coverHtml
+        };
+
         $("#loader-wrapper").show();
         $.ajax({
             url: '@Url.Action("SaveCoverLetterAsync", "Agenda")',
             type: 'POST',
-            data: {
-                DeptId: deptId,
-                AgendaID: AgendaID,
-                DocumentType: DocumentType1,
-                CoverHtml: coverHtml
-            },
+            data: JSON.stringify(payload),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
             success: function (response) {
+                $("#loader-wrapper").hide();
                 if (response.success) {
-                    $("#loader-wrapper").hide();
-                    location.reload();
                     alert(response.message);
-
+                    location.reload();
                 } else {
                     alert("Error: " + response.message);
                 }
             },
             error: function (xhr, status, error) {
-                alert("AJAX error: " + error);
+                $("#loader-wrapper").hide();
+                var msg = error;
+                if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                } else if (xhr && xhr.responseText) {
+                    try {
+                        var parsed = JSON.parse(xhr.responseText);
+                        if (parsed.message) msg = parsed.message;
+                    } catch(e) {}
+                }
+                alert("AJAX error: " + msg);
             }
         });
     }

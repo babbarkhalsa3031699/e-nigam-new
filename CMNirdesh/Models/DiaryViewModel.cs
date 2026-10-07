@@ -10605,11 +10605,11 @@ namespace CMNirdesh.Models
                     using (SqlCommand cmd = new SqlCommand("InsertOrUpdate_CoveringLetter", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@DeptId", deptId);
+                        cmd.Parameters.AddWithValue("@DeptId", (object)deptId ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@AgendaID", AgendaID);
-                        cmd.Parameters.AddWithValue("@DocumentType", DocumentType);
-                        cmd.Parameters.AddWithValue("@PdfPath", path);
-                        cmd.Parameters.AddWithValue("@CoverHtml", coverHtml);
+                        cmd.Parameters.AddWithValue("@DocumentType", (object)DocumentType ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@PdfPath", (object)path ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@CoverHtml", (object)coverHtml ?? DBNull.Value);
                         con.Open();
                         cmd.ExecuteNonQuery();
                         return true;

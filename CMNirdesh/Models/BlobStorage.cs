@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
@@ -447,7 +447,8 @@ namespace CMNirdesh.Models
             }
             else
             {
-                string folderPath = Path.Combine(GetStoragePath(value), Path.GetDirectoryName(filepath));
+                var baseFolder = HostingEnvironment.MapPath("~/SecureFileStructure");
+                string folderPath = Path.Combine(baseFolder, Path.GetDirectoryName(filepath));
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
@@ -460,9 +461,10 @@ namespace CMNirdesh.Models
                 File.WriteAllBytes(fullFilePath, pdfBytes);
 
                 Console.WriteLine($"PDF '{fullFilePath}' saved locally successfully.");
+                return "/SecureFileStructure/" + filepath.Replace('\\', '/');
             }
 
-            return null; // Return null if not using Blob Storage
+            return null;
         }
 
 

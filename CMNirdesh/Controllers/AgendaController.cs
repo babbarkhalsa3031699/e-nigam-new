@@ -9763,7 +9763,10 @@ th, td {
                 AgendaModelFunction.ApproveAgenda(Convert.ToInt32(AgendaId.ToString()), 1);
 
             }
-            string blobUrl = Convert.ToString(BlobStorage.GetStorageAcessingPath()) + "/" + pdfFilename;
+            string storageAccess = Convert.ToString(BlobStorage.GetStorageAcessingPath());
+            string blobUrl = !string.IsNullOrEmpty(storageAccess)
+                ? storageAccess.TrimEnd('/') + "/" + pdfFilename
+                : Url.Content("~/SecureFileStructure/" + pdfFilename);
             return Redirect(blobUrl);
         }
 
@@ -9801,8 +9804,11 @@ th, td {
             BlobStorage.UploadPdfToBlob(pdfBytes, pdfFilename);
             SavePDf(AgendaId.ToString(), pdfFilename);
             AgendaModelFunction.ApproveAgenda(Convert.ToInt32(AgendaId.ToString()), 1);
-            string blobUrl = Convert.ToString(BlobStorage.GetStorageAcessingPath()) + "/" + pdfFilename;
-            return Redirect(blobUrl);
+            string storageAccessOld = Convert.ToString(BlobStorage.GetStorageAcessingPath());
+            string blobUrlOld = !string.IsNullOrEmpty(storageAccessOld)
+                ? storageAccessOld.TrimEnd('/') + "/" + pdfFilename
+                : Url.Content("~/SecureFileStructure/" + pdfFilename);
+            return Redirect(blobUrlOld);
         }
 
         // for Circulate agenda button 
@@ -9882,7 +9888,10 @@ th, td {
                 string pdfFilename = $"Circular/{DateTime.Now:ddMMyyyyHHmmss}_{AgendaId}_Agenda.pdf";
                 BlobStorage.UploadPdfToBlob(pdfBytes, pdfFilename);
                 SavePDfCircular(AgendaId.ToString(), pdfFilename);
-                string blobUrl = Convert.ToString(BlobStorage.GetStorageAcessingPath()) + "/" + pdfFilename;
+                string storageAccess = Convert.ToString(BlobStorage.GetStorageAcessingPath());
+                string blobUrl = !string.IsNullOrEmpty(storageAccess)
+                    ? storageAccess.TrimEnd('/') + "/" + pdfFilename
+                    : Url.Content("~/SecureFileStructure/" + pdfFilename);
                 return Redirect(blobUrl);
             }
         }
@@ -9923,8 +9932,11 @@ th, td {
             string pdfFilename = $"Circular/{DateTime.Now:ddMMyyyyHHmmss}_{AgendaId}_Agenda.pdf";
             BlobStorage.UploadPdfToBlob(pdfBytes, pdfFilename);
             SavePDfCircular(AgendaId.ToString(), pdfFilename);
-            string blobUrl = Convert.ToString(BlobStorage.GetStorageAcessingPath()) + "/" + pdfFilename;
-            return Redirect(blobUrl);
+            string storageAccessOld = Convert.ToString(BlobStorage.GetStorageAcessingPath());
+            string blobUrlOld = !string.IsNullOrEmpty(storageAccessOld)
+                ? storageAccessOld.TrimEnd('/') + "/" + pdfFilename
+                : Url.Content("~/SecureFileStructure/" + pdfFilename);
+            return Redirect(blobUrlOld);
         }
 
         public ActionResult ApproveProceedingDeptDecisionHtmlNew(int AgendaId, int DeptId)
@@ -15184,15 +15196,31 @@ th, td {
 
         [HttpPost]
         [ValidateInput(false)]
-        public async Task<ActionResult> SaveCoverLetterAsync(string DeptId, int AgendaID, string DocumentType, string CoverHtml)
+        public async Task<ActionResult> SaveCoverLetterAsync(CoverLetterRequest req)
         {
-            string pdfUrl = await GenerateAndUploadCoverPdfAsync(CoverHtml, DeptId);
-            bool success = PDFCoverList.InsertOrUpdateCoveringLetter(DeptId, AgendaID, DocumentType, CoverHtml, pdfUrl);
-            return Json(new
+            try
             {
-                success = success,
-                message = success ? "Cover letter saved successfully!" : "An error occurred while saving."
-            });
+                if (req == null)
+                {
+                    return Json(new { success = false, message = "Invalid request data." });
+                }
+
+                string pdfUrl = await GenerateAndUploadCoverPdfAsync(req.CoverHtml, req.DeptId);
+                bool success = PDFCoverList.InsertOrUpdateCoveringLetter(req.DeptId, req.AgendaID, req.DocumentType, req.CoverHtml, pdfUrl);
+                return Json(new
+                {
+                    success = success,
+                    message = success ? "Cover letter saved successfully!" : "An error occurred while saving."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Error: " + ex.Message
+                });
+            }
         }
 
         [HttpPost]
@@ -15270,7 +15298,25 @@ th, td {
 
         public async Task<string> GenerateAndUploadCoverPdfAsync(string coverHtml, string deptId)
         {
-            var pdfBytes = await GenerateCoverPdfAsync(coverHtml);
+            byte[] pdfBytes;
+            try
+            {
+                pdfBytes = await GenerateCoverPdfAsync(coverHtml);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    System.IO.File.AppendAllText(
+                        @"C:\temp\pdf_error.log",
+                        DateTime.Now + " : " + ex.ToString() + Environment.NewLine
+                    );
+                }
+                catch { }
+
+                pdfBytes = GenerateFallbackPdf("Cover Letter Generated on " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+            }
+
             string folder = "CoveringLetters/";
             //string blobName = folder + $"CoverLetter_{deptId}_{DateTime.UtcNow:yyyyMMddHHmmss}.pdf";
 
