@@ -5280,14 +5280,14 @@
                                     <div class="ref_box mb-3">
                                         <div class="mb-2" id="divofc">
                                             <div class="fotm_lbl">
-                                                Office Detail:
+                                                Office/Branch:
                                                 @*@if (Model.HideUpdate != "Yes")
+        {
+            if (SiteName == "MC")
             {
-                if (SiteName == "MC")
-                {
-                    <i class="ace-icon fa fa-pencil hand" onclick="EditOfficeFrom()"></i>
-                }
-            }*@
+                <i class="ace-icon fa fa-pencil hand" onclick="EditOfficeFrom()"></i>
+            }
+        }*@
                                             </div>
                                             <div class="txt_value in_txt_area">
 
