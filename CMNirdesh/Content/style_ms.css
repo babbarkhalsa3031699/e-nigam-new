@@ -5607,17 +5607,13 @@ div#panelContainer {
 /* Punjab Government Crest / Emblem */
 .portal-loader-emblem-badge {
     position: absolute;
-    width: 52px;
-    height: 52px;
-    background: #ffffff;
-    border-radius: 50%;
+    width: 80px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 10px rgba(10, 56, 113, 0.14), 0 0 0 1px rgba(10, 56, 113, 0.06);
     z-index: 5;
     padding: 5px;
-    box-sizing: border-box;
 }
 
 .portal-loader-emblem-img {
@@ -5785,10 +5781,10 @@ div#panelContainer {
         height: 60px !important;
     }
 
-    .portal-loader-emblem-badge {
+    /*.portal-loader-emblem-badge {
         width: 46px;
         height: 46px;
-    }
+    }*/
 
     .portal-loader-title {
         font-size: 15px !important;
