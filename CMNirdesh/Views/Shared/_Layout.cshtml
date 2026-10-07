@@ -858,12 +858,10 @@
         }
 
         .portal-profile-avatar-frame {
-            width: 32px !important;
-            height: 32px !important;
-            border-radius: 50% !important;
+            /*width: 32px !important;
+            height: 32px !important;*/
+            /*border-radius: 50% !important;*/
             overflow: hidden !important;
-            border: 2px solid #3b82f6 !important;
-            box-shadow: 0 1px 4px rgba(59, 130, 246, 0.18) !important;
             flex-shrink: 0 !important;
         }
 
@@ -2914,7 +2912,7 @@
                                 </li>
 
                                 @if(CurrentSession.DeptID != "LG00001") { 
-                                <li class="portal-subnav-item portal-subnav-filter-item">
+                                <li class="portal-subnav-item portal-subnav-filter-item" id="offIdNavLs">
                                     <div class="portal-filter-group">
                                         <div class="dropdown-arrow portal-select-container portal-offid-select-wrap">
                                             <select class="form-control portal-select-field" id="offIdNav" name="offIdNav"></select>
@@ -3372,7 +3370,6 @@
     }
 
     function Getofficenav(deptttid, officeid) {
-
          $('#offIdNav').empty();
         $('#offId').empty();
         $.ajax({
@@ -3381,28 +3378,27 @@
             datatype: "Json",
             data: { deptid: deptttid },
             success: function (data) {
+                if (data.length > 0) {
+                    $('#offIdNav').append('<option value="0" selected >-All-</option>');
+                    $('#officeNavcount').html(data.length);
+                    $.each(data, function (index, value) {
+                        var selected = '';
+                        if (value.id == officeid) {
+                            selected = 'selected';
 
-                if (data.length == 0) {
-                    $('#offIdNav').hide();
+                        } else {
+                            selected = '';
+                        }
+                        $('#offIdNav').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');
+                    });
                 }
-		        $('#offIdNav').append('<option value="0" selected >-All-</option>');
-                if (data.length > 1) {
- 			        $('#officeNavcount').html(data.length);
-                } else {
+                else {
+                    $('#offIdNav').hide();
+                    $('#offIdNavLs').prop("style", "display: none !important");
                     $('#officeNavcount').hide();
                 }
 
-
-                $.each(data, function (index, value) {
-                    var selected = '';
-                    if (value.id == officeid) {
-                        selected = 'selected';
-
-                    } else {
-                        selected = '';
-                    }
-                    $('#offIdNav').append('<option value="' + value.id + '" ' + selected +'>' + value.name + '</option>');
-                });
+                
 
                 //if (data.length >= 1) {
 

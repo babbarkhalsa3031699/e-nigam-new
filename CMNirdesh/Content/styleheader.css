@@ -127,7 +127,7 @@
 .user-image img {
     width: 100%;
     height: auto;
-    border: 1px solid var(--bg-color);
+    border: 3px solid var(--bg-color);
 }
 
 .position-language {
