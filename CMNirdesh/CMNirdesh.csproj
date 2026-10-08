@@ -3187,6 +3187,7 @@
     <Content Include="Views\References\EditApproval.cshtml" />
     <Content Include="Views\References\AdvanceResolutioSearch.cshtml" />
     <Content Include="Views\Reports\LatestResolutionReport.cshtml" />
+    <Content Include="Views\References\EditApproval_Action.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

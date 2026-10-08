@@ -457,7 +457,9 @@
                             var content = typeof tinyMceDataStoreApproval[firstId] === 'object'
                                 ? tinyMceDataStoreApproval[firstId].Comments
                                 : tinyMceDataStoreApproval[firstId];
-                            editor.setContent(content || '');
+                            if (content) {
+                                editor.setContent(content || '');
+                            }
                         }
 
                         adjustTinyMceHeights();
@@ -701,7 +703,7 @@
                 if (!ls || !firstId) return;
 
                 // 1. Direct match by firstId
-                if (ls[firstId]) {
+                if (ls[firstId] && ls[firstId].Comments) {
                     editor.setContent(ls[firstId].Comments || '');
                     //var draftStatus = ls[firstId].Status;
                     //if (draftStatus) {
@@ -732,7 +734,7 @@
                     let matched = false;
 
                     for (const el of keyIds) {
-                        if (firstIds.has(el)) {
+                        if (firstIds.has(el) && value.Comments) {
                             editor.setContent(value.Comments || '');
                             //var draftStatus = value.Status;
                             //if (draftStatus) {
@@ -781,7 +783,8 @@
 
             tinyMceDataStoreApproval[refId] = {
                 RefId: refId,
-                Comments: comments,
+                Comments: comments ? comments : (Object.entries(tinyMceDataStoreApproval).length && tinyMceDataStoreApproval[refId] && tinyMceDataStoreApproval[refId].Comments
+                    ? tinyMceDataStoreApproval[refId].Comments : ""),
                 //Status: status || '',
                 resolutionNo: resolutionNo
             };
@@ -1160,7 +1163,7 @@
                                     <!-- 🔥 Resolution No. Badge inside TinyMCE Header -->
                                     <div class="rsln-header-badge"
                                          title="Resolution No(s)"
-                                         style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+                                         style="display:flex; align-items:center; justify-content:space-between; width:100%;white-space: normal; overflow-wrap: break-word;word-break: break-word;">
                                         <div>
                                             <span style="font-weight:700; color:#495057; margin-right: 5px;">Resolution No:</span>
                                             @{

@@ -19,7 +19,6 @@
     <script src="~/Scripts/datatables/vfs-fonts.js"></script>
     <script src="~/Scripts/datatables/buttons.print.min.js"></script>
     <script src="~/Scripts/datatables/buttons.html5.min.js"></script>
-    @*<script src="~/Scripts/tinymce/tinymce.min.js"></script>*@
 
     <style>
         /* Header Toolbar Combined Group Styling */
@@ -457,7 +456,9 @@
                             var content = typeof tinyMceDataStore[firstId] === 'object'
                                 ? tinyMceDataStore[firstId].Comments
                                 : tinyMceDataStore[firstId];
-                            editor.setContent(content || '');
+                            if (content) {
+                                editor.setContent(content || '');
+                            }
                         }
 
                         adjustTinyMceHeights();
@@ -706,7 +707,7 @@
                 if (!ls || !firstId) return;
 
                 // 1. Direct match by firstId
-                if (ls[firstId]) {
+                if (ls[firstId] && ls[firstId].Comments) {
                     editor.setContent(ls[firstId].Comments || '');
                     //var draftStatus = ls[firstId].Status;
                     //if (draftStatus) {
@@ -737,7 +738,7 @@
                     let matched = false;
 
                     for (const el of keyIds) {
-                        if (firstIds.has(el)) {
+                        if (firstIds.has(el) && value.Comments) {
                             editor.setContent(value.Comments || '');
                             //var draftStatus = value.Status;
                             //if (draftStatus) {
@@ -786,7 +787,8 @@
 
             tinyMceDataStore[refId] = {
                 RefId: refId,
-                Comments: comments,
+                Comments: comments ? comments : (Object.entries(tinyMceDataStoreApproval).length && tinyMceDataStoreApproval[refId] && tinyMceDataStoreApproval[refId].Comments
+                    ? tinyMceDataStoreApproval[refId].Comments : ""),
                 //Status: status || '',
                 resolutionNo: resolutionNo
             };
