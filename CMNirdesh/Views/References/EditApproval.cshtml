@@ -787,8 +787,8 @@
 
             tinyMceDataStore[refId] = {
                 RefId: refId,
-                Comments: comments ? comments : (Object.entries(tinyMceDataStoreApproval).length && tinyMceDataStoreApproval[refId] && tinyMceDataStoreApproval[refId].Comments
-                    ? tinyMceDataStoreApproval[refId].Comments : ""),
+                Comments: comments ? comments : (Object.entries(tinyMceDataStore).length && tinyMceDataStore[refId] && tinyMceDataStore[refId].Comments
+                    ? tinyMceDataStore[refId].Comments : ""),
                 //Status: status || '',
                 resolutionNo: resolutionNo
             };
@@ -873,6 +873,11 @@
 
             let hasError = false;
 
+            let commentError = false;
+            let commentErrorResolutions = '';
+
+            let statusError = false;
+            let statusErrorResolutions = '';
             $('#MeetingTable .tiny-editor').each(function () {
                 var refIds = $(this).data('refid');
                 var resolutionNos = $(this).data('resolution');
@@ -890,17 +895,54 @@
                 var editorCheckbox = $(this).closest('td').find('#actionSubmitCheckbox');
                 var isChecked = $(editorCheckbox).is(':checked');
 
-                if (!comments || comments.trim() === "") {
-                    alert("Comment cannot be empty for Resolution No(s): " + resolutionNos);
-                    hasError = true;
-                    return false; // break loop
+                if (isChecked) { // if any checked
+                    hasError = false;
+                    commentError = false;
+                    commentErrorResolutions = '';
+                    statusError = false;
+                    statusErrorResolutions = '';
+
+                    if (!comments || comments.trim() === "") { // check current comments
+                        commentError = true;
+                        commentErrorResolutions = resolutionNos;
+                        //alert("Comment cannot be empty for Resolution No(s): " + resolutionNos);
+                        hasError = true;
+                        return false;
+                    }
+                    if (!status) { // check current status
+                        statusError = true;
+                        statusErrorResolutions = resolutionNos;
+                        //alert("Please select status for Resolution No(s): " + resolutionNos);
+                        hasError = true;
+                        return false;
+                    }
+                }
+                else if (!commentError) {
+                    if ((!comments || comments.trim() === "") && !dataList.length) { // check current comments
+                        commentError = true;
+                        commentErrorResolutions = resolutionNos;
+                        hasError = true;
+                    }
+                }
+                else if (!statusError) {
+                    if (!status && !dataList.length) { // check current status
+                        statusError = true;
+                        statusErrorResolutions = resolutionNos;
+                        hasError = true;
+                    }
                 }
 
-                if (!status) {
-                    alert("Please select status for Resolution No(s): " + resolutionNos);
-                    hasError = true;
-                    return false;
-                }
+                //if (!comments || comments.trim() === "") {
+                //    alert("Comment cannot be empty for Resolution No(s): " + resolutionNos);
+                //    hasError = true;
+                //    return false; // break loop
+                //}
+
+                //if (!status) {
+                //    alert("Please select status for Resolution No(s): " + resolutionNos);
+                //    hasError = true;
+                //    return false;
+                //}
 
                 // split multiple ids
                 var refIdArray = refIds.toString().split(',');
@@ -936,6 +978,15 @@
                 if (btn) {
                     btn.disabled = false;
                     btn.innerText = "Submit";
+                }
+                if (commentError) {
+                    alert("Comment cannot be empty for Resolution No(s): " + commentErrorResolutions);
+                    return;
+                }
+
+                if (statusError) {
+                    alert("Please select status for Resolution No(s): " + statusErrorResolutions);
+                    return;
                 }
                 return;
             }

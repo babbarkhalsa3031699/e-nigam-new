@@ -12,7 +12,7 @@
 
 <div class="container-fluid px-1">
 
-    
+
     <div id="endorsementFormSection"
          class="card shadow-sm mt-2 border-0"
          style="overflow: hidden;">
@@ -89,8 +89,8 @@
                               class="form-control"
                               rows="6"></textarea>
                 </div>
-              
-                
+
+
                 <div class="mb-3">
                     <label class="fw-bold">
                         Endorsement Details
@@ -101,51 +101,51 @@
                               rows="6"></textarea>
                 </div>
             </div>
-               
-          
 
 
-                <div id="dvRejectionFormat" style="display:none; border:1px solid #ddd; padding:15px; margin-top:10px;">
-                    <div class="mb-3">
-                        <label class="fw-bold">
-                           Add Rejection Content
 
-                        </label>
-                        <!-- Editor -->
-                        <textarea id="txtRejectionFormat"
-                                  class="form-control" rows="12"></textarea>
-                    </div>
+
+            <div id="dvRejectionFormat" style="display:none; border:1px solid #ddd; padding:15px; margin-top:10px;">
+                <div class="mb-3">
+                    <label class="fw-bold">
+                        Add Rejection Content
+
+                    </label>
+                    <!-- Editor -->
+                    <textarea id="txtRejectionFormat"
+                              class="form-control" rows="12"></textarea>
                 </div>
-
-
-
-                <!-- Dispatch Number -->
-                <div class="mb-3 col-md-4">
-                    <label class="fw-bold">Dispatch Number <span class="text-danger">*</span></label>
-
-                    <input type="text"
-                           id="DispatchNumber"
-                           class="form-control"
-                           autocomplete="off"
-                           placeholder="Enter Dispatch Number" />
-                </div>
-
-                <div class="text-end">
-                    <button type="button"
-                            class="btn btn-success me-2"
-                            onclick="SaveEndorsement()">
-                        <i class="fa fa-save"></i> Save
-                    </button>
-
-                    <button type="button"
-                            class="btn btn-secondary"
-                            onclick="CancelForm()">
-                        Cancel
-                    </button>
-                </div>
-
             </div>
+
+
+
+            <!-- Dispatch Number -->
+            <div class="mb-3 col-md-4">
+                <label class="fw-bold">Dispatch Number <span class="text-danger">*</span></label>
+
+                <input type="text"
+                       id="DispatchNumber"
+                       class="form-control"
+                       autocomplete="off"
+                       placeholder="Enter Dispatch Number" />
+            </div>
+
+            <div class="text-end">
+                <button type="button"
+                        class="btn btn-success me-2"
+                        onclick="SaveEndorsement()">
+                    <i class="fa fa-save"></i> Save
+                </button>
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        onclick="CancelForm()">
+                    Cancel
+                </button>
+            </div>
+
         </div>
+    </div>
 
 
 
@@ -166,6 +166,7 @@
                 <thead class="table-secondary text-center">
                     <tr>
                         <th style="width:60px;">#</th>
+                        <th style="width:120px;">Action</th>
                         <th>Addressed To</th>
                         <th>Approval Subject</th>
                         <th>Approval Header</th>
@@ -173,7 +174,6 @@
                         <th>Footer</th>
                         <th>Rejection Content</th>
                         <th style="width:150px;">Dispatch No.</th>
-                        <th style="width:120px;">Action</th>
                     </tr>
                 </thead>
                 <tbody id="endorsementTableBody"></tbody>
@@ -342,40 +342,40 @@
         });
     }
     // SAVE
-   function SaveEndorsement() {
-    tinymce.triggerSave();
+    function SaveEndorsement() {
+        tinymce.triggerSave();
 
-    var model = {
-        RefID: $("#FileReferenceId").val(),
-        SendTo: $("#SendEditor").val(),
-        Subject: $("#ApprovalSubject").val(),
-        Header: $("#HeaderEditor").val(),
-        EndorsementId: $("#EndorsementId").val(),
-        AgendaId: $("#AgendaId").val(),
-        EndorsementSubject: $("#EndorsementEditor").val(),
-        FooterSubject: $("#footerEditor").val(),
-        DispatchNumber: $("#DispatchNumber").val(),
-        RejectionFormat: $("#txtRejectionFormat").val()
-    };
+        var model = {
+            RefID: $("#FileReferenceId").val(),
+            SendTo: $("#SendEditor").val(),
+            Subject: $("#ApprovalSubject").val(),
+            Header: $("#HeaderEditor").val(),
+            EndorsementId: $("#EndorsementId").val(),
+            AgendaId: $("#AgendaId").val(),
+            EndorsementSubject: $("#EndorsementEditor").val(),
+            FooterSubject: $("#footerEditor").val(),
+            DispatchNumber: $("#DispatchNumber").val(),
+            RejectionFormat: $("#txtRejectionFormat").val()
+        };
 
-    $.ajax({
-        url: '@Url.Action("SaveEndorsement", "Approval")',
-        type: 'POST',
-        data: model,
-        success: function (response) {
-            if (response.success) {
-                alert(response.message);
-                ResetForm();
-                LoadEndorsementList();
-            } else {
-                alert(response.message);
+        $.ajax({
+            url: '@Url.Action("SaveEndorsement", "Approval")',
+            type: 'POST',
+            data: model,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    ResetForm();
+                    LoadEndorsementList();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert("Something went wrong. Please try again.");
             }
-        },
-        error: function () {
-            alert("Something went wrong. Please try again.");
-        }
-    });
-}
+        });
+    }
 
 
     // LOAD LIST
@@ -396,6 +396,10 @@
 
                         rows += "<tr>";
                         rows += "<td class='text-center'>" + (i + 1) + "</td>";
+                        rows += "<td class='text-center'>";
+                        rows += "<button type='Button' class='btn btn-sm btn-warning' onclick='EditEndorsement(" + item.EndorsementId + ")'>";
+                        rows += "<i class='fa fa-pencil'></i> Edit</button>";
+                        rows += "</td>";
                         rows += "<td>" + item.SendTo + "</td>";
                         rows += "<td>" + item.Subject + "</td>";
                         rows += "<td>" + item.Header + "</td>";
@@ -403,10 +407,6 @@
                         rows += "<td>" + item.FooterSubject + "</td>";
                         rows += "<td>" + item.RejectionFormat + "</td>";
                         rows += "<td class='text-center'>" + (item.DispatchNumber || "") + "</td>";
-                        rows += "<td class='text-center'>";
-                        rows += "<button type='Button' class='btn btn-sm btn-warning' onclick='EditEndorsement(" + item.EndorsementId + ")'>";
-                        rows += "<i class='fa fa-pencil'></i> Edit</button>";
-                        rows += "</td>";
                         rows += "</tr>";
                     });
 

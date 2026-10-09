@@ -2911,6 +2911,11 @@
                    onAction: function () {
                        if (confirm('Are you sure you want to clear all content?')) {
                            editor.setContent('');
+                           editor.focus();
+
+                           const body = editor.getBody();
+                           editor.selection.select(body, true);
+                           editor.selection.collapse(true);
                        }
                    }
                });
